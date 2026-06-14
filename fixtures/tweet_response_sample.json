@@ -1,0 +1,80 @@
+{
+  "run_input": {
+    "customMapFunction": "(object) => { return {...object} }",
+    "includeSearchTerms": false,
+    "maxItems": 1,
+    "onlyImage": false,
+    "onlyQuote": false,
+    "onlyTwitterBlue": false,
+    "onlyVerifiedUsers": false,
+    "onlyVideo": false,
+    "searchTerms": [
+      "from:aleabitoreddit since:2026-05-01 until:2026-06-01"
+    ],
+    "sort": "Latest"
+  },
+  "items": [
+    {
+      "type": "tweet",
+      "id": "2050302664031039691",
+      "url": "https://x.com/aleabitoreddit/status/2050302664031039691",
+      "twitterUrl": "https://twitter.com/aleabitoreddit/status/2050302664031039691",
+      "text": "I’m convinced that the people who charge $200 or $2000 just to see their stock picks.\n\nDo so just because their ideas aren’t good enough.\n\nOtherwise they would just go long on them with their own capital and retire.\n\nThis is why they get mad when they see others sharing better ideas for free.",
+      "fullText": "I’m convinced that the people who charge $200 or $2000 just to see their stock picks.\n\nDo so just because their ideas aren’t good enough.\n\nOtherwise they would just go long on them with their own capital and retire.\n\nThis is why they get mad when they see others sharing better",
+      "source": "Twitter for iPhone",
+      "retweetCount": 133,
+      "replyCount": 267,
+      "likeCount": 4324,
+      "quoteCount": 22,
+      "viewCount": 370529,
+      "createdAt": "Fri May 01 19:53:42 +0000 2026",
+      "lang": "en",
+      "bookmarkCount": 230,
+      "isReply": false,
+      "conversationId": "2050302664031039691",
+      "author": {
+        "type": "user",
+        "userName": "aleabitoreddit",
+        "url": "https://x.com/aleabitoreddit",
+        "twitterUrl": "https://twitter.com/aleabitoreddit",
+        "id": "1940360837547565056",
+        "name": "Serenity",
+        "isBlueVerified": true,
+        "profilePicture": "https://pbs.twimg.com/profile_images/1996176688414367744/LXfA_lIx_normal.jpg",
+        "coverPicture": "https://pbs.twimg.com/profile_banners/1940360837547565056/1769296810",
+        "description": "I only use X, beware of imposters. \n\nAI/Semi Supply Chain Analyst\n\nNot investment advice, DYODD. Now publishing free research on AI chokepoints.",
+        "location": "NFA",
+        "followers": 824711,
+        "following": 175,
+        "status": "",
+        "canDm": true,
+        "canMediaTag": true,
+        "createdAt": "Wed Jul 02 10:44:15 +0000 2025",
+        "entities": {
+          "description": {}
+        },
+        "fastFollowersCount": 0,
+        "favouritesCount": 12387,
+        "hasCustomTimelines": false,
+        "isTranslator": false,
+        "mediaCount": 2060,
+        "statusesCount": 7244,
+        "affiliatesHighlightedLabel": {},
+        "possiblySensitive": false
+      },
+      "extendedEntities": {},
+      "card": {},
+      "place": {},
+      "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "urls": [],
+        "user_mentions": []
+      },
+      "isRetweet": false,
+      "isQuote": false,
+      "media": [],
+      "isConversationControlled": false
+    }
+  ]
+}

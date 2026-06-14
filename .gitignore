@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+.mypy_cache/
+.ruff_cache/
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+
+# Logs / cache
+*.log
+.cache/
+.mavis/plans/draft/
+
+# Build artifacts
+dist/
+build/
+*.whl
+
+# 项目缓存(可重建)
+.cache_full/
+.cache_full_v1_backup/
+.cache_smoke/
+.cache_rescrape/
+.cache_rescrape_v2/
+.data_full/
+.data_smoke/
+
+# Database(太大,本地 + Apify raw_posts 重建)
+data/*.db
+data/*.db-wal
+data/*.db-shm

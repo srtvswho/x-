@@ -1,0 +1,630 @@
+# 信号源 20 条分层抽样 - 抽取 prompt 校准样本
+
+## 元数据
+- 数据源: aleabitoreddit (X / Twitter)
+- 数据库: data/signalboard_full.db
+- 抓取时间: 2026-06-12 (Phase 1 完成,6354 条入库,14 月)
+- 抽样 seed: 20260612 (可复现)
+- 抽样总数: 20 (原创 8 + 回复 6 + 引用 6)
+- 高互动阈值: likeCount >= 264 (前 20%)
+- 高互动样本: 20 / 20 (✓ 满足 ≥5)
+
+## 分类统计(全量)
+- 原创 (original): 691 条
+- 回复 (reply): 4853 条
+- 引用 (quote): 810 条
+- 转推 (retweet): 0 条 (账户从不发转推,抽样中无)
+
+## 抽样观察(供抽取 prompt 校准)
+- 原创平均长度 ~700 字符,常含 $TICKER 标记 + 论点 + 多个 bullet point
+- 回复短(50-300 字符),多为对他人观点的赞同/补充/反问
+- 引用最长(常 1000-3000 字符),典型模式:引用某事件/推文 + 给出"如何从中获利"的多步分析
+- 互动高的推文几乎都是原创或引用,不是回复(回复里 likes 普遍 < 2000)
+
+================================================================================
+## 20 条样本(完整正文)
+================================================================================
+
+### [ 1] ORIGINAL  |  likes= 7164 🔥  |  2062723902728802341
+发布时间: 2026-06-05T02:31:16+00:00
+URL: https://x.com/aleabitoreddit/status/2062723902728802341
+类型: 原创 (非回复/非转推/非引用)
+
+>>>
+专门写给我的中文读者：
+
+绿的谐波（LeaderDrive，688017，577.3亿人民币）是我在布局人形机器人赛道时最青睐的中国上市标的。
+
+他们的业务涵盖：
+
+谐波减速器（据称占有超过60%的国内市场份额，以及1800多家全球客户）
+
+人形机器人旋转关节减速器
+
+直线执行器
+
+电机/关节，以及许多其他核心零部件。
+
+并且他们正在进军行星滚柱丝杠（planetary roller screws）领域。
+
+目前占据着绝对的主导地位：超过60%的国内市场份额以及1800多家全球客户。
+
+主要客户包括优傲机器人（Universal Robots）、优必选（UBTech）、智元机器人（Agibot），而特斯拉（Tesla）、Figure 以及绝大多数其他人形机器人研发商都很可能是他们的潜在客户。
+
+如果你看一下这些零部件的 BOM（物料清单），粗略估计它们占到了每台研发出的人形机器人的 4-15%，随着他们进军更多细分领域，这个比例可能还会更高。
+
+我认为没有人能对这类公司进行精确的财务建模，其前景更多取决于未来几年内会有多少人形机器人实现量产。
+
+这其实是对一家能够在每台生产出的人形机器人中占据可观份额的公司，进行的一种方向性做多（directional long）。
+
+在可扩展的规模化量产方面，中国显然是该领域的领导者，许多西方玩家无法将成本降到绿的谐波那样的水平。
+
+随着我们向实体人工智能（physical AI）的规模化迈进，我极其看好机器人这个赛道。
+<<<
+
+字符数: 638
+
+### [ 2] ORIGINAL  |  likes= 5997 🔥  |  2059606040417812549
+发布时间: 2026-05-27T12:02:00+00:00
+URL: https://x.com/aleabitoreddit/status/2059606040417812549
+类型: 原创 (非回复/非转推/非引用)
+
+>>>
+Just a fun observation: the only people you see complaining about free research.
+
+Typically have massive paywalls. 
+
+And get upset others are disrupting their business models. 
+
+I get tons of institutional/hedge fund offers. 
+
+But instead of doing things for institutions only or through heavily paywalled subscriptions.
+
+I just publish my ideas to retail investors for free. 
+
+I think it’s about time retail has a level playing field?
+<<<
+
+字符数: 435
+
+### [ 3] ORIGINAL  |  likes= 4740 🔥  |  2064265545529307560
+发布时间: 2026-06-09T08:37:12+00:00
+URL: https://x.com/aleabitoreddit/status/2064265545529307560
+类型: 原创 (非回复/非转推/非引用)
+
+>>>
+Given my recent popularity, might be a good time to put out a PSA. 
+
+Early followers have known this from the start:
+
+1. I don't do any paid promotions, paid marketing, or accept outside gifts. 
+
+But I appreciate all the recent outreach from companies!
+
+If you see or engage with something online related to any type of payment, it's fabricated for engagement or a scammer. 
+
+The reason I don't want to is because I'm just posting on X for fun, and when money is involved it turns into a job (which I don't want it to feel like).
+
+Also, well off personally so I've never felt influenced by anyone outside.
+
+2. The only "paid" thing I have is $1 subscriptions. That's all. 
+
+From the very start, I've never taken a single penny outside of X subscriptions/creator sharing. Which is why I say in my bio: 
+
+"I only use X, beware of imposters." 
+
+Anyone approaching you to share an external community or app is a scammer or imposter. 
+
+It's just very frustrating that people still fall for these impersonators. 
+
+3. I'm just one person posting my thoughts online. 
+
+-> Not some institution or Illuminati team. 
+
+Quality of research is "high" because I have a technical background. And I genuinely do this as a hobby researching supply chain ideas. 
+
+There's not some "hidden" motive like a paid research group from Asia, it's just fun lol. 
+
+4. I will always disclose positions if I have them or if I don't. Very open and transparent about it. 
+
+With Chinese equities I'm just posting research in hope it benefits people find conviction in critical companies in global supply chains. 
+
+I don't have any positions / any financial incentives (so I can be impartial),  and haven't privately discussed with anyone about ideas I post beforehand. 
+
+Maybe it happens in Asia, but in the US it's highly illegal to be running groups or getting paid to post about companies. 
+
+I'm just posting my ideas for free without outside influence, in case others like the idea. 
+
+It probably seems odd, but I'm doing this as a hobby and for fulfillment of helping others. 
+
+5. I'm staying anonymous so I can just freely post my ideas online. 
+
+Reason being is after I first posted negative things about $IREN, I would have a lot of personal IRL threats and harassment from dozens of accounts for me to stop.
+
+Don't want any personal safety or people around me to be at risk for just publishing free research online. 
+
+Anyway, goal is to help out retail investors with free information synthesis; rather than just selling that directly to institutions. 
+
+I'm sure this positive sum model might anger people along the way (who have expensive paywalls, or financial incentives) that might feel threatened by information democratization. 
+
+But genuinely just sharing day-to-day thoughts for free.
+
+Very surprised by recent popularity but it helps me distribute compelling ideas to more people. 
+
+And grateful Elon / X gave me an opportunity through X.
+<<<
+
+字符数: 2923
+
+### [ 4] ORIGINAL  |  likes= 4501 🔥  |  2059292099728859430
+发布时间: 2026-05-26T15:14:31+00:00
+URL: https://x.com/aleabitoreddit/status/2059292099728859430
+类型: 原创 (非回复/非转推/非引用)
+
+>>>
+YTD: 4502.45%. https://t.co/rF2ACQDu8w
+<<<
+
+字符数: 38
+
+### [ 5] ORIGINAL  |  likes= 4324 🔥  |  2050302664031039691
+发布时间: 2026-05-01T19:53:42+00:00
+URL: https://x.com/aleabitoreddit/status/2050302664031039691
+类型: 原创 (非回复/非转推/非引用)
+
+>>>
+I’m convinced that the people who charge $200 or $2000 just to see their stock picks.
+
+Do so just because their ideas aren’t good enough.
+
+Otherwise they would just go long on them with their own capital and retire.
+
+This is why they get mad when they see others sharing better ideas for free.
+<<<
+
+字符数: 293
+
+### [ 6] ORIGINAL  |  likes= 4014 🔥  |  2004569946492453003
+发布时间: 2025-12-26T15:08:13+00:00
+URL: https://x.com/aleabitoreddit/status/2004569946492453003
+类型: 原创 (非回复/非转推/非引用)
+
+>>>
+Warning: The entire AI industry will likely be bottlenecked by two companies:
+
+1. $AXTI ($700M) 
+2. $SMTOY ($31.7B)
+
+Which both control 60–70%+ of the world's InP substrates.
+
+Future $NVDA, $GOOGL TPU v7 pods, $META, $MSFT, $AMZN hyperscaler clusters require InP-based lasers and receivers.
+
+$AVGO, $LITE, $COHR use for EMLs for 800G/1.6T transceivers, DFB lasers, and other optical infra.
+
+Without InP substrates, the supply chain falters. 
+
+After looking at TPU BOM to Maia BOM, it looks like future ASICs + GPUs + hyperscaler deployments are heavily reliant on photonics. 
+
+And two vendors could freeze the global InP substrate market covering nearly all of:
+
+- Hyperscaler optics (TPU pods, etc)
+- Optical transceivers (5g, data)
+- LiDAR (robotaxis, drones, military)
+-Optical Modules (interconnect clusters)
+- Silicon photonics laser dies (Nvidia’s future co-packaged optics and Intel/Broadcom SiPh engines use  InP CW laser arrays.)
+
+Since these companies make up majority of the market supply:
+
+-AXTI (est. ~30–35%)
+-Sumitomo (est.~30%)
+- JX Nippon (est. 10-15%)
+
+That’s it. (eg. 2021 industry note from Yole states that "Sumitomo Electric + AXT together had “more than 75%” of the InP substrate market")
+
+Hyperscalers/AI are moving toward photonics but the entire AI industry is fragile. 
+
+If either $AXTI or $SMTOY stop supplying materials, the entire future AI buidlout gets crippled. It's even crazier that a $700m company could become the the center of it all. 
+
+InP substrate will likely one of the biggest bottlenecks alongside HMB as the AI industry shifts to photonics.
+<<<
+
+字符数: 1585
+
+### [ 7] ORIGINAL  |  likes= 3967 🔥  |  2063235166336856251
+发布时间: 2026-06-06T12:22:51+00:00
+URL: https://x.com/aleabitoreddit/status/2063235166336856251
+类型: 原创 (非回复/非转推/非引用)
+
+>>>
+If you’re curious:
+
+$4649 for 107,894,491 (100M+) impressions!
+
+All of this is going to dog rescues, will be doing large donations later!
+
+It’s ~$600 / dog rescued, so it scales proportionally with Serenity fan count!
+
+I also believe in making all my profits off $SIVE to $AAOI with stocks in the market, not off followers.
+
+Especially if I’m a good enough investor.
+
+So never felt the need to have high paywalls or do paid ads. (I’d do this anyway even if it weren’t monetized).
+
+I’m glad I can help things I care about just by posting ideas throughout the day for fun. 
+
+And I’ve seen a lot of followers recently donate to their local shelters in my name.
+
+So genuinely thank you all for that, makes me happy.
+<<<
+
+字符数: 711
+
+### [ 8] ORIGINAL  |  likes= 3960 🔥  |  2058078143559372866
+发布时间: 2026-05-23T06:50:41+00:00
+URL: https://x.com/aleabitoreddit/status/2058078143559372866
+类型: 原创 (非回复/非转推/非引用)
+
+>>>
+2 Year Return: 22,561.99% 
+
+Pretty decent, right anon? https://t.co/snVfKQ5nqm
+<<<
+
+字符数: 78
+
+### [ 9] REPLY     |  likes= 1525 🔥  |  2062729921756278804
+发布时间: 2026-06-05T02:55:11+00:00
+URL: https://x.com/aleabitoreddit/status/2062729921756278804
+类型: 回复 (isReply=True)
+
+>>>
+@Tang8vrb 抱歉，我会去研究更多大家都能买到的股票！我只是想分享一下我最喜欢的一只。
+<<<
+
+字符数: 46
+
+### [10] REPLY     |  likes= 1421 🔥  |  2060539775954866386
+发布时间: 2026-05-30T01:52:20+00:00
+URL: https://x.com/aleabitoreddit/status/2060539775954866386
+类型: 回复 (isReply=True)
+
+>>>
+@Batemanzm75 I’m gonna go ahead and make a random prediction in a year:
+
+$AAOI - $70B MC
+$SIVE - $30B MC
+Foci - $15B MC
+Shunsin - $10B MC
+<<<
+
+字符数: 137
+
+### [11] REPLY     |  likes= 1336 🔥  |  2058828045927231640
+发布时间: 2026-05-25T08:30:31+00:00
+URL: https://x.com/aleabitoreddit/status/2058828045927231640
+类型: 回复 (isReply=True)
+
+>>>
+@MacnBTC I don’t like talking about net worth, but let’s just say I’ll be helping a lot more dog shelters later.
+<<<
+
+字符数: 112
+
+### [12] REPLY     |  likes= 1218 🔥  |  2061769121134788656
+发布时间: 2026-06-02T11:17:18+00:00
+URL: https://x.com/aleabitoreddit/status/2061769121134788656
+类型: 回复 (isReply=True)
+
+>>>
+@softmaxedx Thanks! Really nice of you to say. 
+
+Yeah I’ve gotten a lot of mean comments even back at 8 SEK but best way to make them look silly is just having success with your thesis.
+<<<
+
+字符数: 185
+
+### [13] REPLY     |  likes=  891 🔥  |  2062451355684663399
+发布时间: 2026-06-04T08:28:16+00:00
+URL: https://x.com/aleabitoreddit/status/2062451355684663399
+类型: 回复 (isReply=True)
+
+>>>
+@XtineFang It’s probably going to end up a lot less if you’re curious!
+
+There’s likely flat TX fees from card payments. Random fees for global currencies, App Store fees. X fees. Who knows, since no transparency. 
+
+More about the number count for me for validation though. https://t.co/cKXxNGXzJ8
+<<<
+
+字符数: 296
+
+### [14] REPLY     |  likes=  711 🔥  |  2021043159292314111
+发布时间: 2026-02-10T02:06:52+00:00
+URL: https://x.com/aleabitoreddit/status/2021043159292314111
+类型: 回复 (isReply=True)
+
+>>>
+@michaeljburry Now I’m convinced this guy just got lucky shorting the top after seeing his posted chart for $PLTR.
+
+Zero mentions of fundamentals, just cited an  shampoo TA for the reason of $PLTR crashing. 
+
+I don’t own Palantir but this is just astrology.
+<<<
+
+字符数: 257
+
+### [15] QUOTE     |  likes=10903 🔥  |  2007387427820978510
+发布时间: 2026-01-03T09:43:52+00:00
+URL: https://x.com/aleabitoreddit/status/2007387427820978510
+类型: 引用 (isQuote=True)
+
+>>>
+US has now invaded Venezuela.
+
+Everyone is probably wondering the same thing:
+
+How do you profit off the situation?
+
+1. Heavy Sour, Ammonia, and Nitrogen Fertilizers disruption ( $CF , $CVE).
+
+These are Venezuela's biggest exports.
+
+Most people will buy generic oil ETFs or light sweet crude producers. This is inefficient because light oil is not a perfect substitute for heavy oil in complex refineries. If Caribbean ammonia is stranded, the global price of nitrogen spikes. The biggest beneficiary is a US-domestic producer that uses cheap US  natural gas and doesn't rely on Caribbean shipping lanes
+
+2. Dirty Crude Processing ( $VLO ) - If competitors are starved of Venezuelan oil, Valero’s ability to source heavy crude from diverse locations (and its leverage  to diesel margins) makes it resilient.
+
+3. Naval Warfare ( $LDOS) - While retail investors buy Lockheed Martin (F-35s), the operations in the Caribbean focuses on maritime surveillance, warfare,  and autonomous patrolling to enforce blockades without risking US personnel. Companies like Leidos provide these tpyes of naval tech.
+
+4. Defense and aerospace from $AVAV to $HII and $LHX also benefit.
+
+- $AVAV recently unveiled the Red Dragon and updated Switchblade 600 variants specifically for maritime operations
+
+- $LHX provides the sensors and communications gear that link the drones ($AVAV) to the ships ($HII) and the jets ($BA).
+
+- A blockade requires significant maritime surveillance and naval assets, which benefits shipbuilders ( $HII )
+
+5. Direct Suppliers of recent military operation:
+
+- F/A-18E/F Super Hornet from $BA (Precision strikes on Caracas)
+
+- B-1B Lancer from $BA
+
+- UAS (Drone), MQ-9 Reaper - $RTX (MTS-B Sensors), $HON Honeywell for the Engine
+
+- Tomahawk (TLAM), $RTX
+
+So far:
+
+$AVAV - 5.91%+
+$BA - 4.91%
+$LHX - 3.72%
+$CF - 3.61%+
+$CVE - 3.61%+
+$HII  - +2.85%
+$RTX - 2.1%
+$VLO - 1.55%+
+$LDOS - 1.7%+
+$HON - .4%+
+<<<
+
+字符数: 1908
+
+### [16] QUOTE     |  likes= 7683 🔥  |  2042187668931616964
+发布时间: 2026-04-09T10:27:36+00:00
+URL: https://x.com/aleabitoreddit/status/2042187668931616964
+类型: 引用 (isQuote=True)
+
+>>>
+Here's a bunch of random 30 US-available random stocks I like today and why:  
+
+1. $INTC - America's hope for foundry, national security
+2. $MRVL - scales rev from future maia asics and add ons like cpo, they do everything lost count
+3. $TSM - backbone of semis/ai
+4. $COHR - They do everything vertically integrated + captures optical cycle
+5. $RKLB - the final frontier of space will be around 5 years from now and 20 years from now. 
+6. $DRAM - memory exposure for samsung/sk hynix
+7. $AVGO - hyperscalers dont like nvidia gpu tax
+8. $AMZN - nobody can compete against the overnight shipping of toilet paper. robotics will lower opex over time
+9. $ARM - AGI CPUs scale revenue quite a bit over the next decade
+10. $TSEM - you're going to need a foundry for light based stuff
+11. $IBIT - bitcoin, we all know by now
+12. $NBIS - i think it's the next AWS. Also they do self-driving cars with uber, own scaling DB companies, data labeling. It's almost like a mini Google. 
+13. $GOOGL - youtube is not going away, gemini is great. they're vertically integrated with TPUs and fund buildout with operating income so i like it. 
+14. $AMKR - super facilities coming online in late 2027-2028. benefits from made in america
+15. $HOOD - i dont like short term, but long term i'm a fan of Robinhood since they captured retail + have more products like banking, etc that they're scaling up. product innovation is wild.
+16. $CRCL - I happen to really like stablecoins and see them as the future for both payments/holding (depends on clarity act)
+17. $META - people aren't going to stop using instagram or whatsapp, or others anytime soon. 
+18. $LITE - $GOOGL TPU exposure decently high part of BOM. As long as Google's AI program keeps running I think $LITE will do well.
+19. $LPTH - Germanium and China export controls will always be an issue so US made engineered alternatives  will always be important
+20. $FN - Someone needs to assemble optical stuff
+21. $JBL - same as above, but added with ip from Intel's SiPh acqusition so might end up like innolight?
+22. $MP - American rare earths program is extremely important, similar to $INTC national security risks
+23. $HIMS - Okay here me out they just acquired a ton of companies, and at $19 they have global DTC channel. short sellers really hate this company, but I think it's actually promising as a contrarian long
+24. $SMTC - LRO/LPO transition
+25. $POWL - US alternative to hammond for switchgear DC type bottleneck
+26. $VPG - Humanoids will be a thing down the road maybe 2027-2028, this makes the sensors. 
+27. $MOG.A - Feels like i see them everywhere in robotics, to spacex supply chains
+28. $MSFT - At $375, one day we'll look back and see this as a buying opportunity.
+29. $CVX - oil might crash after war but these oil companies are going to be extremely important, especially when Venezulea is a goldmine.
+30. $XLU - i think rate cuts might be back online, we need power/grid for AI so these names will always be improtant from $CEG to $NEE
+
+Just throwing out other thoughts aside from $AAOI and $AEHR.
+<<<
+
+字符数: 3056
+
+### [17] QUOTE     |  likes= 7399 🔥  |  2017669714353537024
+发布时间: 2026-01-31T18:42:01+00:00
+URL: https://x.com/aleabitoreddit/status/2017669714353537024
+类型: 引用 (isQuote=True)
+
+>>>
+5 Major Banks were criminally charged for manipulating Silver markets.
+
+These fines totaled $1.2B+ for "manipulation of silver markets through spoofing and price rigging".
+
+Silver crashed 28% on Friday, triggering trillions of losses
+
+Here were the charges: 
+
+1. JPMorgan ($920M , 2020): JPM admitted wrongdoing for market manipulation of Silver to the US DoJ.
+
+2. Scotiabank ($127.5M, 2020):  US DoJ - "Fraudulent and manipulative trading practices in the markets for silver"
+
+3. HSBC ($76.6M, 2018–2023): CFTC enforcement for 2011–2020 spoofing
+
+4. Deutsche Bank ($75.5M, 2016–2021): Silver fix settlement and CFTC actions for 1999–2014 rigging
+
+5. Morgan Stanley ($1.5M, 2019): CFTC civil penalty for 2013–2014 spoofing
+
+Credit: Navnoor Bawa. 
+
+Between 2008–2016 five of these major banks systematically manipulated precious metals markets through spoofing, price rigging, and benchmark manipulation.
+
+Regulators caught them. Fines and convictions spanned 2016–2025.
+
+This was concrete evidence of market manipulation of silver historically that was swept under the rug. 
+
+And, it's possible markets are witnessing it again with the current silver crash of 2026.
+<<<
+
+字符数: 1165
+
+### [18] QUOTE     |  likes= 7213 🔥  |  2062390116820365350
+发布时间: 2026-06-04T04:24:55+00:00
+URL: https://x.com/aleabitoreddit/status/2062390116820365350
+类型: 引用 (isQuote=True)
+
+>>>
+I now am the #1 most subscribed to account on the entire X platform!
+
+After overtaking Elon Musk today.
+
+Thank you everyone for helping me achieve my goal. https://t.co/XLjy4ZsZyD
+<<<
+
+字符数: 179
+
+### [19] QUOTE     |  likes= 5004 🔥  |  2058230354063102028
+发布时间: 2026-05-23T16:55:31+00:00
+URL: https://x.com/aleabitoreddit/status/2058230354063102028
+类型: 引用 (isQuote=True)
+
+>>>
+I don't post dollar amounts because they don't matter. 
+
+What matters is return %. Speaking of that... 
+
+YTD: 3840.39%. 
+
+I'm probably the only one in the world. Who called out multiple names that 10x'd in a short timeframe. 
+
+Do you remember these thesis anon?
+
+1. $AXTI
+2. $SIVE
+3. $AAOI
+4. $LITE
+5. $IQE
+6. $AEHR
+7. $CRCL
+8. $EWY
+9. Unimicron
+10. Nitto Boseki
+11. $OSS
+12. $GDRZF
+13. $RPI
+14. $SOI
+15. $ALRIB
+16. $SNDK
+17. $SIMO
+18. $VPG
+19. $TSEM
+20. $ARM
+21. $MRVL
+22. $INTC
+23. $LPK
+24. $NBIS
+25. $MU
+
+They're all up 100-1000%+, because... 
+
+1. I post a thesis. 
+2. People can see how the stock performs months later. 
+3. They turn out right (thesis validation) because they're up hundreds of percent + hold their returns. 
+
+I really dislike the traditional X influencer who shows large dollar amounts or fancy watches/cars/private jets.  
+
+Then use that to get more by selling expensive subscriptions rather than through market returns. 
+
+So trying to set a new trend off pure information discovery/synthesis from free thesis posts and the results that follow in terms of return percentages.
+
+TLDR: Market returns in terms of percentages matter the most to validate a thesis.
+
+Not the dollar amount made.
+<<<
+
+字符数: 1211
+
+### [20] QUOTE     |  likes= 4901 🔥  |  2055401446397690311
+发布时间: 2026-05-15T21:34:26+00:00
+URL: https://x.com/aleabitoreddit/status/2055401446397690311
+类型: 引用 (isQuote=True)
+
+>>>
+Leopold Aschenbrenner is a legend, but I'm not quite sure he can beat 3152.77% YTD in the Serenity Awareness fund. 
+
+That being said, I've hit 23 different longs this year with 100-1000%+ YTD.
+
+1. $AXTI 
+2. $AAOI 
+3. $SIVE 
+4. $LITE 
+5. $IQE
+6. $AEHR
+7. $CRCL
+8. $EWY
+9. Unimicron 
+10. Nitto Boseki 
+11. $OSS
+12. $GDRZF
+13. $RPI
+14. $SOI
+15. $ALRIB
+16. $SNDK
+17. $SIMO
+18. $VPG 
+19. $TSEM 
+20. $ARM 
+21. $MRVL 
+22. $INTC 
+23. $LPK 
+
+Do you remember all of these anon?
+<<<
+
+字符数: 467
+
+================================================================================
+## post_id 列表(供 SQL 查询)
+================================================================================
+  2062723902728802341  (original, likes=7164)
+  2059606040417812549  (original, likes=5997)
+  2064265545529307560  (original, likes=4740)
+  2059292099728859430  (original, likes=4501)
+  2050302664031039691  (original, likes=4324)
+  2004569946492453003  (original, likes=4014)
+  2063235166336856251  (original, likes=3967)
+  2058078143559372866  (original, likes=3960)
+  2062729921756278804  (reply, likes=1525)
+  2060539775954866386  (reply, likes=1421)
+  2058828045927231640  (reply, likes=1336)
+  2061769121134788656  (reply, likes=1218)
+  2062451355684663399  (reply, likes=891)
+  2021043159292314111  (reply, likes=711)
+  2007387427820978510  (quote, likes=10903)
+  2042187668931616964  (quote, likes=7683)
+  2017669714353537024  (quote, likes=7399)
+  2062390116820365350  (quote, likes=7213)
+  2058230354063102028  (quote, likes=5004)
+  2055401446397690311  (quote, likes=4901)
