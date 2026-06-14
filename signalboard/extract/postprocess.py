@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sqlite3
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -59,9 +60,29 @@ def resolve_alias(
       - resolved: 命中(可能 confidence < 1,但有映射)
       - unresolved: 未命中
       - ambiguous: 命中多条 ticker(选 confidence 最高的,标 ambiguous)
+
+    解析顺序:
+      0) ticker 格式自动命中(美股/全球主流票,不需要 alias 映射)
+      1) alias 表直接命中(大小写敏感)
+      2) 大小写不敏感命中
+      3) 部分包含匹配
     """
     if not raw_mention:
         return None, None, "unresolved"
+
+    # 0) 美股/全球主流票格式(1-6 个大写字母/数字,首字母大写,可含 .)
+    # 例: IREN/CIFR/MU/AMD/NVDA/TSLA/PLTR/HPS.A
+    # 这是修复后的主逻辑 — 绝大多数美股主流票无需走 alias 表
+    import re as _re
+    if re.match(r"^[A-Z][A-Z0-9.]{0,5}$", raw_mention):
+        # 已是合法 ticker 格式,直接返回
+        return raw_mention, "美股", "resolved"
+
+    # 0.5) LLM ticker 兜底(caller 在传 raw_mention 时也传 LLM 抽的 ticker)
+    # 通过 thread-local 或 resolve_alias 上下文传 — 这里改 caller 签名
+    # 实际简化:resolve_alias 不传 LLM ticker,让 llm_result_to_post_result 在 unresolved 时
+    # 单独检查 LLM 抽的 ticker 字段值
+    # 这里先不动
 
     # 1) 直接命中(大小写敏感)
     if raw_mention in alias_index:
@@ -116,9 +137,24 @@ def llm_result_to_post_result(
 
     for p in resp.get("predictions", []):
         raw = p.get("raw_asset_mention") or p.get("ticker") or ""
+        llm_ticker = p.get("ticker") or ""
+        llm_market = p.get("market") or ""
         ticker, market, status = resolve_alias(raw, alias_index, db_path=db_path, post_id=res.post_id)
+        # 兜底:resolve_alias 未命中时,检查 LLM 抽的 ticker 字段是否合法 ticker 格式
+        # 例:raw='Visual photonics' (未命中),LLM ticker='2455' (合法) → 用 2455
+        # 例:raw='$RPI',LLM ticker='$RPI' (非法) → 不兜底,保持 unresolved
+        if status == "unresolved" and llm_ticker and re.match(r"^[A-Z][A-Z0-9.]{0,5}$", llm_ticker):
+            ticker, market, status = llm_ticker, llm_market or "美股", "resolved"
+        # LLM 抽的纯数字 ticker (TW 2455 / 3363 等 4 位数字,无 .TW 后缀)
+        if status == "unresolved" and llm_ticker and re.match(r"^[0-9]{4,6}$", llm_ticker):
+            ticker = llm_ticker + ".TW" if llm_market in ("TW", "台") or len(llm_ticker) == 4 else llm_ticker
+            market = llm_market or "TW"
+            status = "resolved"
+        # LLM 抽的 ticker 格式像 "688017.SH" 或 "000660.KS" — 走常规解析
+        if status == "unresolved" and llm_ticker and "." in llm_ticker and re.match(r"^[0-9]{4,6}\.[A-Z]+$", llm_ticker):
+            ticker, market, status = llm_ticker, llm_market or "TW", "resolved"
         if status == "unresolved":
-            # 入人工队列
+            # 入人工队列(只在真 unresolved 时入 — 之前 buggy 实现把 ticker 格式 raw 也入队)
             try:
                 with sqlite3.connect(db_path, timeout=10) as conn:
                     conn.execute(
@@ -131,9 +167,11 @@ def llm_result_to_post_result(
                     conn.commit()
             except sqlite3.OperationalError:
                 pass
+        # ticker 字段:resolved 时是 alias 命中的 ticker,unresolved 时保持 None(不填 raw 冒充 ticker)
+        # market 同理:resolved 用 alias 命中的 market,unresolved 用 LLM 给的(可能猜对)
         preds.append(LLMPrediction(
             post_id=res.post_id,
-            ticker=ticker or raw,
+            ticker=ticker,  # resolved 时非 None,unresolved 时 None(不冒充)
             market=market or p.get("market", ""),
             direction=p.get("direction", ""),
             claim_type=p.get("claim_type", "directional"),
