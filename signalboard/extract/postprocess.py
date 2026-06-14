@@ -335,19 +335,29 @@ def persist_post_result(
     prompt_version: str = "v1.0",
     skip_repeat_check: bool = False,
 ) -> None:
-    """落 predictions + post_flags。is_repeat_call 在 skip_repeat_check=False 时算。"""
+    """落 predictions + post_flags。is_repeat_call 在 skip_repeat_check=False 时算。
+
+    单条失败不中断其他(例: 同一 post 有 ticker=None 的 unresolved + 合法 ticker 时,
+    unresolved 失败不能阻断合法 ticker 入库)。"""
     if post.has_prediction and post.predictions:
         for pred in post.predictions:
-            is_rep, rep_of = (False, None)
-            if not skip_repeat_check:
-                is_rep, rep_of = compute_repeat_call(pred, db_path, source_id=source_id)
-            res_status = "resolved" if pred.ticker else "unresolved"
-            persist_one(
-                post.post_id, pred, db_path,
-                source_id=source_id,
-                prompt_version=prompt_version,
-                is_repeat_call=is_rep, repeat_of=rep_of,
-                resolution_status=res_status,
-            )
+            # 跳过 ticker=None 的 unresolved(unresolved 由 human_review_queue 承担,不入 predictions)
+            if pred.ticker is None or pred.ticker == "":
+                continue
+            try:
+                is_rep, rep_of = (False, None)
+                if not skip_repeat_check:
+                    is_rep, rep_of = compute_repeat_call(pred, db_path, source_id=source_id)
+                persist_one(
+                    post.post_id, pred, db_path,
+                    source_id=source_id,
+                    prompt_version=prompt_version,
+                    is_repeat_call=is_rep, repeat_of=rep_of,
+                    resolution_status="resolved",
+                )
+            except Exception as e:
+                # 单条失败不中断 — 让其他合法 ticker 还能入
+                import sys
+                print(f"[persist_post_result] skip {post.post_id}/{pred.ticker}: {e}", file=sys.stderr)
     # flags
     persist_post_flags(post.post_id, post.flags, db_path)
