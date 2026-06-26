@@ -54,6 +54,21 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(message
 # 完整 4 人列表等用户 GitHub 配好 + 增量验证后再加
 KOL_TEST = [
     {
+        "handle": "jukan05",
+        "source_id": "tw_jukan05",
+        "platform": Platform.TWITTER.value,
+    },
+    {
+        "handle": "aleabitoreddit",
+        "source_id": "tw_aleabitoreddit",
+        "platform": Platform.TWITTER.value,
+    },
+    {
+        "handle": "zephyr_z9",
+        "source_id": "tw_zephyr_z9",
+        "platform": Platform.TWITTER.value,
+    },
+    {
         "handle": "austinsemis",
         "source_id": "tw_austinsemis",
         "platform": Platform.TWITTER.value,
@@ -307,9 +322,34 @@ def scrape_one_kol(kol: Dict[str, str], apify_token: str, dry_run: bool = False)
     log.info("[%s] 新增 %d 条, 已存在跳过 %d, 哨兵跳过 %d, 解析错 %d",
              handle, new_persisted, existing_skipped, skipped_sentinel, len(parse_errors))
 
-    # 更新 scrape_state (只有 new > 0 才更新 — 没新推文就别覆盖 last_tweet_published_at)
+    # 更新 scrape_state (不管有没有 new, 都要更新 last_fetched_at — cron 跑过的证据)
+    # 但 last_tweet_published_at 只有 new > 0 才覆盖 (避免后退)
     if new_persisted > 0 and latest_pub:
         upsert_incremental_state(handle, latest_id or "", latest_pub, new_persisted)
+    elif new_persisted == 0:
+        # 只更新 last_fetched_at, 不动 last_tweet_published_at
+        now_iso = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+        with get_conn(DB_PATH) as conn:
+            existing = conn.execute(
+                "SELECT total_scraped FROM scrape_state WHERE handle=?", (handle,)
+            ).fetchone()
+            if existing is None:
+                # scrape_state 还没建 — 用 INSERT
+                conn.execute(
+                    """INSERT INTO scrape_state
+                       (handle, last_run_id, months_done, total_scraped, last_updated,
+                        last_tweet_id, last_tweet_published_at, last_fetched_at)
+                       VALUES (?, NULL, '[]', 0, ?, NULL, NULL, ?)""",
+                    (handle, now_iso, now_iso),
+                )
+            else:
+                conn.execute(
+                    """UPDATE scrape_state
+                       SET last_updated=?, last_fetched_at=?
+                       WHERE handle=?""",
+                    (now_iso, now_iso, handle),
+                )
+            conn.commit()
 
     return {
         "handle": handle,
