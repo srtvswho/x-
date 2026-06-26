@@ -1,0 +1,45 @@
+# 大V情报 — DB 异地备份指南
+
+## 为什么
+刚出 git reset --hard 删库事故 (2026-06-26), 13662 条差点丢光. 
+虽然 git blob 救回来了, 但这是侥幸 — DB 跟 git 联动太脆弱.
+现在做每日自动备份 + 异地副本 (你手动 cp 到本地).
+
+## 每日自动备份
+- 跑时: 北京时间每天 06:00 (cron 跑完后) — see cron task intel-daily-db-backup
+- 命名: /workspace/data/backups/daily/signalboard_YYYYMMDD.db.gz
+- 保留: 14 天 (超出删最旧)
+- manifest: /workspace/data/backups/daily/MANIFEST.txt
+
+## 你手动异地备份 (强烈建议)
+每周/每月手动拉一份到本地:
+
+### macOS / Linux
+```bash
+# 用 scp (假设你 SSH 到 sandbox)
+scp user@sandbox:/workspace/data/backups/daily/signalboard_$(date +%Y%m%d).db.gz ~/backups/
+# 或用 rsync 同步
+rsync -avz user@sandbox:/workspace/data/backups/daily/ ~/backups/signalboard/
+```
+
+### 或者下载单个
+```bash
+# 从 sandbox URL (如果开放)
+wget https://your-sandbox-url/workspace/data/backups/daily/signalboard_$(date +%Y%m%d).db.gz
+```
+
+## 恢复
+```bash
+cd /workspace
+# 备份当前 (如果还在)
+cp data/signalboard_full.db data/signalboard_full.db.broken
+# 恢复
+gunzip -c data/backups/daily/signalboard_YYYYMMDD.db.gz > data/signalboard_full.db
+sqlite3 data/signalboard_full.db "PRAGMA integrity_check"  # 应输出 ok
+```
+
+## 铁律 (跨项目永久)
+- ❌ `git reset --hard` 在含 DB 的项目上永远禁止
+- ✅ 用 `git reset --soft` / `git revert` / 精确 `git show <commit>:<path>`
+- ✅ 任何可能影响 DB 的操作前, 先单独备份 DB 到 /tmp 或独立路径
+- ✅ DB 跟 git 解耦 (DB 文件永远在 .gitignore, 不进 commit)

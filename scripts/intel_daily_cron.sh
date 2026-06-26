@@ -1,9 +1,10 @@
 #!/bin/bash
 # 大V情报 — 每日 cron 主脚本
-# 跑 4 大V 增量 (并发) → 自检 (4 项)
+# 跑 4 大V 增量 (并发) → 自检 (4 项) → DB gzip + GitHub push
 #
-# 调度: mavis cron 0 22 * * * (UTC) = 北京 06:00 (前一天的 22:00)
-# 时区: server 是 UTC (Etc/UTC), 不要假设 Asia/Shanghai
+# 调度: mavis cron 0 6 * * * Asia/Shanghai = 北京 06:00
+# 时区: server 是 UTC, mavis cron 'Asia/Shanghai' 解释
+# 增补: 阶段 3 GitHub push (gzip 压缩版 DB, 不推原始 111MB)
 
 set -e
 
@@ -45,16 +46,33 @@ echo "=== 阶段 2: 4 项自检 ==="
 python /workspace/scripts/intel_daily_health.py
 HEALTH_EXIT=$?
 
-# 3. 退出码
+# 自检不通过 → 不 push (避免推损坏 DB)
+if [ $HEALTH_EXIT -ne 0 ]; then
+  echo ""
+  echo "=========================================="
+  echo "❌ cron 自检不通过 (exit $HEALTH_EXIT), 跳阶段 3 GitHub push"
+  echo "  看 /workspace/logs/intel_health_${DATE}.log"
+  echo "=========================================="
+  exit $HEALTH_EXIT
+fi
+
+echo ""
+echo "=== 阶段 3: DB gzip + GitHub push (异地备份, 用户可从 GitHub 下载 .gz) ==="
+
+# 3. DB 备份 + push (gzip 压缩版, 永不推原始 111MB DB)
+bash /workspace/scripts/intel_daily_github_push.sh
+PUSH_EXIT=$?
+
+# 4. 退出码
 echo ""
 echo "=========================================="
 if [ $HEALTH_EXIT -ne 0 ]; then
   echo "❌ cron 自检不通过 (exit $HEALTH_EXIT)"
-  echo "  看 /workspace/logs/intel_health_${DATE}.log"
-  # 通知用户 (email/slack 后续加)
+elif [ $PUSH_EXIT -ne 0 ]; then
+  echo "⚠ 自检通过但 push 失败 (exit $PUSH_EXIT), 数据安全 (NFS 本地备份还在)"
 else
-  echo "✅ cron 完成 + 自检通过"
+  echo "✅ cron 完成 + 自检通过 + push 成功"
 fi
 echo "=========================================="
 
-exit $HEALTH_EXIT
+exit $((HEALTH_EXIT + PUSH_EXIT))
