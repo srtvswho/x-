@@ -34,10 +34,12 @@ build/
 .data_full/
 .data_smoke/
 
-# 数据库 — 临时 push (B 方案备份), 后续看是否用 git-lfs
-# data/*.db
-# data/*.db-wal
-# data/*.db-shm
+# 数据库 — 原始 DB 绝不入仓 (上次 reset 删库事故根源)
+# 唯一例外: signalboard.db.gz (gzip 压缩版, ~16MB, GitHub 100MB 限制内, 每天自动 push)
+data/*.db
+data/*.db-wal
+data/*.db-shm
+!data/signalboard.db.gz
 
 # Logs/ 太大 (418M), 暂不 push
 logs/
