@@ -624,8 +624,15 @@ def _item_to_raw_post(
     raw_text = (extracted.get("raw_text") or "").strip()
     raw_url = (extracted.get("raw_url") or "").strip()
     published_at = to_utc_iso(extracted.get("published_at"))
+    # ⚠️ 保险:缺 createdAt 不静默 fallback 到 captured_at(那是抓取时间,不是推文时间)
+    # 验证层(P3-2)用 published_at 算 entry_date,塞进 captured_at 会导致未来增量抓取时
+    # 整条预测错位。所以缺时间 → WARNING 日志 + 留空,让验证层跳过,绝不用处理时间冒充。
     if not published_at:
-        published_at = captured_at
+        log.warning(
+            "scraper missing publish time: post_id=%s source=%s — published_at 留空,不入 future_time 路径",
+            post_id or "<no_post_id>", source_id,
+        )
+        # published_at 保持空字符串
 
     if not post_id or not raw_text:
         raise ValueError(f"missing post_id ({post_id!r}) or raw_text (empty)")
@@ -634,7 +641,7 @@ def _item_to_raw_post(
         post_id=post_id,
         source_id=source_id,
         platform=Platform.TWITTER.value,
-        published_at=published_at,
+        published_at=published_at,  # 缺时为 ""(验证层会跳过,见 phase3 verification)
         captured_at=captured_at,
         raw_text=raw_text,
         raw_url=raw_url,

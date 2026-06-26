@@ -28,9 +28,8 @@ ANTHROPIC_VERSION = "2023-06-01"
 # ---------------------------------------------------------------------------
 
 DEEPSEEK_BASE_URL = "https://api.deepseek.com"   # OpenAI 兼容
-# 注意:deepseek-chat 已弃用,改用 v4 系列
-#   - deepseek-v4-flash:轻量,速度优先
-#   - deepseek-v4-pro:质量优先(默认)
+# 注意:deepseek-chat 已弃用 (2026-07-24),必须用 v4-pro
+# v4-flash 轻量但我们不用 — 统一质量优先
 DEEPSEEK_MODEL = "deepseek-v4-pro"
 
 # 思考模式控制(spec 第 5 节:抽取是规则判定,不需要推理链,关闭思考)

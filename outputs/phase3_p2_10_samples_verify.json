@@ -1,0 +1,790 @@
+[
+  {
+    "name": "SIVE_6m_2026-03-16",
+    "pred": {
+      "prediction_id": "68d38b2c-e334-4da1-975f-a0f4f1454188",
+      "post_id": "2033519828473159919",
+      "ticker": "SIVE",
+      "direction": "long",
+      "horizon": "6m",
+      "thesis_category": "",
+      "thesis_summary": "作者新选择之一",
+      "conviction": 2,
+      "published_at": "2026-03-16T12:24:42+00:00"
+    },
+    "result": {
+      "prediction_id": "68d38b2c-e334-4da1-975f-a0f4f1454188",
+      "ticker": "SIVE",
+      "asset_symbol_used": "SIVEF",
+      "published_at": "2026-03-16T12:24:42+00:00",
+      "entry_date_planned": "2026-03-17",
+      "entry_date_actual": "2026-03-17",
+      "entry_slip_days": 0,
+      "entry_price": 0.86,
+      "sector_benchmark": "SPY",
+      "direction": "long",
+      "horizons": {
+        "1w": {
+          "status": "resolved",
+          "exit_date": "2026-03-24",
+          "actual_exit_date": "2026-03-24",
+          "exit_slip_days": 0,
+          "exit_price": 1.365,
+          "raw_return": 0.587209,
+          "benchmark_return": -0.026253,
+          "excess_return": 0.613462,
+          "excess_vs_sector": 0.613462,
+          "hit": true,
+          "hit_absolute": true
+        },
+        "1m": {
+          "status": "resolved",
+          "exit_date": "2026-04-16",
+          "actual_exit_date": "2026-04-16",
+          "exit_slip_days": 0,
+          "exit_price": 2.89,
+          "raw_return": 2.360465,
+          "benchmark_return": 0.04602,
+          "excess_return": 2.314445,
+          "excess_vs_sector": 2.314445,
+          "hit": true,
+          "hit_absolute": true
+        },
+        "3m": {
+          "status": "pending",
+          "exit_date": "2026-06-16",
+          "exit_price": null,
+          "raw_return": null,
+          "benchmark_return": null,
+          "excess_return": null,
+          "excess_vs_sector": null,
+          "hit": null,
+          "hit_absolute": null
+        },
+        "6m": {
+          "status": "pending",
+          "exit_date": "2026-09-16",
+          "exit_price": null,
+          "raw_return": null,
+          "benchmark_return": null,
+          "excess_return": null,
+          "excess_vs_sector": null,
+          "hit": null,
+          "hit_absolute": null
+        }
+      }
+    }
+  },
+  {
+    "name": "SIVE_3m_2026-03-25",
+    "pred": {
+      "prediction_id": "a7fefda2-b352-43d6-997d-eb37669d45e3",
+      "post_id": "2036724975055610346",
+      "ticker": "SIVE",
+      "direction": "long",
+      "horizon": "3m",
+      "thesis_category": "",
+      "thesis_summary": "早期买入者未来几个月将获利",
+      "conviction": 3,
+      "published_at": "2026-03-25T08:40:49+00:00"
+    },
+    "result": {
+      "prediction_id": "a7fefda2-b352-43d6-997d-eb37669d45e3",
+      "ticker": "SIVE",
+      "asset_symbol_used": "SIVEF",
+      "published_at": "2026-03-25T08:40:49+00:00",
+      "entry_date_planned": "2026-03-26",
+      "entry_date_actual": "2026-03-26",
+      "entry_slip_days": 0,
+      "entry_price": 1.43,
+      "sector_benchmark": "SPY",
+      "direction": "long",
+      "horizons": {
+        "1w": {
+          "status": "resolved",
+          "exit_date": "2026-04-02",
+          "actual_exit_date": "2026-04-02",
+          "exit_slip_days": 0,
+          "exit_price": 1.122,
+          "raw_return": -0.215385,
+          "benchmark_return": 0.016649,
+          "excess_return": -0.232033,
+          "excess_vs_sector": -0.232033,
+          "hit": false,
+          "hit_absolute": false
+        },
+        "1m": {
+          "status": "resolved",
+          "exit_date": "2026-04-27",
+          "actual_exit_date": "2026-04-27",
+          "exit_slip_days": 0,
+          "exit_price": 3.495,
+          "raw_return": 1.444056,
+          "benchmark_return": 0.108636,
+          "excess_return": 1.33542,
+          "excess_vs_sector": 1.33542,
+          "hit": true,
+          "hit_absolute": true
+        },
+        "3m": {
+          "status": "pending",
+          "exit_date": "2026-06-26",
+          "exit_price": null,
+          "raw_return": null,
+          "benchmark_return": null,
+          "excess_return": null,
+          "excess_vs_sector": null,
+          "hit": null,
+          "hit_absolute": null
+        },
+        "6m": {
+          "status": "pending",
+          "exit_date": "2026-09-25",
+          "exit_price": null,
+          "raw_return": null,
+          "benchmark_return": null,
+          "excess_return": null,
+          "excess_vs_sector": null,
+          "hit": null,
+          "hit_absolute": null
+        }
+      }
+    }
+  },
+  {
+    "name": "NBIS_6m_2025-11-19",
+    "pred": {
+      "prediction_id": "511b469b-2f75-4df3-a919-c706d369819f",
+      "post_id": "1991116739577307184",
+      "ticker": "NBIS",
+      "direction": "long",
+      "horizon": "6m",
+      "thesis_category": "",
+      "thesis_summary": "Extremely undervalued, $7-9B ARR, reset to pre-MSFT deal prices, MSCI inclusion next week",
+      "conviction": 2,
+      "published_at": "2025-11-19T12:09:58+00:00"
+    },
+    "result": {
+      "prediction_id": "511b469b-2f75-4df3-a919-c706d369819f",
+      "ticker": "NBIS",
+      "asset_symbol_used": "NBIS",
+      "published_at": "2025-11-19T12:09:58+00:00",
+      "entry_date_planned": "2025-11-20",
+      "entry_date_actual": "2025-11-20",
+      "entry_slip_days": 0,
+      "entry_price": 99.43,
+      "sector_benchmark": "SPY",
+      "direction": "long",
+      "horizons": {
+        "1w": {
+          "status": "resolved",
+          "exit_date": "2025-12-01",
+          "actual_exit_date": "2025-12-01",
+          "exit_slip_days": 0,
+          "exit_price": 100.15,
+          "raw_return": 0.007241,
+          "benchmark_return": 0.042511,
+          "excess_return": -0.03527,
+          "excess_vs_sector": -0.03527,
+          "hit": false,
+          "hit_absolute": true
+        },
+        "1m": {
+          "status": "resolved",
+          "exit_date": "2025-12-23",
+          "actual_exit_date": "2025-12-23",
+          "exit_slip_days": 0,
+          "exit_price": 90.03,
+          "raw_return": -0.094539,
+          "benchmark_return": 0.054296,
+          "excess_return": -0.148835,
+          "excess_vs_sector": -0.148835,
+          "hit": false,
+          "hit_absolute": false
+        },
+        "3m": {
+          "status": "resolved",
+          "exit_date": "2026-02-25",
+          "actual_exit_date": "2026-02-25",
+          "exit_slip_days": 0,
+          "exit_price": 106.12,
+          "raw_return": 0.067284,
+          "benchmark_return": 0.06225,
+          "excess_return": 0.005034,
+          "excess_vs_sector": 0.005034,
+          "hit": true,
+          "hit_absolute": true
+        },
+        "6m": {
+          "status": "resolved",
+          "exit_date": "2026-05-27",
+          "actual_exit_date": "2026-05-27",
+          "exit_slip_days": 0,
+          "exit_price": 208.37,
+          "raw_return": 1.095645,
+          "benchmark_return": 0.150077,
+          "excess_return": 0.945568,
+          "excess_vs_sector": 0.945568,
+          "hit": true,
+          "hit_absolute": true
+        }
+      }
+    }
+  },
+  {
+    "name": "NBIS_long_2025-10-19",
+    "pred": {
+      "prediction_id": "f6e23b38-9a99-4b04-8bf4-7bff2fc265cc",
+      "post_id": "1979976235825635419",
+      "ticker": "NBIS",
+      "direction": "long",
+      "horizon": "long_term",
+      "thesis_category": "",
+      "thesis_summary": "Fire Sale, $400 PT on bull case 2026 due to 4-6B+ forward revenue off ~60-75% gross margins, and another likely hyperscaler contract",
+      "conviction": 5,
+      "published_at": "2025-10-19T18:21:35+00:00"
+    },
+    "result": {
+      "prediction_id": "f6e23b38-9a99-4b04-8bf4-7bff2fc265cc",
+      "ticker": "NBIS",
+      "asset_symbol_used": "NBIS",
+      "published_at": "2025-10-19T18:21:35+00:00",
+      "entry_date_planned": "2025-10-20",
+      "entry_date_actual": "2025-10-20",
+      "entry_slip_days": 0,
+      "entry_price": 116.79,
+      "sector_benchmark": "SPY",
+      "direction": "long",
+      "horizons": {
+        "1w": {
+          "status": "resolved",
+          "exit_date": "2025-10-27",
+          "actual_exit_date": "2025-10-27",
+          "exit_slip_days": 0,
+          "exit_price": 125.43,
+          "raw_return": 0.073979,
+          "benchmark_return": 0.020766,
+          "excess_return": 0.053213,
+          "excess_vs_sector": 0.053213,
+          "hit": true,
+          "hit_absolute": true
+        },
+        "1m": {
+          "status": "resolved",
+          "exit_date": "2025-11-18",
+          "actual_exit_date": "2025-11-18",
+          "exit_slip_days": 0,
+          "exit_price": 90.54,
+          "raw_return": -0.224762,
+          "benchmark_return": -0.016714,
+          "excess_return": -0.208049,
+          "excess_vs_sector": -0.208049,
+          "hit": false,
+          "hit_absolute": false
+        },
+        "3m": {
+          "status": "resolved",
+          "exit_date": "2026-01-22",
+          "actual_exit_date": "2026-01-22",
+          "exit_slip_days": 0,
+          "exit_price": 96.85,
+          "raw_return": -0.170734,
+          "benchmark_return": 0.026337,
+          "excess_return": -0.197071,
+          "excess_vs_sector": -0.197071,
+          "hit": false,
+          "hit_absolute": false
+        },
+        "6m": {
+          "status": "resolved",
+          "exit_date": "2026-04-23",
+          "actual_exit_date": "2026-04-23",
+          "exit_slip_days": 0,
+          "exit_price": 157.08,
+          "raw_return": 0.344978,
+          "benchmark_return": 0.05534,
+          "excess_return": 0.289638,
+          "excess_vs_sector": 0.289638,
+          "hit": true,
+          "hit_absolute": true
+        }
+      }
+    }
+  },
+  {
+    "name": "AAOI_6m_2026-01-02",
+    "pred": {
+      "prediction_id": "920825bd-ac65-477a-8d58-c3166d010ac9",
+      "post_id": "2007071108831338685",
+      "ticker": "AAOI",
+      "direction": "long",
+      "horizon": "6m",
+      "thesis_category": "",
+      "thesis_summary": "AMZN、MSFT ASIC扩展的互连标的",
+      "conviction": 2,
+      "published_at": "2026-01-02T12:46:56+00:00"
+    },
+    "result": {
+      "prediction_id": "920825bd-ac65-477a-8d58-c3166d010ac9",
+      "ticker": "AAOI",
+      "asset_symbol_used": "AAOI",
+      "published_at": "2026-01-02T12:46:56+00:00",
+      "entry_date_planned": "2026-01-05",
+      "entry_date_actual": "2026-01-05",
+      "entry_slip_days": 0,
+      "entry_price": 41.055,
+      "sector_benchmark": "SPY",
+      "direction": "long",
+      "horizons": {
+        "1w": {
+          "status": "resolved",
+          "exit_date": "2026-01-12",
+          "actual_exit_date": "2026-01-12",
+          "exit_slip_days": 0,
+          "exit_price": 33.72,
+          "raw_return": -0.178663,
+          "benchmark_return": 0.010818,
+          "excess_return": -0.189481,
+          "excess_vs_sector": -0.189481,
+          "hit": false,
+          "hit_absolute": false
+        },
+        "1m": {
+          "status": "resolved",
+          "exit_date": "2026-02-04",
+          "actual_exit_date": "2026-02-04",
+          "exit_slip_days": 0,
+          "exit_price": 39.9,
+          "raw_return": -0.028133,
+          "benchmark_return": -0.002225,
+          "excess_return": -0.025908,
+          "excess_vs_sector": -0.025908,
+          "hit": false,
+          "hit_absolute": false
+        },
+        "3m": {
+          "status": "resolved",
+          "exit_date": "2026-04-07",
+          "actual_exit_date": "2026-04-07",
+          "exit_slip_days": 0,
+          "exit_price": 117.64,
+          "raw_return": 1.865424,
+          "benchmark_return": -0.041441,
+          "excess_return": 1.906866,
+          "excess_vs_sector": 1.906866,
+          "hit": true,
+          "hit_absolute": true
+        },
+        "6m": {
+          "status": "pending",
+          "exit_date": "2026-07-08",
+          "exit_price": null,
+          "raw_return": null,
+          "benchmark_return": null,
+          "excess_return": null,
+          "excess_vs_sector": null,
+          "hit": null,
+          "hit_absolute": null
+        }
+      }
+    }
+  },
+  {
+    "name": "CRWV_6m_2025-12-08",
+    "pred": {
+      "prediction_id": "3dce020c-4d6b-44fb-8b06-3a8eb9f43c55",
+      "post_id": "1998100000103161989",
+      "ticker": "CRWV",
+      "direction": "long",
+      "horizon": "6m",
+      "thesis_category": "",
+      "thesis_summary": "日元套利交易平仓短期负面，中期利好成长资产，尤其Neocloud板块",
+      "conviction": 3,
+      "published_at": "2025-12-08T18:38:57+00:00"
+    },
+    "result": {
+      "prediction_id": "3dce020c-4d6b-44fb-8b06-3a8eb9f43c55",
+      "ticker": "CRWV",
+      "asset_symbol_used": "CRWV",
+      "published_at": "2025-12-08T18:38:57+00:00",
+      "entry_date_planned": "2025-12-09",
+      "entry_date_actual": "2025-12-09",
+      "entry_slip_days": 0,
+      "entry_price": 84.52,
+      "sector_benchmark": "SPY",
+      "direction": "long",
+      "horizons": {
+        "1w": {
+          "status": "resolved",
+          "exit_date": "2025-12-16",
+          "actual_exit_date": "2025-12-16",
+          "exit_slip_days": 0,
+          "exit_price": 69.5,
+          "raw_return": -0.177709,
+          "benchmark_return": -0.006105,
+          "excess_return": -0.171604,
+          "excess_vs_sector": -0.171604,
+          "hit": false,
+          "hit_absolute": false
+        },
+        "1m": {
+          "status": "resolved",
+          "exit_date": "2026-01-09",
+          "actual_exit_date": "2026-01-09",
+          "exit_slip_days": 0,
+          "exit_price": 80.14,
+          "raw_return": -0.051822,
+          "benchmark_return": 0.016148,
+          "excess_return": -0.06797,
+          "excess_vs_sector": -0.06797,
+          "hit": false,
+          "hit_absolute": false
+        },
+        "3m": {
+          "status": "resolved",
+          "exit_date": "2026-03-12",
+          "actual_exit_date": "2026-03-12",
+          "exit_slip_days": 0,
+          "exit_price": 79.86,
+          "raw_return": -0.055135,
+          "benchmark_return": -0.024859,
+          "excess_return": -0.030275,
+          "excess_vs_sector": -0.030275,
+          "hit": false,
+          "hit_absolute": false
+        },
+        "6m": {
+          "status": "resolved",
+          "exit_date": "2026-06-11",
+          "actual_exit_date": "2026-06-11",
+          "exit_slip_days": 0,
+          "exit_price": 95.74,
+          "raw_return": 0.13275,
+          "benchmark_return": 0.080112,
+          "excess_return": 0.052637,
+          "excess_vs_sector": 0.052637,
+          "hit": true,
+          "hit_absolute": true
+        }
+      }
+    }
+  },
+  {
+    "name": "PLTR_short_event",
+    "pred": {
+      "prediction_id": "cd4e84ef-d6fd-4448-8215-5de46a29bbb6",
+      "post_id": "1949769736562319514",
+      "ticker": "PLTR",
+      "direction": "short",
+      "horizon": "event_driven",
+      "thesis_category": "",
+      "thesis_summary": "做空 PLTR，感谢 Jim（可能指被引推文作者）",
+      "conviction": 3,
+      "published_at": "2025-07-28T09:51:44+00:00"
+    },
+    "result": {
+      "prediction_id": "cd4e84ef-d6fd-4448-8215-5de46a29bbb6",
+      "ticker": "PLTR",
+      "asset_symbol_used": "PLTR",
+      "published_at": "2025-07-28T09:51:44+00:00",
+      "entry_date_planned": "2025-07-29",
+      "entry_date_actual": "2025-07-29",
+      "entry_slip_days": 0,
+      "entry_price": 158.715,
+      "sector_benchmark": "SPY",
+      "direction": "short",
+      "horizons": {
+        "1w": {
+          "status": "resolved",
+          "exit_date": "2025-08-05",
+          "actual_exit_date": "2025-08-05",
+          "exit_slip_days": 0,
+          "exit_price": 173.27,
+          "raw_return": -0.091705,
+          "benchmark_return": -0.011476,
+          "excess_return": -0.08023,
+          "excess_vs_sector": -0.08023,
+          "hit": false,
+          "hit_absolute": false
+        },
+        "1m": {
+          "status": "resolved",
+          "exit_date": "2025-08-27",
+          "actual_exit_date": "2025-08-27",
+          "exit_slip_days": 0,
+          "exit_price": 156.72,
+          "raw_return": 0.01257,
+          "benchmark_return": 0.017898,
+          "excess_return": -0.005328,
+          "excess_vs_sector": -0.005328,
+          "hit": false,
+          "hit_absolute": true
+        },
+        "3m": {
+          "status": "resolved",
+          "exit_date": "2025-10-27",
+          "actual_exit_date": "2025-10-27",
+          "exit_slip_days": 0,
+          "exit_price": 189.18,
+          "raw_return": -0.191948,
+          "benchmark_return": 0.078676,
+          "excess_return": -0.270624,
+          "excess_vs_sector": -0.270624,
+          "hit": false,
+          "hit_absolute": false
+        },
+        "6m": {
+          "status": "resolved",
+          "exit_date": "2026-01-29",
+          "actual_exit_date": "2026-01-29",
+          "exit_slip_days": 0,
+          "exit_price": 151.86,
+          "raw_return": 0.043191,
+          "benchmark_return": 0.092529,
+          "excess_return": -0.049338,
+          "excess_vs_sector": -0.049338,
+          "hit": false,
+          "hit_absolute": true
+        }
+      }
+    }
+  },
+  {
+    "name": "ALAB_short_event",
+    "pred": {
+      "prediction_id": "fa185bc7-9ebf-4035-9336-79782bf5afa3",
+      "post_id": "1965093748901380182",
+      "ticker": "ALAB",
+      "direction": "short",
+      "horizon": "event_driven",
+      "thesis_category": "",
+      "thesis_summary": "ALAB 涨 14% 后感觉超买，平多仓并开空仓",
+      "conviction": 3,
+      "published_at": "2025-09-08T16:43:54+00:00"
+    },
+    "result": {
+      "prediction_id": "fa185bc7-9ebf-4035-9336-79782bf5afa3",
+      "ticker": "ALAB",
+      "asset_symbol_used": "ALAB",
+      "published_at": "2025-09-08T16:43:54+00:00",
+      "entry_date_planned": "2025-09-09",
+      "entry_date_actual": "2025-09-09",
+      "entry_slip_days": 0,
+      "entry_price": 213.305,
+      "sector_benchmark": "SPY",
+      "direction": "short",
+      "horizons": {
+        "1w": {
+          "status": "resolved",
+          "exit_date": "2025-09-16",
+          "actual_exit_date": "2025-09-16",
+          "exit_slip_days": 0,
+          "exit_price": 238.79,
+          "raw_return": -0.119477,
+          "benchmark_return": 0.014869,
+          "excess_return": -0.134346,
+          "excess_vs_sector": -0.134346,
+          "hit": false,
+          "hit_absolute": false
+        },
+        "1m": {
+          "status": "resolved",
+          "exit_date": "2025-10-08",
+          "actual_exit_date": "2025-10-08",
+          "exit_slip_days": 0,
+          "exit_price": 219.36,
+          "raw_return": -0.028387,
+          "benchmark_return": 0.035028,
+          "excess_return": -0.063415,
+          "excess_vs_sector": -0.063415,
+          "hit": false,
+          "hit_absolute": false
+        },
+        "3m": {
+          "status": "resolved",
+          "exit_date": "2025-12-09",
+          "actual_exit_date": "2025-12-09",
+          "exit_slip_days": 0,
+          "exit_price": 167.08,
+          "raw_return": 0.216708,
+          "benchmark_return": 0.050298,
+          "excess_return": 0.166411,
+          "excess_vs_sector": 0.166411,
+          "hit": true,
+          "hit_absolute": true
+        },
+        "6m": {
+          "status": "resolved",
+          "exit_date": "2026-03-12",
+          "actual_exit_date": "2026-03-12",
+          "exit_slip_days": 0,
+          "exit_price": 119.9,
+          "raw_return": 0.437894,
+          "benchmark_return": 0.024188,
+          "excess_return": 0.413706,
+          "excess_vs_sector": 0.413706,
+          "hit": true,
+          "hit_absolute": true
+        }
+      }
+    }
+  },
+  {
+    "name": "AXTI_1m_2026-01-07",
+    "pred": {
+      "prediction_id": "c104acff-94a4-4fcb-a49a-d9a03e0a55ff",
+      "post_id": "2008808147755168039",
+      "ticker": "AXTI",
+      "direction": "long",
+      "horizon": "1m",
+      "thesis_category": "",
+      "thesis_summary": "輸出規制で独占状態、時価総額小さくメディア報道なし、1〜2ヶ月後にボトルネックで本格変動",
+      "conviction": 3,
+      "published_at": "2026-01-07T07:49:18+00:00"
+    },
+    "result": {
+      "prediction_id": "c104acff-94a4-4fcb-a49a-d9a03e0a55ff",
+      "ticker": "AXTI",
+      "asset_symbol_used": "AXTI",
+      "published_at": "2026-01-07T07:49:18+00:00",
+      "entry_date_planned": "2026-01-08",
+      "entry_date_actual": "2026-01-08",
+      "entry_slip_days": 0,
+      "entry_price": 24.37,
+      "sector_benchmark": "SPY",
+      "direction": "long",
+      "horizons": {
+        "1w": {
+          "status": "resolved",
+          "exit_date": "2026-01-15",
+          "actual_exit_date": "2026-01-15",
+          "exit_slip_days": 0,
+          "exit_price": 25.72,
+          "raw_return": 0.055396,
+          "benchmark_return": 0.003959,
+          "excess_return": 0.051437,
+          "excess_vs_sector": 0.051437,
+          "hit": true,
+          "hit_absolute": true
+        },
+        "1m": {
+          "status": "resolved",
+          "exit_date": "2026-02-09",
+          "actual_exit_date": "2026-02-09",
+          "exit_slip_days": 0,
+          "exit_price": 27.77,
+          "raw_return": 0.139516,
+          "benchmark_return": 0.006439,
+          "excess_return": 0.133076,
+          "excess_vs_sector": 0.133076,
+          "hit": true,
+          "hit_absolute": true
+        },
+        "3m": {
+          "status": "resolved",
+          "exit_date": "2026-04-10",
+          "actual_exit_date": "2026-04-10",
+          "exit_slip_days": 0,
+          "exit_price": 64.18,
+          "raw_return": 1.633566,
+          "benchmark_return": -0.014576,
+          "excess_return": 1.648141,
+          "excess_vs_sector": 1.648141,
+          "hit": true,
+          "hit_absolute": true
+        },
+        "6m": {
+          "status": "pending",
+          "exit_date": "2026-07-13",
+          "exit_price": null,
+          "raw_return": null,
+          "benchmark_return": null,
+          "excess_return": null,
+          "excess_vs_sector": null,
+          "hit": null,
+          "hit_absolute": null
+        }
+      }
+    }
+  },
+  {
+    "name": "RKLB_1m_2025-11-23",
+    "pred": {
+      "prediction_id": "af07ab8a-15cf-4499-bbdd-af9fee583d98",
+      "post_id": "1992685458053312968",
+      "ticker": "RKLB",
+      "direction": "long",
+      "horizon": "1m",
+      "thesis_category": "",
+      "thesis_summary": "高确信组合之一，预计一个月后随12月降息反弹",
+      "conviction": 3,
+      "published_at": "2025-11-23T20:03:30+00:00"
+    },
+    "result": {
+      "prediction_id": "af07ab8a-15cf-4499-bbdd-af9fee583d98",
+      "ticker": "RKLB",
+      "asset_symbol_used": "RKLB",
+      "published_at": "2025-11-23T20:03:30+00:00",
+      "entry_date_planned": "2025-11-24",
+      "entry_date_actual": "2025-11-24",
+      "entry_slip_days": 0,
+      "entry_price": 40.76,
+      "sector_benchmark": "SPY",
+      "direction": "long",
+      "horizons": {
+        "1w": {
+          "status": "resolved",
+          "exit_date": "2025-12-03",
+          "actual_exit_date": "2025-12-03",
+          "exit_slip_days": 0,
+          "exit_price": 44.72,
+          "raw_return": 0.097154,
+          "benchmark_return": 0.02267,
+          "excess_return": 0.074484,
+          "excess_vs_sector": 0.074484,
+          "hit": true,
+          "hit_absolute": true
+        },
+        "1m": {
+          "status": "resolved",
+          "exit_date": "2025-12-26",
+          "actual_exit_date": "2025-12-26",
+          "exit_slip_days": 0,
+          "exit_price": 70.65,
+          "raw_return": 0.733317,
+          "benchmark_return": 0.03227,
+          "excess_return": 0.701047,
+          "excess_vs_sector": 0.701047,
+          "hit": true,
+          "hit_absolute": true
+        },
+        "3m": {
+          "status": "resolved",
+          "exit_date": "2026-02-27",
+          "actual_exit_date": "2026-02-27",
+          "exit_slip_days": 0,
+          "exit_price": 69.1,
+          "raw_return": 0.695289,
+          "benchmark_return": 0.02581,
+          "excess_return": 0.669479,
+          "excess_vs_sector": 0.669479,
+          "hit": true,
+          "hit_absolute": true
+        },
+        "6m": {
+          "status": "resolved",
+          "exit_date": "2026-05-29",
+          "actual_exit_date": "2026-05-29",
+          "exit_slip_days": 0,
+          "exit_price": 143.48,
+          "raw_return": 2.520118,
+          "benchmark_return": 0.131219,
+          "excess_return": 2.388899,
+          "excess_vs_sector": 2.388899,
+          "hit": true,
+          "hit_absolute": true
+        }
+      }
+    }
+  }
+]

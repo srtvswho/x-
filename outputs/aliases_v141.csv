@@ -1,0 +1,302 @@
+alias_raw,ticker,market,asset_class,locale,source,confidence,notes,created_at
+688017,688017,A股,equity,zh_cn,manual,1.0,绿的谐波 LeaderDrive,2026-06-12T10:01:25.221Z
+绿的谐波,688017,A股,equity,zh_cn,manual,1.0,,2026-06-12T10:01:25.227Z
+SIVE,SIVE,SE,equity,en,manual,1.0,Sivers Semiconductors 斯德哥尔摩,2026-06-12T10:01:25.227Z
+SMTOY,SMTOY,美股,equity,en,manual,1.0,Sumitomo Metal Mining ADR,2026-06-12T10:01:25.227Z
+Foci,3363.TW,TW,equity,en,manual,1.0,FOCiS 3363,2026-06-12T10:01:25.227Z
+3363,3363.TW,TW,equity,zh_tw,manual,0.9,,2026-06-12T10:01:25.227Z
+Shunsin,6451.TW,TW,equity,en,manual,1.0,Shunsin Technology 讯芯 6451,2026-06-12T10:01:25.227Z
+讯芯,6451.TW,TW,equity,zh_tw,manual,1.0,,2026-06-12T10:01:25.227Z
+6451,6451.TW,TW,equity,zh_tw,manual,0.9,,2026-06-12T10:01:25.227Z
+INTC,INTC,美股,equity,en,manual,1.0,Intel,2026-06-12T10:01:25.227Z
+MRVL,MRVL,美股,equity,en,manual,1.0,Marvell,2026-06-12T10:01:25.227Z
+TSM,TSM,美股,equity,en,manual,1.0,TSMC ADR,2026-06-12T10:01:25.227Z
+COHR,COHR,美股,equity,en,manual,1.0,Coherent,2026-06-12T10:01:25.227Z
+RKLB,RKLB,美股,equity,en,manual,1.0,Rocket Lab,2026-06-12T10:01:25.227Z
+DRAM,DRAM,美股,equity,en,manual,0.7,DRAM ETF? 待人工确认,2026-06-12T10:01:25.227Z
+AVGO,AVGO,美股,equity,en,manual,1.0,Broadcom,2026-06-12T10:01:25.227Z
+AMZN,AMZN,美股,equity,en,manual,1.0,Amazon,2026-06-12T10:01:25.227Z
+ARM,ARM,美股,equity,en,manual,1.0,Arm Holdings,2026-06-12T10:01:25.227Z
+TSEM,TSEM,美股,equity,en,manual,1.0,Tower Semiconductor,2026-06-12T10:01:25.227Z
+IBIT,IBIT,美股,equity,en,manual,1.0,iShares Bitcoin Trust,2026-06-12T10:01:25.227Z
+NBIS,NBIS,美股,equity,en,manual,0.9,Nebius Group 待人工确认,2026-06-12T10:01:25.227Z
+GOOGL,GOOGL,美股,equity,en,manual,1.0,Alphabet,2026-06-12T10:01:25.227Z
+AMKR,AMKR,美股,equity,en,manual,1.0,Amkor Technology,2026-06-12T10:01:25.227Z
+HOOD,HOOD,美股,equity,en,manual,1.0,Robinhood,2026-06-12T10:01:25.227Z
+CRCL,CRCL,美股,equity,en,manual,1.0,Circle,2026-06-12T10:01:25.227Z
+META,META,美股,equity,en,manual,1.0,Meta,2026-06-12T10:01:25.227Z
+LITE,LITE,美股,equity,en,manual,1.0,Lumentum,2026-06-12T10:01:25.227Z
+LPTH,LPTH,美股,equity,en,manual,0.9,LightPath Technologies,2026-06-12T10:01:25.227Z
+FN,FN,美股,equity,en,manual,0.7,Fabrinet? 待人工确认,2026-06-12T10:01:25.227Z
+JBL,JBL,美股,equity,en,manual,0.7,Jabil? 待人工确认,2026-06-12T10:01:25.227Z
+MP,MP,美股,equity,en,manual,0.7,MP Materials,2026-06-12T10:01:25.227Z
+HIMS,HIMS,美股,equity,en,manual,1.0,Hims & Hers,2026-06-12T10:01:25.227Z
+SMTC,SMTC,美股,equity,en,manual,1.0,Semtech,2026-06-12T10:01:25.227Z
+POWL,POWL,美股,equity,en,manual,0.9,Powell Industries,2026-06-12T10:01:25.227Z
+VPG,VPG,美股,equity,en,manual,0.9,Vishay Precision,2026-06-12T10:01:25.227Z
+MOG.A,MOG.A,美股,equity,en,manual,0.9,Mogotes 摩怪,2026-06-12T10:01:25.227Z
+MSFT,MSFT,美股,equity,en,manual,1.0,Microsoft,2026-06-12T10:01:25.227Z
+CVX,CVX,美股,equity,en,manual,1.0,Chevron,2026-06-12T10:01:25.227Z
+XLU,XLU,美股,equity,en,manual,1.0,Utilities Select Sector SPDR,2026-06-12T10:01:25.227Z
+CF,CF,美股,equity,en,manual,1.0,CF Industries,2026-06-12T10:01:25.227Z
+CVE,CVE,美股,equity,en,manual,1.0,Cenovus Energy,2026-06-12T10:01:25.227Z
+VLO,VLO,美股,equity,en,manual,1.0,Valero,2026-06-12T10:01:25.227Z
+LDOS,LDOS,美股,equity,en,manual,0.9,Leidos,2026-06-12T10:01:25.227Z
+AVAV,AVAV,美股,equity,en,manual,0.9,AeroVironment,2026-06-12T10:01:25.227Z
+HII,HII,美股,equity,en,manual,0.9,Huntington Ingalls,2026-06-12T10:01:25.227Z
+LHX,LHX,美股,equity,en,manual,0.9,L3Harris,2026-06-12T10:01:25.227Z
+BA,BA,美股,equity,en,manual,1.0,Boeing,2026-06-12T10:01:25.227Z
+RTX,RTX,美股,equity,en,manual,1.0,Raytheon,2026-06-12T10:01:25.227Z
+HON,HON,美股,equity,en,manual,1.0,Honeywell,2026-06-12T10:01:25.227Z
+AXTI,AXTI,美股,equity,en,manual,1.0,AXT Inc InP 衬底,2026-06-12T10:01:25.227Z
+AAOI,AAOI,美股,equity,en,manual,1.0,Applied Optoelectronics,2026-06-12T10:01:25.227Z
+AEHR,AEHR,美股,equity,en,manual,0.9,Aehr Test Systems,2026-06-12T10:01:25.227Z
+IQE,IQE,美股,equity,en,manual,0.9,IQE plc,2026-06-12T10:01:25.227Z
+OSS,OSS,美股,equity,en,manual,0.7,One Stop Systems? 待人工,2026-06-12T10:01:25.227Z
+GDRZF,GDRZF,美股,equity,en,manual,0.7,"GDR 类,具体标的待人工",2026-06-12T10:01:25.227Z
+RPI,RPI,美股,equity,en,manual,0.7,Ryman Hospitality? 待人工,2026-06-12T10:01:25.227Z
+SOI,SOI,美股,equity,en,manual,0.7,Solaris Oilfield Infrastructure? 待人工,2026-06-12T10:01:25.227Z
+ALRIB,ALRIB,美股,equity,en,manual,0.7,"ADR 类,待人工",2026-06-12T10:01:25.227Z
+SNDK,SNDK,美股,equity,en,manual,1.0,SanDisk,2026-06-12T10:01:25.227Z
+SIMO,SIMO,美股,equity,en,manual,0.9,Silicon Motion,2026-06-12T10:01:25.227Z
+EWY,EWY,美股,equity,en,manual,1.0,iShares MSCI South Korea,2026-06-12T10:01:25.227Z
+Unimicron,3037.TW,TW,equity,en,manual,1.0,欣兴电子,2026-06-12T10:01:25.227Z
+Nitto Boseki,3110.TW,TW,equity,en,manual,1.0,日东纺,2026-06-12T10:01:25.227Z
+CEG,CEG,美股,equity,en,manual,1.0,Constellation Energy,2026-06-12T10:01:25.227Z
+NEE,NEE,美股,equity,en,manual,1.0,NextEra Energy,2026-06-12T10:01:25.227Z
+silver,silver,commodity,commodity,en,manual,1.0,白银,2026-06-12T10:01:25.227Z
+白银,silver,commodity,commodity,zh_cn,manual,1.0,,2026-06-12T10:01:25.227Z
+gold,gold,commodity,commodity,en,manual,1.0,黄金,2026-06-12T10:01:25.227Z
+oil,oil,commodity,commodity,en,manual,1.0,原油,2026-06-12T10:01:25.227Z
+bitcoin,BTC,commodity,commodity,en,manual,0.7,BTC,2026-06-12T10:01:25.227Z
+btc,BTC,commodity,commodity,en,manual,0.7,,2026-06-12T10:01:25.227Z
+IREN,IREN,美股,equity,,,1.0,,2026-06-14T09:49:09.807Z
+CIFR,CIFR,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+MU,MU,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+AMD,AMD,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+NVDA,NVDA,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+RDDT,RDDT,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+CRWV,CRWV,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+WULF,WULF,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+ALAB,ALAB,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+SNAP,SNAP,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+SMCI,SMCI,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+VLN,VLN,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+CRDO,CRDO,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+WLAC,WLAC,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+LTC,LTC,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+FLNC,FLNC,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+POET,POET,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+ETOR,ETOR,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+FLY,FLY,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+UPWK,UPWK,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+ORCL,ORCL,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+XFAB,XFAB,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+WYFI,WYFI,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+WYFi,WYFI,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+LPK,LPK,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+LPKK / LPK,LPK,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+HPS.A,HPS.A,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+LASR,LASR,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+AIRO,AIRO,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+UNH,UNH,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+GLXY,GLXY,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+VIRT,VIRT,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+TSSI,TSSI,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+TGT,TGT,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+BMNR,BMNR,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+SLNH,SLNH,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+KRKNF,KRKNF,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+RGTI,RGTI,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+QBTS,QBTS,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+MTSI,MTSI,美股,equity,,,1.0,,2026-06-14T09:49:09.814Z
+MSTR,MSTR,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+TTD,TTD,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+TSLA,TSLA,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+LULU,LULU,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+GFS,GFS,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+FORM,FORM,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+ASHM,ASHM,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+SSYS,SSYS,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+ONDS,ONDS,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+HUT,HUT,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+CORZ,CORZ,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+BITF,BITF,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+SOL,SOL,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+SEI,SEI,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+PLTR,PLTR,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+OKLO,OKLO,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+IONQ,IONQ,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+TRGP,TRGP,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+RIOT,RIOT,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+PL,PL,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+MSScorps,MSS,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+MSSCorps,MSS,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+MSScorp,MSS,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+MSSCorp,MSS,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+MSSCORP,MSS,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Msscorps,MSS,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+DUOL,DUOL,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+DPRO,DPRO,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+DELL,DELL,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+CODA,CODA,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+CLSK,CLSK,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+BULL,BULL,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+TOWA,TOWA,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Towa,TOWA,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+NVO,NVO,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+MARA,MARA,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+KTOS,KTOS,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+GRRR,GRRR,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+GHM,GHM,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+DFLI,DFLI,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+CREDO,CREDO,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+CLS,CLS,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+ASTS,ASTS,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+APLD,APLD,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+AMSC,AMSC,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+VRT,VRT,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+VNP,VNP,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+VICR,VICR,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+RBRK,RBRK,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+PSX,PSX,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+OPTT,OPTT,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+ONTO,ONTO,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+U,U,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+ETH,ETH,crypto,crypto,,,1.0,,2026-06-14T09:49:09.817Z
+Ethereum,ETH,crypto,crypto,,,1.0,,2026-06-14T09:49:09.817Z
+bitcoin,BTC,crypto,crypto,,,1.0,,2026-06-14T09:49:09.817Z
+btc,BTC,crypto,crypto,,,1.0,,2026-06-14T09:49:09.817Z
+Bitcoin,BTC,crypto,crypto,,,1.0,,2026-06-14T09:49:09.817Z
+Litecoin,LTC,crypto,crypto,,,1.0,,2026-06-14T09:49:09.817Z
+ltc,LTC,crypto,crypto,,,1.0,,2026-06-14T09:49:09.817Z
+Solana,SOL,crypto,crypto,,,1.0,,2026-06-14T09:49:09.817Z
+SK Hynix,000660.KS,KR,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Sk Hynix,000660.KS,KR,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Sk hynix,000660.KS,KR,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Samsung,005930.KS,KR,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Samsung Electronics,005930.KS,KR,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Shunsin (6451),6451.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+FOCI,3363.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Foci (3363),3363.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Win,3105.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Win Semi,3105.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+win semi,3105.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Win (3105),3105.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Winbond,2344.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Windbond,2344.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Tyntek,2426.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+FitTech (6706),6706.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+fittech,6706.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+PCL (4977),4977.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+PCL Technologies,4977.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Landmark,3081.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+LandMark (3081),3081.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+LandMark Optoelectronics,3081.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Nextronics,8147.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Nextronics (8147),8147.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Nextronics (8417),8417.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Browave,3163.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Browave (3163),3163.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+All Ring (6187),6187.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Harmonic Drive (6324),6324.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Harmonic Drive,6324.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Towa (6315),6315.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Nippon Chemical (4092),4092.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Soitec,SOI.PA,JP,equity,,,0.9,,2026-06-14T09:49:09.817Z
+soitec,SOI.PA,JP,equity,,,0.9,,2026-06-14T09:49:09.817Z
+ソイテック（Soitec）,SOI.PA,JP,equity,,,0.9,,2026-06-14T09:49:09.817Z
+Sumitomo,8053.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Sumitomo Electric,5802.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Furukawa Electric (5801),5801.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Furukawa Electric,5801.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Furukawa,5801.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+古河電工,5801.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Mediatek,2454.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+MediaTek,2454.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Macronix,2337.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Auros,6488.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+AlChip,3661.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Alchip,3661.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+AlSiC,3529.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Enplas,6961.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Eoptolink,300502.SZ,A股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Innolight,300308.SZ,A股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Advantest,6857.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Aixtron,AIXA.DE,欧洲,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Resonac,4004.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Hammond,HPX.TO,CA,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Ibiden,4062.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Kioxia,285A.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Kyocera,6971.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Mitsubishi Electric,6503.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Tokyo Electron,8035.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Hitachi,6501.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Towa,6315.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Disco,6146.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Nanya,2408.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Nanya Technologies,2408.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Nanyna (TPE: 2408),2408.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Ennostar,3714.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Hanmi Semi,042700.KQ,KR,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Phison,8299.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Phison Electronics,8299.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+LuxNet,4979.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+MA-tek,8287.TWO,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Xintec,3374.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+PlayNitride,PLT.TWO,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Lightmatter,私募,未上市,equity,,,0.7,,2026-06-14T09:49:09.817Z
+Celestial,私募,未上市,equity,,,0.7,,2026-06-14T09:49:09.817Z
+Ayar,私募,未上市,equity,,,0.7,,2026-06-14T09:49:09.817Z
+Ayar Labs,私募,未上市,equity,,,0.7,,2026-06-14T09:49:09.817Z
+Element Six,De Beers,欧洲,equity,,,0.7,,2026-06-14T09:49:09.817Z
+RoboTechnik (ficonTEC),私募,未上市,equity,,,0.7,,2026-06-14T09:49:09.817Z
+Riber,ALRIB.PA,欧洲,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Rigaku,268A.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Oxford Instruments,OXIG.L,LSE,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Quanta Services,PWR,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+GE Vernova,GEV,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Bitmine,BMNR,美股,equity,,,0.7,,2026-06-14T09:49:09.817Z
+HB technologies,私募,未上市,equity,,,0.7,,2026-06-14T09:49:09.817Z
+T1 Energy,TE,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Unitree,私募,未上市,equity,,,0.7,,2026-06-14T09:49:09.817Z
+Upwork,UPWK,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Avride,私募,未上市,equity,,,0.7,,2026-06-14T09:49:09.817Z
+Klarna,KLAR,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Nebius,NBIS,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Sanhua,002050.SZ,A股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Suzhou Everbright,600658.SH,A股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Henan Shijia,002585.SZ,A股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Santek,002462.SZ,A股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Asial Vital,3209.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+J-TEC Corporation,7778.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+LeaderDrive,688017.SH,A股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Leader Drive,688017.SH,A股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Leaderdrive/Harmonic,688017.SH,A股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+gold,GC=F,commodity,commodity,,,1.0,,2026-06-14T09:49:09.817Z
+Gold,GC=F,commodity,commodity,,,1.0,,2026-06-14T09:49:09.817Z
+silver,SI=F,commodity,commodity,,,1.0,,2026-06-14T09:49:09.817Z
+Silver,SI=F,commodity,commodity,,,1.0,,2026-06-14T09:49:09.817Z
+Crude Oil,CL=F,commodity,commodity,,,1.0,,2026-06-14T09:49:09.817Z
+oil,CL=F,commodity,commodity,,,1.0,,2026-06-14T09:49:09.817Z
+CME/COMEX Aluminum (ALI),ALI=F,commodity,commodity,,,1.0,,2026-06-14T09:49:09.817Z
+Snap,SNAP,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Marvell,MRVL,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Mag7,MAGS,美股,equity,,,0.7,,2026-06-14T09:49:09.817Z
+SOFi,SOFI,美股,equity,,,1.0,,2026-06-14T09:49:09.817Z
+EOS.ASX,EOS.AX,ASX,equity,,,1.0,,2026-06-14T09:49:09.817Z
+EOSe,EOSe,crypto,crypto,,,0.7,,2026-06-14T09:49:09.817Z
+ams-OSRAM,AMS.SW,欧洲,equity,,,1.0,,2026-06-14T09:49:09.817Z
+SoftBank,9984.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Shin-Etsu,4063.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Shin-Etsu Chemical,4063.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Idemitsu Kosan,5019.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+NGK Insulators,5333.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Yamamura,5360.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Yamamura glass,5360.T,JP,equity,,,1.0,,2026-06-14T09:49:09.817Z
+NEO (TCX),TCX.TO,CA,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Innodisk,8279.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+IntelliEPI,IEPI,美股,equity,,,0.7,,2026-06-14T09:49:09.817Z
+SK Siltron CSS,KRX:036490,KR,equity,,,0.9,,2026-06-14T09:49:09.817Z
+WIN Semi,3105.TW,TW,equity,,,1.0,,2026-06-14T09:49:09.817Z
+Photonics,SECT,美股,sector,,,0.5,,2026-06-14T09:49:09.817Z

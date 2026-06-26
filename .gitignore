@@ -34,7 +34,19 @@ build/
 .data_full/
 .data_smoke/
 
-# Database(太大,本地 + Apify raw_posts 重建)
-data/*.db
-data/*.db-wal
-data/*.db-shm
+# 数据库 — 临时 push (B 方案备份), 后续看是否用 git-lfs
+# data/*.db
+# data/*.db-wal
+# data/*.db-shm
+
+# Logs/ 太大 (418M), 暂不 push
+logs/
+
+# Secrets / tokens / credentials (硬规则: 绝不入仓)
+.env
+.env.*
+*.token
+*.key
+.git-credentials
+.netrc
+secrets/
