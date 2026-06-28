@@ -243,10 +243,43 @@ def get_prices(con, ticker, pub_date):
 def refresh_sector_snapshots(con, sector_etf=SOXX_ETF):
     """cron 跑前算一次: 算 ETF 30/90/180/365 天累计, 存 sector_snapshots.
 
-    简化版: 直接读 cache 找 SOXX 数据 (金融数据库 connector 阶段已写入).
-    如果 cache 缺, 标 NULL (让 dashboard 显示 —). 不用 Polygon 在线查.
+    优先 ticker_prices cache (如果有 SOXX 历史), fallback Polygon (1 API call).
     """
-    return True  # 啥都不做, cache miss 时 excess_pct=None 即可
+    if not POLYGON_API_KEY:
+        return False
+    today = today_str()
+    # 1. 优先 cache (金融数据库可能没 SOXX, 失败 fallback)
+    # 直接 Polygon: SOXX/SMH 等 ETF 金融数据库没覆盖
+    url = f"{POLYGON_BASE}/v2/aggs/ticker/{sector_etf}/range/1/day/2024-12-01/{today}"
+    data = _polygon_get(url, {"apiKey": POLYGON_API_KEY, "sort": "asc", "limit": 500})
+    if not data or not data.get("results") or len(data["results"]) < 2:
+        return False
+    bars = data["results"]
+    today_close = bars[-1]["c"]
+    def pct(days_ago):
+        target = (datetime.datetime.now() - datetime.timedelta(days=days_ago)).strftime("%Y-%m-%d")
+        for b in reversed(bars):
+            bar_t = b.get("t")
+            if isinstance(bar_t, int):
+                bd = datetime.datetime.utcfromtimestamp(bar_t / 1000).strftime("%Y-%m-%d")
+            else:
+                bd = str(bar_t)[:10]
+            if bd <= target:
+                return round((today_close - b["c"]) / b["c"] * 100, 1)
+        return None
+    p30 = pct(30)
+    p90 = pct(90)
+    p180 = pct(180)
+    p365 = pct(365)
+    fa = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    con.execute("""
+        INSERT OR REPLACE INTO sector_snapshots
+        (sector_etf, snap_date, pct_30d, pct_90d, pct_180d, pct_365d, fetched_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    """, (sector_etf, today, p30, p90, p180, p365, fa))
+    con.commit()
+    print(f"  sector_snapshots: {sector_etf} @ {today} → 30d={p30}% 90d={p90}% 180d={p180}% 365d={p365}%", flush=True)
+    return True
     # 查现价 + 1y 前价
     url = f"{POLYGON_BASE}/v2/aggs/ticker/{sector_etf}/range/1/day/2024-01-01/{today}"
     data = _polygon_get(url, {"apiKey": POLYGON_API_KEY, "sort": "asc", "limit": 500})
