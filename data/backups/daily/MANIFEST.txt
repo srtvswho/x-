@@ -1,0 +1,10 @@
+# 大V情报每日 DB 备份清单
+# 更新时间: 2026-06-26T12:02:16Z (2026-06-26_20:01:50 北京)
+# 备份源: /workspace/data/signalboard_full.db
+# 命名: signalboard_YYYYMMDD.db.gz
+# 保留: 14 天 (超出删最旧)
+# 恢复: gunzip -c <file> | sqlite3 data/signalboard_full.db
+# 异地: 见 /workspace/INSTRUCTIONS.txt 或 session 内告诉用户怎么下载
+
+DATE            SIZE       FILE
+  20260626      16M        signalboard_20260626.db.gz

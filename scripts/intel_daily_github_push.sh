@@ -84,6 +84,16 @@ echo "  ---" | tee -a $LOG_FILE
 git add data/signalboard.db.gz 2>&1 | tee -a $LOG_FILE
 git add .gitignore 2>&1 | tee -a $LOG_FILE
 
+# 检查是否有实质变化 (跳过空 commit)
+if git diff --cached --quiet; then
+  echo "  ⚠️ .gz 未变 (DB 无数据变化), 跳过 commit + push" | tee -a $LOG_FILE
+  echo "" | tee -a $LOG_FILE
+  echo "==========================================" | tee -a $LOG_FILE
+  echo "✅ Daily DB backup — 无变化, 跳过" | tee -a $LOG_FILE
+  echo "==========================================" | tee -a $LOG_FILE
+  exit 0
+fi
+
 git status --short data/ 2>&1 | tee -a $LOG_FILE
 
 git commit -m "Daily DB backup $DATE (gzip $GZ_SIZE)" 2>&1 | tee -a $LOG_FILE || echo "  (无变化可 commit, 跳过)"

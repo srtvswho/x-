@@ -61,18 +61,50 @@ CREATE TABLE IF NOT EXISTS extractions_intel (
     attribution TEXT,
     rebuts_narrative TEXT,
     summary_100 TEXT,
+    is_retrospective INTEGER NOT NULL DEFAULT 0,
+    is_disclosure INTEGER NOT NULL DEFAULT 0,
+    is_self_reported_returns INTEGER NOT NULL DEFAULT 0,
     UNIQUE(post_id, prompt_version)
 );
 CREATE INDEX IF NOT EXISTS idx_extractions_intel_post ON extractions_intel(post_id);
 CREATE INDEX IF NOT EXISTS idx_extractions_intel_source ON extractions_intel(source_id);
 CREATE INDEX IF NOT EXISTS idx_extractions_intel_direction ON extractions_intel(direction);
 CREATE INDEX IF NOT EXISTS idx_extractions_intel_extracted_at ON extractions_intel(extracted_at);
+CREATE INDEX IF NOT EXISTS idx_extractions_intel_retrospective ON extractions_intel(is_retrospective);
+CREATE INDEX IF NOT EXISTS idx_extractions_intel_disclosure ON extractions_intel(is_disclosure);
+"""
+
+# Migration: 加 3 个 R12 flag 列 (针对已存在的旧表)
+MIGRATION = """
+ALTER TABLE extractions_intel ADD COLUMN is_retrospective INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE extractions_intel ADD COLUMN is_disclosure INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE extractions_intel ADD COLUMN is_self_reported_returns INTEGER NOT NULL DEFAULT 0;
 """
 
 
 def init_extractions_table(con: sqlite3.Connection) -> None:
     """建表 (幂等)."""
-    con.executescript(DDL)
+    # 1. 如表已存在但缺新列, 先 ALTER TABLE
+    cols = {row[1] for row in con.execute("PRAGMA table_info(extractions_intel)").fetchall()}
+    table_exists = con.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='extractions_intel'"
+    ).fetchone() is not None
+    if table_exists:
+        for col in ["is_retrospective", "is_disclosure", "is_self_reported_returns"]:
+            if col not in cols:
+                con.execute(f"ALTER TABLE extractions_intel ADD COLUMN {col} INTEGER NOT NULL DEFAULT 0")
+    else:
+        # 表不存在, CREATE TABLE (含新列)
+        con.executescript(DDL)
+    # 2. CREATE INDEX (幂等)
+    con.executescript("""
+    CREATE INDEX IF NOT EXISTS idx_extractions_intel_post ON extractions_intel(post_id);
+    CREATE INDEX IF NOT EXISTS idx_extractions_intel_source ON extractions_intel(source_id);
+    CREATE INDEX IF NOT EXISTS idx_extractions_intel_direction ON extractions_intel(direction);
+    CREATE INDEX IF NOT EXISTS idx_extractions_intel_extracted_at ON extractions_intel(extracted_at);
+    CREATE INDEX IF NOT EXISTS idx_extractions_intel_retrospective ON extractions_intel(is_retrospective);
+    CREATE INDEX IF NOT EXISTS idx_extractions_intel_disclosure ON extractions_intel(is_disclosure);
+    """)
     con.commit()
 
 
@@ -116,7 +148,7 @@ def call_deepseek(post_id: str, raw_text: str) -> dict:
     }
     for attempt in range(MAX_RETRIES + 1):
         try:
-            r = requests.post(DEEPSEEK_URL, data=data, headers=headers, timeout=60)
+            r = requests.post(DEEPSEEK_URL, data=data, headers=headers, timeout=30)
             r.raise_for_status()
             j = r.json()
             content = j["choices"][0]["message"]["content"]
@@ -124,7 +156,7 @@ def call_deepseek(post_id: str, raw_text: str) -> dict:
             return {"ok": True, "extraction": parsed, "raw": content, "usage": j.get("usage", {})}
         except Exception as e:
             if attempt < MAX_RETRIES:
-                time.sleep(2 + attempt * 3)
+                time.sleep(1 + attempt * 2)
                 continue
             return {"ok": False, "error": str(e)}
 
@@ -142,18 +174,23 @@ def persist_extraction(con: sqlite3.Connection, post_id: str, source_id: str,
         company = json.dumps(company, ensure_ascii=False)
     direction = extraction.get("direction", "neutral")
     short_skeptical = extraction.get("short_skeptical", 1)
+    is_retrospective = extraction.get("is_retrospective", 0)
+    is_disclosure = extraction.get("is_disclosure", 0)
+    is_self_reported_returns = extraction.get("is_self_reported_returns", 0)
     try:
         con.execute("""
             INSERT OR IGNORE INTO extractions_intel
             (post_id, source_id, extracted_at, model_version, prompt_version,
              raw_response, ticker, company, direction, short_skeptical,
-             bottleneck, attribution, rebuts_narrative, summary_100)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+             bottleneck, attribution, rebuts_narrative, summary_100,
+             is_retrospective, is_disclosure, is_self_reported_returns)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             post_id, source_id, now_iso, DEEPSEEK_MODEL, PROMPT_VERSION,
             raw_response, ticker, company, direction, short_skeptical,
             extraction.get("bottleneck"), extraction.get("attribution"),
             extraction.get("rebuts_narrative"), extraction.get("summary_100"),
+            is_retrospective, is_disclosure, is_self_reported_returns,
         ))
         con.commit()
         return True
