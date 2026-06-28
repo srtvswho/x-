@@ -70,9 +70,14 @@ def get_data_for_window(con: sqlite3.Connection, days: int) -> list[dict]:
         LIMIT 200
     """, (cutoff,)).fetchall()
     out = []
+    SRC2KOL = {  # source_id → 短名 (跟 build_dashboard.py 一致)
+        "tw_jukan05": "jukan", "tw_aleabitoreddit": "serenity",
+        "tw_zephyr_z9": "zephyr", "tw_austinsemis": "austin",
+    }
     for x in rows:
         out.append({
-            "post_id": x[0], "kol": x[1].replace("tw_", ""),
+            "post_id": x[0],
+            "kol": SRC2KOL.get(x[1], x[1].replace("tw_", "")),
             "source_id": x[1], "published_at": x[12],
             "direction": x[2], "ticker": x[3], "company": x[4],
             "bottleneck": x[5], "attribution": x[6],
@@ -112,6 +117,7 @@ def call_llm(system: str, user: str, max_retries: int = 2) -> str:
         ],
         "temperature": 0.2,
         "max_tokens": 400,
+        "thinking": {"type": "disabled"},  # ★ 跨项目硬规则: 关闭思考模式
     }).encode()
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
     for attempt in range(max_retries + 1):

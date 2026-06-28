@@ -141,6 +141,7 @@ def call_deepseek(post_id: str, raw_text: str) -> dict:
         "temperature": 0.1,
         "max_tokens": 1500,
         "response_format": {"type": "json_object"},
+        "thinking": {"type": "disabled"},  # ★ 跨项目硬规则: 关闭思考模式
     }).encode()
     headers = {
         "Authorization": f"Bearer {api_key}",
