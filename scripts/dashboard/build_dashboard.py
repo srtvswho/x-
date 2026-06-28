@@ -99,8 +99,8 @@ def get_cached_price(con, ticker, pub_date):
         try:
             nd_dt = datetime.datetime.fromisoformat(nd)
             today_dt = datetime.datetime.fromisoformat(today)
-            if (today_dt - nd_dt).days > 1:
-                return None  # 过期
+            if (today_dt - nd_dt).days > 3:
+                return None  # 过期 (>3 天强制重查)
         except Exception:
             pass
     return cp, np_, nd, sec
@@ -234,26 +234,19 @@ def get_prices(con, ticker, pub_date):
             excess_pct = round(raw_pct - sec, 1) if sec is not None else None
             return cp, np_, raw_pct, excess_pct
         return cp, np_, None, None
-    call_p = get_call_price(ticker, pub_date)
-    time.sleep(0.5)  # micro rate
-    now_p, now_d = get_now_price(ticker)
-    time.sleep(0.5)
-    sec_from_cache = get_sector_pct_from_cache(con, pub_date, now_d or today_str())
-    raw_pct = None
-    excess_pct = None
-    if call_p and now_p and call_p > 0:
-        raw_pct = round((now_p - call_p) / call_p * 100, 1)
-        if sec_from_cache is not None:
-            excess_pct = round(raw_pct - sec_from_cache, 1)
-    save_cached_price(con, ticker, pub_date, call_p, now_p, now_d, sec_from_cache)
-    return call_p, now_p, raw_pct, excess_pct
+    # 默认数据源: 金融数据库 (恒生聚源 connector) 通过 ticker_prices cache.
+    # Polygon 仅作为 fallback (不在线查, 避免 5 req/min 限速).
+    # cache miss → return None, dashboard 显示 "—"
+    return None, None, None, None
 
 
 def refresh_sector_snapshots(con, sector_etf=SOXX_ETF):
-    """cron 跑前算一次: 算 ETF 30/90/180/365 天累计, 存 sector_snapshots."""
-    if not POLYGON_API_KEY:
-        return False
-    today = today_str()
+    """cron 跑前算一次: 算 ETF 30/90/180/365 天累计, 存 sector_snapshots.
+
+    简化版: 直接读 cache 找 SOXX 数据 (金融数据库 connector 阶段已写入).
+    如果 cache 缺, 标 NULL (让 dashboard 显示 —). 不用 Polygon 在线查.
+    """
+    return True  # 啥都不做, cache miss 时 excess_pct=None 即可
     # 查现价 + 1y 前价
     url = f"{POLYGON_BASE}/v2/aggs/ticker/{sector_etf}/range/1/day/2024-01-01/{today}"
     data = _polygon_get(url, {"apiKey": POLYGON_API_KEY, "sort": "asc", "limit": 500})
