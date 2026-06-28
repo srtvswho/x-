@@ -1,0 +1,61 @@
+{
+  "description": "5 条 raw_posts 原文精选样本 (覆盖: jukan 长/短 + serenity 长 + zephyr short + austin)",
+  "count": 5,
+  "samples": [
+    {
+      "post_id": "2069909213879632193",
+      "source_id": "tw_jukan05",
+      "platform": "twitter",
+      "published_at": "2026-06-24T22:23:08+00:00",
+      "captured_at": "2026-06-26T08:29:10Z",
+      "raw_text": "I didn’t have enough faith in you…\n\nI believe in Micron!!! https://t.co/MzJ5k6SY50",
+      "raw_url": "https://x.com/jukan05/status/2069909213879632193",
+      "content_hash": "f49481cfd36fde84ecbdebb484729a42886ef5860ff27cc0c801daa782262b92",
+      "is_deleted": 0
+    },
+    {
+      "post_id": "2067457952752279770",
+      "source_id": "tw_jukan05",
+      "platform": "twitter",
+      "published_at": "2026-06-18T04:02:42+00:00",
+      "captured_at": "2026-06-26T08:19:05Z",
+      "raw_text": "KOSPI 9000",
+      "raw_url": "https://x.com/jukan05/status/2067457952752279770",
+      "content_hash": "ad4ae13219341506640149a68293343a2cb866ba1695dd0ca4cd2a6bcd825594",
+      "is_deleted": 0
+    },
+    {
+      "post_id": "2059830121117446415",
+      "source_id": "tw_aleabitoreddit",
+      "platform": "twitter",
+      "published_at": "2026-05-28T02:52:25+00:00",
+      "captured_at": "2026-06-26T07:28:53Z",
+      "raw_text": "$MRVL earnings were a bullish indicator on the broader CPO theme (and $SIVE as the likely laser supplier).\n\n- “Scale-up interconnect represents one of the newest and most strategically important opportunities emerging in AI infrastructure.” \n\nCPO thematically go brrr \n\n- Confirmation Celestial was selected by T1 hyperscaler for scale up.\n\nI’ve found Celestial $AMZN warrants in the past)… so probably Amazon.\n\n- Scale-up optics revenue next year should be more than 2x prior ~$150M outlook with Celestial\n\nForward revenue ramp expectations go brrr. \n\n- Celestial team plus $MRVL optics team was a “home run”.\n\nMarvell sees celestial as growth vector, upstream celestial suppliers go brr\n\n- $MRVL is now focused on bringing Celestial to high volume manufacturing. \n\nVolume ramp indicator\n\nIf you don’t recall, there was OSINT mapping $SIVE directly to Celestial, not through $POET.\n\nSo Celestial forward growth is a volume ramp indicator for Sivers lasers.",
+      "raw_url": "https://x.com/aleabitoreddit/status/2059830121117446415",
+      "content_hash": "215ad3f22b87680f6553d0ed35b7538172f7cb58c5bdbcb874cbc4cd369a6f14",
+      "is_deleted": 0
+    },
+    {
+      "post_id": "2069181208412721377",
+      "source_id": "tw_zephyr_z9",
+      "platform": "twitter",
+      "published_at": "2026-06-22T22:10:18+00:00",
+      "captured_at": "2026-06-26T08:29:09Z",
+      "raw_text": "\"Marvell which you would think should be competing is just a pump and dump by the management team to take your money and put it in their pockets and wall street is pricing them as an asic design house not realizing the asic design business is just IT outsourcing.\"\n\nMy sweet summer child...",
+      "raw_url": "https://x.com/zephyr_z9/status/2069181208412721377",
+      "content_hash": "9a5959cde949857f6bee87e5b301954f392222254f31844ea50d08173ae3f5d1",
+      "is_deleted": 0
+    },
+    {
+      "post_id": "2060373312098742568",
+      "source_id": "tw_austinsemis",
+      "platform": "twitter",
+      "published_at": "2026-05-29T14:50:52+00:00",
+      "captured_at": "2026-06-26T08:21:58Z",
+      "raw_text": "Tau scaling, great marketing, good engineering, but $ASML will be just fine :)",
+      "raw_url": "https://x.com/austinsemis/status/2060373312098742568",
+      "content_hash": "24920c32223899413cfd9de7f1e9a8c02818db104bdf6f3d94cd44fbaa2c64de",
+      "is_deleted": 0
+    }
+  ]
+}

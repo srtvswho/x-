@@ -1,0 +1,77 @@
+{
+  "description": "4 大V handle → source_id → 强项/弱项 映射 (人物卡用)",
+  "kols": {
+    "jukan05": {
+      "name": "Jukan",
+      "handle": "@Jukan",
+      "source_id": "tw_jukan05",
+      "platform": "X/Twitter",
+      "description": "真·信号源, 100% 推文带 ticker, 强存储/代工判断",
+      "强项领域": [
+        "存储",
+        "HBM",
+        "代工",
+        "卡点"
+      ],
+      "弱项领域": [
+        "AI 龙头看多 (跑输板块)"
+      ],
+      "stereotype": "信号源 (胜率高但短/medium horizon)"
+    },
+    "aleabitoreddit": {
+      "name": "Serenity",
+      "handle": "@aleabitoreddit",
+      "source_id": "tw_aleabitoreddit",
+      "platform": "X/Twitter",
+      "description": "光通信/CPO 瓶颈专家, 顺势押龙头, tier_B 清单是板块 β",
+      "强项领域": [
+        "光通信",
+        "CPO",
+        "InP",
+        "化合物半导体",
+        "AI 资本支出上游"
+      ],
+      "弱项领域": [
+        "整体追高 (共识陷阱)",
+        "tier_B 清单 = 板块 β"
+      ],
+      "stereotype": "光通信瓶颈专家 (顺势押龙头)"
+    },
+    "zephyr_z9": {
+      "name": "zephyr",
+      "handle": "@zephyr_z9",
+      "source_id": "tw_zephyr_z9",
+      "platform": "X/Twitter",
+      "description": "产业卡点雷达, 长期多 94.8% 命中, 短期空系统性错",
+      "强项领域": [
+        "存储",
+        "光通信",
+        "HBM",
+        "电力",
+        "卡点"
+      ],
+      "弱项领域": [
+        "看空全错 (0/22)",
+        "AI 泡沫论是盲区"
+      ],
+      "stereotype": "产业卡点雷达 (long-only, 看卡点极准)"
+    },
+    "austinsemis": {
+      "name": "Austin",
+      "handle": "@austinsemis",
+      "platform": "X/Twitter",
+      "source_id": "tw_austinsemis",
+      "description": "AI 芯片商业格局分析, AMD/CUDA 护城河有洞察, 顺势押龙头",
+      "强项领域": [
+        "AI 芯片商业格局",
+        "AMD/CUDA 护城河",
+        "Foundry 模式"
+      ],
+      "弱项领域": [
+        "看多龙头 (跑输板块)",
+        "看空全错 (1/8)"
+      ],
+      "stereotype": "商业洞察分析师 (认知源, 不是信号源)"
+    }
+  }
+}
