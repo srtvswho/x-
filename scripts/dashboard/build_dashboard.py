@@ -36,6 +36,48 @@ KOLS = {
    "strong":["商业格局","AMD/CUDA 护城河","Foundry 模式"],"weak":["看多龙头(跑输板块)","看空全错(1/8)"]},
 }
 
+# 4 大V 真正强项领域的 ticker 白名单 (LLM bottleneck 误抽太多, 改用 ticker 黑/白名单二次过滤)
+KOL_TICKERS = {
+  "jukan": {  # 信号源, 100% 推文带 ticker, 强存储/HBM/代工
+    "in_field": ["MU","SNDK","DRAM","AXTI","ASTS","RKLB","TSM","NVDA","AMD","AVGO","NBIS"],
+  },
+  "serenity": {  # 光通信/CPO/InP/化合物半导体专家
+    "in_field": ["AAOI","SIVE","COHR","LITE","POET","AEVA","AEHR","MRVL","JBL","GFS","AOSL","POWI","IQE","SOI","XFAB","TSEM","WOLF","NVTS","TSM","NOK"],
+    "out_of_field": ["TSLA","MSFT","META","GOOGL","AMZN","AVGO","BRK.A","ASML","SPY","DELL","CRM","PLTR","SNAP","INTC","AAPL","NVDA","AMD","RKLB","NBIS","ASTS","AXTI","MU","093370","6324","2454","688017","AIXA","LPK","SPCX"],  # 这些 LLM 错塞进 serenity 的, 实际是 AI 龙头/海外/私募
+  },
+  "zephyr": {  # 存储/光通信/HBM/电力/卡点
+    "in_field": ["MU","SNDK","DRAM","NBIS","AAOI","LITE","POET","SIVE","JBL","COHR","AEVA","AEHR","TSM","VPG","INTC","AMD","MRVL"],
+    "out_of_field": ["TSLA","MSFT","META","GOOGL","AMZN","AVGO","BRK.A","ASML","SPY","DELL","CRM","PLTR","SNAP","AAPL","AOSL","POWI","IQE","SOI","XFAB","TSEM","WOLF","NVTS","NOK","RKLB","ASTS","AXTI","093370","6324","2454","688017","AIXA","LPK","SPCX","GFS"],
+  },
+  "austin": {  # 商业洞察, 看多 AI 龙头 (但跑输板块). 主要认知源, 信号弱
+    "in_field": ["AMD","NVDA","MU","AVGO","TSM","INTC","MRVL","GOOGL","META","MSFT","AMZN"],
+    "out_of_field": ["TSLA","BRK.A","ASML","SPY","DELL","CRM","PLTR","SNAP","AAPL","AOSL","POWI","IQE","SOI","XFAB","TSEM","WOLF","NVTS","NOK","SIVE","JBL","GFS","RKLB","ASTS","AXTI","AEVA","AEHR","COHR","LITE","POET","AAOI","093370","6324","2454","688017","AIXA","LPK","SPCX","NBIS","SNDK","DRAM","VPG"],
+  },
+}
+
+
+def is_in_field(kol: str, ticker: str, bottleneck: str | None) -> bool:
+    """判定 (kol, ticker) 是否在 KOL 真正强项领域.
+
+    优先用 ticker 白名单 (LLM bottleneck 误抽太多, 白名单更可靠):
+    1. ticker 在 KOL_TICKERS[kol]['in_field'] → True
+    2. ticker 在 KOL_TICKERS[kol]['out_of_field'] → False
+    3. 没匹配 → fallback 到 LLM bottleneck (bottleneck in strong)
+    """
+    if kol not in KOL_TICKERS:
+        return False
+    spec = KOL_TICKERS[kol]
+    if ticker in spec.get("in_field", []):
+        return True
+    if ticker in spec.get("out_of_field", []):
+        return False
+    # fallback: bottleneck 字段匹配 strong
+    if bottleneck:
+        for s in KOLS.get(kol, {}).get("strong", []):
+            if s in bottleneck or bottleneck in s:
+                return True
+    return False
+
 def parse_json_arr(s):
     if not s or not isinstance(s, str): return []
     s = s.strip()
@@ -360,11 +402,14 @@ def query_extractions(conn):
 
 
 def query_tickers(conn):
-    """区块3 用。每个 ticker 取【最早一次】喊单 (不区分 KOL) + 接金融数据库算涨跌.
+    """区块3 用。每个 (kol, ticker) 取【最近一次距今 ≥ 3 天】喊单 + 算涨跌.
 
-    修 (2026-06-29): 之前用 (kol, ticker) 去重取最新 → 当天喊单的 ticker raw_pct=0 废了.
-    改用 ticker 维度去重取最早 → call_price 用最早喊单当天价, now_price 用最新价,
-    真实反映"喊单后到现在"的涨跌. 同 ticker 跨 KOL 的第一次表态都在同一行 (kols 字段).
+    修 (2026-06-29 v3):
+    1. 按 (kol, ticker) 去重 (不是只按 ticker — Jukan 的 MU 和 Serenity 的 MU 是两条独立记录)
+    2. 取每个 (kol, ticker) 组合的最近一次喊单
+    3. 但排除 < 3 天的 (今天喊的还没涨跌, 不显示)
+    4. 强项标的 (in_field=True) 优先, 圈外 (in_field=False) 标 '圈外·追高'
+    5. 无价格 (call_price=None) 归最后
     """
     print("  query_tickers: 开始", flush=True)
     rows = conn.execute("""
@@ -374,55 +419,86 @@ def query_tickers(conn):
         WHERE e.direction IN ('long','short')
           AND e.is_retrospective = 0 AND e.is_disclosure = 0
           AND e.ticker IS NOT NULL
-        ORDER BY r.published_at ASC
+        ORDER BY r.published_at DESC
     """).fetchall()
 
-    # ticker 维度去重 (取最早一次, 累计 KOL 列表)
-    by_ticker = {}  # tk → {kol_list, first_pub, direction, bottleneck, ...}
+    # (kol, ticker) 维度聚合 → 最近一次喊单 (rows 已 DESC)
+    by_kol_tk = {}  # (kol, tk) → {pub, direction, bottleneck, n_calls, earliest_pub}
     for src, ticker_json, direction, bk, pub in rows:
         kol = SRC2KOL.get(src, src.replace("tw_",""))
         for tk in parse_json_arr(ticker_json):
-            if tk not in by_ticker:
-                by_ticker[tk] = {
-                    "first_kol": kol, "first_pub": pub,
-                    "first_direction": direction, "first_bottleneck": bk,
-                    "kol_set": {kol}, "n_calls": 1,
+            key = (kol, tk)
+            if key not in by_kol_tk:
+                by_kol_tk[key] = {
+                    "latest_pub": pub, "latest_direction": direction,
+                    "latest_bottleneck": bk, "earliest_pub": pub,
+                    "n_calls": 1,
                 }
             else:
-                rec = by_ticker[tk]
-                rec["kol_set"].add(kol)
+                rec = by_kol_tk[key]
                 rec["n_calls"] += 1
-                # 用更早的喊单更新 (一般 rows 已 ASC, 第一次见到的就是最早)
+                if pub < rec["earliest_pub"]:
+                    rec["earliest_pub"] = pub
+                # latest_pub 自动是第一个 (rows DESC)
 
-    print(f"  query_tickers: {len(by_ticker)} unique ticker", flush=True)
+    print(f"  query_tickers: {len(by_kol_tk)} unique (kol, ticker)", flush=True)
 
-    out = []
-    for tk, rec in sorted(by_ticker.items(), key=lambda x: x[1]["first_pub"], reverse=True):
-        pub = rec["first_pub"]
-        pub_date = pub[:10] if pub else None
-        kol = rec["first_kol"]
-        direction = rec["first_direction"]
-        bk = rec["first_bottleneck"]
+    today_d = datetime.datetime.now().date()
+    MIN_DAYS = 5  # 最近 5 天内的不算 (还没涨跌, 6-29→6-26 = 3d 跳过)
+
+    # 筛 + 算
+    rows_out = []
+    skipped_too_recent = []
+    for (kol, tk), rec in by_kol_tk.items():
+        pub_date = rec["latest_pub"][:10]
+        try:
+            days_since = (today_d - datetime.datetime.fromisoformat(pub_date).date()).days
+        except Exception:
+            days_since = 0
+        # 太近 (< 3 天) 跳过, 但记录下来 (其实这种 ticker 应该很少, 因为要 4-30 天前喊的才有意义)
+        if days_since < MIN_DAYS:
+            skipped_too_recent.append((kol, tk, pub_date, days_since))
+            continue
+
         call_price, now_price, raw_pct, excess_pct = (None, None, None, None)
-        if pub_date:
-            call_price, now_price, raw_pct, excess_pct = get_prices(conn, tk, pub_date)
-        in_field = bool(bk) and any(s in bk or bk in s for s in KOLS.get(kol,{}).get("strong",[]))
-        out.append({
-            "ticker": tk,
-            "kol": kol,                        # 最早喊单的 KOL
-            "kols": sorted(rec["kol_set"]),    # 全部提过这个 ticker 的 KOL (共识指标)
-            "n_kols": len(rec["kol_set"]),
-            "n_calls": rec["n_calls"],          # 总喊单次数 (去重前)
+        call_price, now_price, raw_pct, excess_pct = get_prices(conn, tk, pub_date)
+
+        bk = rec["latest_bottleneck"]
+        direction = rec["latest_direction"]
+        in_field = is_in_field(kol, tk, bk)
+        has_price = call_price is not None and now_price is not None
+
+        rows_out.append({
+            "ticker": tk, "kol": kol,
             "direction": direction,
-            "called_at": pub,
-            "call_price": call_price,
-            "now_price": now_price,
-            "raw_pct": raw_pct,
-            "excess_pct": excess_pct,
+            "called_at": rec["latest_pub"],
+            "earliest_call": rec["earliest_pub"],
+            "days_since": days_since,
+            "call_price": call_price, "now_price": now_price,
+            "raw_pct": raw_pct, "excess_pct": excess_pct,
             "in_field": in_field,
+            "has_price": has_price,
+            "n_calls": rec["n_calls"],
+            "priority": (
+                0 if in_field and has_price else
+                1 if in_field else
+                2 if has_price else
+                3  # 圈外无价格 → 最后
+            ),
         })
-        print(f"    ticker {len(out)}/{min(30,len(by_ticker))}: {tk} (first {kol} @ {pub_date}, n_calls={rec['n_calls']}, n_kols={len(rec['kol_set'])})", flush=True)
-    return out[:30]
+
+    # 排序: 强项+有价格 → 强项无价格 → 圈外有价格 → 圈外无价格 (然后按 called_at desc)
+    rows_out.sort(key=lambda r: (r["priority"], -r["days_since"]))
+    out = rows_out[:30]
+
+    print(f"  query_tickers: 跳过太近 (< {MIN_DAYS}d): {len(skipped_too_recent)}, 显示: {len(out)}", flush=True)
+    for i, t in enumerate(out, 1):
+        marker = "✓" if t["in_field"] else "⚠️"
+        pmark = "💰" if t["has_price"] else "❓"
+        print(f"    {i:2d}. {marker}{pmark} {t['kol']:10s} {t['ticker']:8s} {t['direction']:5s} "
+              f"called={t['called_at'][:10]} ({t['days_since']}d ago) "
+              f"call={t['call_price']} now={t['now_price']} raw={t['raw_pct']} exc={t['excess_pct']}", flush=True)
+    return out
 
 
 def load_summaries():
