@@ -250,14 +250,15 @@ def get_sector_pct_from_cache(con, from_date, to_date, sector_etf=SOXX_ETF):
         days = (snap_dt - from_dt).days
     except Exception:
         return None
-    if days <= 30 and p30 is not None:
-        return p30
-    if days <= 90 and p90 is not None:
-        return p90
-    if days <= 180 and p180 is not None:
-        return p180
+    # 阈值放宽: 32 天的 ticker 走 30d (而不是 90d 累计, 避免 -118pp 那种离谱值)
+    if days <= 45 and p30 is not None:
+        return p30  # 0-45 天用 pct_30d (snap_date-30 → snap_date 累计, 近似 30 天涨幅)
+    if days <= 100 and p90 is not None:
+        return p90  # 45-100 天用 pct_90d
+    if days <= 200 and p180 is not None:
+        return p180  # 100-200 天用 pct_180d
     if days <= 365 and p365 is not None:
-        return p365
+        return p365  # 200-365 天用 pct_365d
     return None
 
 
