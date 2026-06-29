@@ -107,6 +107,9 @@ def get_cached_price(con, ticker, pub_date):
 
 
 def save_cached_price(con, ticker, pub_date, call_p, now_p, now_d, sec):
+    """写缓存. call_price 和 now_price 都为 None 时不写 (避免污染 cache)."""
+    if call_p is None and now_p is None:
+        return  # 跳过 (cache miss, 不要污染)
     fa = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     con.execute("""
         INSERT OR REPLACE INTO ticker_prices
@@ -231,7 +234,14 @@ def get_prices(con, ticker, pub_date):
         cp, np_, nd, sec = cached
         if cp and np_ and cp > 0:
             raw_pct = round((np_ - cp) / cp * 100, 1)
-            excess_pct = round(raw_pct - sec, 1) if sec is not None else None
+            # excess_pct 优先从 sector_snapshots 算 (最新的 SOXX ETF 区间累计)
+            sec_from_snap = get_sector_pct_from_cache(con, pub_date, nd or today_str())
+            if sec_from_snap is not None:
+                excess_pct = round(raw_pct - sec_from_snap, 1)
+            elif sec is not None:
+                excess_pct = round(raw_pct - sec, 1)  # cache miss 时存的 sector_pct (Polygon 算的)
+            else:
+                excess_pct = None
             return cp, np_, raw_pct, excess_pct
         return cp, np_, None, None
     # 默认数据源: 金融数据库 (恒生聚源 connector) 通过 ticker_prices cache.
@@ -350,7 +360,12 @@ def query_extractions(conn):
 
 
 def query_tickers(conn):
-    """区块3 用。每个(kol,ticker)取最近一次有效喊单 + 接金融数据库算涨跌。"""
+    """区块3 用。每个 ticker 取【最早一次】喊单 (不区分 KOL) + 接金融数据库算涨跌.
+
+    修 (2026-06-29): 之前用 (kol, ticker) 去重取最新 → 当天喊单的 ticker raw_pct=0 废了.
+    改用 ticker 维度去重取最早 → call_price 用最早喊单当天价, now_price 用最新价,
+    真实反映"喊单后到现在"的涨跌. 同 ticker 跨 KOL 的第一次表态都在同一行 (kols 字段).
+    """
     print("  query_tickers: 开始", flush=True)
     rows = conn.execute("""
         SELECT e.source_id, e.ticker, e.direction, e.bottleneck, r.published_at
@@ -359,28 +374,54 @@ def query_tickers(conn):
         WHERE e.direction IN ('long','short')
           AND e.is_retrospective = 0 AND e.is_disclosure = 0
           AND e.ticker IS NOT NULL
-        ORDER BY r.published_at DESC
+        ORDER BY r.published_at ASC
     """).fetchall()
 
-    seen=set(); out=[]
-    for src,ticker_json,direction,bk,pub in rows:
+    # ticker 维度去重 (取最早一次, 累计 KOL 列表)
+    by_ticker = {}  # tk → {kol_list, first_pub, direction, bottleneck, ...}
+    for src, ticker_json, direction, bk, pub in rows:
         kol = SRC2KOL.get(src, src.replace("tw_",""))
         for tk in parse_json_arr(ticker_json):
-            key=(kol,tk)
-            if key in seen: continue
-            seen.add(key)
-            print(f"    ticker {len(seen)}/30: {tk}", flush=True)
-            pub_date = pub[:10] if pub else None
-            call_price, now_price, raw_pct, excess_pct = (None, None, None, None)
-            if pub_date:
-                call_price, now_price, raw_pct, excess_pct = get_prices(conn, tk, pub_date)
-            in_field = bool(bk) and any(s in bk or bk in s for s in KOLS.get(kol,{}).get("strong",[]))
-            out.append({
-                "ticker":tk,"kol":kol,"direction":direction,"called_at":pub,
-                "call_price":call_price,"now_price":now_price,
-                "raw_pct":raw_pct,"excess_pct":excess_pct,"in_field":in_field,
-            })
-    out.sort(key=lambda d:d["called_at"], reverse=True)
+            if tk not in by_ticker:
+                by_ticker[tk] = {
+                    "first_kol": kol, "first_pub": pub,
+                    "first_direction": direction, "first_bottleneck": bk,
+                    "kol_set": {kol}, "n_calls": 1,
+                }
+            else:
+                rec = by_ticker[tk]
+                rec["kol_set"].add(kol)
+                rec["n_calls"] += 1
+                # 用更早的喊单更新 (一般 rows 已 ASC, 第一次见到的就是最早)
+
+    print(f"  query_tickers: {len(by_ticker)} unique ticker", flush=True)
+
+    out = []
+    for tk, rec in sorted(by_ticker.items(), key=lambda x: x[1]["first_pub"], reverse=True):
+        pub = rec["first_pub"]
+        pub_date = pub[:10] if pub else None
+        kol = rec["first_kol"]
+        direction = rec["first_direction"]
+        bk = rec["first_bottleneck"]
+        call_price, now_price, raw_pct, excess_pct = (None, None, None, None)
+        if pub_date:
+            call_price, now_price, raw_pct, excess_pct = get_prices(conn, tk, pub_date)
+        in_field = bool(bk) and any(s in bk or bk in s for s in KOLS.get(kol,{}).get("strong",[]))
+        out.append({
+            "ticker": tk,
+            "kol": kol,                        # 最早喊单的 KOL
+            "kols": sorted(rec["kol_set"]),    # 全部提过这个 ticker 的 KOL (共识指标)
+            "n_kols": len(rec["kol_set"]),
+            "n_calls": rec["n_calls"],          # 总喊单次数 (去重前)
+            "direction": direction,
+            "called_at": pub,
+            "call_price": call_price,
+            "now_price": now_price,
+            "raw_pct": raw_pct,
+            "excess_pct": excess_pct,
+            "in_field": in_field,
+        })
+        print(f"    ticker {len(out)}/{min(30,len(by_ticker))}: {tk} (first {kol} @ {pub_date}, n_calls={rec['n_calls']}, n_kols={len(rec['kol_set'])})", flush=True)
     return out[:30]
 
 
