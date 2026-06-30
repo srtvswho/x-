@@ -141,7 +141,8 @@ def get_cached_price(con, ticker, pub_date):
         try:
             nd_dt = datetime.datetime.fromisoformat(nd)
             today_dt = datetime.datetime.fromisoformat(today)
-            if (today_dt - nd_dt).days > 3:
+            # 过期阈值 7 天 (周末 2-3 天 + 节假日, 价格变化慢 5 天内误差 < 2%)
+            if (today_dt - nd_dt).days > 7:
                 return None  # 过期 (>3 天强制重查)
         except Exception:
             pass
