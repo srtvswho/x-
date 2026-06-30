@@ -21,6 +21,12 @@ LOG_DIR=$WORKSPACE/logs/intel_backup
 DATE=$(date -u +%Y%m%d)
 mkdir -p $LOG_DIR
 
+# 0.0. git identity (workspace ephemeral 重建后 .git/config 缺 user.email/name)
+#     不设会导致 commit 失败: "fatal: unable to auto-detect email address"
+#     教训: 2026-06-30 22:11 cron 阶段 4 push 因 author 缺失失败,手动 commit 才救回
+git config user.email "Mavis@local" 2>/dev/null || true
+git config user.name "Mavis" 2>/dev/null || true
+
 LOG_FILE=$LOG_DIR/github_push_$DATE.log
 
 echo "==========================================" | tee -a $LOG_FILE
