@@ -1,19 +1,19 @@
 # 大V情报 — 每日健康速查 (2026-07-01 UTC)
 
-_生成时间: 2026-07-01T07:26:44.012018+00:00_
+_生成时间: 2026-07-01T07:53:04.297666+00:00_
 
 ## ❌ 状态: 1 类异常
 
 ## 1️⃣ Cron 跑没跑 (4 大V last_fetched_at)
 
-  ✅ tw_jukan05: last_fetch 07:20Z (今天)
-  ✅ tw_aleabitoreddit: last_fetch 07:20Z (今天)
-  ✅ tw_zephyr_z9: last_fetch 07:21Z (今天)
-  ✅ tw_austinsemis: last_fetch 07:21Z (今天)
+  ✅ tw_jukan05: last_fetch 07:38Z (今天)
+  ✅ tw_aleabitoreddit: last_fetch 07:38Z (今天)
+  ✅ tw_zephyr_z9: last_fetch 07:38Z (今天)
+  ✅ tw_austinsemis: last_fetch 07:38Z (今天)
 
 ## 2️⃣ 数据增长 (raw_posts + extractions_intel)
 
-  raw_posts: 6,881 (24h 增量: 509, 7d 推文: 423)
+  raw_posts: 6,881 (24h 增量: 509, 7d 推文: 421)
   extractions_intel: 453 (24h 抽取: 453)
   ⚠  24h raw_posts 增长 509 (异常暴增, 可能重复抓)
   by source_id (24h new):
@@ -29,7 +29,7 @@ _生成时间: 2026-07-01T07:26:44.012018+00:00_
 
 ## 4️⃣ GitHub push 状态 (远端最新 commit)
 
-  ✅ Local HEAD = Remote HEAD: 39b5c664 | Daily DB backup 20260701 (gzip 8.8M)
+  ✅ Local HEAD = Remote HEAD: 29cf152c | Daily DB backup 20260701 (gzip 8.8M) — workspace rehydrate + 75 fresh posts + 0 dup
   ✅ 远端最新 commit: 0.1h 前 (今天)
   ✅ 最新 commit 是 Daily DB backup
 
