@@ -18,6 +18,43 @@ HEALTH_DIR=/workspace/logs
 DATE=$(date -u +%Y%m%d)
 mkdir -p $LOG_DIR
 
+# ===== 阶段 -1: 自检 + 漂移补偿 (mavis cron 不可靠, 4h 内已跑就跳过阶段 1+2) =====
+echo "=== 阶段 -1: 自检 + 漂移补偿 ==="
+python3 - << 'PYEOF'
+import sqlite3, datetime, os, sys
+DB = "/workspace/data/signalboard_full.db"
+con = sqlite3.connect(DB, timeout=30)
+now = datetime.datetime.now(datetime.timezone.utc)
+scheduled_str = os.environ.get("MAVIS_CRON_SCHEDULED_AT", "")
+drift_s = 0
+if scheduled_str:
+    try:
+        sched = datetime.datetime.fromisoformat(scheduled_str.replace("Z", "+00:00"))
+        drift_s = int((now - sched).total_seconds())
+    except Exception: pass
+con.execute(
+    "INSERT INTO cron_run_log (task_name, actual_run_at, scheduled_at, drift_seconds, drift_minutes, extra) VALUES (?, ?, ?, ?, ?, ?)",
+    ("intel-daily-fetch", now.isoformat().replace("+00:00", "Z"),
+     scheduled_str or now.isoformat().replace("+00:00", "Z"),
+     drift_s, drift_s / 60.0, "{}"))
+con.commit()
+row = con.execute("SELECT MAX(last_fetched_at) FROM scrape_state").fetchone()
+last = row[0] if row else None
+if last:
+    last_dt = datetime.datetime.fromisoformat(last.replace("Z", "+00:00"))
+    hours_since = (now - last_dt).total_seconds() / 3600
+    print(f"  last fetch: {last} ({hours_since:.1f}h ago) | drift: {drift_s/60:.1f} min")
+    if hours_since >= 4.0:
+        print(f"  >> 触发漂移补偿 ({hours_since:.1f}h >= 4h)")
+    else:
+        print(f"  >> 4h 内已抓取, 跳过阶段 1+2")
+        os.environ["INTEL_SKIP_SCRAPE"] = "1"
+else:
+    print("  scrape_state 空, 首次跑")
+os.environ["INTEL_CRON_NOW"] = now.isoformat().replace("+00:00", "Z")
+PYEOF
+echo ""
+
 # ===== 阶段 0: 依赖检查 (sandbox 重启会丢包, 自动装回) =====
 echo "=== 阶段 0: 依赖检查 ==="
 python3 -c "import requests, apify_client" 2>/dev/null || {
@@ -38,6 +75,9 @@ echo "=========================================="
 # ===== 阶段 1: 模块 1 - 4 大V 增量抓取 (并发) =====
 echo ""
 echo "=== 阶段 1: 模块 1 — 4 大V 增量抓取 (并发) ==="
+if [ "${INTEL_SKIP_SCRAPE:-0}" = "1" ]; then
+  echo "  skip (漂移补偿: 4h 内已抓取)"
+else
 PIDS=""
 for kol in jukan05 aleabitoreddit zephyr_z9 austinsemis; do
   LOG_FILE=$LOG_DIR/intel_cron_${kol}_${DATE}.log
@@ -47,6 +87,7 @@ for kol in jukan05 aleabitoreddit zephyr_z9 austinsemis; do
 done
 
 # 等所有增量跑完 (某大V 失败不阻塞其他)
+fi  # INTEL_SKIP_SCRAPE
 SCRAPE_OK=0
 for pid in $PIDS; do
   wait $pid

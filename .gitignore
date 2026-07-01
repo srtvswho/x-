@@ -52,3 +52,15 @@ logs/
 .git-credentials
 .netrc
 secrets/
+
+# cron drift 监控 (P5)
+data/signalboard_full.db
+
+# 临时下载包 (dashboard 给用户用)
+dashboard.html
+dashboard_v8.zip
+dashboard_deploy_dist/
+scripts/dashboard/dashboard.html
+scripts/dashboard/dashboard.html.bak
+scripts/_force_since.py
+scripts/_run_all.py

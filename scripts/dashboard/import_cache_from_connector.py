@@ -1,16 +1,16 @@
 """
 import_cache_from_connector.py — 把 connector 下载的 JSON 写 ticker_prices cache.
-agent 跑: 收集 /tmp/us_quotes_part*.json → 解析 → 写 cache.
+agent 跑: 收集 /tmp/us_q_p*.json → 解析 → 写 cache.
 """
 import json, sqlite3, sys, datetime
 from pathlib import Path
 
 DB = "/workspace/data/signalboard_full.db"
 
-# 找所有 /tmp/us_quotes_part*.json
-files = sorted(Path("/tmp").glob("us_quotes_part*.json"))
+# 找所有 /tmp/us_q_p*.json
+files = sorted(Path("/tmp").glob("us_q_p*.json"))
 if not files:
-    print("未找到 /tmp/us_quotes_part*.json, 退出")
+    print("未找到 /tmp/us_q_p*.json, 退出")
     sys.exit(1)
 
 print(f"加载 {len(files)} 个 JSON:")

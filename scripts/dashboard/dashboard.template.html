@@ -41,6 +41,15 @@ a{color:inherit;text-decoration:none}
 .shead .hint{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);letter-spacing:.04em}
 .shead .rule{flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
 
+/* ===== 最近动态 时间 badge ===== */
+.rel{display:inline-block;margin-top:3px;padding:1px 5px;border-radius:3px;
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;line-height:1.4;}
+.rt-today{background:rgba(72,201,214,.18);color:var(--cyan);border:1px solid rgba(72,201,214,.35);}
+.rt-1d{background:rgba(72,201,214,.14);color:var(--cyan);border:1px solid rgba(72,201,214,.25);}
+.rt-recent{background:rgba(240,167,60,.12);color:var(--amber);border:1px solid rgba(240,167,60,.25);}
+.rt-mid{background:rgba(154,140,255,.10);color:var(--violet);border:1px solid rgba(154,140,255,.20);}
+.rt-old{background:rgba(154,164,184,.08);color:var(--ink-faint);border:1px solid rgba(154,164,184,.15);}
+
 /* ===== today brief (hero) ===== */
 .brief{background:linear-gradient(135deg,#15171f,#11141b);border:1px solid var(--line);
   border-radius:12px;padding:20px 22px;position:relative;overflow:hidden;margin-top:8px}
@@ -318,28 +327,66 @@ function winLabel(w){return ({0:'今日',1:'近 1 个月',3:'近 3 个月',6:'�
 let feedExpanded=false;
 function renderFeed(){
   const sorted=[...RECORDS].sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
-  const latest=new Date(sorted[0].published_at);
-  document.getElementById('feed-date').textContent=`最新批次 · ${latest.getFullYear()}-${String(latest.getMonth()+1).padStart(2,'0')}-${String(latest.getDate()).padStart(2,'0')}（demo 取全部样本）`;
-  const COLLAPSE=6;
-  const show=feedExpanded?sorted:sorted.slice(0,COLLAPSE);
-  document.getElementById('feed').innerHTML=show.map(r=>{
+  // 静默日不假装: 头部标"最近动态 · N 天前"取代"最新批次 · 今天"
+  if(sorted.length){
+    const top=sorted[0];
+    const now=new Date();
+    const diffMs=now - new Date(top.published_at);
+    const days=Math.floor(diffMs/86400000);
+    const relLabel=days===0?'今天':(days===1?'1 天前':(days<=7?`${days} 天前`:(days<=30?`${days} 天前`:`${days} 天前 (历史)`)));
+    const lastDate=top.published_at.slice(0,10);
+    document.getElementById('feed-date').innerHTML=
+      `最近动态 · 共 ${sorted.length} 条 · 最新 <b style="color:var(--amber)">${relLabel}</b> (${lastDate})`;
+  } else {
+    document.getElementById('feed-date').textContent='最近动态 · 暂无数据';
+  }
+  const COLLAPSE=6, MAX_EXPAND=30;
+  const show=feedExpanded ? sorted.slice(0, MAX_EXPAND) : sorted.slice(0, COLLAPSE);
+  // 静默日 banner
+  let banner='';
+  if(sorted.length){
+    const top=sorted[0];
+    const now=new Date();
+    const todayStart=new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const topDate=new Date(top.published_at);
+    if(topDate < todayStart){
+      const days=Math.floor((now - topDate)/86400000);
+      banner=`<div class="banner-silent">⚠ 4 大V 静默 ${days} 天, 以下为最近动态</div>`;
+    }
+  }
+  document.getElementById('feed').innerHTML=banner + show.map(r=>{
     const c=COLORS[r.kol];const k=KOLS[r.kol];
     const tk=(r.ticker||[]).map(t=>`<span class="tag">${t}</span>`).join('');
     const bk=r.bottleneck?`<span class="tag bk">${r.bottleneck}</span>`:'';
     const dp=r.direction!=='neutral'?`<span class="dirpill ${r.direction}">${r.direction}</span>`:'';
     const flags=[];if(r.is_disc)flags.push('<span class="flag">持仓披露</span>');if(r.is_retro)flags.push('<span class="flag">回顾</span>');if(r.is_selfret)flags.push('<span class="flag">自报收益</span>');
     const rb=r.rebuts?`<div class="frebut">反驳叙事 · ${r.rebuts}</div>`:'';
-    return `<div class="fitem"><div class="ftime">${fmtDate(r.published_at)}<br>${fmtTime(r.published_at)}</div>
+    const now=new Date();
+    const diffMs=now - new Date(r.published_at);
+    const days=Math.floor(diffMs/86400000);
+    let rtLabel, rtCls;
+    if(days===0){rtLabel='今天';rtCls='rt-today';}
+    else if(days===1){rtLabel='1 天前';rtCls='rt-1d';}
+    else if(days<=7){rtLabel=`${days} 天前`;rtCls='rt-recent';}
+    else if(days<=30){rtLabel=`${days} 天前`;rtCls='rt-mid';}
+    else{rtLabel=`${days} 天前`;rtCls='rt-old';}
+    return `<div class="fitem"><div class="ftime">${fmtDate(r.published_at)}<br>${fmtTime(r.published_at)}<br><span class="rel ${rtCls}">${rtLabel}</span></div>
       <div class="frail"><div class="fav" style="background:${c}">${initials(k.name)}</div><div class="fline"></div></div>
       <div class="fbody"><div class="ftop"><span class="fnm">${k.name}</span>${dp}${tk}${bk}${flags.join('')}</div>
         <div class="fsum">${r.summary||r.raw_text||''}</div>${rb}
         <div class="frow"><span class="atb ${r.attribution}">${r.attribution||'NA'}</span><a class="flink" href="${r.raw_url}" target="_blank">view on X ↗</a></div></div></div>`;
   }).join('');
-  const more=sorted.length-COLLAPSE;
-  document.getElementById('feed-toggle').innerHTML=(more>0)?
-    `<button id="ftbtn">${feedExpanded?'收起':'展开全部 '+sorted.length+' 条 ↓'}</button>`:'';
+  const moreExpandable=Math.max(0, sorted.length - MAX_EXPAND);
+  const moreTotal=Math.max(0, sorted.length - COLLAPSE);
+  let btn='';
+  if(feedExpanded && moreExpandable>0){
+    btn=`<button id="ftbtn">收起 (显示前 ${MAX_EXPAND} 条 · 还剩 ${moreExpandable} 条)</button>`;
+  } else if(!feedExpanded && moreTotal>0){
+    btn=`<button id="ftbtn">展开前 ${MAX_EXPAND} 条 (共 ${sorted.length} 条)</button>`;
+  }
+  document.getElementById('feed-toggle').innerHTML=btn;
   const b=document.getElementById('ftbtn');if(b)b.onclick=()=>{feedExpanded=!feedExpanded;renderFeed();};
-  document.getElementById('foot-count').textContent=`${RECORDS.length} extractions`;
+  document.getElementById('foot-count').textContent=`${sorted.length} 条 records`;
 }
 
 /* ---- 04 标的 ---- */
