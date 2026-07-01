@@ -1,15 +1,15 @@
 # 大V情报 — 每日健康速查 (2026-07-01 UTC)
 
-_生成时间: 2026-07-01T08:02:22.436108+00:00_
+_生成时间: 2026-07-01T08:13:21.975323+00:00_
 
 ## ❌ 状态: 2 类异常
 
 ## 1️⃣ Cron 跑没跑 (4 大V last_fetched_at)
 
-  ✅ tw_jukan05: last_fetch 08:01Z (今天)
-  ✅ tw_aleabitoreddit: last_fetch 08:01Z (今天)
-  ✅ tw_zephyr_z9: last_fetch 08:01Z (今天)
-  ✅ tw_austinsemis: last_fetch 08:01Z (今天)
+  ✅ tw_jukan05: last_fetch 08:12Z (今天)
+  ✅ tw_aleabitoreddit: last_fetch 08:12Z (今天)
+  ✅ tw_zephyr_z9: last_fetch 08:12Z (今天)
+  ✅ tw_austinsemis: last_fetch 08:12Z (今天)
 
 ## 2️⃣ 数据增长 (raw_posts + extractions_intel)
 
@@ -29,9 +29,9 @@ _生成时间: 2026-07-01T08:02:22.436108+00:00_
 
 ## 4️⃣ GitHub push 状态 (远端最新 commit)
 
-  ⚠  Local 0690d1a2 != Remote 671476dd
-  ✅ 远端最新 commit: 0.1h 前 (今天)
-  ✅ 最新 commit 是 Daily DB backup
+  ⚠  Local 67577e4f != Remote 3a145019
+  ✅ 远端最新 commit: 0.0h 前 (今天)
+  ⚠  最新 commit 不是 Daily DB backup: Daily intel cron 20260701 07:50 UTC: 4 KOL scrape (0 new, 75 existing skipped) + health check green
 
 ## 异常详情
 
