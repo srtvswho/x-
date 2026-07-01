@@ -59,7 +59,7 @@ echo ""
 echo "=== 阶段 0: 依赖检查 ==="
 python3 -c "import requests, apify_client" 2>/dev/null || {
   echo "  ⚠ 依赖丢失, pip install..."
-  pip3 install --break-system-packages --timeout 300 requests apify-client 2>&1 | tail -3
+  pip3 install --break-system-packages --timeout 60 -i https://mirrors.aliyun.com/pypi/simple/ requests apify-client colorama email-validator 'pydantic-core==2.46.4' annotated-types typing-inspection impit more-itertools 2>&1 | tail -3
   python3 -c "import requests, apify_client; print('  ✓ 依赖恢复')" || {
     echo "  ❌ 依赖装不上, cron 跳过本次"
     exit 1
