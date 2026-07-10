@@ -9,7 +9,14 @@ build_dashboard.py — 每日生成 dashboard.html
 价格查询优化: ticker_prices DB 缓存, 跨 cron 复用 (避免 Polygon 5 req/min 限速导致每次跑 12 分钟).
 """
 import json, sqlite3, datetime, pathlib, os, time
+import sys
+from pathlib import Path
+
 import requests
+
+# 共享窗口函数 — 跟 intel_gen_summaries.py / dashboard.template.html 共用同一窗口
+sys.path.insert(0, str(Path(__file__).parent))
+from common import build_metadata, query_today_stats, query_today_records, cn_today_window_utc  # noqa: E402
 
 DB = "/workspace/data/signalboard_full.db"
 TEMPLATE = pathlib.Path(__file__).with_name("dashboard.template.html")
@@ -587,6 +594,16 @@ def main():
         print(f"  extractions: {len(data)}", flush=True)
         tickers = query_tickers(conn)
         print(f"  tickers: {len(tickers)}", flush=True)
+        # 今日窗口 (北京自然日) 统计 + records + 真实 build metadata
+        today_stats = query_today_stats(conn)
+        today_records = query_today_records(conn)
+        build_meta = build_metadata(conn)
+        print(f"  today (CST): {build_meta['today_date_label']} "
+              f"posts={today_stats['n_posts_today']} "
+              f"directional={today_stats['n_directional_today']} "
+              f"empty_reason={today_stats['empty_reason']!r}", flush=True)
+        print(f"  build time:  {build_meta['build_time_label']} "
+              f"(data_until={build_meta.get('data_until_label')})", flush=True)
         conn.close()
         summaries = load_summaries()
         tickers = _annotate_tickers(tickers)
@@ -595,6 +612,9 @@ def main():
         html = html.replace("__KOLS__",      json.dumps(KOLS, ensure_ascii=False))
         html = html.replace("__TICKERS__",   json.dumps(tickers, ensure_ascii=False))
         html = html.replace("__SUMMARIES__", json.dumps(summaries, ensure_ascii=False))
+        html = html.replace("__TODAY_STATS__",   json.dumps(today_stats, ensure_ascii=False))
+        html = html.replace("__TODAY_RECORDS__", json.dumps(today_records, ensure_ascii=False))
+        html = html.replace("__BUILD_META__",    json.dumps(build_meta, ensure_ascii=False))
         OUT.write_text(html, encoding="utf-8")
         # 检查 null 字样没渲染到 HTML (兜底, 即使前端处理对了)
         with open(OUT, 'r', encoding='utf-8') as f:
