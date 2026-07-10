@@ -31,9 +31,11 @@ from pathlib import Path
 
 import requests
 
-# 共享窗口函数 — 跟 build_dashboard.py 用同一窗口, 不然总结跟明细对不上
+# 共享窗口函数 — 跟 build_dashboard.py / dashboard.template.html / query_today_stats 共用同一窗口
+# today/0M 用 24h 滚动 (不是北京自然日, 因为生产顺序 06:00 抓取 → 06:20 Dashboard,
+# 北京自然日只覆盖 6h, 跟用户视角 "今日" 不符; 24h 滚动跟 cron 节奏对齐)
 sys.path.insert(0, str(Path(__file__).parent))
-from common import cn_today_window_utc, cn_window_long_utc  # noqa: E402
+from common import cn_recent_24h_window_utc, cn_window_long_utc  # noqa: E402
 
 DB_PATH = "/workspace/data/signalboard_full.db"
 OUT_PATH = "/workspace/scripts/dashboard/summaries.json"
@@ -64,16 +66,18 @@ WINDOWS = {"0": 1, "1": 30, "3": 90, "6": 180, "12": 365}
 def get_data_for_window(con: sqlite3.Connection, days: int) -> list[dict]:
     """拿最近 N 天的有效判断 (有 ticker / bottleneck / 非 neutral).
 
-    days=1 → 北京今日 [00:00, 明日 00:00) 自然日窗口 (跟 dashboard 1D 共用)
-    days>1 → 相对滑动窗口: 今天往回推 N 天
+    days=1 → 24h 滚动窗口 [now-24h, now) (跟 dashboard 1D / consensus[0] / person[*][0] 共用)
+    days>1 → 近 N 天滑动窗口: [now-N days, now)
 
-    统一 Asia/Shanghai 时区, 不再用 UTC 24h 滑动.
+    为什么 24h 滚动不是北京自然日:
+    - 生产顺序 06:00 抓取 → 06:20 Dashboard
+    - 北京自然日 [00:00, 06:20) 只覆盖 6h, 不是 "今日总结"
+    - 24h 滚动 [昨日 06:20, 今日 06:20) 跟 cron 节奏对齐, 跟 "上次抓取" 边界对齐
     """
     if days == 1:
-        # 今日 (北京自然日)
-        start_iso, end_iso = cn_today_window_utc()
+        start_iso, end_iso = cn_recent_24h_window_utc()
     else:
-        # 近 N 天 (1M/3M/6M/12M): today 往前推 N 天
+        # 近 N 天 (1M/3M/6M/12M): now 往前推 N 天
         start_iso, end_iso = cn_window_long_utc(days)
     rows = con.execute("""
         SELECT e.post_id, e.source_id, e.direction, e.ticker, e.company,
