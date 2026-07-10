@@ -14,6 +14,11 @@
 
 set -e
 
+# DB_GITHUB_PUSH_DISABLED_BY_POLICY
+# 服务器数据库是唯一权威源。禁止将 DB 或 DB gzip 文件 commit/push 到 GitHub。
+echo "⏭ GitHub DB data push disabled by server-authority policy"
+exit 0
+
 WORKSPACE=/workspace
 DB=$WORKSPACE/data/signalboard_full.db
 GZ=$WORKSPACE/data/signalboard.db.gz
