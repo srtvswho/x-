@@ -26,8 +26,14 @@ import sqlite3
 import sys
 import time
 from datetime import datetime, timezone, timedelta
+import sys
+from pathlib import Path
 
 import requests
+
+# 共享窗口函数 — 跟 build_dashboard.py 用同一窗口, 不然总结跟明细对不上
+sys.path.insert(0, str(Path(__file__).parent))
+from common import cn_today_window_utc, cn_window_long_utc  # noqa: E402
 
 DB_PATH = "/workspace/data/signalboard_full.db"
 OUT_PATH = "/workspace/scripts/dashboard/summaries.json"
@@ -50,13 +56,25 @@ KOLS = {
               "weak": ["看多龙头(跑输板块)", "看空全错(1/8)"]},
 }
 
-# 时间窗 (单位: 天)
+# 时间窗 (单位: 天) — "0" 跟 "1" 实际都是 1 (北京今日),
+# 但 "1M/3M/6M/12M" 是相对滑动窗口 (今天往前推 N 天)
 WINDOWS = {"0": 1, "1": 30, "3": 90, "6": 180, "12": 365}
 
 
 def get_data_for_window(con: sqlite3.Connection, days: int) -> list[dict]:
-    """拿最近 N 天的有效判断 (有 ticker / bottleneck / 非 neutral)."""
-    cutoff = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat()
+    """拿最近 N 天的有效判断 (有 ticker / bottleneck / 非 neutral).
+
+    days=1 → 北京今日 [00:00, 明日 00:00) 自然日窗口 (跟 dashboard 1D 共用)
+    days>1 → 相对滑动窗口: 今天往回推 N 天
+
+    统一 Asia/Shanghai 时区, 不再用 UTC 24h 滑动.
+    """
+    if days == 1:
+        # 今日 (北京自然日)
+        start_iso, end_iso = cn_today_window_utc()
+    else:
+        # 近 N 天 (1M/3M/6M/12M): today 往前推 N 天
+        start_iso, end_iso = cn_window_long_utc(days)
     rows = con.execute("""
         SELECT e.post_id, e.source_id, e.direction, e.ticker, e.company,
                e.bottleneck, e.attribution, e.rebuts_narrative, e.summary_100,
@@ -64,11 +82,11 @@ def get_data_for_window(con: sqlite3.Connection, days: int) -> list[dict]:
                r.published_at, substr(r.raw_text, 1, 300) as raw_text
         FROM extractions_intel e
         JOIN raw_posts r ON r.post_id = e.post_id
-        WHERE r.published_at >= ?
+        WHERE r.published_at >= ? AND r.published_at < ?
           AND (e.ticker IS NOT NULL OR e.bottleneck IS NOT NULL OR e.direction != 'neutral')
         ORDER BY r.published_at DESC
         LIMIT 200
-    """, (cutoff,)).fetchall()
+    """, (start_iso, end_iso)).fetchall()
     out = []
     SRC2KOL = {  # source_id → 短名 (跟 build_dashboard.py 一致)
         "tw_jukan05": "jukan", "tw_aleabitoreddit": "serenity",
