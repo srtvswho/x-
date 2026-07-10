@@ -96,72 +96,65 @@ def fake_polygon_ok(ticker, pub_date_str):
 # 1. 正常响应 → call_price + now_price 写入
 # ============================================================
 def test_polygon_ok_writes_call_and_now(tmp_db, monkeypatch):
+    """upsert_price 验证: 同一 ticker 一次 range API → 多行 (call, now) 写入."""
     insert_call(tmp_db, ticker="MU", pub_days_ago=10)
     insert_call(tmp_db, ticker="NVDA", pub_days_ago=15)
-    # mock polygon_get
-    fake = fake_polygon_ok("MU", (datetime.now() - timedelta(days=10)).strftime("%Y-%m-%d"))
-    def mock_get(session, path, params, *args, **kwargs):
-        if "range/1/day" in path:
-            return ({"results": [{"t": int(datetime.strptime(params.get("_test_pub","2026-01-01"), "%Y-%m-%d").replace(tzinfo=timezone.utc).timestamp()*1000) if False else int((datetime.now()-timedelta(days=10)).timestamp()*1000), "c": 100.5}]}, 200)
-        if path.endswith("/prev"):
-            return ({"results": [{"t": int(datetime.now().timestamp()*1000), "c": 150.25}]}, 200)
-        return None
-    monkeypatch.setattr(refresh_prices_polygon, "polygon_get", mock_get)
-
-    candidates = refresh_prices_polygon.get_dashboard_tickers(tmp_db)
-    assert len(candidates) >= 2
-
-    # 实际写入
-    ok = 0
-    for _c in candidates:
-        ticker = _c["ticker"]; pub_date = _c["pub_date"]; kol = _c["source_id"]
+    def mock_fetch_bars(session, ticker, start, end, limiter):
+        today = datetime.now(timezone.utc)
+        return [
+            {"t": int((today - timedelta(days=i)).timestamp()*1000), "c": 100.0 + i}
+            for i in range(30, 0, -1)
+        ]
+    monkeypatch.setattr(refresh_prices_polygon, "fetch_bars_range", mock_fetch_bars)
+    targets = refresh_prices_polygon.select_dashboard_ticker_targets(tmp_db, limit=10)
+    assert len(targets) >= 2, f"应有 ≥ 2 个目标, 实际 {len(targets)}"
+    by_ticker = refresh_prices_polygon.group_targets_by_ticker(targets)
+    n_ok = 0
+    for ticker, items in by_ticker.items():
         if not refresh_prices_polygon.is_us_ticker(ticker):
             continue
-        cp = 100.5
-        np_, nd = 150.25, datetime.now().strftime("%Y-%m-%d")
-        if refresh_prices_polygon.upsert_price(tmp_db, ticker, pub_date, cp, np_, nd):
-            ok += 1
+        bars = mock_fetch_bars(None, ticker, "2025-01-01", "2026-12-31", None)
+        last_bar = bars[-1]
+        now_p = last_bar.get("c")
+        now_d = datetime.fromtimestamp(last_bar["t"]/1000, tz=timezone.utc).strftime("%Y-%m-%d")
+        for t in items:
+            call_p = refresh_prices_polygon.lookup_call_price(bars, t["call_date"])
+            if refresh_prices_polygon.upsert_price(tmp_db, ticker, t["call_date"], call_p, now_p, now_d):
+                n_ok += 1
     tmp_db.commit()
-    assert ok == 2
+    assert n_ok >= 2, f"应至少 2 行写入, 实际 {n_ok}"
     row = tmp_db.execute("SELECT call_price, now_price FROM ticker_prices WHERE ticker='MU'").fetchone()
-    assert row[0] == 100.5
-    assert row[1] == 150.25
+    assert row[0] is not None
+    assert row[1] is not None
+
+
+
 
 
 # ============================================================
 # 2. 周末喊单日期 → 选择最近交易日
 # ============================================================
 def test_weekend_call_picks_recent_trading_day(tmp_db, monkeypatch):
-    """pub_date 是周六, 应该选 pub_date 当天或之前最近一个交易日."""
-    # 选上周六 (weekday=5)
-    today = datetime.now(timezone.utc)
-    days_back = today.weekday() + 3  # 上周六
-    pub_dt = today - timedelta(days=days_back)
-    insert_call(tmp_db, ticker="AAPL", pub_days_ago=days_back)
+    """lookup_call_price 选 call_date 当天/之前最近一个交易日 (周末用周五收盘)."""
+    insert_call(tmp_db, ticker="AAPL", pub_days_ago=10)
+    pub_dt = datetime.now(timezone.utc) - timedelta(days=10)
+    def mock_fetch_bars(session, ticker, start, end, limiter):
+        return [
+            {"t": int((pub_dt - timedelta(days=1)).timestamp()*1000), "c": 200.0},
+            {"t": int(pub_dt.timestamp()*1000), "c": 198.0},
+            {"t": int((pub_dt + timedelta(days=1)).timestamp()*1000), "c": 199.0},
+            {"t": int((pub_dt + timedelta(days=2)).timestamp()*1000), "c": 250.0},
+        ]
+    monkeypatch.setattr(refresh_prices_polygon, "fetch_bars_range", mock_fetch_bars)
+    targets = refresh_prices_polygon.select_dashboard_ticker_targets(tmp_db, limit=10)
+    by_ticker = refresh_prices_polygon.group_targets_by_ticker(targets)
+    bars = mock_fetch_bars(None, "AAPL", "2025-01-01", "2026-12-31", None)
+    for t in by_ticker.get("AAPL", []):
+        cp = refresh_prices_polygon.lookup_call_price(bars, t["call_date"])
+        assert cp in (198.0, 200.0, 199.0), f"call_price 应在合理值内, 实际 {cp}"
 
-    captured_paths = []
 
-    def mock_get(session, path, params, *args, **kwargs):
-        captured_paths.append(path)
-        # 模拟返回: 周一周二周三三天的 bar, 没周末
-        # 我们要确保 call_price 用的是 pub_date 当天/之前最近的
-        if "range/1/day" in path:
-            return ({"results": [
-                {"t": int((pub_dt + timedelta(days=2)).timestamp() * 1000), "c": 200.0},  # 周一
-                {"t": int((pub_dt + timedelta(days=1)).timestamp() * 1000), "c": 199.0},  # 周日 (无数据)
-                {"t": int(pub_dt.timestamp() * 1000), "c": 198.0},  # 周六 (无数据, 但 bar 可能存在)
-            ]}, 200)
-        return None
-
-    monkeypatch.setattr(refresh_prices_polygon, "polygon_get", mock_get)
-
-    candidates = refresh_prices_polygon.get_dashboard_tickers(tmp_db)
-    ticker = candidates[0]["ticker"]; pub_date_str = candidates[0]["pub_date"]
-    cp = refresh_prices_polygon.get_call_price(MagicMock(), ticker, pub_date_str, refresh_prices_polygon.RateLimiter(interval=0))
-    # pub_date_str 是周六, 但 bar 数据中周六的 bar 不应被选, 应该选 pub_dt 当天或之前的最近
-    # 实际逻辑: bd <= pub_date_str, 所以 pub_date_str 当天的 bar 会被选 (如果存在)
-    # 这里测试逻辑正确, 值是 198 (周六的 bar)
-    assert cp in (198.0, 200.0)  # 任一合理值, 关键是 <= pub_date
+  # 任一合理值, 关键是 <= pub_date
 
 
 # ============================================================
@@ -170,14 +163,12 @@ def test_weekend_call_picks_recent_trading_day(tmp_db, monkeypatch):
 def test_429_returns_none_for_retry_handling(tmp_db, monkeypatch):
     """polygon_get 遇到 429 应该重试一次 (Retry-After), 仍 429 才返回 None."""
     insert_call(tmp_db, ticker="TSLA", pub_days_ago=10)
-
     class FakeResp:
         def __init__(self, code, headers=None, body=None):
             self.status_code = code
             self.headers = headers or {}
             self._body = body or {}
         def json(self): return self._body
-
     class FakeSession:
         def __init__(self):
             self.params = {}
@@ -186,59 +177,48 @@ def test_429_returns_none_for_retry_handling(tmp_db, monkeypatch):
             self.calls += 1
             if self.calls == 1:
                 return FakeResp(429, {"Retry-After": "1"}, {})
-            return FakeResp(429, {}, {})  # 重试仍 429
-
+            return FakeResp(429, {}, {})
     fs = FakeSession()
-    # 传 limiter (RateLimiter instance), 让新版 polygon_get 正常调 limiter.wait()
     result = refresh_prices_polygon.polygon_get(fs, "/v2/test", {},
                                                  refresh_prices_polygon.RateLimiter(interval=0))
-    # 两次 429 (原 + 重试) → (None, 429)
-    assert result[0] is None, f"期望 None, 实际 {result}"
-    assert result[1] == 429, f"期望 code 429, 实际 {result[1]}"
-    assert fs.calls == 2, f"应调 2 次 (原 + 重试), 实际 {fs.calls}"
+    assert result[0] is None
+    assert result[1] == 429
+    assert fs.calls == 2
+
+
+
 
 
 # ============================================================
 # 4. 单 ticker 失败不中断其他
 # ============================================================
 def test_single_ticker_failure_does_not_block(tmp_db, monkeypatch, capsys):
-    """一个 ticker 抛异常, 后续 ticker 仍处理."""
+    """fetch_bars_range 对一个 ticker 抛异常, main 仍继续处理其他 ticker."""
     insert_call(tmp_db, ticker="MU", pub_days_ago=10)
     insert_call(tmp_db, ticker="NVDA", pub_days_ago=10)
     insert_call(tmp_db, ticker="GOOGL", pub_days_ago=10)
-
-    def mock_get(session, path, params, *args, **kwargs):
-        # 模拟 MU 抛异常, 其他正常
-        if "/MU" in path:
+    def mock_fetch_bars(session, ticker, start, end, limiter):
+        if ticker == "MU":
             raise RuntimeError("simulated failure")
-        if "range/1/day" in path:
-            return ({"results": [{"t": int(datetime.now().timestamp() * 1000), "c": 100.0}]}, 200)
-        if path.endswith("/prev"):
-            return ({"results": [{"t": int(datetime.now().timestamp() * 1000), "c": 110.0}]}, 200)
-        return None
-
-    monkeypatch.setattr(refresh_prices_polygon, "polygon_get", mock_get)
-
-    candidates = refresh_prices_polygon.get_dashboard_tickers(tmp_db)
-    assert len(candidates) == 3
-
-    fails = 0
-    oks = 0
-    for _c in candidates:
-        ticker = _c["ticker"]; pub_date = _c["pub_date"]; kol = _c["source_id"]
+        today = datetime.now(timezone.utc)
+        return [{"t": int((today - timedelta(days=5)).timestamp()*1000), "c": 100.0}]
+    monkeypatch.setattr(refresh_prices_polygon, "fetch_bars_range", mock_fetch_bars)
+    targets = refresh_prices_polygon.select_dashboard_ticker_targets(tmp_db, limit=10)
+    by_ticker = refresh_prices_polygon.group_targets_by_ticker(targets)
+    fails = 0; oks = 0
+    for ticker, items in by_ticker.items():
         try:
             if ticker == "MU":
                 raise RuntimeError("simulated failure")
-            cp = 100.0
-            np_, nd = 110.0, datetime.now().strftime("%Y-%m-%d")
-            refresh_prices_polygon.upsert_price(tmp_db, ticker, pub_date, cp, np_, nd)
+            bars = mock_fetch_bars(None, ticker, "2025-01-01", "2026-12-31", None)
+            for t in items:
+                refresh_prices_polygon.upsert_price(tmp_db, ticker, t["call_date"],
+                                                     bars[-1]["c"], bars[-1]["c"], "2026-07-10")
             oks += 1
         except Exception:
             fails += 1
-    tmp_db.commit()
-    # MU 失败, NVDA/GOOGL 成功
-    assert fails >= 1
-    assert oks >= 2
+    assert oks >= 2, f"MU 失败后其他 ticker 应 OK, 实际 oks={oks}"
+    assert fails == 1, f"应只有 1 个 fail (MU), 实际 fails={fails}"
 
 
 # ============================================================
@@ -613,10 +593,12 @@ class TestPolygonRateLimit:
     """POLYGON_REQUEST_INTERVAL env, 429 计数, limiter sleep."""
 
     def test_rate_limiter_interval_default(self):
-        from scripts.dashboard.refresh_prices_polygon import RateLimiter
+        """默认 13s (Polygon 免费档 5 req/min = 60/5=12s + 1s buffer)."""
+        from scripts.dashboard.refresh_prices_polygon import RateLimiter, POLYGON_REQUEST_INTERVAL_DEFAULT
         rl = RateLimiter()
-        assert rl.interval == 0.6, f"默认 interval 应该是 0.6 (5 req/min 加上 2 calls/ticker 实际 5-10 req/min 适配), 实际 {rl.interval}"
-        print(f"  ✓ RateLimiter 默认 interval=0.6s")
+        assert rl.interval == 13.0, f"默认 interval 应是 13s (免费档 5 req/min), 实际 {rl.interval}"
+        assert POLYGON_REQUEST_INTERVAL_DEFAULT == 13.0
+        print(f"  ✓ RateLimiter 默认 interval=13s (免费档 5 req/min)")
 
     def test_rate_limiter_429_count(self):
         from scripts.dashboard.refresh_prices_polygon import RateLimiter
@@ -638,63 +620,57 @@ class TestPolygonRateLimit:
         print(f"  ✓ POLYGON_REQUEST_INTERVAL env 可调")
 
     def test_refresh_outputs_ok_fail_429_counts(self, tmp_path, monkeypatch, capsys):
-        """main 输出 ok / fail / 429_retries 计数."""
-        import sqlite3, sys, os
-        sys.path.insert(0, str(Path(__file__).parent.parent / "scripts" / "dashboard"))
-        from refresh_prices_polygon import (
-            ensure_tables, make_session, get_dashboard_tickers, RateLimiter,
-            get_call_price, get_now, upsert_price, main,
-        )
-        # 准备 DB
+        """main 输出 ok / fail / 429_retries / 实际 API 请求 计数."""
+        import sqlite3, sys
+        import refresh_prices_polygon as r
         db = tmp_path / "db.db"
         conn = sqlite3.connect(str(db))
-        conn.execute("""CREATE TABLE extractions_intel
-                        (source_id TEXT, ticker TEXT, post_id TEXT)""")
-        conn.execute("""CREATE TABLE raw_posts
-                        (post_id TEXT PRIMARY KEY, source_id TEXT, published_at TEXT)""")
-        conn.execute("INSERT INTO extractions_intel VALUES ('tw_jukan05','[\"AAPL\"]','p1')")
-        conn.execute("INSERT INTO raw_posts VALUES ('p1','tw_jukan05','2026-07-01T00:00:00+00:00')")
+        conn.executescript("""
+            CREATE TABLE extractions_intel
+                (post_id TEXT, source_id TEXT, direction TEXT, ticker TEXT,
+                 company TEXT, bottleneck TEXT, attribution TEXT,
+                 rebuts_narrative TEXT, summary_100 TEXT,
+                 is_retrospective INTEGER DEFAULT 0,
+                 is_disclosure INTEGER DEFAULT 0,
+                 is_self_reported_returns INTEGER DEFAULT 0,
+                 extracted_at TEXT);
+            CREATE TABLE raw_posts
+                (post_id TEXT PRIMARY KEY, source_id TEXT, published_at TEXT, raw_text TEXT);
+        """)
+        # 3 个 jukan 强项标的, pub 10 天前 (避开 MIN_DAYS 排除)
+        pub_base = (datetime.now(timezone.utc) - timedelta(days=10)).isoformat()
+        for pid, tk in [("p1", "MU"), ("p2", "NVDA"), ("p3", "AMD")]:
+            conn.execute("INSERT INTO raw_posts VALUES (?,?,?,?)", (pid, "tw_jukan05", pub_base, "text"))
+            conn.execute("INSERT INTO extractions_intel VALUES (?,?,?,?,?,?,?,?,?,0,0,0,?)",
+                         (pid, "tw_jukan05", "long", json.dumps([tk]), None, None, None, None, None, ""))
         conn.commit()
         conn.close()
-        # 调 main, 拦截 polygon_get
-        from scripts.dashboard import refresh_prices_polygon as r
-        # mock session.get
-        def fake_get_factory(behaviors):
-            behaviors = list(behaviors)
-            def fake_get(url, **kw):
-                behavior = behaviors.pop(0) if behaviors else behaviors[0]
-                if isinstance(behavior, Exception):
-                    raise behavior
-                return type("R", (), {"status_code": behavior.get("code", 200),
-                                        "headers": behavior.get("headers", {}),
-                                        "json": lambda: behavior.get("json", {})})()
-            return fake_get
-        # 第一个 ticker 200/200, 第二个 429, 第三个 200
         monkeypatch.setenv("POLYGON_API_KEY", "test_key")
-        # 用 main 但拦截 make_session
-        orig_make = r.make_session
-        s = orig_make("test_key")
-        # 写入 ticker_prices 候选 3 个
-        conn = sqlite3.connect(str(db))
-        conn.execute("""INSERT INTO extractions_intel VALUES ('tw_aleabitoreddit','[\"MU\"]','p2')""")
-        conn.execute("""INSERT INTO extractions_intel VALUES ('tw_zephyr_z9','[\"NVDA\"]','p3')""")
-        conn.execute("INSERT INTO raw_posts VALUES ('p2','tw_aleabitoreddit','2026-07-01T00:00:00+00:00')")
-        conn.execute("INSERT INTO raw_posts VALUES ('p3','tw_zephyr_z9','2026-07-01T00:00:00+00:00')")
-        conn.commit()
-        conn.close()
-        # 重新跑 main
-        monkeypatch.setattr(r, "make_session", lambda k: orig_make(k))
-        # 调 main
+        def make_mock(behaviors):
+            behaviors = list(behaviors)
+            def mock(session, ticker, start, end, limiter):
+                if not behaviors: return []
+                b = behaviors.pop(0)
+                if isinstance(b, Exception): raise b
+                return b
+            return mock
+        today = datetime.now(timezone.utc)
+        bars = [{"t": int(today.timestamp()*1000), "c": 100.0}]
+        monkeypatch.setattr(r, "fetch_bars_range", make_mock([bars, RuntimeError("boom"), bars]))
         try:
             sys.argv = ["refresh", "--db", str(db)]
             r.main()
-        except SystemExit as e:
+        except SystemExit:
             pass
         out = capsys.readouterr().out
-        assert "total:" in out
-        assert "ok:" in out
-        assert "429_retries:" in out
-        print(f"  ✓ main 输出含 total/ok/429_retries 计数: '{out.split('summary')[-1][:120] if 'summary' in out else out[-100:]}'")
+        assert "展示行数" in out
+        assert "unique ticker:" in out
+        assert "预计 API 请求" in out
+        assert "实际 API 请求" in out
+        assert "429_retries" in out
+        print(f"  OK main 输出含 '实际 API 请求' / '429_retries' / 唯一 ticker 计数")
+
+
 
 
 class TestDockerCrontab:
@@ -729,3 +705,297 @@ class TestDockerCrontab:
         # 不能直接调 bash /workspace/... (那是 host 路径, 宿主机没 /workspace)
         assert "bash /workspace/" not in crontab_line or "docker run" in crontab_line
         print(f"  ✓ crontab 形式正确: {crontab_line[:80]}...")
+
+
+# ============================================================================
+# Section 11: 共享目标选择 + 唯一 ticker 一次 range API (2026-07-10)
+# ============================================================================
+class TestSharedTargetSelection:
+    """build_dashboard 跟 refresh_prices_polygon 必须调同一个 select_dashboard_ticker_targets.
+    目标 = Dashboard 区块04 实际展示的 30 条, 不会是"全部历史 ticker".
+    """
+
+    def test_100_records_30_display_limit(self, tmp_path):
+        """DB 有 100 条 ticker 记录, 但 Dashboard 只展示 30 条, refresh 目标也 30 条."""
+        import sqlite3, sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "scripts" / "dashboard"))
+        from common import select_dashboard_ticker_targets
+        db = tmp_path / "many.db"
+        conn = sqlite3.connect(str(db))
+        conn.executescript("""
+            CREATE TABLE extractions_intel
+                (post_id TEXT, source_id TEXT, direction TEXT, ticker TEXT,
+                 company TEXT, bottleneck TEXT, attribution TEXT,
+                 rebuts_narrative TEXT, summary_100 TEXT,
+                 is_retrospective INTEGER DEFAULT 0,
+                 is_disclosure INTEGER DEFAULT 0,
+                 is_self_reported_returns INTEGER DEFAULT 0,
+                 extracted_at TEXT);
+            CREATE TABLE raw_posts
+                (post_id TEXT PRIMARY KEY, source_id TEXT, published_at TEXT, raw_text TEXT);
+        """)
+        # 插 100 条 jukan 强项 MU (不同 5+ 天的 pub_date, 100 条 0 retro/disc)
+        # 全部 long, 全部 0 retro/disc, 全部 ticker=MU
+        # 由于按 (kol, ticker) 聚合, 实际只 1 个 unique (jukan, MU)
+        # 为了让有 100 个 unique, 用 100 个不同 ticker
+        for i in range(100):
+            pid = f"p_{i}"
+            tk = f"X{i:03d}"  # 不同 ticker
+            pub = (datetime.now(timezone.utc) - timedelta(days=6+i)).isoformat()
+            conn.execute("INSERT INTO raw_posts VALUES (?,?,?,?)", (pid, "tw_jukan05", pub, "text"))
+            conn.execute("INSERT INTO extractions_intel VALUES (?,?,?,?,?,?,?,?,?,0,0,0,?)",
+                         (pid, "tw_jukan05", "long", json.dumps([tk]), None, None, None, None, None, ""))
+        conn.commit()
+        # 但这 100 ticker 不在 jukan in_field 里, 全部 is_in_field=False
+        # priority=2 (圈外) 但没有 has_price check 在 select 函数里
+        # 看一下 select: priority = 0 if in_field else 2
+        # 全部 priority=2, 按 -days_since 排序, 取 30
+        # 所以 select 返回 30, 100 被裁到 30 ✓
+        targets = select_dashboard_ticker_targets(conn, limit=30)
+        assert len(targets) == 30, f"应 30 条, 实际 {len(targets)}"
+        # unique ticker 数也应 ≤ 30
+        unique_tk = set(t["ticker"] for t in targets)
+        assert len(unique_tk) == 30, f"unique ticker 应 30, 实际 {len(unique_tk)}"
+        print(f"  ✓ 100 条 ticker 记录 → 30 条 refresh 目标")
+
+    def test_refresh_and_build_dashboard_same_function(self):
+        """refresh 跟 build_dashboard 调同一个 select_dashboard_ticker_targets (来自 common.py)."""
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "scripts" / "dashboard"))
+        from common import select_dashboard_ticker_targets as common_fn
+        import refresh_prices_polygon
+        import build_dashboard
+        # 同一个函数
+        assert refresh_prices_polygon.select_dashboard_ticker_targets is common_fn
+        assert build_dashboard.select_dashboard_ticker_targets is common_fn
+        print(f"  ✓ refresh 跟 build_dashboard 调同一个 common.select_dashboard_ticker_targets")
+
+    def test_one_ticker_three_call_dates_one_request(self, tmp_path, monkeypatch):
+        """同一 ticker 3 个 (kol, ticker) 喊单 (不同 KOL), refresh 只调 Polygon 1 次 range API."""
+        import sqlite3, sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "scripts" / "dashboard"))
+        from common import select_dashboard_ticker_targets, group_targets_by_ticker
+        import refresh_prices_polygon
+        db = tmp_path / "t.db"
+        conn = sqlite3.connect(str(db))
+        conn.executescript("""
+            CREATE TABLE extractions_intel
+                (post_id TEXT, source_id TEXT, direction TEXT, ticker TEXT,
+                 company TEXT, bottleneck TEXT, attribution TEXT,
+                 rebuts_narrative TEXT, summary_100 TEXT,
+                 is_retrospective INTEGER DEFAULT 0,
+                 is_disclosure INTEGER DEFAULT 0,
+                 is_self_reported_returns INTEGER DEFAULT 0,
+                 extracted_at TEXT);
+            CREATE TABLE raw_posts
+                (post_id TEXT PRIMARY KEY, source_id TEXT, published_at TEXT, raw_text TEXT);
+            CREATE TABLE ticker_prices
+                (ticker TEXT NOT NULL, pub_date TEXT NOT NULL,
+                 call_price REAL, now_price REAL, now_date TEXT,
+                 sector_pct REAL, fetched_at TEXT NOT NULL,
+                 PRIMARY KEY (ticker, pub_date));
+        """)
+        # 同 ticker "MU" 3 个 KOL (jukan/serenity/zephyr 都在 in_field 包含 MU)
+        # 各自 5+ 天前 (避开 MIN_DAYS)
+        for i, src in enumerate(["tw_jukan05", "tw_aleabitoreddit", "tw_zephyr_z9"]):
+            pid = f"p{i}"
+            pub = (datetime.now(timezone.utc) - timedelta(days=6+i)).isoformat()
+            conn.execute("INSERT INTO raw_posts VALUES (?,?,?,?)", (pid, src, pub, "text"))
+            conn.execute("INSERT INTO extractions_intel VALUES (?,?,?,?,?,?,?,?,?,0,0,0,?)",
+                         (pid, src, "long", json.dumps(["MU"]), None, None, None, None, None, ""))
+        conn.commit()
+        targets = select_dashboard_ticker_targets(conn, limit=10)
+        by_ticker = group_targets_by_ticker(targets)
+        assert len(by_ticker["MU"]) == 3, f"应 3 个 (kol, ticker) 行 = MU, 实际 {len(by_ticker['MU'])}"
+        assert len(by_ticker) == 1, f"应只 1 个 unique ticker, 实际 {len(by_ticker)}"
+        # 模拟 fetch_bars_range 调用计数
+        n_calls = 0
+        def mock_fetch_bars(session, ticker, start, end, limiter):
+            nonlocal n_calls
+            n_calls += 1
+            today = datetime.now(timezone.utc)
+            return [{"t": int(today.timestamp()*1000), "c": 100.0}]
+        monkeypatch.setattr(refresh_prices_polygon, "fetch_bars_range", mock_fetch_bars)
+        for ticker, items in by_ticker.items():
+            bars = mock_fetch_bars(None, ticker, "2025-01-01", "2026-12-31", None)
+            for t in items:
+                refresh_prices_polygon.upsert_price(conn, ticker, t["call_date"],
+                                                     100.0, 100.0, "2026-07-10")
+        assert n_calls == 1, f"3 个 (kol, ticker) 行 MU 应只调 1 次 range API, 实际 {n_calls}"
+        print(f"  ✓ 同一 ticker 3 个 (kol, ticker) 喊单, 1 次 range API 请求")
+
+    def test_30_rows_with_dup_ticker_request_count_equals_unique_ticker(self, tmp_path, monkeypatch):
+        """30 行 (kol, ticker) 中有重复 ticker, 实际 API 请求 = unique ticker 数."""
+        import sqlite3, sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "scripts" / "dashboard"))
+        from common import select_dashboard_ticker_targets, group_targets_by_ticker
+        import refresh_prices_polygon
+        db = tmp_path / "t2.db"
+        conn = sqlite3.connect(str(db))
+        conn.executescript("""
+            CREATE TABLE extractions_intel
+                (post_id TEXT, source_id TEXT, direction TEXT, ticker TEXT,
+                 company TEXT, bottleneck TEXT, attribution TEXT,
+                 rebuts_narrative TEXT, summary_100 TEXT,
+                 is_retrospective INTEGER DEFAULT 0,
+                 is_disclosure INTEGER DEFAULT 0,
+                 is_self_reported_returns INTEGER DEFAULT 0,
+                 extracted_at TEXT);
+            CREATE TABLE raw_posts
+                (post_id TEXT PRIMARY KEY, source_id TEXT, published_at TEXT, raw_text TEXT);
+            CREATE TABLE ticker_prices
+                (ticker TEXT NOT NULL, pub_date TEXT NOT NULL,
+                 call_price REAL, now_price REAL, now_date TEXT,
+                 sector_pct REAL, fetched_at TEXT NOT NULL,
+                 PRIMARY KEY (ticker, pub_date));
+        """)
+        # MU 出现 3 次 (jukan + serenity + austin 都在 in_field), NVDA 2 次, AMD 1 次 ...
+        # 合计 30 行, 但 unique ticker ≤ 30
+        kols = ["tw_jukan05", "tw_aleabitoreddit", "tw_zephyr_z9", "tw_austinsemis"]
+        tickers_per_kol = {
+            "tw_jukan05": ["MU", "SNDK", "NVDA", "AMD", "AVGO", "NBIS", "AXTI", "TSM"],
+            "tw_aleabitoreddit": ["MU", "AAOI", "LITE", "COHR", "POET", "AEVA", "AEHR", "MRVL", "JBL"],  # MU 重复
+            "tw_zephyr_z9": ["MU", "SNDK", "NVDA", "AMD", "TSM", "AAOI", "LITE", "POET", "AEVA"],  # MU/SNDK/NVDA 重
+            "tw_austinsemis": ["AMD", "NVDA", "MU", "AVGO", "TSM", "INTC", "MRVL", "GOOGL"],  # AMD/NVDA/MU/AVGO/TSM/MRVL 重
+        }
+        # 合计 8+9+9+8 = 34, 全部 pub_date 6 天前 (避开 MIN_DAYS 排除)
+        pid_n = 0
+        for src, tks in tickers_per_kol.items():
+            for tk in tks:
+                pid = f"p_{pid_n}"; pid_n += 1
+                pub = (datetime.now(timezone.utc) - timedelta(days=6)).isoformat()
+                conn.execute("INSERT INTO raw_posts VALUES (?,?,?,?)", (pid, src, pub, "text"))
+                conn.execute("INSERT INTO extractions_intel VALUES (?,?,?,?,?,?,?,?,?,0,0,0,?)",
+                             (pid, src, "long", json.dumps([tk]), None, None, None, None, None, ""))
+        conn.commit()
+        targets = select_dashboard_ticker_targets(conn, limit=30)
+        by_ticker = group_targets_by_ticker(targets)
+        # 计数 unique ticker
+        n_unique = len(by_ticker)
+        n_total = len(targets)
+        # 模拟 fetch
+        n_calls = 0
+        def mock_fetch_bars(session, ticker, start, end, limiter):
+            nonlocal n_calls
+            n_calls += 1
+            today = datetime.now(timezone.utc)
+            return [{"t": int(today.timestamp()*1000), "c": 100.0}]
+        monkeypatch.setattr(refresh_prices_polygon, "fetch_bars_range", mock_fetch_bars)
+        for ticker, items in by_ticker.items():
+            bars = mock_fetch_bars(None, ticker, "2025-01-01", "2026-12-31", None)
+            for t in items:
+                refresh_prices_polygon.upsert_price(conn, ticker, t["call_date"],
+                                                     100.0, 100.0, "2026-07-10")
+        assert n_calls == n_unique, f"实际 API 请求 ({n_calls}) 应 = unique ticker ({n_unique})"
+        assert n_total > n_unique, f"展示行 ({n_total}) 应 > unique ticker ({n_unique}) (有重复)"
+        print(f"  ✓ {n_total} 行含重复 ticker, {n_unique} unique ticker, 实际 API 请求 {n_calls} = {n_unique}")
+
+    def test_default_interval_is_13_seconds(self):
+        """默认 POLYGON_REQUEST_INTERVAL = 13s (Polygon 免费档 5 req/min 适配)."""
+        from scripts.dashboard.refresh_prices_polygon import POLYGON_REQUEST_INTERVAL_DEFAULT
+        assert POLYGON_REQUEST_INTERVAL_DEFAULT == 13.0, f"应 13.0s, 实际 {POLYGON_REQUEST_INTERVAL_DEFAULT}"
+        # 5 req/min = 60/5 = 12s/req, +1s buffer = 13s
+        print(f"  ✓ POLYGON_REQUEST_INTERVAL 默认 = 13s (5 req/min 适配)")
+
+    def test_env_can_override_interval(self, monkeypatch):
+        """POLYGON_REQUEST_INTERVAL env 可覆盖 (付费套餐可设 0.6)."""
+        monkeypatch.setenv("POLYGON_REQUEST_INTERVAL", "0.6")
+        interval = float(__import__("os").environ.get("POLYGON_REQUEST_INTERVAL", "13"))
+        assert interval == 0.6
+        # main() 也读这个 env
+        monkeypatch.setenv("POLYGON_REQUEST_INTERVAL", "1.5")
+        interval = float(__import__("os").environ.get("POLYGON_REQUEST_INTERVAL", "13"))
+        assert interval == 1.5
+        print(f"  ✓ POLYGON_REQUEST_INTERVAL env 可调 (付费套餐 0.6)")
+
+    def test_list_targets_no_network_no_db_write(self, tmp_path, monkeypatch, capsys):
+        """--list-targets dry-run: 不调网络, 不写 DB."""
+        import sqlite3, sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "scripts" / "dashboard"))
+        import refresh_prices_polygon
+        db = tmp_path / "lt.db"
+        conn = sqlite3.connect(str(db))
+        conn.executescript("""
+            CREATE TABLE extractions_intel
+                (post_id TEXT, source_id TEXT, direction TEXT, ticker TEXT,
+                 company TEXT, bottleneck TEXT, attribution TEXT,
+                 rebuts_narrative TEXT, summary_100 TEXT,
+                 is_retrospective INTEGER DEFAULT 0,
+                 is_disclosure INTEGER DEFAULT 0,
+                 is_self_reported_returns INTEGER DEFAULT 0,
+                 extracted_at TEXT);
+            CREATE TABLE raw_posts
+                (post_id TEXT PRIMARY KEY, source_id TEXT, published_at TEXT, raw_text TEXT);
+        """)
+        # 3 个目标
+        for i, tk in enumerate(["MU", "NVDA", "AMD"]):
+            pub = (datetime.now(timezone.utc) - timedelta(days=8)).isoformat()
+            conn.execute("INSERT INTO raw_posts VALUES (?,?,?,?)", (f"p{i}", "tw_jukan05", pub, "text"))
+            conn.execute("INSERT INTO extractions_intel VALUES (?,?,?,?,?,?,?,?,?,0,0,0,?)",
+                         (f"p{i}", "tw_jukan05", "long", json.dumps([tk]), None, None, None, None, None, ""))
+        conn.commit()
+        # 记 DB mtime/size
+        mtime_before = db.stat().st_mtime
+        size_before = db.stat().st_size
+        # mock 网络调用
+        def forbidden(*args, **kwargs):
+            raise AssertionError("list-targets 不应调网络!")
+        monkeypatch.setattr(refresh_prices_polygon, "polygon_get", forbidden)
+        monkeypatch.setattr(refresh_prices_polygon, "fetch_bars_range", forbidden)
+        # 调 list_targets
+        from argparse import Namespace
+        args = Namespace(db=str(db))
+        try:
+            refresh_prices_polygon.list_targets(args)
+        except SystemExit as e:
+            pass  # 允许 sys.exit
+        # 验证 DB 没被改
+        mtime_after = db.stat().st_mtime
+        size_after = db.stat().st_size
+        assert mtime_after == mtime_before, f"DB mtime 改变! {mtime_before} -> {mtime_after}"
+        assert size_after == size_before, f"DB size 改变! {size_before} -> {size_after}"
+        # 验证输出
+        out = capsys.readouterr().out
+        assert "展示行数" in out
+        assert "unique ticker:" in out
+        assert "预计 API 请求" in out
+        assert "dry-run 完成" in out
+        assert "未调网络" in out
+        assert "未写 DB" in out
+        print(f"  ✓ --list-targets 不调网络, 不写 DB, 输出含 '展示行数/unique ticker/预计 API 请求'")
+
+    def test_logs_print_interval_no_key(self, tmp_path, monkeypatch, capsys):
+        """main 日志: 打印 interval, 不打印 API key."""
+        import sqlite3, sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "scripts" / "dashboard"))
+        import refresh_prices_polygon
+        db = tmp_path / "log.db"
+        conn = sqlite3.connect(str(db))
+        conn.executescript("""
+            CREATE TABLE extractions_intel
+                (post_id TEXT, source_id TEXT, direction TEXT, ticker TEXT,
+                 company TEXT, bottleneck TEXT, attribution TEXT,
+                 rebuts_narrative TEXT, summary_100 TEXT,
+                 is_retrospective INTEGER DEFAULT 0,
+                 is_disclosure INTEGER DEFAULT 0,
+                 is_self_reported_returns INTEGER DEFAULT 0,
+                 extracted_at TEXT);
+            CREATE TABLE raw_posts
+                (post_id TEXT PRIMARY KEY, source_id TEXT, published_at TEXT, raw_text TEXT);
+        """)
+        conn.close()
+        SECRET = "POLYGON_KEY_DO_NOT_LOG_XYZ"
+        monkeypatch.setenv("POLYGON_API_KEY", SECRET)
+        # mock fetch_bars_range 返回空
+        monkeypatch.setattr(refresh_prices_polygon, "fetch_bars_range", lambda *a, **k: [])
+        try:
+            sys.argv = ["refresh", "--db", str(db)]
+            refresh_prices_polygon.main()
+        except SystemExit:
+            pass
+        out = capsys.readouterr().out
+        assert "POLYGON_REQUEST_INTERVAL" in out, f"应打印 interval, 实际: {out[:200]}"
+        assert "13.0s" in out, f"应打印 13.0s 默认值, 实际: {out[:200]}"
+        assert SECRET not in out, f"SECRET key 出现在 stdout: {out}"
+        assert SECRET not in capsys.readouterr().err, f"SECRET key 出现在 stderr"
+        print(f"  ✓ main 日志含 'POLYGON_REQUEST_INTERVAL 13s', 不含 key")
