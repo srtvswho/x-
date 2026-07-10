@@ -504,14 +504,78 @@ def query_tickers(conn):
 
 
 def load_summaries():
-    """读取 intel_gen_summaries.py 预生成的 21 段总结."""
+    """读取 intel_gen_summaries.py 预生成的 26 段总结.
+
+    检查 summaries.json 是否存在 + 是否过期:
+    - 不存在 → 报错退出 (不让 build 用空数据冒充)
+    - 存在但 generated_at 距今 > 36h → 警告 (旧总结仍写入, 但前端显示过期标志)
+    """
     p = pathlib.Path(__file__).with_name("summaries.json")
-    if p.exists():
-        return json.loads(p.read_text(encoding="utf-8"))
-    empty_win = {"1":"","3":"","6":"","12":""}
-    return {"today":"（今日总结待生成）",
-            "consensus":dict(empty_win),
-            "person":{k:dict(empty_win) for k in ["jukan","serenity","zephyr","austin"]}}
+    if not p.exists():
+        print("  ✗ summaries.json 不存在 — 请先跑 intel_gen_summaries.py", flush=True)
+        print("    不可用空数据冒充今日总结", flush=True)
+        raise SystemExit(2)
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+    except Exception as e:
+        print(f"  ✗ summaries.json 解析失败: {e}", flush=True)
+        raise SystemExit(2)
+    # 检查 generated_at 过期 (soft warning)
+    gen_at = data.get("generated_at")
+    if gen_at:
+        try:
+            gen_dt = datetime.datetime.fromisoformat(gen_at.replace("Z", "+00:00"))
+            age_h = (datetime.datetime.now(datetime.timezone.utc) - gen_dt).total_seconds() / 3600
+            if age_h > 36:
+                print(f"  ⚠ summaries.json 已生成 {age_h:.1f}h (>36h), 前端会标过期", flush=True)
+        except Exception:
+            pass
+    return data
+
+
+def _safe_pct(value, decimals=1):
+    """格式化百分比, None → '—'. 不输出 'null%' / 'None%'."""
+    if value is None:
+        return "—"
+    try:
+        return f"{float(value):+.{decimals}f}"
+    except (TypeError, ValueError):
+        return "—"
+
+
+def _safe_pp(value, decimals=1):
+    """格式化百分点差 (excess_pct, 单位 pp). None → '—'."""
+    if value is None:
+        return "—"
+    try:
+        return f"{float(value):+.{decimals}f}pp"
+    except (TypeError, ValueError):
+        return "—"
+
+
+def _safe_price(value):
+    """格式化价格, None → '—'. 不输出 '$null' / '$None'."""
+    if value is None:
+        return "—"
+    try:
+        return f"${float(value):.2f}"
+    except (TypeError, ValueError):
+        return "—"
+
+
+def _annotate_tickers(tickers):
+    """给 tickers 加渲染友好的 *_str 字段, 防止前端出现 null 字样.
+
+    输入: tickers 列表 (来自 query_tickers), 含 raw_pct/excess_pct/call_price/now_price (可能 None)
+    输出: 同样列表, 加 price_call_str / price_now_str / raw_pct_str / excess_pct_str
+    """
+    for t in tickers:
+        t["price_call_str"] = _safe_price(t.get("call_price"))
+        t["price_now_str"] = _safe_price(t.get("now_price"))
+        t["raw_pct_str"] = _safe_pct(t.get("raw_pct"))
+        t["excess_pct_str"] = _safe_pp(t.get("excess_pct"))
+        # direction 不能 None (query_tickers 已过滤 long/short)
+    return tickers
 
 
 def main():
@@ -525,16 +589,26 @@ def main():
         print(f"  tickers: {len(tickers)}", flush=True)
         conn.close()
         summaries = load_summaries()
+        tickers = _annotate_tickers(tickers)
         html = TEMPLATE.read_text(encoding="utf-8")
         html = html.replace("__RECORDS__",   json.dumps(data, ensure_ascii=False))
         html = html.replace("__KOLS__",      json.dumps(KOLS, ensure_ascii=False))
         html = html.replace("__TICKERS__",   json.dumps(tickers, ensure_ascii=False))
         html = html.replace("__SUMMARIES__", json.dumps(summaries, ensure_ascii=False))
         OUT.write_text(html, encoding="utf-8")
-        have_summaries = pathlib.Path(__file__).with_name('summaries.json').exists()
-        print(f"dashboard.html: {len(data)} extractions, {len(tickers)} tickers, summaries={'real' if have_summaries else 'placeholder'}", flush=True)
+        # 检查 null 字样没渲染到 HTML (兜底, 即使前端处理对了)
+        with open(OUT, 'r', encoding='utf-8') as f:
+            html_text = f.read()
+        bad_patterns = ['$null', 'null%', 'nullpp', 'null USD', '$None']
+        for pat in bad_patterns:
+            if pat in html_text:
+                print(f"  ✗ dashboard.html 包含禁用字样: {pat!r}", flush=True)
+                raise SystemExit(3)
+        print(f"dashboard.html: {len(data)} extractions, {len(tickers)} tickers, summaries=real", flush=True)
         hit = sum(1 for t in tickers if t['raw_pct'] is not None)
         print(f"  price hit: {hit}/{len(tickers)} ({hit*100//max(1,len(tickers))}%)", flush=True)
+    except SystemExit:
+        raise
     except Exception as e:
         import traceback
         traceback.print_exc()
