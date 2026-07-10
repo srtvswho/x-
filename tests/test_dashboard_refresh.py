@@ -320,3 +320,167 @@ def test_no_modify_to_production_db():
 ])
 def test_is_us_ticker(ticker, expected):
     assert refresh_prices_polygon.is_us_ticker(ticker) == expected
+
+
+# ============================================================================
+# Section 9: 时间窗口统一 (Asia/Shanghai 北京自然日)  [2026-07-10]
+# ============================================================================
+class TestUnifiedTodayWindow:
+    """common.py / build_dashboard / intel_gen_summaries / template 共用同一今日窗口.
+
+    目的: 防止 'today/0M 用 UTC 24h 滑动' + '1D 用最新一条推文 00:00' 这种窗口漂移.
+    """
+
+    def test_cn_today_window_utc_is_china_natural_day(self):
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "scripts" / "dashboard"))
+        from common import cn_today_window_utc, CN_TZ
+        from datetime import datetime, timezone
+        # 北京 2026-07-10 18:00 CST → [今日 00:00, 明日 00:00) UTC
+        # 即 [UTC 7-9 16:00, UTC 7-10 16:00)
+        fixed_cn = datetime(2026, 7, 10, 18, 0, 0, tzinfo=CN_TZ)
+        # cn_today_window_utc 接受 UTC datetime
+        fixed_utc = fixed_cn.astimezone(timezone.utc)
+        start, end = cn_today_window_utc(fixed_utc)
+        assert start == "2026-07-09T16:00:00+00:00", f"start={start}"
+        assert end == "2026-07-10T16:00:00+00:00", f"end={end}"
+        print(f"  ✓ 北京 7-10 18:00 CST → [{start}, {end})")
+
+    def test_query_today_stats_no_posts(self, tmp_path):
+        """empty_reason='no_posts' 场景: 今日窗口 raw_posts = 0."""
+        import sqlite3, sys
+        from datetime import datetime, timezone
+        sys.path.insert(0, str(Path(__file__).parent.parent / "scripts" / "dashboard"))
+        from common import query_today_stats
+        db = tmp_path / "test.db"
+        conn = sqlite3.connect(str(db))
+        conn.execute("""CREATE TABLE raw_posts
+                        (post_id TEXT PRIMARY KEY, source_id TEXT, published_at TEXT)""")
+        conn.execute("""CREATE TABLE extractions_intel
+                        (post_id TEXT, direction TEXT, ticker TEXT, bottleneck TEXT,
+                         is_retrospective INTEGER, is_disclosure INTEGER)""")
+        # 7-9 老数据 (不在今日窗口)
+        conn.execute("INSERT INTO raw_posts VALUES ('p1','tw_jukan05','2026-07-08T10:00:00+00:00')")
+        conn.commit()
+        stats = query_today_stats(conn)
+        assert stats["n_posts_today"] == 0
+        assert stats["n_directional_today"] == 0
+        assert stats["empty_reason"] == "no_posts", f"empty_reason={stats['empty_reason']!r}"
+        print(f"  ✓ no_posts: n_posts=0, empty_reason={stats['empty_reason']!r}")
+
+    def test_query_today_stats_no_directional(self, tmp_path):
+        """empty_reason='no_directional' 场景: 今日有推文但无 long/short 判断."""
+        import sqlite3, sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "scripts" / "dashboard"))
+        from common import query_today_stats, cn_today_window_utc
+        from datetime import datetime, timezone, timedelta
+        db = tmp_path / "test.db"
+        conn = sqlite3.connect(str(db))
+        conn.execute("""CREATE TABLE raw_posts
+                        (post_id TEXT PRIMARY KEY, source_id TEXT, published_at TEXT)""")
+        conn.execute("""CREATE TABLE extractions_intel
+                        (post_id TEXT, direction TEXT, ticker TEXT, bottleneck TEXT,
+                         is_retrospective INTEGER, is_disclosure INTEGER)""")
+        # 今日窗口内的推文 (北京 7-10 12:00 CST = UTC 7-10 04:00)
+        start, end = cn_today_window_utc()
+        conn.execute("INSERT INTO raw_posts VALUES ('p1','tw_jukan05',?)", (start,))
+        # extraction 是 neutral (无方向性)
+        conn.execute("INSERT INTO extractions_intel VALUES ('p1','neutral',NULL,NULL,0,0)")
+        conn.commit()
+        stats = query_today_stats(conn)
+        assert stats["n_posts_today"] == 1, f"posts={stats['n_posts_today']}"
+        assert stats["n_directional_today"] == 0
+        assert stats["empty_reason"] == "no_directional", f"empty_reason={stats['empty_reason']!r}"
+        print(f"  ✓ no_directional: posts=1, empty_reason={stats['empty_reason']!r}")
+
+    def test_query_today_stats_with_directional(self, tmp_path):
+        """empty_reason=None 场景: 今日有推文且有 long/short 判断."""
+        import sqlite3, sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "scripts" / "dashboard"))
+        from common import query_today_stats, cn_today_window_utc
+        db = tmp_path / "test.db"
+        conn = sqlite3.connect(str(db))
+        conn.execute("""CREATE TABLE raw_posts
+                        (post_id TEXT PRIMARY KEY, source_id TEXT, published_at TEXT)""")
+        conn.execute("""CREATE TABLE extractions_intel
+                        (post_id TEXT, direction TEXT, ticker TEXT, bottleneck TEXT,
+                         is_retrospective INTEGER, is_disclosure INTEGER)""")
+        start, end = cn_today_window_utc()
+        conn.execute("INSERT INTO raw_posts VALUES ('p1','tw_jukan05',?)", (start,))
+        conn.execute("INSERT INTO raw_posts VALUES ('p2','tw_aleabitoreddit',?)", (start,))
+        conn.execute("INSERT INTO extractions_intel VALUES ('p1','long','[\"MU\"]','HBM',0,0)")
+        conn.execute("INSERT INTO extractions_intel VALUES ('p2','neutral',NULL,NULL,0,0)")
+        conn.commit()
+        stats = query_today_stats(conn)
+        assert stats["n_posts_today"] == 2
+        assert stats["n_directional_today"] == 1
+        assert stats["n_bottlenecks_today"] == 1
+        assert stats["empty_reason"] is None
+        assert stats["hot_bottlenecks_today"][0] == {"name": "HBM", "count": 1}
+        print(f"  ✓ with directional: posts=2, dir=1, bk=1, hot={stats['hot_bottlenecks_today']}")
+
+    def test_build_metadata_has_real_time_and_today_window(self, tmp_path):
+        """build_metadata 返回真实生成时间 + 今日窗口 + data_until."""
+        import sqlite3, sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "scripts" / "dashboard"))
+        from common import build_metadata
+        db = tmp_path / "test.db"
+        conn = sqlite3.connect(str(db))
+        conn.execute("CREATE TABLE raw_posts (published_at TEXT)")
+        conn.execute("INSERT INTO raw_posts VALUES ('2026-07-01T23:46:00+00:00')")
+        conn.commit()
+        meta = build_metadata(conn)
+        # 真实生成时间 (不能是 06:00 硬编码)
+        assert "build_time_label" in meta
+        assert "CST" in meta["build_time_label"]
+        # 今日窗口 (Asia/Shanghai 自然日)
+        assert "today_window_start_utc" in meta
+        assert "today_window_end_utc" in meta
+        assert "today_date_label" in meta
+        # 数据截止时间 (跟 max(published_at) 一致)
+        assert meta["data_until_label"] == "2026-07-02 07:46 CST", f"got {meta['data_until_label']!r}"
+        print(f"  ✓ build_time={meta['build_time_label']}, today={meta['today_date_label']}, "
+              f"data_until={meta['data_until_label']}")
+
+    def test_intel_gen_summaries_today_window_uses_china_natural_day(self):
+        """intel_gen_summaries.get_data_for_window(days=1) 必须用北京自然日, 不是 UTC 24h 滑动."""
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "scripts" / "dashboard"))
+        import intel_gen_summaries
+        # 看函数源 (确保没回到 datetime.now() - timedelta(days=1) 旧逻辑)
+        import inspect
+        src = inspect.getsource(intel_gen_summaries.get_data_for_window)
+        assert "cn_today_window_utc" in src, "intel_gen_summaries 没导入 cn_today_window_utc"
+        assert "datetime.now(timezone.utc) - timedelta(days=days)" not in src, \
+            "intel_gen_summaries 还在用 UTC 24h 滑动窗口!"
+        assert "AND r.published_at < ?" in src, "缺 end 边界 (开区间)"
+        print(f"  ✓ intel_gen_summaries.get_data_for_window 使用 cn_today_window_utc")
+
+    def test_template_no_demo_bug_and_unified_window(self):
+        """dashboard.template.html 修了:
+        - 删除 const items=sorted; // demo:
+        - 删除硬编码 06:00 CST
+        - 1D 用 BUILD_META.today_window_start_utc
+        - 顶部 posts/方向表态/卡点 用 TODAY_STATS (单一今日窗口)
+        - no_posts / no_directional 分开提示
+        - renderLiveMeta 显示真实生成时间 + 数据截止
+        """
+        template = (Path(__file__).parent.parent / "scripts" / "dashboard" /
+                    "dashboard.template.html").read_text(encoding="utf-8")
+        # 全部禁用字样/逻辑
+        assert "// demo:" not in template, "const items=sorted; // demo 还在"
+        assert "06:00 CST" not in template, "硬编码 06:00 CST 还在"
+        assert "北京 06:00 自动生成" not in template, "硬编码 北京 06:00 自动生成 还在"
+        # 共用同一窗口
+        assert "BUILD_META.today_window_start_utc" in template, "1D 没切到 BUILD_META 今日窗口"
+        assert "function todayWindowUTC" in template, "缺 todayWindowUTC 共享函数"
+        # 单一窗口注入
+        for tag in ("TODAY_STATS", "TODAY_RECORDS", "BUILD_META"):
+            assert f'<script id="{tag}"' in template, f"缺 {tag} script 注入"
+        # no_posts / no_directional 分开
+        assert "empty_reason === 'no_posts'" in template, "no_posts 提示分支缺失"
+        assert "empty_reason === 'no_directional'" in template, "no_directional 提示分支缺失"
+        # 真实生成时间 + 数据截止单独显示
+        assert "renderLiveMeta" in template, "缺 renderLiveMeta 显示生成时间 + data_until"
+        assert "data_until_label" in template, "缺 data_until_label 显示"
+        print(f"  ✓ template 全部 7 项 fix 生效")
