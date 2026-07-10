@@ -14,9 +14,10 @@ from pathlib import Path
 
 import requests
 
-# 共享窗口函数 — 跟 intel_gen_summaries.py / dashboard.template.html 共用同一窗口
+# 共享窗口函数 — 跟 intel_gen_summaries.py / dashboard.template.html / query_today_stats 共用同一窗口
+# 24h 滚动 (不是北京自然日, 跟生产 06:00 抓取 → 06:20 Dashboard 节奏对齐)
 sys.path.insert(0, str(Path(__file__).parent))
-from common import build_metadata, query_today_stats, query_today_records, cn_today_window_utc  # noqa: E402
+from common import build_metadata, query_today_stats, query_today_records, cn_recent_24h_window_utc  # noqa: E402
 
 DB = "/workspace/data/signalboard_full.db"
 TEMPLATE = pathlib.Path(__file__).with_name("dashboard.template.html")
@@ -103,6 +104,9 @@ POLYGON_API_KEY = os.environ.get("POLYGON_API_KEY", "")
 POLYGON_BASE = "https://api.polygon.io"
 SOXX_ETF = "SOXX"  # iShares Semiconductor ETF (默认板块 ETF)
 
+# ticker_prices schema 必须跟 refresh_prices_polygon.py TICKER_PRICES_DDL 完全一致.
+# 端到端测试: refresh_prices_polygon.ensure_tables 建的表, build_dashboard.query_tickers
+# 查 sector_pct / call_price / now_price / now_date 不会因缺字段失败.
 PRICE_CACHE_TABLE_DDL = """
 CREATE TABLE IF NOT EXISTS ticker_prices (
     ticker TEXT NOT NULL,
@@ -113,6 +117,13 @@ CREATE TABLE IF NOT EXISTS ticker_prices (
     sector_pct REAL,
     fetched_at TEXT NOT NULL,
     PRIMARY KEY (ticker, pub_date)
+);
+CREATE TABLE IF NOT EXISTS sector_snapshots (
+    sector_etf TEXT NOT NULL,
+    snap_date TEXT NOT NULL,
+    pct_30d REAL, pct_90d REAL, pct_180d REAL, pct_365d REAL,
+    fetched_at TEXT NOT NULL,
+    PRIMARY KEY (sector_etf, snap_date)
 );
 """
 
@@ -598,9 +609,9 @@ def main():
         today_stats = query_today_stats(conn)
         today_records = query_today_records(conn)
         build_meta = build_metadata(conn)
-        print(f"  today (CST): {build_meta['today_date_label']} "
-              f"posts={today_stats['n_posts_today']} "
-              f"directional={today_stats['n_directional_today']} "
+        print(f"  24h window: {build_meta['window_label']} "
+              f"posts={today_stats['n_posts_24h']} "
+              f"directional={today_stats['n_directional_24h']} "
               f"empty_reason={today_stats['empty_reason']!r}", flush=True)
         print(f"  build time:  {build_meta['build_time_label']} "
               f"(data_until={build_meta.get('data_until_label')})", flush=True)
