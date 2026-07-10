@@ -108,7 +108,12 @@ def build_kols_prompt() -> str:
 def call_llm(system: str, user: str, max_retries: int = 2) -> str:
     api_key = os.environ.get("DEEPSEEK_API_KEY")
     if not api_key:
-        raise RuntimeError("DEEPSEEK_API_KEY not set")
+        # 明确报错而不是 fallback: 不可用空数据冒充今日总结
+        raise SystemExit(
+            "DEEPSEEK_API_KEY 未设置 — 不可生成今日总结. "
+            "请设置 DEEPSEEK_API_KEY 环境变量 (或 docker run -e DEEPSEEK_API_KEY=...) "
+            "或写降级 summaries.json (见 main() 中 GRACEFUL_DEGRADE 选项)."
+        )
     data = json.dumps({
         "model": DEEPSEEK_MODEL,
         "messages": [
@@ -211,14 +216,53 @@ def gen_person_summary(con: sqlite3.Connection, kol: str, window: str, days: int
     return call_llm(system, user)
 
 
+def get_data_until(con) -> str | None:
+    """数据覆盖到什么时候 (max published_at)."""
+    r = con.execute("SELECT MAX(published_at) FROM raw_posts").fetchone()
+    return r[0] if r else None
+
+
 def main():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--graceful-degrade", action="store_true",
+                        help="DEEPSEEK_API_KEY 缺失时, 不报错退出, 而是写一个 stale 标记的 summaries.json")
+    args = parser.parse_args()
+
+    if not os.environ.get("DEEPSEEK_API_KEY"):
+        if args.graceful_degrade:
+            print("⚠ DEEPSEEK_API_KEY 未设置, 但 --graceful-degrade 开启 — 写 stale 标记 summaries.json", flush=True)
+            stale = {
+                "generated_at": "1970-01-01T00:00:00Z",
+                "data_until": None,
+                "stale": True,
+                "stale_reason": "DEEPSEEK_API_KEY 未设置",
+                "today": "（今日总结缺失 — DEEPSEEK_API_KEY 未配置, 请联系管理员）",
+                "consensus": {w: "（缺失 — DEEPSEEK_API_KEY 未配置）" for w in WINDOWS},
+                "person": {k: {w: "（缺失 — DEEPSEEK_API_KEY 未配置）" for w in WINDOWS} for k in KOLS},
+            }
+            with open(OUT_PATH, "w", encoding="utf-8") as f:
+                json.dump(stale, f, indent=2, ensure_ascii=False)
+            print(f"  ✓ stale summaries.json 写好: {OUT_PATH}")
+            return
+        print("✗ DEEPSEEK_API_KEY 未设置 — 不可生成今日总结", flush=True)
+        print("  (如要明确降级, 加 --graceful-degrade)", flush=True)
+        sys.exit(2)
+
     print("===== Dashboard Summaries 生成 (LLM 预生成 26 段) =====\n")
     con = sqlite3.connect(DB_PATH, timeout=60)
+
+    data_until = get_data_until(con)
+    print(f"  data_until: {data_until}")
 
     summaries = {
         "today": "",
         "consensus": {},
         "person": {},
+        # metadata (供 build_dashboard.py / 前端判断是否过期)
+        "generated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "data_until": data_until,
+        "stale": False,
     }
     # 初始化 person
     for kol in KOLS:
@@ -252,6 +296,8 @@ def main():
 
     print(f"\n✅ summaries.json 写好: {OUT_PATH}")
     print(f"   1 today + 5 consensus + {len(KOLS)*len(WINDOWS)} person = {1 + len(WINDOWS) + len(KOLS)*len(WINDOWS)} 段")
+    print(f"   generated_at: {summaries['generated_at']}")
+    print(f"   data_until:   {summaries['data_until']}")
 
 
 if __name__ == "__main__":
