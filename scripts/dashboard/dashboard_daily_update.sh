@@ -1,11 +1,18 @@
 #!/bin/bash
-# dashboard_daily_update.sh — 一键刷新 Dashboard (price → summary → build → publish)
+# dashboard_daily_update.sh — 一键刷新 Dashboard (price → summary → build → validate → publish)
 #
-# 设计:
-# - 生产容器挂载: -v /home/admin/x--master:/workspace
-# - 线上静态目录: ${DASHBOARD_PUBLISH_DIR:-/home/admin/www}
-# - 顺序固定: prices → summaries → build → validate → publish (不可调换)
-# - POLYGON_API_KEY + DEEPSEEK_API_KEY 来自容器 env (docker run -e ...), 不进 DB
+# 生产环境 (Docker):
+#   宿主机代码: /home/admin/x--master    → 容器 /workspace
+#   宿主机网站: /home/admin/www           → 容器 /publish
+#   docker run ... -e DASHBOARD_PUBLISH_DIR=/publish -v /home/admin/www:/publish ...
+#   此脚本在容器内跑, 看到的 /publish 就是宿主机 /home/admin/www.
+#
+# 顺序固定: prices → summaries → build → validate → publish (不可调换)
+# - prices: refresh_prices_polygon.py (Polygon apiKey 来自 POLYGON_API_KEY 环境变量)
+# - summaries: intel_gen_summaries.py (DEEPSEEK_API_KEY 必需, 缺失 → exit 2)
+# - build: build_dashboard.py (注入 __TODAY_STATS__ / __TODAY_RECORDS__ / __BUILD_META__)
+# - validate: 校验 dashboard.html 存在 + size >= 10000 bytes
+# - publish: 原子发布 /publish/index.html + /publish/dashboard.html (两个, 不依赖旧文件)
 #
 # 硬规则:
 # - 不动 data/ DB *.db *.db.gz
@@ -13,31 +20,19 @@
 # - 不写 API key / env 文件
 # - 中间失败: 立即停止 (set -e), 不静默
 # - publish 用 .tmp + 原子 mv, 不留半文件
+# - 总是同时发布 index.html + dashboard.html, 避免 nginx 首页与 dashboard.html 版本不一致
 
 set -e
 set -o pipefail
 
 # ===== 配置 =====
 SCRIPTS_DIR=/workspace/scripts/dashboard
-PUBLISH_DIR="${DASHBOARD_PUBLISH_DIR:-/home/admin/www}"
+# Docker 默认值: /publish (宿主机 /home/admin/www 挂载点).
+# 本地开发可以 DASHBOARD_PUBLISH_DIR=/home/admin/www override.
+PUBLISH_DIR="${DASHBOARD_PUBLISH_DIR:-/publish}"
 SOURCE_HTML="$SCRIPTS_DIR/dashboard.html"
 TMP_DIR=$(mktemp -d)
 trap 'rm -rf "$TMP_DIR"' EXIT
-
-# 入口文件名: 跟 nginx 配置兼容
-# 优先 index.html (历史 nginx 配置), fallback dashboard.html
-detect_entry() {
-    if [ -f "$PUBLISH_DIR/index.html" ] && [ ! -f "$PUBLISH_DIR/dashboard.html" ]; then
-        echo "index.html"
-    elif [ -f "$PUBLISH_DIR/dashboard.html" ]; then
-        echo "dashboard.html"
-    elif [ -f "$PUBLISH_DIR/index.html" ]; then
-        echo "index.html"
-    else
-        echo "index.html dashboard.html"  # 默认两个都发
-    fi
-}
-ENTRY_FILES=$(detect_entry)
 
 ts() { date '+%Y-%m-%dT%H:%M:%S%z'; }
 log() { echo "[$(ts)] $*"; }
@@ -45,9 +40,10 @@ log() { echo "[$(ts)] $*"; }
 log "===== Dashboard 每日更新开始 ====="
 log "  SCRIPTS_DIR:  $SCRIPTS_DIR"
 log "  PUBLISH_DIR:  $PUBLISH_DIR"
-log "  ENTRY_FILES:  $ENTRY_FILES"
+log "  source html:  $SOURCE_HTML"
 log "  POLYGON_API_KEY set: $([ -n "${POLYGON_API_KEY:-}" ] && echo YES || echo NO)"
 log "  DEEPSEEK_API_KEY set: $([ -n "${DEEPSEEK_API_KEY:-}" ] && echo YES || echo NO)"
+log "  POLYGON_REQUEST_INTERVAL: ${POLYGON_REQUEST_INTERVAL:-0.6}s"
 
 # ===== 1. Refresh prices (Polygon) =====
 log ""
@@ -83,9 +79,9 @@ if [ "$SIZE" -lt 10000 ]; then
 fi
 log "  ✓ validate OK ($SIZE bytes)"
 
-# ===== 5. Atomic publish =====
+# ===== 5. Atomic publish (总是同时发布 index.html + dashboard.html) =====
 mkdir -p "$PUBLISH_DIR"
-for fname in $ENTRY_FILES; do
+for fname in index.html dashboard.html; do
     TMP_PUB="$PUBLISH_DIR/.${fname}.tmp.$$"
     cp -a "$SOURCE_HTML" "$TMP_PUB"
     chmod 644 "$TMP_PUB"
@@ -95,5 +91,6 @@ done
 
 log ""
 log "===== Dashboard 更新完成 ====="
-log "  published files: $ENTRY_FILES"
+log "  published: $PUBLISH_DIR/index.html"
+log "  published: $PUBLISH_DIR/dashboard.html"
 log "  size: $SIZE bytes"
