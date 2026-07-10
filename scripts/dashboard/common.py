@@ -21,6 +21,7 @@
 - 任何地方都不再使用 "北京今日 00:00" 作为窗口起点
 """
 from __future__ import annotations
+import json
 from datetime import datetime, timedelta, timezone
 
 try:
@@ -219,3 +220,202 @@ def query_today_records(conn) -> list[dict]:
             "raw_url": f"https://x.com/{handle}/status/{post_id}",
         })
     return out
+
+
+# ============================================================================
+# 标的筛选共享函数 (区块04 展示口径)
+# ============================================================================
+# Source ID → KOL 短名 (跟 raw_posts / extractions_intel 一致)
+SRC2KOL = {
+    "tw_jukan05": "jukan", "tw_aleabitoreddit": "serenity",
+    "tw_zephyr_z9": "zephyr", "tw_austinsemis": "austin",
+}
+
+# 4 大V 能力圈画像 (跟 build_dashboard.py KOLS 同步)
+KOLS = {
+    "jukan": {"key": "jukan", "name": "Jukan", "handle": "@jukan05", "type": "signal",
+              "typeLabel": "信号源 · signal",
+              "desc": "100% 推文带 ticker，会明确喊方向。胜率高，几乎不做空。",
+              "strong": ["存储", "HBM", "代工", "卡点"],
+              "weak": ["看多 AI 龙头(跑输板块)"]},
+    "serenity": {"key": "serenity", "name": "Serenity", "handle": "@aleabitoreddit", "type": "cognition",
+              "typeLabel": "瓶颈专家 · cognition",
+              "desc": "光通信/CPO 瓶颈专家，会喊标的，但顺势押龙头、易追高。",
+              "strong": ["光通信", "CPO", "InP", "化合物半导体"],
+              "weak": ["整体追高", "tier_B 清单=板块β"]},
+    "zephyr": {"key": "zephyr", "name": "zephyr", "handle": "@zephyr_z9", "type": "cognition",
+              "typeLabel": "卡点雷达 · cognition",
+              "desc": "产业卡点雷达，看多卡点极准(94.8%)，但看空系统性错。",
+              "strong": ["存储", "光通信", "HBM", "电力", "卡点"],
+              "weak": ["看空全错(0/22)", "AI 泡沫论盲区"]},
+    "austin": {"key": "austin", "name": "Austin", "handle": "@austinsemis", "type": "cognition",
+              "typeLabel": "商业格局 · cognition",
+              "desc": "AI 芯片商业格局分析，AMD/CUDA 护城河有洞察。认知源非信号源。",
+              "strong": ["商业格局", "AMD/CUDA 护城河", "Foundry 模式"],
+              "weak": ["看多龙头(跑输板块)", "看空全错(1/8)"]},
+}
+
+# 4 大V 真正强项领域的 ticker 白名单 (LLM bottleneck 误抽太多, 改用 ticker 黑/白名单二次过滤)
+KOL_TICKERS = {
+    "jukan": {  # 信号源, 100% 推文带 ticker, 强存储/HBM/代工
+        "in_field": ["MU", "SNDK", "DRAM", "AXTI", "ASTS", "RKLB", "TSM", "NVDA", "AMD", "AVGO", "NBIS"],
+    },
+    "serenity": {  # 光通信/CPO/InP/化合物半导体专家
+        "in_field": ["AAOI", "SIVE", "COHR", "LITE", "POET", "AEVA", "AEHR", "MRVL", "JBL", "GFS", "AOSL", "POWI",
+                     "IQE", "SOI", "XFAB", "TSEM", "WOLF", "NVTS", "TSM", "NOK"],
+        "out_of_field": ["TSLA", "MSFT", "META", "GOOGL", "AMZN", "AVGO", "BRK.A", "ASML", "SPY", "DELL", "CRM",
+                         "PLTR", "SNAP", "INTC", "AAPL", "NVDA", "AMD", "RKLB", "NBIS", "ASTS", "AXTI", "MU",
+                         "093370", "6324", "2454", "688017", "AIXA", "LPK", "SPCX"],
+    },
+    "zephyr": {  # 存储/光通信/HBM/电力/卡点
+        "in_field": ["MU", "SNDK", "DRAM", "NBIS", "AAOI", "LITE", "POET", "SIVE", "JBL", "COHR", "AEVA", "AEHR",
+                     "TSM", "VPG", "INTC", "AMD", "MRVL"],
+        "out_of_field": ["TSLA", "MSFT", "META", "GOOGL", "AMZN", "AVGO", "BRK.A", "ASML", "SPY", "DELL", "CRM",
+                         "PLTR", "SNAP", "AAPL", "AOSL", "POWI", "IQE", "SOI", "XFAB", "TSEM", "WOLF", "NVTS",
+                         "NOK", "RKLB", "ASTS", "AXTI", "093370", "6324", "2454", "688017", "AIXA", "LPK",
+                         "SPCX", "GFS"],
+    },
+    "austin": {  # 商业洞察, 看多 AI 龙头 (但跑输板块). 主要认知源, 信号弱
+        "in_field": ["AMD", "NVDA", "MU", "AVGO", "TSM", "INTC", "MRVL", "GOOGL", "META", "MSFT", "AMZN"],
+        "out_of_field": ["TSLA", "BRK.A", "ASML", "SPY", "DELL", "CRM", "PLTR", "SNAP", "AAPL", "AOSL", "POWI",
+                         "IQE", "SOI", "XFAB", "TSEM", "WOLF", "NVTS", "NOK", "SIVE", "JBL", "GFS", "RKLB",
+                         "ASTS", "AXTI", "AEVA", "AEHR", "COHR", "LITE", "POET", "AAOI", "093370", "6324",
+                         "2454", "688017", "AIXA", "LPK", "SPCX", "NBIS", "SNDK", "DRAM", "VPG"],
+    },
+}
+
+# Dashboard 标的展示参数 (跟区块04 一致)
+DASHBOARD_TICKER_LIMIT = 30  # 最终展示条数
+DASHBOARD_MIN_DAYS = 5  # 排除 < 5d 的喊单 (还没涨跌)
+
+
+def parse_json_arr(s):
+    """跟 build_dashboard.py parse_json_arr 一致. 解析 JSON 数组字符串, 兼容单 ticker."""
+    if not s or not isinstance(s, str):
+        return []
+    s = s.strip()
+    if s.startswith("["):
+        try:
+            return json.loads(s)
+        except Exception:
+            return []
+    if s:
+        return [s]
+    return []
+
+
+def is_in_field(kol: str, ticker: str, bottleneck: str | None) -> bool:
+    """跟 build_dashboard.is_in_field 一致. 判定 (kol, ticker) 是否在 KOL 强项领域.
+
+    1. ticker 在 KOL_TICKERS[kol]['in_field'] → True
+    2. ticker 在 KOL_TICKERS[kol]['out_of_field'] → False
+    3. fallback: LLM bottleneck 匹配 strong 字段
+    """
+    if kol not in KOL_TICKERS:
+        return False
+    spec = KOL_TICKERS[kol]
+    if ticker in spec.get("in_field", []):
+        return True
+    if ticker in spec.get("out_of_field", []):
+        return False
+    if bottleneck:
+        for s in KOLS.get(kol, {}).get("strong", []):
+            if s in bottleneck or bottleneck in s:
+                return True
+    return False
+
+
+def select_dashboard_ticker_targets(conn, limit: int = DASHBOARD_TICKER_LIMIT) -> list[dict]:
+    """Dashboard 区块04 展示的标的 = refresh 同步的目标. 共享函数 (build_dashboard / refresh_prices_polygon 都调).
+
+    筛选口径 (跟 build_dashboard.query_tickers 完全一致):
+    1. direction IN ('long', 'short') — 排除 neutral
+    2. is_retrospective = 0, is_disclosure = 0
+    3. ticker NOT NULL
+    4. 按 (kol, ticker) 聚合, 保留 latest_pub / earliest_pub / n_calls
+    5. 排除 < DASHBOARD_MIN_DAYS (5d) 的喊单 (没涨跌)
+    6. 排序: 强项+有价格 (priority 0) > 强项无价格 (1) > 圈外有价格 (2) > 圈外无价格 (3)
+    7. 二级排序: -days_since (最近的在前)
+    8. 截 limit (默认 30 条)
+
+    返回 list[dict], 每个元素:
+    {
+        "ticker": str, "kol": str, "source_id": str,
+        "direction": "long"|"short", "bottleneck": str|None,
+        "latest_pub": ISO 8601, "earliest_pub": ISO 8601, "call_date": "YYYY-MM-DD",
+        "n_calls": int, "days_since": int, "in_field": bool,
+    }
+    """
+    print("  select_dashboard_ticker_targets: 开始", flush=True)
+    rows = conn.execute("""
+        SELECT e.source_id, e.ticker, e.direction, e.bottleneck, r.published_at
+        FROM extractions_intel e
+        JOIN raw_posts r ON r.post_id = e.post_id
+        WHERE e.direction IN ('long', 'short')
+          AND e.is_retrospective = 0 AND e.is_disclosure = 0
+          AND e.ticker IS NOT NULL
+        ORDER BY r.published_at DESC
+    """).fetchall()
+
+    # (kol, ticker) 维度聚合
+    by_kol_tk: dict = {}
+    for src, ticker_json, direction, bk, pub in rows:
+        kol = SRC2KOL.get(src, src.replace("tw_", ""))
+        for tk in parse_json_arr(ticker_json):
+            key = (kol, tk)
+            if key not in by_kol_tk:
+                by_kol_tk[key] = {
+                    "ticker": tk, "kol": kol, "source_id": src,
+                    "direction": direction, "bottleneck": bk,
+                    "latest_pub": pub, "earliest_pub": pub,
+                    "n_calls": 1,
+                }
+            else:
+                rec = by_kol_tk[key]
+                rec["n_calls"] += 1
+                if pub < rec["earliest_pub"]:
+                    rec["earliest_pub"] = pub
+
+    today = datetime.now(timezone.utc).date()
+
+    # 筛 + 算
+    rows_out = []
+    skipped_recent = 0
+    for key, rec in by_kol_tk.items():
+        pub_date = rec["latest_pub"][:10]
+        try:
+            days_since = (today - datetime.fromisoformat(pub_date).date()).days
+        except Exception:
+            days_since = 0
+        if days_since < DASHBOARD_MIN_DAYS:
+            skipped_recent += 1
+            continue
+        in_field = is_in_field(rec["kol"], rec["ticker"], rec["bottleneck"])
+        rec["call_date"] = pub_date
+        rec["days_since"] = days_since
+        rec["in_field"] = in_field
+        # has_price 这里不计算 (不查 DB cache), priority 用 in_field 近似
+        rec["priority"] = 0 if in_field else 2
+        rows_out.append(rec)
+
+    rows_out.sort(key=lambda r: (r["priority"], -r["days_since"]))
+    out = rows_out[:limit]
+
+    print(f"  select_dashboard_ticker_targets: 总 (kol, ticker) {len(by_kol_tk)} | "
+          f"跳过太近 (< {DASHBOARD_MIN_DAYS}d) {skipped_recent} | "
+          f"展示 {len(out)} 条", flush=True)
+    return out
+
+
+def group_targets_by_ticker(targets: list[dict]) -> dict[str, list[dict]]:
+    """把 select 输出按 ticker 聚合, 用于 refresh 按 ticker 去重 fetch.
+
+    返回: {ticker: [target1, target2, ...]}
+    - 一个 ticker 可能有多个 (kol, ticker) 行 (如 Jukan 的 MU 跟 Serenity 的 MU)
+    - 同一 ticker 的多个行共享 now_price (从同一次 range API 拿)
+    - 多个行的 call_price 各自计算 (各自的 latest_pub)
+    """
+    by_tk: dict[str, list[dict]] = {}
+    for t in targets:
+        by_tk.setdefault(t["ticker"], []).append(t)
+    return by_tk
