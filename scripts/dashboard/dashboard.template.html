@@ -41,14 +41,17 @@ a{color:inherit;text-decoration:none}
 .shead .hint{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);letter-spacing:.04em}
 .shead .rule{flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
 
-/* ===== 最近动态 时间 badge ===== */
+/* ===== 最近动态 时间 badge + 静默日 banner ===== */
 .rel{display:inline-block;margin-top:3px;padding:1px 5px;border-radius:3px;
-  font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;line-height:1.4;}
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;line-height:1.4;font-weight:600;}
 .rt-today{background:rgba(72,201,214,.18);color:var(--cyan);border:1px solid rgba(72,201,214,.35);}
 .rt-1d{background:rgba(72,201,214,.14);color:var(--cyan);border:1px solid rgba(72,201,214,.25);}
 .rt-recent{background:rgba(240,167,60,.12);color:var(--amber);border:1px solid rgba(240,167,60,.25);}
 .rt-mid{background:rgba(154,140,255,.10);color:var(--violet);border:1px solid rgba(154,140,255,.20);}
 .rt-old{background:rgba(154,164,184,.08);color:var(--ink-faint);border:1px solid rgba(154,164,184,.15);}
+.banner-silent{margin:0 0 14px;padding:10px 14px;background:rgba(240,167,60,.08);
+  border:1px solid rgba(240,167,60,.25);border-radius:6px;
+  color:var(--amber);font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;}
 
 /* ===== today brief (hero) ===== */
 .brief{background:linear-gradient(135deg,#15171f,#11141b);border:1px solid var(--line);
@@ -327,7 +330,7 @@ function winLabel(w){return ({0:'今日',1:'近 1 个月',3:'近 3 个月',6:'�
 let feedExpanded=false;
 function renderFeed(){
   const sorted=[...RECORDS].sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
-  // 静默日不假装: 头部标"最近动态 · N 天前"取代"最新批次 · 今天"
+  // 静默日不假装 - 头部标"最近动态 · N 天前"取代"最新批次 · 今天"
   if(sorted.length){
     const top=sorted[0];
     const now=new Date();
@@ -342,7 +345,7 @@ function renderFeed(){
   }
   const COLLAPSE=6, MAX_EXPAND=30;
   const show=feedExpanded ? sorted.slice(0, MAX_EXPAND) : sorted.slice(0, COLLAPSE);
-  // 静默日 banner
+  // 静默日警告条 (如果最新一条不是今天)
   let banner='';
   if(sorted.length){
     const top=sorted[0];
@@ -361,6 +364,7 @@ function renderFeed(){
     const dp=r.direction!=='neutral'?`<span class="dirpill ${r.direction}">${r.direction}</span>`:'';
     const flags=[];if(r.is_disc)flags.push('<span class="flag">持仓披露</span>');if(r.is_retro)flags.push('<span class="flag">回顾</span>');if(r.is_selfret)flags.push('<span class="flag">自报收益</span>');
     const rb=r.rebuts?`<div class="frebut">反驳叙事 · ${r.rebuts}</div>`:'';
+    // 每条标 N 天前
     const now=new Date();
     const diffMs=now - new Date(r.published_at);
     const days=Math.floor(diffMs/86400000);
@@ -376,6 +380,7 @@ function renderFeed(){
         <div class="fsum">${r.summary||r.raw_text||''}</div>${rb}
         <div class="frow"><span class="atb ${r.attribution}">${r.attribution||'NA'}</span><a class="flink" href="${r.raw_url}" target="_blank">view on X ↗</a></div></div></div>`;
   }).join('');
+  // 展开按钮: 最多展开 MAX_EXPAND
   const moreExpandable=Math.max(0, sorted.length - MAX_EXPAND);
   const moreTotal=Math.max(0, sorted.length - COLLAPSE);
   let btn='';
@@ -393,13 +398,21 @@ function renderFeed(){
 function renderTickers(){
   document.getElementById('tbody').innerHTML=TICKERS.map(t=>{
     const c=COLORS[t.kol];const k=KOLS[t.kol];
-    const rs=t.raw_pct>=0?'+':'';const es=t.excess_pct>=0?'+':'';
+    // build_dashboard.py 已经用 *_str 字段预处理, 这里只 fallback 兜底
+    const cp=t.price_call_str||(t.call_price==null?'—':`$${t.call_price}`);
+    const np=t.price_now_str||(t.now_price==null?'—':`$${t.now_price}`);
+    const rs=t.raw_pct==null?'':t.raw_pct>=0?'+':'';
+    const es=t.excess_pct==null?'':t.excess_pct>=0?'+':'';
+    const rawDisp=t.raw_pct_str||(t.raw_pct==null?'—':`${rs}${t.raw_pct}%`);
+    const excDisp=t.excess_pct_str||(t.excess_pct==null?'—':`${es}${t.excess_pct}pp`);
+    const clsRaw=t.raw_pct==null?'':(t.raw_pct>=0?'in':'out');
+    const clsExc=t.excess_pct==null?'':(t.excess_pct>=0?'in':'out');
     return `<tr><td><span class="tk ${t.direction}">${t.ticker}</span></td>
       <td><div class="by"><div class="av" style="background:${c}">${initials(k.name)}</div><span class="nm">${k.name}</span> <span class="dirpill2 ${t.direction}">${t.direction}</span></div></td>
       <td><span class="when">${fmtFull(t.called_at)}</span></td>
-      <td><span class="when">$${t.call_price}</span></td>
-      <td><span class="when">$${t.now_price}</span> &nbsp;<span class="circle ${t.raw_pct>=0?'in':'out'}">${rs}${t.raw_pct}%</span></td>
-      <td><span class="circle ${t.excess_pct>=0?'in':'out'}">${es}${t.excess_pct}pp</span></td>
+      <td><span class="when">${cp}</span></td>
+      <td><span class="when">${np}</span> &nbsp;<span class="circle ${clsRaw}">${rawDisp}</span></td>
+      <td><span class="circle ${clsExc}">${excDisp}</span></td>
       <td>${t.in_field?'<span class="tag strong">强项</span>':'<span class="tag weak">圈外</span>'}</td>
       <td><span class="pending"><span class="q">?</span> 待判断序列 · M3</span></td></tr>`;
   }).join('');
