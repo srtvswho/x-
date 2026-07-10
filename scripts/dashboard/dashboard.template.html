@@ -273,8 +273,8 @@ const SUM=JSON.parse(document.getElementById('SUMMARIES').textContent);
 const TODAY_STATS=JSON.parse(document.getElementById('TODAY_STATS').textContent);
 const TODAY_RECORDS=JSON.parse(document.getElementById('TODAY_RECORDS').textContent);
 const BUILD_META=JSON.parse(document.getElementById('BUILD_META').textContent);
-// 单一今日窗口函数 (Asia/Shanghai 自然日) — 跟 build_dashboard.py / intel_gen_summaries.py / query_today_stats 共用
-function todayWindowUTC(){return [new Date(BUILD_META.today_window_start_utc), new Date(BUILD_META.today_window_end_utc)];}
+// 单一今日窗口函数 (24h 滚动) — 跟 build_dashboard.py / intel_gen_summaries.py / query_today_stats 共用
+function todayWindowUTC(){return [new Date(BUILD_META.window_start_utc), new Date(BUILD_META.window_end_utc)];}
 const COLORS={jukan:'#48c9d6',serenity:'#f0a73c',zephyr:'#9a8cff',austin:'#e0617a'};
 const ORDER=['jukan','serenity','zephyr','austin'];
 function initials(n){return n.slice(0,1).toUpperCase()}
@@ -284,29 +284,29 @@ function fmtTime(iso){const d=new Date(iso);return `${String(d.getHours()).padSt
 
 /* ---- 01 今日总结 ---- */
 function renderBrief(){
-  // 单一今日窗口 (北京自然日) — 跟 query_today_stats / SUM.today / consensus[0] / 1D 明细共用
-  const todayLabel = BUILD_META.today_date_label;
-  const postsN = TODAY_STATS.n_posts_today;
-  const dirN   = TODAY_STATS.n_directional_today;
-  const bkN    = TODAY_STATS.n_bottlenecks_today;
-  const hot    = TODAY_STATS.hot_bottlenecks_today;
+  // 单一今日窗口 (24h 滚动) — 跟 query_today_stats / SUM.today / consensus[0] / 1D 明细共用
+  const winLabel = BUILD_META.window_label || '过去 24 小时';
+  const postsN = TODAY_STATS.n_posts_24h;
+  const dirN   = TODAY_STATS.n_directional_24h;
+  const bkN    = TODAY_STATS.n_bottlenecks_24h;
+  const hot    = TODAY_STATS.hot_bottlenecks_24h;
   const emptyReason = TODAY_STATS.empty_reason;  // "no_posts" | "no_directional" | null
   const summaryText = SUM.today && SUM.today.trim() ? SUM.today : '（今日 LLM 总结未生成）';
 
   let emptyNotice = '';
   if (emptyReason === 'no_posts') {
-    emptyNotice = `<div class="bempty warn">⚠ 今日窗口 (${todayLabel}) 未抓到新推文, 总结基于历史趋势</div>`;
+    emptyNotice = `<div class="bempty warn">⚠ ${winLabel} 未抓到新推文, 总结基于历史趋势</div>`;
   } else if (emptyReason === 'no_directional') {
-    emptyNotice = `<div class="bempty info">ℹ 今日窗口 (${todayLabel}) 新增 ${postsN} 条推文, 但无新增方向性投资判断 (long/short)</div>`;
+    emptyNotice = `<div class="bempty info">ℹ ${winLabel} 新增 ${postsN} 条推文, 但无新增方向性投资判断 (long/short)</div>`;
   }
   document.getElementById('brief').innerHTML=`
-    <div class="bh"><span class="blabel">◆ Daily Brief</span><span class="bdate">${todayLabel} · 北京自然日</span><span class="bdate-sub">生成 ${BUILD_META.build_time_label}</span></div>
+    <div class="bh"><span class="blabel">◆ Daily Brief</span><span class="bdate">${winLabel}</span><span class="bdate-sub">生成 ${BUILD_META.build_time_label}</span></div>
     ${emptyNotice}
     <div class="btext">${summaryText}</div>
     <div class="bstrip">
-      <div class="bstat"><span class="v">${postsN}</span><span class="k">posts · 今日</span></div>
-      <div class="bstat"><span class="v cy">${dirN}</span><span class="k">方向表态 · 今日</span></div>
-      <div class="bstat"><span class="v am">${bkN}</span><span class="k">涉及卡点 · 今日</span></div>
+      <div class="bstat"><span class="v">${postsN}</span><span class="k">posts · ${winLabel}</span></div>
+      <div class="bstat"><span class="v cy">${dirN}</span><span class="k">方向表态 · ${winLabel}</span></div>
+      <div class="bstat"><span class="v am">${bkN}</span><span class="k">涉及卡点 · ${winLabel}</span></div>
       <div class="bhot">${hot.map(h => `<span class="tag bk">${h.name} ·${h.count}</span>`).join('')}</div>
     </div>`;
 }
@@ -333,7 +333,7 @@ function renderStance(){
   let cut;
   if(win===0){
     // 1D: 北京今日 00:00 (跟 query_today_stats / SUM.consensus[0] / SUM.person[*][0] / renderBrief 共用同一窗口)
-    cut = new Date(BUILD_META.today_window_start_utc);
+    cut = new Date(BUILD_META.window_start_utc);
   } else { cut=new Date(); cut.setMonth(cut.getMonth()-win); }
   const g=document.getElementById('stancegrid');
   g.innerHTML=ORDER.map(key=>{
@@ -368,16 +368,17 @@ function renderFeed(){
   const sorted=[...RECORDS].sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
   // 顶部今日窗口横幅: 如果今日无新推文, 明确提示, 内容仍展示历史近端点 (不冒充今日)
   const feedEmpty = document.getElementById('feed-empty');
+  const winLabel = BUILD_META.window_label || '过去 24 小时';
   if (feedEmpty) {
     if (TODAY_STATS.empty_reason === 'no_posts') {
       feedEmpty.className = 'feed-empty warn';
-      feedEmpty.innerHTML = `⚠ 今日窗口 (${BUILD_META.today_date_label}) 未抓到新推文, 以下为历史近端点`;
+      feedEmpty.innerHTML = `⚠ ${winLabel} 未抓到新推文, 以下为历史近端点`;
     } else if (TODAY_STATS.empty_reason === 'no_directional') {
       feedEmpty.className = 'feed-empty';
-      feedEmpty.innerHTML = `ℹ 今日窗口 (${BUILD_META.today_date_label}) 新增 ${TODAY_STATS.n_posts_today} 条推文, 但无新增方向性判断, 以下混入历史近端点`;
+      feedEmpty.innerHTML = `ℹ ${winLabel} 新增 ${TODAY_STATS.n_posts_24h} 条推文, 但无新增方向性判断, 以下混入历史近端点`;
     } else {
       feedEmpty.className = 'feed-empty';
-      feedEmpty.innerHTML = `✓ 今日窗口 (${BUILD_META.today_date_label}) 有 ${TODAY_STATS.n_posts_today} 条推文, 含 ${TODAY_STATS.n_directional_today} 条方向性判断`;
+      feedEmpty.innerHTML = `✓ ${winLabel} 有 ${TODAY_STATS.n_posts_24h} 条推文, 含 ${TODAY_STATS.n_directional_24h} 条方向性判断`;
     }
   }
   // 静默日不假装 - 头部标"最近动态 · N 天前"取代"最新批次 · 今天"
