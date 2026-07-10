@@ -67,6 +67,12 @@ a{color:inherit;text-decoration:none}
 .brief .bstat .v{font-family:var(--mono);font-weight:700;font-size:15px}
 .brief .bstat .v.cy{color:var(--cyan)}.brief .bstat .v.am{color:var(--amber)}
 .brief .bstat .k{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint)}
+.brief .bdate-sub{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);margin-left:8px}
+.brief .bempty{padding:8px 12px;margin:0 0 12px;border-radius:6px;font-size:12.5px;line-height:1.4}
+.brief .bempty.warn{background:rgba(224,97,122,.12);border:1px solid rgba(224,97,122,.4);color:var(--pink)}
+.brief .bempty.info{background:rgba(72,201,214,.10);border:1px solid rgba(72,201,214,.32);color:var(--cyan)}
+.feed-empty{padding:8px 12px;margin:0 0 12px;border-radius:6px;font-size:12.5px;color:var(--ink-faint)}
+.feed-empty.warn{background:rgba(224,97,122,.12);border:1px solid rgba(224,97,122,.4);color:var(--pink)}
 .brief .bhot{margin-left:auto;display:flex;gap:6px;align-items:center}
 
 /* ===== window toggle ===== */
@@ -201,7 +207,7 @@ a{color:inherit;text-decoration:none}
   <div class="brand"><span class="mark">SIGNAL DESK</span><span class="sub">semiconductor intel</span></div>
   <div class="spacer"></div>
   <span class="clock" id="clock"></span>
-  <span class="live"><span class="dot"></span>auto · 06:00 CST</span>
+  <span class="live" id="live-meta"><span class="dot"></span><span id="live-text">loading...</span></span>
 </div>
 
 <div class="wrap">
@@ -223,9 +229,10 @@ a{color:inherit;text-decoration:none}
   <div class="consensus" id="consensus"></div>
   <div class="stance-grid" id="stancegrid"></div>
 
-  <!-- ===== 今日明细 ===== -->
-  <div class="shead"><span class="num">03</span><h2>今日明细</h2>
+  <!-- ===== 近期明细 ===== -->
+  <div class="shead"><span class="num">03</span><h2>近期明细</h2>
     <span class="hint" id="feed-date"></span><span class="rule"></span></div>
+  <div class="feed-empty" id="feed-empty"></div>
   <div class="feed" id="feed"></div>
   <div class="feed-toggle" id="feed-toggle"></div>
 
@@ -247,18 +254,27 @@ a{color:inherit;text-decoration:none}
 
   <div class="foot"><span>SIGNAL DESK</span><span class="sep">/</span>
     <span>4 sources</span><span class="sep">/</span><span id="foot-count"></span><span class="sep">/</span>
-    <span style="color:var(--amber)">demo data — 接入真实 DB 后由 cron 每日生成</span></div>
+    <span id="foot-build"></span><span class="sep">/</span>
+    <span id="foot-datauntil"></span></div>
 </div>
 
 <script id="DATA" type="application/json">__RECORDS__</script>
 <script id="KOLS" type="application/json">__KOLS__</script>
 <script id="TICKERS" type="application/json">__TICKERS__</script>
 <script id="SUMMARIES" type="application/json">__SUMMARIES__</script>
+<script id="TODAY_STATS" type="application/json">__TODAY_STATS__</script>
+<script id="TODAY_RECORDS" type="application/json">__TODAY_RECORDS__</script>
+<script id="BUILD_META" type="application/json">__BUILD_META__</script>
 <script>
 const RECORDS=JSON.parse(document.getElementById('DATA').textContent);
 const KOLS=JSON.parse(document.getElementById('KOLS').textContent);
 const TICKERS=JSON.parse(document.getElementById('TICKERS').textContent);
 const SUM=JSON.parse(document.getElementById('SUMMARIES').textContent);
+const TODAY_STATS=JSON.parse(document.getElementById('TODAY_STATS').textContent);
+const TODAY_RECORDS=JSON.parse(document.getElementById('TODAY_RECORDS').textContent);
+const BUILD_META=JSON.parse(document.getElementById('BUILD_META').textContent);
+// 单一今日窗口函数 (Asia/Shanghai 自然日) — 跟 build_dashboard.py / intel_gen_summaries.py / query_today_stats 共用
+function todayWindowUTC(){return [new Date(BUILD_META.today_window_start_utc), new Date(BUILD_META.today_window_end_utc)];}
 const COLORS={jukan:'#48c9d6',serenity:'#f0a73c',zephyr:'#9a8cff',austin:'#e0617a'};
 const ORDER=['jukan','serenity','zephyr','austin'];
 function initials(n){return n.slice(0,1).toUpperCase()}
@@ -268,22 +284,43 @@ function fmtTime(iso){const d=new Date(iso);return `${String(d.getHours()).padSt
 
 /* ---- 01 今日总结 ---- */
 function renderBrief(){
-  const sorted=[...RECORDS].sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
-  const latest=new Date(sorted[0].published_at);
-  const dayStr=`${latest.getFullYear()}-${String(latest.getMonth()+1).padStart(2,'0')}-${String(latest.getDate()).padStart(2,'0')}`;
-  const items=sorted; // demo: 全样本当"今日"
-  const dirN=items.filter(r=>r.direction!=='neutral').length;
-  const bkCount={};items.forEach(r=>{if(r.bottleneck)bkCount[r.bottleneck]=(bkCount[r.bottleneck]||0)+1});
-  const hot=Object.entries(bkCount).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  // 单一今日窗口 (北京自然日) — 跟 query_today_stats / SUM.today / consensus[0] / 1D 明细共用
+  const todayLabel = BUILD_META.today_date_label;
+  const postsN = TODAY_STATS.n_posts_today;
+  const dirN   = TODAY_STATS.n_directional_today;
+  const bkN    = TODAY_STATS.n_bottlenecks_today;
+  const hot    = TODAY_STATS.hot_bottlenecks_today;
+  const emptyReason = TODAY_STATS.empty_reason;  // "no_posts" | "no_directional" | null
+  const summaryText = SUM.today && SUM.today.trim() ? SUM.today : '（今日 LLM 总结未生成）';
+
+  let emptyNotice = '';
+  if (emptyReason === 'no_posts') {
+    emptyNotice = `<div class="bempty warn">⚠ 今日窗口 (${todayLabel}) 未抓到新推文, 总结基于历史趋势</div>`;
+  } else if (emptyReason === 'no_directional') {
+    emptyNotice = `<div class="bempty info">ℹ 今日窗口 (${todayLabel}) 新增 ${postsN} 条推文, 但无新增方向性投资判断 (long/short)</div>`;
+  }
   document.getElementById('brief').innerHTML=`
-    <div class="bh"><span class="blabel">◆ Daily Brief</span><span class="bdate">${dayStr} · 北京 06:00 自动生成</span></div>
-    <div class="btext">${SUM.today}</div>
+    <div class="bh"><span class="blabel">◆ Daily Brief</span><span class="bdate">${todayLabel} · 北京自然日</span><span class="bdate-sub">生成 ${BUILD_META.build_time_label}</span></div>
+    ${emptyNotice}
+    <div class="btext">${summaryText}</div>
     <div class="bstrip">
-      <div class="bstat"><span class="v">${items.length}</span><span class="k">posts</span></div>
-      <div class="bstat"><span class="v cy">${dirN}</span><span class="k">方向表态</span></div>
-      <div class="bstat"><span class="v am">${Object.keys(bkCount).length}</span><span class="k">涉及卡点</span></div>
-      <div class="bhot">${hot.map(([b,n])=>`<span class="tag bk">${b} ·${n}</span>`).join('')}</div>
+      <div class="bstat"><span class="v">${postsN}</span><span class="k">posts · 今日</span></div>
+      <div class="bstat"><span class="v cy">${dirN}</span><span class="k">方向表态 · 今日</span></div>
+      <div class="bstat"><span class="v am">${bkN}</span><span class="k">涉及卡点 · 今日</span></div>
+      <div class="bhot">${hot.map(h => `<span class="tag bk">${h.name} ·${h.count}</span>`).join('')}</div>
     </div>`;
+}
+
+/* 顶部 live 元信息 + 页脚 */
+function renderLiveMeta(){
+  const dataUntilTxt = BUILD_META.data_until_label || '—';
+  const txt = `生成 ${BUILD_META.build_time_label} · 数据截至 ${dataUntilTxt}`;
+  const el = document.getElementById('live-text');
+  if (el) el.textContent = txt;
+  const f1 = document.getElementById('foot-build');
+  const f2 = document.getElementById('foot-datauntil');
+  if (f1) f1.textContent = `生成 ${BUILD_META.build_time_label}`;
+  if (f2) f2.textContent = `数据截至 ${dataUntilTxt}`;
 }
 
 /* ---- 02 近期态度 ---- */
@@ -295,9 +332,8 @@ function renderStance(){
     <div class="ctext">${SUM.consensus[win]}</div>`;
   let cut;
   if(win===0){
-    // 1D：取数据里最新一天的0点作为cut
-    const sorted=[...RECORDS].sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
-    const ld=new Date(sorted[0].published_at); ld.setHours(0,0,0,0); cut=ld;
+    // 1D: 北京今日 00:00 (跟 query_today_stats / SUM.consensus[0] / SUM.person[*][0] / renderBrief 共用同一窗口)
+    cut = new Date(BUILD_META.today_window_start_utc);
   } else { cut=new Date(); cut.setMonth(cut.getMonth()-win); }
   const g=document.getElementById('stancegrid');
   g.innerHTML=ORDER.map(key=>{
@@ -330,6 +366,20 @@ function winLabel(w){return ({0:'今日',1:'近 1 个月',3:'近 3 个月',6:'�
 let feedExpanded=false;
 function renderFeed(){
   const sorted=[...RECORDS].sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
+  // 顶部今日窗口横幅: 如果今日无新推文, 明确提示, 内容仍展示历史近端点 (不冒充今日)
+  const feedEmpty = document.getElementById('feed-empty');
+  if (feedEmpty) {
+    if (TODAY_STATS.empty_reason === 'no_posts') {
+      feedEmpty.className = 'feed-empty warn';
+      feedEmpty.innerHTML = `⚠ 今日窗口 (${BUILD_META.today_date_label}) 未抓到新推文, 以下为历史近端点`;
+    } else if (TODAY_STATS.empty_reason === 'no_directional') {
+      feedEmpty.className = 'feed-empty';
+      feedEmpty.innerHTML = `ℹ 今日窗口 (${BUILD_META.today_date_label}) 新增 ${TODAY_STATS.n_posts_today} 条推文, 但无新增方向性判断, 以下混入历史近端点`;
+    } else {
+      feedEmpty.className = 'feed-empty';
+      feedEmpty.innerHTML = `✓ 今日窗口 (${BUILD_META.today_date_label}) 有 ${TODAY_STATS.n_posts_today} 条推文, 含 ${TODAY_STATS.n_directional_today} 条方向性判断`;
+    }
+  }
   // 静默日不假装 - 头部标"最近动态 · N 天前"取代"最新批次 · 今天"
   if(sorted.length){
     const top=sorted[0];
@@ -440,7 +490,7 @@ document.querySelectorAll('#seg-stance button').forEach(b=>b.addEventListener('c
   document.querySelectorAll('#seg-stance button').forEach(x=>x.classList.remove('on'));
   b.classList.add('on');win=+b.dataset.w;renderStance();}));
 
-renderBrief();renderStance();renderFeed();renderTickers();renderKols();
+renderBrief();renderLiveMeta();renderStance();renderFeed();renderTickers();renderKols();
 </script>
 </body>
 </html>
