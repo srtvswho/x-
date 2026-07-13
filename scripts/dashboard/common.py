@@ -186,16 +186,30 @@ def query_today_stats(conn) -> dict:
 def query_today_records(conn) -> list[dict]:
     """24h 滚动窗口内的 raw_posts + extractions 完整 records, 供 renderFeed(1D) / renderStance(1D) 用.
 
-    返回跟 build_dashboard.query_extractions 同结构 (post_id, kol, direction, ticker, ...)
+    口径修复 (2026-07-13):
+    - 主表是 raw_posts (LEFT JOIN extractions_intel) — 24h 内每条推文都返回一条
+    - 没有 extraction 的推文仍会出现, direction="neutral", summary=raw_text
+    - 同一 post_id 多条 extraction → 合并为一条 (ticker union, 优先保留 long/short)
+    - 跟 build_dashboard.query_extractions 同结构 (post_id, kol, direction, ticker, ...)
+
+    返回 list[dict]:
+    {
+        "post_id", "kol", "source_id", "published_at", "raw_text", "raw_url",
+        "direction", "ticker" (list), "company" (list), "bottleneck" (str|None),
+        "attribution" (str|None), "rebuts" (str|None), "summary" (str|None),
+        "is_retro", "is_disc", "is_selfret" (int),
+    }
     """
+    import json as _json
     start, end = cn_recent_24h_window_utc()
+    # LEFT JOIN: raw_posts 为主, 没有 extraction 也有记录
     rows = conn.execute("""
-        SELECT e.post_id, e.source_id, e.direction, e.ticker, e.company,
-               e.bottleneck, e.attribution, e.rebuts_narrative, e.summary_100,
-               e.is_retrospective, e.is_disclosure, e.is_self_reported_returns,
-               r.published_at, r.raw_text
-        FROM extractions_intel e
-        JOIN raw_posts r ON r.post_id = e.post_id
+        SELECT r.post_id, r.source_id, r.published_at, r.raw_text, r.raw_url,
+               e.direction, e.ticker, e.company, e.bottleneck, e.attribution,
+               e.rebuts_narrative, e.summary_100,
+               e.is_retrospective, e.is_disclosure, e.is_self_reported_returns
+        FROM raw_posts r
+        LEFT JOIN extractions_intel e ON r.post_id = e.post_id
         WHERE r.published_at >= ? AND r.published_at < ?
         ORDER BY r.published_at DESC
     """, (start, end)).fetchall()
@@ -205,20 +219,90 @@ def query_today_records(conn) -> list[dict]:
         "tw_zephyr_z9": "zephyr", "tw_austinsemis": "austin",
     }
 
-    out = []
+    # 按 post_id 合并 (同一 post 可能多条 extraction, 例如同一推文被不同 LLM prompt 提取多次)
+    by_post: dict = {}
     for x in rows:
-        (post_id, src, direction, ticker, company, bk, attr, rebuts, summ,
-         retro, disc, selfret, pub, raw_text) = x
-        handle = src.replace("tw_", "")
+        (post_id, src, pub, raw_text, raw_url,
+         direction, ticker, company, bk, attr, rebuts, summ,
+         retro, disc, selfret) = x
+        if post_id not in by_post:
+            by_post[post_id] = {
+                "post_id": post_id,
+                "kol": SRC2KOL.get(src, src.replace("tw_", "")),
+                "source_id": src,
+                "published_at": pub,
+                "raw_text": raw_text or "",
+                "raw_url": raw_url or f"https://x.com/{src.replace('tw_', '')}/status/{post_id}",
+                "_directions": [],
+                "_tickers": [],
+                "_companies": [],
+                "_bottlenecks": [],
+                "_attrs": [],
+                "_rebuts": [],
+                "_summaries": [],
+                "_retro": 0, "_disc": 0, "_selfret": 0,
+            }
+        rec = by_post[post_id]
+        if direction:
+            rec["_directions"].append(direction)
+        if ticker:
+            try:
+                rec["_tickers"].extend(_json.loads(ticker) if ticker.startswith("[") else [ticker])
+            except Exception:
+                rec["_tickers"].append(ticker)
+        if company:
+            try:
+                rec["_companies"].extend(_json.loads(company) if company.startswith("[") else [company])
+            except Exception:
+                rec["_companies"].append(company)
+        if bk: rec["_bottlenecks"].append(bk)
+        if attr: rec["_attrs"].append(attr)
+        if rebuts: rec["_rebuts"].append(rebuts)
+        if summ: rec["_summaries"].append(summ)
+        rec["_retro"] = max(rec["_retro"], retro or 0)
+        rec["_disc"] = max(rec["_disc"], disc or 0)
+        rec["_selfret"] = max(rec["_selfret"], selfret or 0)
+
+    out = []
+    for post_id, rec in by_post.items():
+        # 合并 direction: 优先 long/short, 没有就 neutral
+        directions = rec["_directions"]
+        if "long" in directions:
+            direction = "long"
+        elif "short" in directions:
+            direction = "short"
+        elif directions:
+            direction = directions[0]  # neutral 或其他
+        else:
+            direction = "neutral"
+        # ticker / company / bottleneck / attribution / rebuts / summary 去重
+        tickers = list(dict.fromkeys(rec["_tickers"]))  # 保序去重
+        companies = list(dict.fromkeys(rec["_companies"]))
+        bottleneck = rec["_bottlenecks"][0] if rec["_bottlenecks"] else None
+        attribution = rec["_attrs"][0] if rec["_attrs"] else None
+        rebuts = rec["_rebuts"][0] if rec["_rebuts"] else None
+        # summary 优先 LLM 抽取的, 没有就用 raw_text 截断
+        summary = rec["_summaries"][0] if rec["_summaries"] else (rec["raw_text"][:200] if rec["raw_text"] else None)
         out.append({
-            "post_id": post_id, "kol": SRC2KOL.get(src, handle), "source_id": src,
-            "published_at": pub, "direction": direction,
-            "ticker": ticker, "company": company,
-            "bottleneck": bk, "attribution": attr, "rebuts": rebuts, "summary": summ,
-            "is_retro": retro or 0, "is_disc": disc or 0, "is_selfret": selfret or 0,
-            "raw_text": raw_text,
-            "raw_url": f"https://x.com/{handle}/status/{post_id}",
+            "post_id": post_id,
+            "kol": rec["kol"],
+            "source_id": rec["source_id"],
+            "published_at": rec["published_at"],
+            "direction": direction,
+            "ticker": tickers,
+            "company": companies,
+            "bottleneck": bottleneck,
+            "attribution": attribution,
+            "rebuts": rebuts,
+            "summary": summary,
+            "is_retro": rec["_retro"],
+            "is_disc": rec["_disc"],
+            "is_selfret": rec["_selfret"],
+            "raw_text": rec["raw_text"],
+            "raw_url": rec["raw_url"],
         })
+    # 再次按 published_at 降序 (合并可能打乱顺序)
+    out.sort(key=lambda r: r["published_at"], reverse=True)
     return out
 
 
