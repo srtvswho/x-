@@ -19,7 +19,8 @@ import requests
 # 同时: 标的筛选逻辑共享 (common.select_dashboard_ticker_targets / is_in_field / KOL_TICKERS / KOLS)
 sys.path.insert(0, str(Path(__file__).parent))
 from common import (  # noqa: E402
-    build_metadata, query_today_stats, query_today_records, cn_recent_24h_window_utc,
+    build_metadata, query_today_stats, query_today_records, query_recent_records,
+    cn_recent_24h_window_utc,
     KOL_TICKERS, KOLS, SRC2KOL, is_in_field, parse_json_arr,
     select_dashboard_ticker_targets, DASHBOARD_TICKER_LIMIT, DASHBOARD_MIN_DAYS,
 )
@@ -492,6 +493,7 @@ def main():
         # 今日窗口 (北京自然日) 统计 + records + 真实 build metadata
         today_stats = query_today_stats(conn)
         today_records = query_today_records(conn)
+        recent_records = query_recent_records(conn, limit=30)
         build_meta = build_metadata(conn)
         print(f"  24h window: {build_meta['window_label']} "
               f"posts={today_stats['n_posts_24h']} "
@@ -509,6 +511,7 @@ def main():
         html = html.replace("__SUMMARIES__", json.dumps(summaries, ensure_ascii=False))
         html = html.replace("__TODAY_STATS__",   json.dumps(today_stats, ensure_ascii=False))
         html = html.replace("__TODAY_RECORDS__", json.dumps(today_records, ensure_ascii=False))
+        html = html.replace("__RECENT_RECORDS__", json.dumps(recent_records, ensure_ascii=False))
         html = html.replace("__BUILD_META__",    json.dumps(build_meta, ensure_ascii=False))
         OUT.write_text(html, encoding="utf-8")
         # 检查 null 字样没渲染到 HTML (兜底, 即使前端处理对了)

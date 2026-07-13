@@ -183,42 +183,17 @@ def query_today_stats(conn) -> dict:
     }
 
 
-def query_today_records(conn) -> list[dict]:
-    """24h 滚动窗口内的 raw_posts + extractions 完整 records, 供 renderFeed(1D) / renderStance(1D) 用.
+def _merge_post_records(rows) -> list[dict]:
+    """共享的合并逻辑: 同一 post_id 多条 extraction 合并, LEFT JOIN 后的行 → records.
 
-    口径修复 (2026-07-13):
-    - 主表是 raw_posts (LEFT JOIN extractions_intel) — 24h 内每条推文都返回一条
-    - 没有 extraction 的推文仍会出现, direction="neutral", summary=raw_text
-    - 同一 post_id 多条 extraction → 合并为一条 (ticker union, 优先保留 long/short)
-    - 跟 build_dashboard.query_extractions 同结构 (post_id, kol, direction, ticker, ...)
-
-    返回 list[dict]:
-    {
-        "post_id", "kol", "source_id", "published_at", "raw_text", "raw_url",
-        "direction", "ticker" (list), "company" (list), "bottleneck" (str|None),
-        "attribution" (str|None), "rebuts" (str|None), "summary" (str|None),
-        "is_retro", "is_disc", "is_selfret" (int),
-    }
+    复用给 query_today_records (24h 窗口) 跟 query_recent_records (无时间窗口, DB 最新 N 条).
+    不复制两套逻辑.
     """
     import json as _json
-    start, end = cn_recent_24h_window_utc()
-    # LEFT JOIN: raw_posts 为主, 没有 extraction 也有记录
-    rows = conn.execute("""
-        SELECT r.post_id, r.source_id, r.published_at, r.raw_text, r.raw_url,
-               e.direction, e.ticker, e.company, e.bottleneck, e.attribution,
-               e.rebuts_narrative, e.summary_100,
-               e.is_retrospective, e.is_disclosure, e.is_self_reported_returns
-        FROM raw_posts r
-        LEFT JOIN extractions_intel e ON r.post_id = e.post_id
-        WHERE r.published_at >= ? AND r.published_at < ?
-        ORDER BY r.published_at DESC
-    """, (start, end)).fetchall()
-
     SRC2KOL = {
         "tw_jukan05": "jukan", "tw_aleabitoreddit": "serenity",
         "tw_zephyr_z9": "zephyr", "tw_austinsemis": "austin",
     }
-
     # 按 post_id 合并 (同一 post 可能多条 extraction, 例如同一推文被不同 LLM prompt 提取多次)
     by_post: dict = {}
     for x in rows:
@@ -275,7 +250,6 @@ def query_today_records(conn) -> list[dict]:
             direction = directions[0]  # neutral 或其他
         else:
             direction = "neutral"
-        # ticker / company / bottleneck / attribution / rebuts / summary 去重
         tickers = list(dict.fromkeys(rec["_tickers"]))  # 保序去重
         companies = list(dict.fromkeys(rec["_companies"]))
         bottleneck = rec["_bottlenecks"][0] if rec["_bottlenecks"] else None
@@ -301,9 +275,66 @@ def query_today_records(conn) -> list[dict]:
             "raw_text": rec["raw_text"],
             "raw_url": rec["raw_url"],
         })
-    # 再次按 published_at 降序 (合并可能打乱顺序)
+    # 按 published_at 降序
     out.sort(key=lambda r: r["published_at"], reverse=True)
     return out
+
+
+def query_today_records(conn) -> list[dict]:
+    """24h 滚动窗口内的 raw_posts + extractions 完整 records, 供 1D 卡片 / 顶部统计用.
+
+    口径 (2026-07-13):
+    - 主表是 raw_posts (LEFT JOIN extractions_intel) — 24h 内每条推文都返回一条
+    - 没有 extraction 的推文仍会出现, direction="neutral", summary=raw_text
+    - 同一 post_id 多条 extraction → 合并为一条 (ticker union, 优先保留 long/short)
+    - 跟 query_extractions 同结构
+
+    返回 list[dict] 字段:
+    {post_id, kol, source_id, published_at, raw_text, raw_url,
+     direction, ticker (list), company (list), bottleneck, attribution,
+     rebuts, summary, is_retro, is_disc, is_selfret}
+    """
+    start, end = cn_recent_24h_window_utc()
+    rows = conn.execute("""
+        SELECT r.post_id, r.source_id, r.published_at, r.raw_text, r.raw_url,
+               e.direction, e.ticker, e.company, e.bottleneck, e.attribution,
+               e.rebuts_narrative, e.summary_100,
+               e.is_retrospective, e.is_disclosure, e.is_self_reported_returns
+        FROM raw_posts r
+        LEFT JOIN extractions_intel e ON r.post_id = e.post_id
+        WHERE r.published_at >= ? AND r.published_at < ?
+        ORDER BY r.published_at DESC
+    """, (start, end)).fetchall()
+    return _merge_post_records(rows)
+
+
+def query_recent_records(conn, limit: int = 30) -> list[dict]:
+    """DB 最新 N 条不同 post_id 的 raw_posts + extractions records (无时间窗口).
+
+    设计 (2026-07-13):
+    - 主表 raw_posts, LEFT JOIN extractions_intel
+    - 不限制 24h, 按 published_at DESC 取最新 N 条不同 post_id
+    - 无 extraction 的原始推文也返回 (direction=neutral, summary=raw_text)
+    - 同 post 多 extraction 合并去重 (复用 _merge_post_records, 不复制)
+    - 供 "近期明细" 区块使用, 跟 24h 统计 / 1D 卡片解耦:
+      顶部 24h 仍用 query_today_stats + query_today_records (24h 窗口)
+      近期明细用 query_recent_records (DB 最新 N 条)
+    """
+    # LIMIT 略大防止 LEFT JOIN 多 extraction 行被截断后再 GROUP 去重
+    # 实际去重在 _merge_post_records 内部, 这里 N 选 3x 保险
+    fetch_limit = max(limit * 3, 100)
+    rows = conn.execute("""
+        SELECT r.post_id, r.source_id, r.published_at, r.raw_text, r.raw_url,
+               e.direction, e.ticker, e.company, e.bottleneck, e.attribution,
+               e.rebuts_narrative, e.summary_100,
+               e.is_retrospective, e.is_disclosure, e.is_self_reported_returns
+        FROM raw_posts r
+        LEFT JOIN extractions_intel e ON r.post_id = e.post_id
+        ORDER BY r.published_at DESC
+        LIMIT ?
+    """, (fetch_limit,)).fetchall()
+    merged = _merge_post_records(rows)
+    return merged[:limit]
 
 
 # ============================================================================

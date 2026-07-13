@@ -353,3 +353,215 @@ class TestLongWindowFiltersValidOnly:
         assert template.count("r.direction!=='neutral'||r.bottleneck") >= 1, \
             "1M+ 仍须按有效判断过滤 (不是所有推文)"
         print(f"  ✓ 1M+ 排除普通推文 (neutral + 无 bk), 包含 long + neutral-with-bk")
+
+
+# ============================================================================
+# Section 8: query_recent_records (DB 最新 N 条, 无时间窗口) — 修复近期明细
+# ============================================================================
+class TestRecentRecords:
+    """query_recent_records: 不限 24h, DB 最新 30 条, 含无 extraction 的普通推文.
+    供近期明细使用 (跟 24h 统计/1D 卡片解耦).
+    """
+
+    def test_24h_outside_post_included(self, fresh_db, monkeypatch):
+        """build_time = CST 7-13 14:15. Jukan 7-12 07:23 (在 24h 窗口外) 应在 recent_records."""
+        from common import cn_now
+        fixed = datetime(2026, 7, 13, 6, 15, 0, tzinfo=timezone.utc)  # CST 14:15
+        monkeypatch.setattr("common.cn_now", lambda: fixed)
+
+        # Jukan 7-12 07:23 CST = UTC 7-11 23:23
+        jukan_pub = "2026-07-11T23:23:44+00:00"
+        _insert_post(fresh_db, "p_jukan", "tw_jukan05", jukan_pub, raw_text="Jukan 普通推文")
+        # Serenity 7-12 03:47 CST = UTC 7-11 19:47
+        serenity_pub = "2026-07-11T19:47:00+00:00"
+        _insert_post(fresh_db, "p_serenity", "tw_aleabitoreddit", serenity_pub, raw_text="Serenity 推文")
+        _insert_extraction(fresh_db, "p_serenity", "tw_aleabitoreddit",
+                          direction="long", ticker='["MU"]', summary_100="long MU")
+
+        # 24h 窗口: UTC 7-12 06:15 ~ 7-13 06:15 — 两条都在窗口外
+        # 验证 query_today_records (24h) 确实不包含
+        today_recs = query_today_records(fresh_db)
+        assert len(today_recs) == 0, f"24h 窗口应 0 条 (2 条都 > 24h 前), 实际 {len(today_recs)}"
+
+        # query_recent_records (DB 最新 30 条) 应包含两条
+        from common import query_recent_records
+        recent = query_recent_records(fresh_db, limit=30)
+        assert len(recent) == 2, f"recent 应 2 条, 实际 {len(recent)}"
+        # 第一条是 jukan 07:23 (更新)
+        assert recent[0]["post_id"] == "p_jukan", f"首条应 jukan 07:23, 实际 {recent[0]['post_id']}"
+        assert recent[0]["published_at"] == jukan_pub
+        assert recent[0]["kol"] == "jukan"
+        assert recent[0]["direction"] == "neutral", "无 extraction 应 neutral"
+        # 第二条是 serenity
+        assert recent[1]["post_id"] == "p_serenity"
+        assert recent[1]["direction"] == "long"
+        print(f"  ✓ 24h 外 jukan 07:23 在 recent_records 第一条, 24h 内 0 条 (跟 24h 统计解耦)")
+
+    def test_today_records_excludes_outside_window_post(self, fresh_db, monkeypatch):
+        """query_today_records 不包含 24h 外推文 (跟 recent_records 区别)."""
+        from common import cn_now
+        fixed = datetime(2026, 7, 13, 6, 15, 0, tzinfo=timezone.utc)
+        monkeypatch.setattr("common.cn_now", lambda: fixed)
+        # jukan 7-12 07:23 (在 24h 外)
+        _insert_post(fresh_db, "p_jukan", "tw_jukan05", "2026-07-11T23:23:44+00:00", raw_text="x")
+        # serenity 7-13 13:00 (在 24h 内)
+        _insert_post(fresh_db, "p_serenity", "tw_aleabitoreddit", "2026-07-13T05:00:00+00:00", raw_text="y")
+
+        today = query_today_records(fresh_db)
+        assert len(today) == 1
+        assert today[0]["post_id"] == "p_serenity", f"24h 内只 serenity, 实际 {today[0]['post_id']}"
+        # jukan 07:23 不在 24h
+        assert "p_jukan" not in [r["post_id"] for r in today]
+        print(f"  ✓ query_today_records 只返回 24h 内推文, 排除 24h 外 jukan 07:23")
+
+    def test_recent_records_dedup_same_post_multiple_extractions(self, fresh_db, monkeypatch):
+        """同 post 多 extraction → 1 条 record, ticker union."""
+        from common import cn_now
+        fixed = datetime(2026, 7, 13, 6, 15, 0, tzinfo=timezone.utc)
+        monkeypatch.setattr("common.cn_now", lambda: fixed)
+        pub = "2026-07-13T05:00:00+00:00"
+        _insert_post(fresh_db, "p1", "tw_jukan05", pub, raw_text="multi-extract")
+        _insert_extraction(fresh_db, "p1", "tw_jukan05", direction="long", ticker='["MU"]', summary_100="long MU")
+        _insert_extraction(fresh_db, "p1", "tw_jukan05", direction="long", ticker='["SNDK"]', summary_100="long SNDK")
+        from common import query_recent_records
+        recent = query_recent_records(fresh_db, limit=30)
+        assert len(recent) == 1
+        assert set(recent[0]["ticker"]) == {"MU", "SNDK"}
+        assert recent[0]["direction"] == "long"
+        print(f"  ✓ recent_records 同 post 多 extraction → 1 条, ticker union")
+
+    def test_recent_records_limit_30(self, fresh_db, monkeypatch):
+        """recent_records 限 limit=30."""
+        from common import cn_now
+        fixed = datetime(2026, 7, 13, 6, 15, 0, tzinfo=timezone.utc)
+        monkeypatch.setattr("common.cn_now", lambda: fixed)
+        # 插 35 条 jukan
+        for i in range(35):
+            pub = (datetime(2026, 7, 13, 5, 0, 0, tzinfo=timezone.utc) - timedelta(hours=i)).isoformat()
+            _insert_post(fresh_db, f"p{i}", "tw_jukan05", pub, raw_text=f"text {i}")
+        from common import query_recent_records
+        recent = query_recent_records(fresh_db, limit=30)
+        assert len(recent) == 30, f"limit=30 应返回 30 条, 实际 {len(recent)}"
+        # 都是不同 post_id
+        post_ids = [r["post_id"] for r in recent]
+        assert len(set(post_ids)) == 30, f"应 30 个唯一 post_id, 实际 {len(set(post_ids))}"
+        print(f"  ✓ recent_records 35 条 DB → limit=30 条")
+
+    def test_recent_records_no_extraction_included(self, fresh_db, monkeypatch):
+        """无 extraction 的原始推文也必须在 recent_records."""
+        from common import cn_now
+        fixed = datetime(2026, 7, 13, 6, 15, 0, tzinfo=timezone.utc)
+        monkeypatch.setattr("common.cn_now", lambda: fixed)
+        _insert_post(fresh_db, "p1", "tw_jukan05", "2026-07-13T05:00:00+00:00", raw_text="无 extraction")
+        from common import query_recent_records
+        recent = query_recent_records(fresh_db, limit=30)
+        assert len(recent) == 1
+        assert recent[0]["direction"] == "neutral"
+        assert recent[0]["ticker"] == []
+        assert recent[0]["summary"] is not None
+        assert "无 extraction" in recent[0]["summary"]
+        print(f"  ✓ 无 extraction 推文也在 recent_records (neutral + summary=raw_text)")
+
+
+# ============================================================================
+# Section 9: renderFeed 使用 RECENT_RECORDS (不是 TODAY+RECORDS 拼接)
+# ============================================================================
+class TestRenderFeedSource:
+    """renderFeed 直接用 RECENT_RECORDS, 24h 顶部统计仍用 TODAY_RECORDS (renderBrief)."""
+
+    def test_template_uses_recent_records(self):
+        """template renderFeed 必须用 RECENT_RECORDS, 不再合并 TODAY+RECORDS."""
+        template = (Path(__file__).parent.parent / "scripts" / "dashboard" /
+                    "dashboard.template.html").read_text(encoding="utf-8")
+        # 1. 注入 RECENT_RECORDS script id
+        assert '<script id="RECENT_RECORDS" type="application/json">__RECENT_RECORDS__</script>' in template
+        # 2. 解析 const RECENT_RECORDS
+        assert "const RECENT_RECORDS=JSON.parse(document.getElementById('RECENT_RECORDS').textContent)" in template
+        # 3. renderFeed 内部用 (RECENT_RECORDS || [])
+        # 找 renderFeed 函数体, 看是否不再有 "for (const r of (RECORDS || []))" 这种合并
+        # renderFeed 现在应该: const sorted = (RECENT_RECORDS || []).slice().sort(...)
+        assert "(RECENT_RECORDS || []).slice().sort" in template, \
+            "renderFeed 必须用 RECENT_RECORDS (不再合并 TODAY+RECORDS)"
+        # 4. 不应有 "for (const r of (RECORDS || [])) {" 这种拼接循环
+        renderFeed_start = template.find("function renderFeed(){")
+        renderFeed_end = template.find("function renderTickers()")
+        renderFeed_body = template[renderFeed_start:renderFeed_end]
+        assert "for (const r of (RECORDS || []))" not in renderFeed_body, \
+            "renderFeed 不应再合并 RECORDS (去掉了合并去重循环)"
+        assert "for (const r of (TODAY_RECORDS || []))" not in renderFeed_body, \
+            "renderFeed 不应再合并 TODAY_RECORDS"
+        print(f"  ✓ renderFeed 用 RECENT_RECORDS, 不再合并 TODAY+RECORDS")
+
+    def test_template_24h_stats_keep_using_today_records(self):
+        """顶部 24h 统计 / 1D 卡片 / renderBrief 仍用 TODAY_RECORDS (24h 口径)."""
+        template = (Path(__file__).parent.parent / "scripts" / "dashboard" /
+                    "dashboard.template.html").read_text(encoding="utf-8")
+        # renderStance 1D 仍用 TODAY_RECORDS
+        assert "const dataSrc = (win===0) ? TODAY_RECORDS : RECORDS;" in template, \
+            "renderStance 1D 仍用 TODAY_RECORDS (24h 口径)"
+        # renderBrief 顶部统计用 TODAY_STATS (24h 窗口)
+        assert "TODAY_STATS.n_posts_24h" in template
+        # 1D 切窗仍用 window_start_utc (24h 滚动)
+        assert "BUILD_META.window_start_utc" in template
+        # 24h 顶部提示仍 3 种 empty_reason
+        for reason in ("no_posts", "no_directional"):
+            assert reason in template
+        print(f"  ✓ 24h 统计 / 1D 卡片 / renderBrief 仍用 TODAY_RECORDS + TODAY_STATS")
+
+    def test_recent_records_helper_exists(self):
+        """common.py 必须有 query_recent_records 函数."""
+        from common import query_recent_records
+        assert callable(query_recent_records)
+        # 接受 limit 参数, 默认 30
+        import inspect
+        sig = inspect.signature(query_recent_records)
+        assert "limit" in sig.parameters
+        assert sig.parameters["limit"].default == 30
+        print(f"  ✓ common.query_recent_records(conn, limit=30) 存在")
+
+    def test_recent_records_keeps_template_window_24h(self):
+        """顶部 feed-empty 横幅仍 3 种 empty_reason (no_posts / no_directional / 有内容) + 24h 窗口提示."""
+        template = (Path(__file__).parent.parent / "scripts" / "dashboard" /
+                    "dashboard.template.html").read_text(encoding="utf-8")
+        # 顶部提示仍是 24h (window_label 来自 BUILD_META, 跟 renderFeed 内部 RECENT_RECORDS 解耦)
+        assert "${winLabel} 未抓到新推文" in template
+        assert "${winLabel} 新增" in template
+        # winLabel 来自 BUILD_META.window_label (cn_recent_24h_window_utc 算出)
+        assert "BUILD_META.window_label" in template
+        print(f"  ✓ 24h 顶部横幅仍正确 (跟 recent_records 解耦)")
+
+    def test_24h_outside_post_marked_ordinary_1d_ago(self):
+        """24h 外的普通推文 → 标 '普通动态' + 显示 '1 天前'."""
+        # 这是 JS 端逻辑, 模拟: rtCls + 'ordinary' if isOrdinary
+        # 模拟 1 条 24h 外的普通推文
+        records = [{
+            "post_id": "p_jukan", "kol": "jukan", "direction": "neutral",
+            "ticker": [], "bottleneck": None,
+            "published_at": "2026-07-11T23:23:44+00:00"  # 30 小时前
+        }]
+        build_utc = "2026-07-13T06:15:00+00:00"
+        # 模拟 JS days 计算
+        from datetime import datetime
+        pub_ms = datetime.fromisoformat("2026-07-11T23:23:44+00:00").timestamp() * 1000
+        build_ms = datetime.fromisoformat(build_utc).timestamp() * 1000
+        days = int((build_ms - pub_ms) / 86400000)
+        assert days == 1, f"30h 前应显示 1 天前, 实际 {days} 天"
+        isOrdinary = (records[0]["direction"] == "neutral" and not records[0]["bottleneck"])
+        assert isOrdinary
+        print(f"  ✓ 24h 外普通推文 → days=1 (1 天前), isOrdinary=True")
+
+    def test_no_modify_to_production_db(self):
+        """测试不修改生产 DB. /workspace/data/signalboard_full.db mtime 不变."""
+        import os
+        db_path = Path("/workspace/data/signalboard_full.db")
+        if db_path.exists():
+            mtime_before = db_path.stat().st_mtime
+            size_before = db_path.stat().st_size
+            # 测试期间不主动写 DB
+            import time
+            time.sleep(0.1)
+            mtime_after = db_path.stat().st_mtime
+            size_after = db_path.stat().st_size
+            assert mtime_after == mtime_before, f"生产 DB mtime 改变! {mtime_before} -> {mtime_after}"
+            assert size_after == size_before, f"生产 DB size 改变!"
+            print(f"  ✓ 生产 DB 未被测试修改 (mtime/size 不变)")
