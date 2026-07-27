@@ -405,6 +405,53 @@ def query_tickers(conn):
     return out
 
 
+def query_call_performance(conn):
+    """返回逐笔喊单的方向收益，供前端按人物/时间窗汇总。
+
+    一条推文包含多个 ticker 时按 ticker 拆成多笔；每笔等权。
+    long 方向收益 = 标的涨跌幅，short 方向收益 = -标的涨跌幅。
+    只读 ticker_prices 缓存，不在 build 阶段发起额外行情请求。
+    """
+    rows = conn.execute("""
+        SELECT e.post_id, e.source_id, e.direction, e.ticker, e.bottleneck,
+               r.published_at
+        FROM extractions_intel e
+        JOIN raw_posts r ON r.post_id = e.post_id
+        WHERE e.direction IN ('long', 'short')
+          AND e.is_retrospective = 0 AND e.is_disclosure = 0
+          AND e.ticker IS NOT NULL
+          AND r.published_at >= datetime('now', '-370 days')
+        ORDER BY r.published_at DESC
+    """).fetchall()
+    out = []
+    for post_id, src, direction, ticker_json, bottleneck, published_at in rows:
+        kol = SRC2KOL.get(src, src.replace("tw_", ""))
+        call_date = published_at[:10]
+        for ticker in parse_json_arr(ticker_json):
+            cached = conn.execute("""
+                SELECT call_price, now_price, now_date
+                FROM ticker_prices WHERE ticker=? AND pub_date=?
+            """, (ticker, call_date)).fetchone()
+            call_price = cached[0] if cached else None
+            now_price = cached[1] if cached else None
+            now_date = cached[2] if cached else None
+            raw_return = None
+            directional_return = None
+            if call_price not in (None, 0) and now_price is not None:
+                raw_return = round((now_price / call_price - 1) * 100, 2)
+                directional_return = raw_return if direction == "long" else -raw_return
+            out.append({
+                "post_id": post_id, "kol": kol, "ticker": ticker,
+                "direction": direction, "published_at": published_at,
+                "call_date": call_date, "bottleneck": bottleneck,
+                "call_price": call_price, "now_price": now_price,
+                "now_date": now_date, "raw_return": raw_return,
+                "directional_return": directional_return,
+                "in_field": is_in_field(kol, ticker, bottleneck),
+            })
+    return out
+
+
 def load_summaries():
     """读取 intel_gen_summaries.py 预生成的 26 段总结.
 
@@ -489,6 +536,8 @@ def main():
         print(f"  extractions: {len(data)}", flush=True)
         tickers = query_tickers(conn)
         print(f"  tickers: {len(tickers)}", flush=True)
+        call_performance = query_call_performance(conn)
+        print(f"  call performance: {len(call_performance)}", flush=True)
         # 今日窗口 (北京自然日) 统计 + records + 真实 build metadata
         today_stats = query_today_stats(conn)
         today_records = query_today_records(conn)
@@ -506,6 +555,7 @@ def main():
         html = html.replace("__RECORDS__",   json.dumps(data, ensure_ascii=False))
         html = html.replace("__KOLS__",      json.dumps(KOLS, ensure_ascii=False))
         html = html.replace("__TICKERS__",   json.dumps(tickers, ensure_ascii=False))
+        html = html.replace("__CALL_PERFORMANCE__", json.dumps(call_performance, ensure_ascii=False))
         html = html.replace("__SUMMARIES__", json.dumps(summaries, ensure_ascii=False))
         html = html.replace("__TODAY_STATS__",   json.dumps(today_stats, ensure_ascii=False))
         html = html.replace("__TODAY_RECORDS__", json.dumps(today_records, ensure_ascii=False))

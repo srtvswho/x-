@@ -68,6 +68,9 @@ a{color:inherit;text-decoration:none}
 .brief .bstat .v.cy{color:var(--cyan)}.brief .bstat .v.am{color:var(--amber)}
 .brief .bstat .k{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint)}
 .brief .bdate-sub{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);margin-left:8px}
+.brief .bwin{font-family:var(--mono);font-size:11px;color:var(--cyan);margin-bottom:10px;padding:4px 8px;background:rgba(72,201,214,.06);border-radius:4px}
+.feed-empty .win-range{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);margin-top:4px;display:block}
+.stmt .tag.ordinary{background:rgba(255,255,255,.05);color:var(--ink-faint);border:1px dashed rgba(255,255,255,.18)}
 .brief .bempty{padding:8px 12px;margin:0 0 12px;border-radius:6px;font-size:12.5px;line-height:1.4}
 .brief .bempty.warn{background:rgba(224,97,122,.12);border:1px solid rgba(224,97,122,.4);color:var(--pink)}
 .brief .bempty.info{background:rgba(72,201,214,.10);border:1px solid rgba(72,201,214,.32);color:var(--cyan)}
@@ -83,6 +86,18 @@ a{color:inherit;text-decoration:none}
   padding:5px 12px;border-radius:5px;cursor:pointer;letter-spacing:.04em;transition:.15s}
 .seg button:hover{color:var(--ink)}
 .seg button.on{background:var(--amber);color:#0c0e13;font-weight:600}
+.filters{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 14px}
+.filters label{font-family:var(--mono);font-size:10px;color:var(--ink-faint);letter-spacing:.06em;text-transform:uppercase}
+.filters select{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:6px;
+  padding:6px 10px;font-family:var(--mono);font-size:11px}
+.pager{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:14px}
+.pager button{background:var(--panel);color:var(--ink-dim);border:1px solid var(--line);border-radius:6px;
+  padding:6px 12px;cursor:pointer}.pager button:disabled{opacity:.35;cursor:default}
+.pager span{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint)}
+.perfgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:0 0 14px}
+.perfstat{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:11px 13px}
+.perfstat .v{font-family:var(--mono);font-size:17px;font-weight:700}.perfstat .k{font-size:10px;color:var(--ink-faint);display:block}
+.pos{color:var(--cyan)}.neg{color:var(--rose)}
 
 /* consensus band */
 .consensus{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:15px 18px;margin-bottom:16px}
@@ -197,6 +212,7 @@ a{color:inherit;text-decoration:none}
   .ttable thead{display:none}.ttable,.ttable tbody,.ttable tr,.ttable td{display:block;width:100%}
   .ttable tbody tr{border-bottom:1px solid var(--line);padding:6px 0}.ttable td{border:none;padding:5px 14px}
   .fitem{grid-template-columns:42px 22px 1fr;gap:10px}
+  .perfgrid{grid-template-columns:repeat(2,1fr)}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -215,6 +231,7 @@ a{color:inherit;text-decoration:none}
   <!-- ===== 今日总结 (hero) ===== -->
   <div class="shead"><span class="num">01</span><h2>今日总结</h2>
     <span class="hint">四源综合 · LLM 提炼 · 已按能力圈加权</span><span class="rule"></span></div>
+  <div class="filters"><label for="summary-date">日期</label><select id="summary-date"></select></div>
   <div class="brief" id="brief"></div>
 
   <!-- ===== 近期态度 ===== -->
@@ -232,17 +249,22 @@ a{color:inherit;text-decoration:none}
   <!-- ===== 近期明细 ===== -->
   <div class="shead"><span class="num">03</span><h2>近期明细</h2>
     <span class="hint" id="feed-date"></span><span class="rule"></span></div>
+  <div class="filters"><label for="feed-kol">人物</label><select id="feed-kol"></select>
+    <label for="feed-size">每页</label><select id="feed-size"><option>20</option><option selected>30</option><option>50</option></select></div>
   <div class="feed-empty" id="feed-empty"></div>
   <div class="feed" id="feed"></div>
-  <div class="feed-toggle" id="feed-toggle"></div>
+  <div class="pager" id="feed-pager"></div>
 
   <!-- ===== 标的追踪 ===== -->
   <div class="shead"><span class="num">04</span><h2>标的追踪</h2>
-    <span class="hint">喊单 → 至今表现 · 绝对/超额分列</span><span class="rule"></span></div>
+    <span class="hint">逐笔喊单 → 至今方向收益 · Long 上涨/Short 下跌为正</span><span class="rule"></span></div>
+  <div class="filters"><label for="perf-kol">人物</label><select id="perf-kol"></select>
+    <label for="perf-window">喊单时间</label><select id="perf-window"><option value="7">近 1 周</option><option value="30" selected>近 1 个月</option><option value="90">近 3 个月</option><option value="365">近 1 年</option></select></div>
+  <div class="perfgrid" id="perf-summary"></div>
   <div class="tcard">
     <table class="ttable">
-      <thead><tr><th>标的</th><th>谁 · 方向</th><th>最近喊单</th><th>喊单价</th>
-        <th>现价 / 绝对</th><th>超额(板块)</th><th>能力圈</th><th>现在还有空间?</th></tr></thead>
+      <thead><tr><th>标的</th><th>谁 · 方向</th><th>喊单时间</th><th>喊单价</th>
+        <th>现价 / 方向收益</th><th>计分方式</th><th>能力圈</th><th>行情截至</th></tr></thead>
       <tbody id="tbody"></tbody>
     </table>
   </div>
@@ -261,6 +283,7 @@ a{color:inherit;text-decoration:none}
 <script id="DATA" type="application/json">__RECORDS__</script>
 <script id="KOLS" type="application/json">__KOLS__</script>
 <script id="TICKERS" type="application/json">__TICKERS__</script>
+<script id="CALL_PERFORMANCE" type="application/json">__CALL_PERFORMANCE__</script>
 <script id="SUMMARIES" type="application/json">__SUMMARIES__</script>
 <script id="TODAY_STATS" type="application/json">__TODAY_STATS__</script>
 <script id="TODAY_RECORDS" type="application/json">__TODAY_RECORDS__</script>
@@ -269,6 +292,7 @@ a{color:inherit;text-decoration:none}
 const RECORDS=JSON.parse(document.getElementById('DATA').textContent);
 const KOLS=JSON.parse(document.getElementById('KOLS').textContent);
 const TICKERS=JSON.parse(document.getElementById('TICKERS').textContent);
+const CALL_PERFORMANCE=JSON.parse(document.getElementById('CALL_PERFORMANCE').textContent);
 const SUM=JSON.parse(document.getElementById('SUMMARIES').textContent);
 const TODAY_STATS=JSON.parse(document.getElementById('TODAY_STATS').textContent);
 const TODAY_RECORDS=JSON.parse(document.getElementById('TODAY_RECORDS').textContent);
@@ -278,20 +302,51 @@ function todayWindowUTC(){return [new Date(BUILD_META.window_start_utc), new Dat
 const COLORS={jukan:'#48c9d6',serenity:'#f0a73c',zephyr:'#9a8cff',austin:'#e0617a'};
 const ORDER=['jukan','serenity','zephyr','austin'];
 function initials(n){return n.slice(0,1).toUpperCase()}
-function fmtDate(iso){const d=new Date(iso);return `${d.getMonth()+1}/${d.getDate()}`}
-function fmtFull(iso){const d=new Date(iso);return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`}
-function fmtTime(iso){const d=new Date(iso);return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`}
+// 北京时间格式化 (统一时区, 不依赖浏览器本地时区)
+const CST_FMT = new Intl.DateTimeFormat('zh-CN', { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
+const CST_FMT_DATE = new Intl.DateTimeFormat('zh-CN', { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit' });
+function _cstParts(iso, withTime){
+  const d = new Date(iso);
+  const parts = (withTime ? CST_FMT : CST_FMT_DATE).formatToParts(d);
+  const m = {};
+  for (const p of parts) m[p.type] = p.value;
+  return m;
+}
+function fmtDate(iso){const m=_cstParts(iso,false);return `${parseInt(m.month)}/${parseInt(m.day)}`}
+function fmtFull(iso){const m=_cstParts(iso,false);return `${m.year}.${m.month}.${m.day}`}
+function fmtTime(iso){const m=_cstParts(iso,true);return `${m.hour}:${m.minute}`}
+function fmtFullCST(iso){const m=_cstParts(iso,true);return `${m.year}-${m.month}-${m.day} ${m.hour}:${m.minute} CST`}
+function cstDateKey(iso){const m=_cstParts(iso,false);return `${m.year}-${m.month}-${m.day}`}
 
 /* ---- 01 今日总结 ---- */
+let summaryDate='';
+function initSummaryDates(){
+  const history=SUM.daily_history||{};
+  const keys=[...new Set([...Object.keys(history),...RECORDS.map(r=>cstDateKey(r.published_at))])].sort().reverse();
+  const current=BUILD_META.build_time_date_label;
+  if(current&&!keys.includes(current)) keys.unshift(current);
+  summaryDate=keys[0]||current;
+  const el=document.getElementById('summary-date');
+  el.innerHTML=keys.map(d=>`<option value="${d}">${d}${d===current?' · 最新':''}</option>`).join('');
+  el.value=summaryDate;el.onchange=()=>{summaryDate=el.value;renderBrief();};
+}
 function renderBrief(){
   // 单一今日窗口 (24h 滚动) — 跟 query_today_stats / SUM.today / consensus[0] / 1D 明细共用
   const winLabel = BUILD_META.window_label || '过去 24 小时';
-  const postsN = TODAY_STATS.n_posts_24h;
-  const dirN   = TODAY_STATS.n_directional_24h;
-  const bkN    = TODAY_STATS.n_bottlenecks_24h;
-  const hot    = TODAY_STATS.hot_bottlenecks_24h;
-  const emptyReason = TODAY_STATS.empty_reason;  // "no_posts" | "no_directional" | null
-  const summaryText = SUM.today && SUM.today.trim() ? SUM.today : '（今日 LLM 总结未生成）';
+  const isLatest=summaryDate===BUILD_META.build_time_date_label;
+  const dayRows=RECORDS.filter(r=>cstDateKey(r.published_at)===summaryDate);
+  const dayDirectional=dayRows.filter(r=>['long','short'].includes(r.direction)&&!r.is_retro&&!r.is_disc);
+  const bks=[...new Set(dayRows.map(r=>r.bottleneck).filter(Boolean))];
+  const postsN = isLatest ? TODAY_STATS.n_posts_24h : new Set(dayRows.map(r=>r.post_id)).size;
+  const dirN   = isLatest ? TODAY_STATS.n_directional_24h : dayDirectional.length;
+  const bkN    = isLatest ? TODAY_STATS.n_bottlenecks_24h : bks.length;
+  const hot    = isLatest ? TODAY_STATS.hot_bottlenecks_24h : bks.slice(0,3).map(name=>({name,count:dayRows.filter(r=>r.bottleneck===name).length}));
+  const emptyReason = postsN===0?'no_posts':(dirN===0?'no_directional':null);
+  const archived=(SUM.daily_history||{})[summaryDate];
+  const fallbackSummary=dayRows.length
+    ? `当日共 ${new Set(dayRows.map(r=>r.post_id)).size} 条有效动态：`+dayRows.slice(0,5).map(r=>r.summary||r.raw_text||'').filter(Boolean).join('；')
+    : '该日无有效动态。';
+  const summaryText = archived&&archived.summary ? archived.summary : (isLatest&&SUM.today ? SUM.today : fallbackSummary);
 
   let emptyNotice = '';
   if (emptyReason === 'no_posts') {
@@ -299,8 +354,12 @@ function renderBrief(){
   } else if (emptyReason === 'no_directional') {
     emptyNotice = `<div class="bempty info">ℹ ${winLabel} 新增 ${postsN} 条推文, 但无新增方向性投资判断 (long/short)</div>`;
   }
+  const winStartLabel = fmtFullCST(BUILD_META.window_start_utc);
+  const winEndLabel = fmtFullCST(BUILD_META.window_end_utc);
+  const dataUntilLabel = BUILD_META.data_until_label || '—';
   document.getElementById('brief').innerHTML=`
-    <div class="bh"><span class="blabel">◆ Daily Brief</span><span class="bdate">${winLabel}</span><span class="bdate-sub">生成 ${BUILD_META.build_time_label}</span></div>
+    <div class="bh"><span class="blabel">◆ Daily Brief</span><span class="bdate">${summaryDate}</span><span class="bdate-sub">${isLatest?'最新批次 · '+winLabel:'历史归档'}</span></div>
+    <div class="bwin">统计窗口: ${winStartLabel} ~ ${winEndLabel} · 数据截至: ${dataUntilLabel}</div>
     ${emptyNotice}
     <div class="btext">${summaryText}</div>
     <div class="bstrip">
@@ -332,26 +391,39 @@ function renderStance(){
     <div class="ctext">${SUM.consensus[win]}</div>`;
   let cut;
   if(win===0){
-    // 1D: 北京今日 00:00 (跟 query_today_stats / SUM.consensus[0] / SUM.person[*][0] / renderBrief 共用同一窗口)
+    // 1D: 24h 滚动窗口 (跟 query_today_stats / SUM.consensus[0] / SUM.person[*][0] / renderBrief 共用同一窗口)
     cut = new Date(BUILD_META.window_start_utc);
   } else { cut=new Date(); cut.setMonth(cut.getMonth()-win); }
+  // 1D 必须使用 TODAY_RECORDS (含所有 raw_posts, 包括无 extraction 的普通推文)
+  // 1M/3M/6M/1Y 仍用 RECORDS (有效判断)
+  const dataSrc = (win===0) ? TODAY_RECORDS : RECORDS;
   const g=document.getElementById('stancegrid');
   g.innerHTML=ORDER.map(key=>{
     const k=KOLS[key];const c=COLORS[key];
-    let recs=RECORDS.filter(r=>r.kol===key&&new Date(r.published_at)>=cut)
-      .filter(r=>(r.direction!=='neutral'||r.bottleneck))
-      .sort((a,b)=>new Date(b.published_at)-new Date(a.published_at)).slice(0,4);
+    let recs = dataSrc.filter(r=>r.kol===key&&new Date(r.published_at)>=cut);
+    if (win===0) {
+      // 1D: 全部推文 (含普通动态), 区分有效 vs 普通
+      recs = recs.slice().sort((a,b)=>new Date(b.published_at)-new Date(a.published_at)).slice(0,4);
+    } else {
+      // 1M/3M/6M/1Y: 仅有效判断 (long/short 或有 bottleneck)
+      recs = recs.filter(r=>(r.direction!=='neutral'||r.bottleneck))
+        .slice().sort((a,b)=>new Date(b.published_at)-new Date(a.published_at)).slice(0,4);
+    }
     const rows=recs.length?recs.map(r=>{
       const ic=r.direction==='long'?'▲':r.direction==='short'?'▼':'•';
+      const isOrdinary = (r.direction==='neutral' && !r.bottleneck);
       const bkStrong=r.bottleneck&&(k.strong||[]).some(s=>r.bottleneck.includes(s)||s.includes(r.bottleneck));
       const flags=[];if(r.is_disc)flags.push('<span class="flag">持仓披露</span>');if(r.is_retro)flags.push('<span class="flag">回顾</span>');
       const tk=(r.ticker||[]).map(t=>`<span class="tag">${t}</span>`).join('');
       const bk=r.bottleneck?`<span class="tag bk">${r.bottleneck}</span>`:'';
       const ft=r.bottleneck?(bkStrong?'<span class="tag strong">强项</span>':'<span class="tag weak">盲区</span>'):'';
+      const ordinaryTag = isOrdinary ? '<span class="tag ordinary">普通动态</span>' : '';
       return `<div class="stmt"><div class="dir ${r.direction}">${ic}</div><div class="body">
         <div class="txt">${r.summary||r.raw_text||''}</div>
-        <div class="meta">${tk}${bk}${ft}${flags.join('')}<span class="tag date">${fmtFull(r.published_at)}</span></div></div></div>`;
-    }).join(''):`<div class="stmt"><div class="dir neutral">·</div><div class="body"><div class="txt" style="color:var(--ink-faint)">该窗口内无强项方向性表态</div></div></div>`;
+        <div class="meta">${tk}${bk}${ft}${ordinaryTag}${flags.join('')}<span class="tag date">${fmtFull(r.published_at)}</span></div></div></div>`;
+    }).join(''):(win===0
+      ? `<div class="stmt"><div class="dir neutral">·</div><div class="body"><div class="txt" style="color:var(--ink-faint)">${winLabel(0)} 无新推文</div></div></div>`
+      : `<div class="stmt"><div class="dir neutral">·</div><div class="body"><div class="txt" style="color:var(--ink-faint)">该窗口内无强项方向性表态</div></div></div>`);
     const psum=(SUM.person[key]&&SUM.person[key][win])||'';
     return `<div class="stance">
       <div class="sh"><div class="av" style="background:${c}">${initials(k.name)}</div>
@@ -362,23 +434,47 @@ function renderStance(){
 }
 function winLabel(w){return ({0:'今日',1:'近 1 个月',3:'近 3 个月',6:'近 6 个月',12:'近 1 年'})[w]}
 
-/* ---- 03 今日明细 ---- */
-let feedExpanded=false;
+/* ---- 03 近期明细：按人筛选 + 全量分页 ---- */
+let feedKol='all',feedPage=1,feedSize=30;
+function initKolFilters(){
+  const options=`<option value="all">全部人物</option>`+ORDER.map(k=>`<option value="${k}">${KOLS[k].name}</option>`).join('');
+  document.getElementById('feed-kol').innerHTML=options;
+  document.getElementById('perf-kol').innerHTML=options;
+  document.getElementById('feed-kol').onchange=e=>{feedKol=e.target.value;feedPage=1;renderFeed();};
+  document.getElementById('feed-size').onchange=e=>{feedSize=+e.target.value;feedPage=1;renderFeed();};
+}
 function renderFeed(){
-  const sorted=[...RECORDS].sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
-  // 顶部今日窗口横幅: 如果今日无新推文, 明确提示, 内容仍展示历史近端点 (不冒充今日)
+  // TODAY_RECORDS 优先 (含所有 raw_posts, 包括无 extraction 的普通推文)
+  // RECORDS 是有效判断. 合并去重 (按 post_id), TODAY 领先
+  const seen = new Set();
+  const merged = [];
+  for (const r of (TODAY_RECORDS || [])) {
+    if (!seen.has(r.post_id)) { seen.add(r.post_id); merged.push(r); }
+  }
+  for (const r of (RECORDS || [])) {
+    if (!seen.has(r.post_id)) { seen.add(r.post_id); merged.push(r); }
+  }
+  const sorted = merged.filter(r=>feedKol==='all'||r.kol===feedKol)
+    .sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
+  // 顶部今日窗口横幅: 明确窗口跟计数
   const feedEmpty = document.getElementById('feed-empty');
   const winLabel = BUILD_META.window_label || '过去 24 小时';
+  // 明确显示 窗口 跟 数据截止
+  const winStartLabel = fmtFullCST(BUILD_META.window_start_utc);
+  const winEndLabel = fmtFullCST(BUILD_META.window_end_utc);
+  const dataUntilLabel = BUILD_META.data_until_label || '—';
   if (feedEmpty) {
+    // 顶部: 窗口范围
+    let winText = `统计窗口: ${winStartLabel} ~ ${winEndLabel} · 数据截至: ${dataUntilLabel}`;
     if (TODAY_STATS.empty_reason === 'no_posts') {
       feedEmpty.className = 'feed-empty warn';
-      feedEmpty.innerHTML = `⚠ ${winLabel} 未抓到新推文, 以下为历史近端点`;
+      feedEmpty.innerHTML = `⚠ ${winLabel} 未抓到新推文, 以下为历史近端点<br><span class="win-range">${winText}</span>`;
     } else if (TODAY_STATS.empty_reason === 'no_directional') {
       feedEmpty.className = 'feed-empty';
-      feedEmpty.innerHTML = `ℹ ${winLabel} 新增 ${TODAY_STATS.n_posts_24h} 条推文, 但无新增方向性判断, 以下混入历史近端点`;
+      feedEmpty.innerHTML = `ℹ ${winLabel} 新增 ${TODAY_STATS.n_posts_24h} 条推文, 但无新增方向性投资判断, 以下混入历史近端点<br><span class="win-range">${winText}</span>`;
     } else {
       feedEmpty.className = 'feed-empty';
-      feedEmpty.innerHTML = `✓ ${winLabel} 有 ${TODAY_STATS.n_posts_24h} 条推文, 含 ${TODAY_STATS.n_directional_24h} 条方向性判断`;
+      feedEmpty.innerHTML = `✓ ${winLabel} 有 ${TODAY_STATS.n_posts_24h} 条推文, 含 ${TODAY_STATS.n_directional_24h} 条方向性判断<br><span class="win-range">${winText}</span>`;
     }
   }
   // 静默日不假装 - 头部标"最近动态 · N 天前"取代"最新批次 · 今天"
@@ -388,14 +484,15 @@ function renderFeed(){
     const diffMs=now - new Date(top.published_at);
     const days=Math.floor(diffMs/86400000);
     const relLabel=days===0?'今天':(days===1?'1 天前':(days<=7?`${days} 天前`:(days<=30?`${days} 天前`:`${days} 天前 (历史)`)));
-    const lastDate=top.published_at.slice(0,10);
+    const lastDate=fmtFullCST(top.published_at);
     document.getElementById('feed-date').innerHTML=
       `最近动态 · 共 ${sorted.length} 条 · 最新 <b style="color:var(--amber)">${relLabel}</b> (${lastDate})`;
   } else {
     document.getElementById('feed-date').textContent='最近动态 · 暂无数据';
   }
-  const COLLAPSE=6, MAX_EXPAND=30;
-  const show=feedExpanded ? sorted.slice(0, MAX_EXPAND) : sorted.slice(0, COLLAPSE);
+  const pages=Math.max(1,Math.ceil(sorted.length/feedSize));
+  feedPage=Math.min(feedPage,pages);
+  const show=sorted.slice((feedPage-1)*feedSize,feedPage*feedSize);
   // 静默日警告条 (如果最新一条不是今天)
   let banner='';
   if(sorted.length){
@@ -431,41 +528,46 @@ function renderFeed(){
         <div class="fsum">${r.summary||r.raw_text||''}</div>${rb}
         <div class="frow"><span class="atb ${r.attribution}">${r.attribution||'NA'}</span><a class="flink" href="${r.raw_url}" target="_blank">view on X ↗</a></div></div></div>`;
   }).join('');
-  // 展开按钮: 最多展开 MAX_EXPAND
-  const moreExpandable=Math.max(0, sorted.length - MAX_EXPAND);
-  const moreTotal=Math.max(0, sorted.length - COLLAPSE);
-  let btn='';
-  if(feedExpanded && moreExpandable>0){
-    btn=`<button id="ftbtn">收起 (显示前 ${MAX_EXPAND} 条 · 还剩 ${moreExpandable} 条)</button>`;
-  } else if(!feedExpanded && moreTotal>0){
-    btn=`<button id="ftbtn">展开前 ${MAX_EXPAND} 条 (共 ${sorted.length} 条)</button>`;
-  }
-  document.getElementById('feed-toggle').innerHTML=btn;
-  const b=document.getElementById('ftbtn');if(b)b.onclick=()=>{feedExpanded=!feedExpanded;renderFeed();};
+  document.getElementById('feed-pager').innerHTML=`<button id="feed-prev" ${feedPage<=1?'disabled':''}>上一页</button>
+    <span>第 ${feedPage} / ${pages} 页 · 共 ${sorted.length} 条</span>
+    <button id="feed-next" ${feedPage>=pages?'disabled':''}>下一页</button>`;
+  document.getElementById('feed-prev').onclick=()=>{if(feedPage>1){feedPage--;renderFeed();}};
+  document.getElementById('feed-next').onclick=()=>{if(feedPage<pages){feedPage++;renderFeed();}};
   document.getElementById('foot-count').textContent=`${sorted.length} 条 records`;
 }
 
 /* ---- 04 标的 ---- */
+let perfKol='all',perfDays=30;
 function renderTickers(){
-  document.getElementById('tbody').innerHTML=TICKERS.map(t=>{
+  const cut=Date.now()-perfDays*86400000;
+  const rows=CALL_PERFORMANCE.filter(t=>(perfKol==='all'||t.kol===perfKol)&&new Date(t.published_at).getTime()>=cut);
+  const valid=rows.filter(t=>t.directional_return!=null);
+  const avg=valid.length?valid.reduce((s,t)=>s+t.directional_return,0)/valid.length:null;
+  const wins=valid.filter(t=>t.directional_return>0).length;
+  const longRows=valid.filter(t=>t.direction==='long'),shortRows=valid.filter(t=>t.direction==='short');
+  const mean=a=>a.length?a.reduce((s,t)=>s+t.directional_return,0)/a.length:null;
+  const fmt=v=>v==null?'—':`${v>=0?'+':''}${v.toFixed(1)}%`;
+  const best=valid.length?[...valid].sort((a,b)=>b.directional_return-a.directional_return)[0]:null;
+  document.getElementById('perf-summary').innerHTML=`
+    <div class="perfstat"><span class="v ${avg>=0?'pos':'neg'}">${fmt(avg)}</span><span class="k">综合等权方向收益</span></div>
+    <div class="perfstat"><span class="v">${valid.length?wins+'/'+valid.length:'—'}</span><span class="k">胜率 ${valid.length?(wins/valid.length*100).toFixed(0)+'%':'—'}</span></div>
+    <div class="perfstat"><span class="v">${fmt(mean(longRows))}</span><span class="k">Long 平均表现</span></div>
+    <div class="perfstat"><span class="v">${fmt(mean(shortRows))}</span><span class="k">Short 平均表现</span></div>
+    <div class="perfstat"><span class="v">${best?best.ticker+' '+fmt(best.directional_return):'—'}</span><span class="k">最佳喊单 · 行情覆盖 ${valid.length}/${rows.length}</span></div>`;
+  document.getElementById('tbody').innerHTML=rows.map(t=>{
     const c=COLORS[t.kol];const k=KOLS[t.kol];
-    // build_dashboard.py 已经用 *_str 字段预处理, 这里只 fallback 兜底
-    const cp=t.price_call_str||(t.call_price==null?'—':`$${t.call_price}`);
-    const np=t.price_now_str||(t.now_price==null?'—':`$${t.now_price}`);
-    const rs=t.raw_pct==null?'':t.raw_pct>=0?'+':'';
-    const es=t.excess_pct==null?'':t.excess_pct>=0?'+':'';
-    const rawDisp=t.raw_pct_str||(t.raw_pct==null?'—':`${rs}${t.raw_pct}%`);
-    const excDisp=t.excess_pct_str||(t.excess_pct==null?'—':`${es}${t.excess_pct}pp`);
-    const clsRaw=t.raw_pct==null?'':(t.raw_pct>=0?'in':'out');
-    const clsExc=t.excess_pct==null?'':(t.excess_pct>=0?'in':'out');
+    const cp=t.call_price==null?'—':`$${Number(t.call_price).toFixed(2)}`;
+    const np=t.now_price==null?'—':`$${Number(t.now_price).toFixed(2)}`;
+    const dirRet=fmt(t.directional_return);
+    const cls=t.directional_return==null?'':(t.directional_return>=0?'in':'out');
     return `<tr><td><span class="tk ${t.direction}">${t.ticker}</span></td>
       <td><div class="by"><div class="av" style="background:${c}">${initials(k.name)}</div><span class="nm">${k.name}</span> <span class="dirpill2 ${t.direction}">${t.direction}</span></div></td>
-      <td><span class="when">${fmtFull(t.called_at)}</span></td>
+      <td><span class="when">${fmtFull(t.published_at)}</span></td>
       <td><span class="when">${cp}</span></td>
-      <td><span class="when">${np}</span> &nbsp;<span class="circle ${clsRaw}">${rawDisp}</span></td>
-      <td><span class="circle ${clsExc}">${excDisp}</span></td>
+      <td><span class="when">${np}</span> &nbsp;<span class="circle ${cls}">${dirRet}</span></td>
+      <td><span class="circle ${cls}">${t.direction==='short'?'已反向计分':'按涨跌计分'}</span></td>
       <td>${t.in_field?'<span class="tag strong">强项</span>':'<span class="tag weak">圈外</span>'}</td>
-      <td><span class="pending"><span class="q">?</span> 待判断序列 · M3</span></td></tr>`;
+      <td><span class="when">${t.now_date||'行情待补'}</span></td></tr>`;
   }).join('');
 }
 
@@ -491,6 +593,9 @@ document.querySelectorAll('#seg-stance button').forEach(b=>b.addEventListener('c
   document.querySelectorAll('#seg-stance button').forEach(x=>x.classList.remove('on'));
   b.classList.add('on');win=+b.dataset.w;renderStance();}));
 
+initSummaryDates();initKolFilters();
+document.getElementById('perf-kol').onchange=e=>{perfKol=e.target.value;renderTickers();};
+document.getElementById('perf-window').onchange=e=>{perfDays=+e.target.value;renderTickers();};
 renderBrief();renderLiveMeta();renderStance();renderFeed();renderTickers();renderKols();
 </script>
 </body>

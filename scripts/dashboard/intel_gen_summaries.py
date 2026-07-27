@@ -35,7 +35,7 @@ import requests
 # today/0M 用 24h 滚动 (不是北京自然日, 因为生产顺序 06:00 抓取 → 06:20 Dashboard,
 # 北京自然日只覆盖 6h, 跟用户视角 "今日" 不符; 24h 滚动跟 cron 节奏对齐)
 sys.path.insert(0, str(Path(__file__).parent))
-from common import cn_recent_24h_window_utc, cn_window_long_utc  # noqa: E402
+from common import CN_TZ, cn_recent_24h_window_utc, cn_window_long_utc  # noqa: E402
 
 DB_PATH = "/workspace/data/signalboard_full.db"
 OUT_PATH = "/workspace/scripts/dashboard/summaries.json"
@@ -244,6 +244,16 @@ def get_data_until(con) -> str | None:
     return r[0] if r else None
 
 
+def load_daily_history() -> dict:
+    """保留此前每天生成的总结；旧格式 summaries.json 自动兼容。"""
+    try:
+        with open(OUT_PATH, "r", encoding="utf-8") as f:
+            old = json.load(f)
+        return old.get("daily_history", {}) if isinstance(old, dict) else {}
+    except (OSError, ValueError, TypeError):
+        return {}
+
+
 def main():
     import argparse
     parser = argparse.ArgumentParser()
@@ -262,6 +272,7 @@ def main():
                 "today": "（今日总结缺失 — DEEPSEEK_API_KEY 未配置, 请联系管理员）",
                 "consensus": {w: "（缺失 — DEEPSEEK_API_KEY 未配置）" for w in WINDOWS},
                 "person": {k: {w: "（缺失 — DEEPSEEK_API_KEY 未配置）" for w in WINDOWS} for k in KOLS},
+                "daily_history": load_daily_history(),
             }
             with open(OUT_PATH, "w", encoding="utf-8") as f:
                 json.dump(stale, f, indent=2, ensure_ascii=False)
@@ -285,6 +296,7 @@ def main():
         "generated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "data_until": data_until,
         "stale": False,
+        "daily_history": load_daily_history(),
     }
     # 初始化 person
     for kol in KOLS:
@@ -293,6 +305,12 @@ def main():
     # === 1. today ===
     print("[1/26] 今日综合...")
     summaries["today"] = gen_today_summary(con)
+    archive_date = datetime.now(timezone.utc).astimezone(CN_TZ).strftime("%Y-%m-%d")
+    summaries["daily_history"][archive_date] = {
+        "summary": summaries["today"],
+        "generated_at": summaries["generated_at"],
+        "data_until": data_until,
+    }
     print(f"  ✓ {summaries['today'][:80]}...")
 
     # === 2. consensus × 5 ===
