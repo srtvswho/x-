@@ -1,0 +1,39 @@
+name: Signalboard Read-only Baseline
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: "输入 AUDIT_ONLY，确认只执行生产只读审计"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: signalboard-production-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    if: ${{ inputs.confirmation == 'AUDIT_ONLY' }}
+    runs-on:
+      - self-hosted
+      - linux
+      - x64
+      - signalboard-prod-audit
+    timeout-minutes: 10
+    steps:
+      - name: Refuse non-default branch
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          [[ "$GITHUB_REF" == "refs/heads/master" ]] || {
+            echo "Only master may dispatch the production audit."
+            exit 1
+          }
+
+      - name: Collect read-only production baseline
+        shell: bash
+        run: sudo /usr/local/sbin/signalboard-readonly-audit
