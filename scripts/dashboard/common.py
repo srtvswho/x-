@@ -503,3 +503,52 @@ def group_targets_by_ticker(targets: list[dict]) -> dict[str, list[dict]]:
     for t in targets:
         by_tk.setdefault(t["ticker"], []).append(t)
     return by_tk
+
+
+def select_call_performance_targets(conn, days: int = 370) -> list[dict]:
+    """返回人物表现模块需要的逐笔价格目标。
+
+    与 ``select_dashboard_ticker_targets`` 不同，这里不能按 (kol, ticker)
+    聚合、不能排除最近 5 天，也不能截断为 30 条；人物表现会展示窗口内的
+    每一笔喊单，因此每个 (ticker, call_date) 都必须能在 ticker_prices 中
+    找到对应价格。相同股票同一天的多笔喊单共享一条价格缓存记录。
+    """
+    rows = conn.execute("""
+        SELECT e.source_id, e.ticker, e.direction, r.published_at
+        FROM extractions_intel e
+        JOIN raw_posts r ON r.post_id = e.post_id
+        WHERE e.direction IN ('long', 'short')
+          AND e.is_retrospective = 0 AND e.is_disclosure = 0
+          AND e.ticker IS NOT NULL
+          AND r.published_at >= datetime('now', ?)
+        ORDER BY r.published_at DESC
+    """, (f"-{int(days)} days",)).fetchall()
+
+    targets = {}
+    today = datetime.now(timezone.utc).date()
+    for src, ticker_json, direction, published_at in rows:
+        call_date = published_at[:10]
+        try:
+            days_since = (today - datetime.fromisoformat(call_date).date()).days
+        except Exception:
+            days_since = 0
+        kol = SRC2KOL.get(src, src.replace("tw_", ""))
+        for ticker in parse_json_arr(ticker_json):
+            key = (ticker, call_date)
+            targets.setdefault(key, {
+                "ticker": ticker, "kol": kol, "source_id": src,
+                "direction": direction, "call_date": call_date,
+                "latest_pub": published_at, "earliest_pub": published_at,
+                "days_since": days_since, "n_calls": 1,
+                "in_field": is_in_field(kol, ticker, None),
+            })
+    return list(targets.values())
+
+
+def merge_price_targets(*target_lists: list[dict]) -> list[dict]:
+    """合并多个价格目标集合，并按 (ticker, call_date) 去重。"""
+    merged = {}
+    for targets in target_lists:
+        for target in targets:
+            merged.setdefault((target["ticker"], target["call_date"]), target)
+    return list(merged.values())
