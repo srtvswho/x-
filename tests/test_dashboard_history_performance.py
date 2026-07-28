@@ -55,3 +55,59 @@ def test_summary_generator_preserves_daily_history():
     src = (DASH / "intel_gen_summaries.py").read_text(encoding="utf-8")
     assert "load_daily_history()" in src
     assert 'summaries["daily_history"][archive_date]' in src
+
+
+def test_performance_price_targets_include_recent_calls(monkeypatch):
+    import sys
+    sys.path.insert(0, str(DASH))
+    import common
+
+    con = sqlite3.connect(":memory:")
+    con.executescript("""
+        CREATE TABLE raw_posts (
+            post_id TEXT PRIMARY KEY, source_id TEXT, published_at TEXT
+        );
+        CREATE TABLE extractions_intel (
+            post_id TEXT, source_id TEXT, direction TEXT, ticker TEXT,
+            bottleneck TEXT, is_retrospective INTEGER, is_disclosure INTEGER
+        );
+        INSERT INTO raw_posts VALUES
+            ('p1', 'tw_jukan05', datetime('now')),
+            ('p2', 'tw_jukan05', datetime('now', '-10 days'));
+        INSERT INTO extractions_intel VALUES
+            ('p1', 'tw_jukan05', 'long', '["MU","NVDA"]', NULL, 0, 0),
+            ('p2', 'tw_jukan05', 'short', '["MU"]', NULL, 0, 0);
+    """)
+    targets = common.select_call_performance_targets(con)
+    keys = {(row["ticker"], row["call_date"]) for row in targets}
+    assert ("MU", con.execute("SELECT substr(datetime('now'),1,10)").fetchone()[0]) in keys
+    assert len(keys) == 3
+
+
+def test_merge_price_targets_deduplicates_ticker_and_date():
+    import sys
+    sys.path.insert(0, str(DASH))
+    import common
+
+    row = {"ticker": "MU", "call_date": "2026-07-27"}
+    merged = common.merge_price_targets([row], [dict(row)])
+    assert merged == [row]
+
+
+def test_zero_performance_price_coverage_blocks_publish(monkeypatch):
+    import sys
+    import types
+    monkeypatch.setitem(sys.modules, "requests", types.SimpleNamespace())
+    sys.path.insert(0, str(DASH))
+    import build_dashboard as bd
+    import pytest
+
+    with pytest.raises(RuntimeError, match="行情覆盖为 0"):
+        bd.validate_call_performance_coverage([
+            {"call_price": None, "now_price": None},
+            {"call_price": None, "now_price": None},
+        ])
+    bd.validate_call_performance_coverage([
+        {"call_price": 100, "now_price": 101},
+        {"call_price": None, "now_price": None},
+    ])
