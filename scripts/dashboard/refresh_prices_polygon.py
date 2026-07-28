@@ -59,7 +59,8 @@ from urllib3.util.retry import Retry
 # 共享模块: 目标选择函数 + KOL 元数据 + 窗口函数
 sys.path.insert(0, str(Path(__file__).parent))
 from common import (  # noqa: E402
-    select_dashboard_ticker_targets, group_targets_by_ticker,
+    select_dashboard_ticker_targets, select_call_performance_targets,
+    merge_price_targets, group_targets_by_ticker,
     DASHBOARD_TICKER_LIMIT, DASHBOARD_MIN_DAYS,
 )
 
@@ -261,7 +262,10 @@ def list_targets(args):
         sys.exit(1)
     conn = sqlite3.connect(str(db_path), timeout=30)
     try:
-        targets = select_dashboard_ticker_targets(conn, limit=DASHBOARD_TICKER_LIMIT)
+        dashboard_targets = select_dashboard_ticker_targets(
+            conn, limit=DASHBOARD_TICKER_LIMIT)
+        performance_targets = select_call_performance_targets(conn)
+        targets = merge_price_targets(dashboard_targets, performance_targets)
         by_ticker = group_targets_by_ticker(targets)
         n_unique_tickers = len(by_ticker)
         n_unique_call_dates = sum(len(v) for v in by_ticker.values())
@@ -317,8 +321,14 @@ def main():
             print(f"  ✓ 建表完成 (no-fetch 模式): {db_path}")
             return
 
-        # 1. 取目标 (跟 Dashboard 区块04 同源)
-        targets = select_dashboard_ticker_targets(conn, limit=DASHBOARD_TICKER_LIMIT)
+        # 1. 合并旧标的追踪与人物表现逐笔目标。后者不受 5 天/30 条限制。
+        dashboard_targets = select_dashboard_ticker_targets(
+            conn, limit=DASHBOARD_TICKER_LIMIT)
+        performance_targets = select_call_performance_targets(conn)
+        targets = merge_price_targets(dashboard_targets, performance_targets)
+        print(f"  price targets: dashboard={len(dashboard_targets)}, "
+              f"performance={len(performance_targets)}, merged={len(targets)}",
+              flush=True)
         by_ticker = group_targets_by_ticker(targets)
         n_unique_tickers = len(by_ticker)
         n_unique_call_dates = sum(len(v) for v in by_ticker.values())
