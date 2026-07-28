@@ -452,6 +452,23 @@ def query_call_performance(conn):
     return out
 
 
+def validate_call_performance_coverage(rows):
+    """禁止人物表现全无行情时仍发布看似成功的页面。"""
+    if not rows:
+        return
+    covered = sum(
+        1 for row in rows
+        if row.get("call_price") not in (None, 0)
+        and row.get("now_price") is not None
+    )
+    coverage = covered / len(rows)
+    print(f"  call performance price coverage: "
+          f"{covered}/{len(rows)} ({coverage:.1%})", flush=True)
+    if covered == 0:
+        raise RuntimeError(
+            "人物表现行情覆盖为 0，停止构建与发布；请先刷新逐笔喊单价格")
+
+
 def load_summaries():
     """读取 intel_gen_summaries.py 预生成的 26 段总结.
 
@@ -537,6 +554,7 @@ def main():
         tickers = query_tickers(conn)
         print(f"  tickers: {len(tickers)}", flush=True)
         call_performance = query_call_performance(conn)
+        validate_call_performance_coverage(call_performance)
         print(f"  call performance: {len(call_performance)}", flush=True)
         # 今日窗口 (北京自然日) 统计 + records + 真实 build metadata
         today_stats = query_today_stats(conn)
