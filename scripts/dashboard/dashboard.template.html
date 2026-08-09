@@ -222,6 +222,13 @@ a{color:inherit;text-decoration:none}
 .evidence summary::-webkit-details-marker{display:none}.evidence summary:before{content:'＋';margin-right:5px}.evidence[open] summary:before{content:'－'}
 .evidence-text{margin-top:8px;padding:10px 11px;border-radius:8px;background:var(--panel-2);color:var(--ink-dim);font-size:12.5px;line-height:1.65;white-space:pre-wrap;max-width:520px}
 .evidence-link{margin-top:6px}.evidence-link a{color:var(--blue);font-size:11px;font-weight:650}
+/* ===== explainable signal strength ===== */
+.signal-strip{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 15px;padding:11px 13px;border:1px solid var(--line-soft);border-radius:10px;background:#fbfcfe}
+.signal-strip span{font-size:11px;color:var(--ink-dim)}.signal-strip b{color:var(--ink)}
+.sig{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:9.5px;font-weight:800;padding:2px 7px;border-radius:999px;border:1px solid}
+.sig.focus{color:#166f50;background:#eaf8f2;border-color:#bde8d5}.sig.reference{color:#8a5b08;background:#fff6df;border-color:#f0d89b}.sig.general{color:#697586;background:#f2f4f7;border-color:#dfe3e8}
+.sigwhy{font-size:10px;color:var(--ink-faint)}.cycle{font-family:var(--mono);font-size:9.5px;color:var(--violet);background:#f1efff;border:1px solid #ded9ff;border-radius:999px;padding:2px 6px}
+.review-note{margin-top:12px;padding-top:11px;border-top:1px solid var(--line-soft);font-size:10.5px;color:var(--ink-faint);line-height:1.55}
 .new-badge{display:inline-block;margin:5px 0 0 6px;padding:2px 6px;border-radius:999px;background:#e9f8f0;color:#148052;font-family:var(--mono);font-size:9px;font-weight:800;vertical-align:middle}
 .return-wrap{display:flex;align-items:center;gap:8px;margin-top:5px;min-width:145px}.return-track{position:relative;width:86px;height:8px;border-radius:999px;background:#edf0f4;overflow:hidden}
 .return-zero{position:absolute;left:50%;top:0;width:1px;height:100%;background:#aab2bf}.return-bar{position:absolute;top:1px;height:6px;border-radius:999px}
@@ -260,6 +267,7 @@ a{color:inherit;text-decoration:none}
     <option value="0" selected>今日</option><option value="1">近 1 个月</option><option value="3">近 3 个月</option>
     <option value="6">近 6 个月</option><option value="12">近 1 年</option></select></div>
   <div class="consensus" id="consensus"></div>
+  <div class="signal-strip"><span><b>信号口径：</b>重点 = 能力圈内、方向明确并有行动证据；参考 = 有价值但不能直接跟单；一般 = 转述、回顾、模糊或已过期。</span><span><b>更新：</b>信号每日衰减 · 人物表现每月更新 · 定位每季度复核。</span></div>
   <div class="stance-grid" id="stancegrid"></div>
 
   <!-- ===== 标的追踪：优先于明细 ===== -->
@@ -339,6 +347,44 @@ function formatStructuredSummary(text){
 }
 
 function escHtml(value){return String(value||'').replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});}
+const SIGNAL_POLICY={
+  jukan:{focus:'存储/HBM能力圈内的明确方向与实际操作',caution:'模糊、无行动证据的短线风险评论',review:'每月更新表现 · 每季度复核能力圈'},
+  zephyr:{focus:'产业卡点与能力圈内做多',caution:'做空信号：历史多空表现不对称',review:'每月更新多空分项 · 每季度复核'},
+  austin:{focus:'公司竞争格局与技术路线',caution:'短线买卖点与圈外标的',review:'每月更新表现 · 每季度复核'},
+  serenity:{focus:'光通信/CPO/InP产业趋势与标的发现',caution:'高频重复喊多与具体买点',review:'每月更新时点表现 · 每季度复核'}
+};
+function inferHorizon(r){
+  const s=((r.summary||'')+' '+(r.raw_text||'')).toLowerCase();
+  if(/财报|earnings|发布会|event|催化/.test(s)) return {name:'事件',days:30};
+  if(/短期|短线|这周|几天|near.?term/.test(s)) return {name:'短线',days:14};
+  if(/季度|周期|库存|供给|dram|nand|hbm/.test(s)) return {name:'周期',days:120};
+  if(/长期|未来.?年|多年|long.?term/.test(s)) return {name:'长期',days:365};
+  return {name:'波段',days:60};
+}
+function signalStrength(r){
+  const h=inferHorizon(r),age=Math.max(0,Math.floor((Date.now()-new Date(r.published_at).getTime())/86400000));
+  const text=((r.summary||'')+' '+(r.raw_text||'')).toLowerCase();
+  const action=!!r.is_disc||/买入|加仓|减仓|卖出|持有|仓位|bought|added|sold|position/.test(text);
+  const explicit=r.direction==='long'||r.direction==='short';
+  const k=KOLS[r.kol]||{}, strong=(k.strong||[]).some(s=>text.includes(String(s).toLowerCase())||(r.bottleneck&&String(r.bottleneck).includes(s)));
+  const inField=r.in_field===true||strong;
+  let level='general',why='普通信息或未形成方向';
+  if(explicit&&inField&&(action||r.is_disc)){level='focus';why='能力圈内 + 方向明确 + 有行动证据';}
+  else if(explicit&&inField){level='reference';why='能力圈内且方向明确，但未披露行动';}
+  else if(r.bottleneck&&inField){level='reference';why='能力圈内产业判断，不等于交易信号';}
+  else if(explicit){level='reference';why='方向明确，但能力圈证据较弱';}
+  if(r.is_retro){level='general';why='回顾性内容，不作为新信号';}
+  if(r.kol==='zephyr'&&r.direction==='short'){level='reference';why='明确展示；历史做空分项较弱，谨慎参考';}
+  if(r.kol==='jukan'&&h.name==='短线'&&!action){level='reference';why='短线风险提示但无行动证据';}
+  if(r.kol==='serenity'&&explicit&&!action){level='reference';why='产业判断有价值；具体买点需价格过滤';}
+  if(r.kol==='austin'&&explicit&&!action){level='reference';why='更适合作格局研究，不机械跟短线';}
+  if(age>h.days){level='general';why='已超过默认有效期，保留作历史记录';}
+  return {level,label:{focus:'重点',reference:'参考',general:'一般'}[level],why,horizon:h.name,days:h.days,age};
+}
+function signalBadges(r){
+  const s=signalStrength(r),left=Math.max(0,s.days-s.age);
+  return '<span class="sig '+s.level+'">'+s.label+'</span><span class="cycle">'+s.horizon+' · '+(left?'约余 '+left+' 天':'已到期')+'</span><span class="sigwhy">'+s.why+'</span>';
+}
 function evidenceDetails(r,label){
   label=label||'查看原文';
   const text=r&&r.raw_text?escHtml(r.raw_text):'暂无原文';
@@ -397,7 +443,7 @@ function renderStance(){
       const ordinaryTag = isOrdinary ? '<span class="tag ordinary">普通动态</span>' : '';
       return `<div class="stmt"><div class="dir ${r.direction}">${ic}</div><div class="body">
         <div class="txt">${r.summary||r.raw_text||''}</div>
-        <div class="meta">${tk}${bk}${ft}${ordinaryTag}${flags.join('')}<span class="tag date">${fmtFull(r.published_at)}</span></div>${evidenceDetails(r,'查看这条原文')}</div></div>`;
+        <div class="meta">${tk}${bk}${ft}${ordinaryTag}${flags.join('')}<span class="tag date">${fmtFull(r.published_at)}</span></div><div class="meta">${signalBadges(r)}</div>${evidenceDetails(r,'查看这条原文')}</div></div>`;
     }).join(''):(win===0
       ? `<div class="stmt"><div class="dir neutral">·</div><div class="body"><div class="txt" style="color:var(--ink-faint)">${winLabel(0)} 无新推文</div></div></div>`
       : `<div class="stmt"><div class="dir neutral">·</div><div class="body"><div class="txt" style="color:var(--ink-faint)">该窗口内无强项方向性表态</div></div></div>`);
@@ -550,7 +596,7 @@ function renderTickers(){
       <td><span class="when">${cp}</span></td>
       <td><span class="when">${np}</span>${bar}</td>
       <td>${evidenceDetails(source,'查看首条喊单')}</td>
-      <td>${t.in_field?'<span class="tag strong">强项</span>':'<span class="tag weak">圈外</span>'}</td>
+      <td>${t.in_field?'<span class="tag strong">强项</span>':'<span class="tag weak">圈外</span>'}<div class="meta" style="margin-top:6px">${signalBadges({...t,summary:t.bottleneck||'',raw_text:t.raw_text||''})}</div></td>
       <td><span class="when">${t.now_date||'行情待补'}</span></td></tr>`;
   }).join('');
 }
@@ -565,7 +611,7 @@ function renderKols(){
       <div class="khead"><div class="avatar" style="background:${c}">${initials(k.name)}</div>
         <div><div class="kname">${k.name}</div><div class="khandle">${k.handle}</div></div></div>
       <div class="ktype">${k.typeLabel}</div>
-      <div class="kdesc">${k.desc}</div>
+      <div class="kdesc">${k.desc}</div><div class="review-note"><b>重点参考：</b>${SIGNAL_POLICY[key].focus}<br><b>谨慎：</b>${SIGNAL_POLICY[key].caution}<br>${SIGNAL_POLICY[key].review}</div>
       <div class="kgroup strong"><div class="glab">▸ 信他</div><div class="chips">${st}</div></div>
       <div class="kgroup weak"><div class="glab">▸ 略过</div><div class="chips">${wk}</div></div></div>`;
   }).join('');
