@@ -376,7 +376,7 @@ def query_tickers(conn):
         rows_out.append({
             "ticker": t["ticker"], "kol": t["kol"],
             "direction": t["direction"],
-            "called_at": t["latest_pub"],
+            "called_at": t["earliest_pub"],
             "earliest_call": t["earliest_pub"],
             "days_since": t["days_since"],
             "call_price": call_price, "now_price": now_price,
@@ -406,9 +406,10 @@ def query_tickers(conn):
 
 
 def query_call_performance(conn):
-    """返回逐笔喊单的方向收益，供前端按人物/时间窗汇总。
+    """返回人物×标的首次喊单的方向收益，供前端汇总。
 
-    一条推文包含多个 ticker 时按 ticker 拆成多笔；每笔等权。
+    一条推文包含多个 ticker 时拆开；同一人物重复提及同一 ticker 只计一次，
+    方向和起始价格取窗口内第一次明确喊单，后续仅累计提及次数。
     long 方向收益 = 标的涨跌幅，short 方向收益 = -标的涨跌幅。
     只读 ticker_prices 缓存，不在 build 阶段发起额外行情请求。
     """
@@ -421,13 +422,27 @@ def query_call_performance(conn):
           AND e.is_retrospective = 0 AND e.is_disclosure = 0
           AND e.ticker IS NOT NULL
           AND r.published_at >= datetime('now', '-370 days')
-        ORDER BY r.published_at DESC
+        ORDER BY r.published_at ASC
     """).fetchall()
-    out = []
+    grouped = {}
     for post_id, src, direction, ticker_json, bottleneck, published_at in rows:
         kol = SRC2KOL.get(src, src.replace("tw_", ""))
-        call_date = published_at[:10]
         for ticker in parse_json_arr(ticker_json):
+            key = (kol, ticker)
+            if key not in grouped:
+                grouped[key] = {
+                    "post_id": post_id, "kol": kol, "ticker": ticker,
+                    "direction": direction, "published_at": published_at,
+                    "latest_published_at": published_at, "bottleneck": bottleneck,
+                    "n_mentions": 1,
+                }
+            else:
+                grouped[key]["latest_published_at"] = published_at
+                grouped[key]["n_mentions"] += 1
+    out = []
+    for row in grouped.values():
+            ticker = row["ticker"]
+            call_date = row["published_at"][:10]
             cached = conn.execute("""
                 SELECT call_price, now_price, now_date
                 FROM ticker_prices WHERE ticker=? AND pub_date=?
@@ -439,16 +454,15 @@ def query_call_performance(conn):
             directional_return = None
             if call_price not in (None, 0) and now_price is not None:
                 raw_return = round((now_price / call_price - 1) * 100, 2)
-                directional_return = raw_return if direction == "long" else -raw_return
-            out.append({
-                "post_id": post_id, "kol": kol, "ticker": ticker,
-                "direction": direction, "published_at": published_at,
-                "call_date": call_date, "bottleneck": bottleneck,
+                directional_return = raw_return if row["direction"] == "long" else -raw_return
+            row.update({
+                "call_date": call_date,
                 "call_price": call_price, "now_price": now_price,
                 "now_date": now_date, "raw_return": raw_return,
                 "directional_return": directional_return,
-                "in_field": is_in_field(kol, ticker, bottleneck),
+                "in_field": is_in_field(row["kol"], ticker, row["bottleneck"]),
             })
+            out.append(row)
     return out
 
 

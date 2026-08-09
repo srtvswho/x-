@@ -458,7 +458,10 @@ def select_dashboard_ticker_targets(conn, limit: int = DASHBOARD_TICKER_LIMIT) -
                 rec = by_kol_tk[key]
                 rec["n_calls"] += 1
                 if pub < rec["earliest_pub"]:
+                    # 追踪从第一次明确喊单开始，方向也以第一次为准。
                     rec["earliest_pub"] = pub
+                    rec["direction"] = direction
+                    rec["bottleneck"] = bk
 
     today = datetime.now(timezone.utc).date()
 
@@ -466,7 +469,7 @@ def select_dashboard_ticker_targets(conn, limit: int = DASHBOARD_TICKER_LIMIT) -
     rows_out = []
     skipped_recent = 0
     for key, rec in by_kol_tk.items():
-        pub_date = rec["latest_pub"][:10]
+        pub_date = rec["earliest_pub"][:10]
         try:
             days_since = (today - datetime.fromisoformat(pub_date).date()).days
         except Exception:
@@ -506,12 +509,12 @@ def group_targets_by_ticker(targets: list[dict]) -> dict[str, list[dict]]:
 
 
 def select_call_performance_targets(conn, days: int = 370) -> list[dict]:
-    """返回人物表现模块需要的逐笔价格目标。
+    """返回人物×标的首次喊单所需的价格目标。
 
     与 ``select_dashboard_ticker_targets`` 不同，这里不能按 (kol, ticker)
     聚合、不能排除最近 5 天，也不能截断为 30 条；人物表现会展示窗口内的
-    每一笔喊单，因此每个 (ticker, call_date) 都必须能在 ticker_prices 中
-    找到对应价格。相同股票同一天的多笔喊单共享一条价格缓存记录。
+    同一人物重复提及同一标的不重复计分；以窗口内第一次明确方向与日期
+    作为追踪起点。相同股票同一天的不同人物共享一条价格缓存记录。
     """
     rows = conn.execute("""
         SELECT e.source_id, e.ticker, e.direction, r.published_at
@@ -521,7 +524,7 @@ def select_call_performance_targets(conn, days: int = 370) -> list[dict]:
           AND e.is_retrospective = 0 AND e.is_disclosure = 0
           AND e.ticker IS NOT NULL
           AND r.published_at >= datetime('now', ?)
-        ORDER BY r.published_at DESC
+        ORDER BY r.published_at ASC
     """, (f"-{int(days)} days",)).fetchall()
 
     targets = {}
@@ -534,14 +537,18 @@ def select_call_performance_targets(conn, days: int = 370) -> list[dict]:
             days_since = 0
         kol = SRC2KOL.get(src, src.replace("tw_", ""))
         for ticker in parse_json_arr(ticker_json):
-            key = (ticker, call_date)
-            targets.setdefault(key, {
-                "ticker": ticker, "kol": kol, "source_id": src,
-                "direction": direction, "call_date": call_date,
-                "latest_pub": published_at, "earliest_pub": published_at,
-                "days_since": days_since, "n_calls": 1,
-                "in_field": is_in_field(kol, ticker, None),
-            })
+            key = (kol, ticker)
+            if key not in targets:
+                targets[key] = {
+                    "ticker": ticker, "kol": kol, "source_id": src,
+                    "direction": direction, "call_date": call_date,
+                    "latest_pub": published_at, "earliest_pub": published_at,
+                    "days_since": days_since, "n_calls": 1,
+                    "in_field": is_in_field(kol, ticker, None),
+                }
+            else:
+                targets[key]["latest_pub"] = published_at
+                targets[key]["n_calls"] += 1
     return list(targets.values())
 
 

@@ -40,7 +40,7 @@ from common import CN_TZ, cn_recent_24h_window_utc, cn_window_long_utc  # noqa: 
 DB_PATH = "/workspace/data/signalboard_full.db"
 OUT_PATH = "/workspace/scripts/dashboard/summaries.json"
 DEEPSEEK_URL = "https://api.deepseek.com/v1/chat/completions"
-DEEPSEEK_MODEL = "deepseek-v4-pro"
+DEEPSEEK_MODEL = "deepseek-v4-flash"
 
 # 能力圈 (跟 build_dashboard.py 的 KOLS 一致 — 这是 LLM prompt 的"知识")
 KOLS = {
@@ -123,7 +123,7 @@ def build_kols_prompt() -> str:
     lines.append("2. 有人在【弱项/盲区】领域发言 → 标注'打折'或'仅参考' (⚠️)")
     lines.append("3. R12 flag (is_retrospective/is_disclosure) 不算'当下新表态'")
     lines.append("4. 共识 = 多人都提到同一卡点/方向")
-    lines.append("5. 客观, ≤100 字, 中文")
+    lines.append("5. 客观、结论先行；禁止写成散文或按人物流水账")
     return "\n".join(lines)
 
 
@@ -171,11 +171,12 @@ def gen_today_summary(con: sqlite3.Connection) -> str:
     system = f"""你是大V情报分析师。从4个大V今天的推文抽取综合总结。
 {kols_prompt}
 
-【输出要求】
-- ≤100 字, 中文, 客观
-- 按重要性组织 (共识卡点 / 非共识方向 优先, 不按人流水账)
-- 标注能力圈 (✅强项 / ⚠️打折)
-- 不写 R12 过滤掉的 (victory_lap/disclosure)
+【输出要求】严格输出以下4行，每行只写一个结论；没有则写“无”。总计≤180字：
+市场主线｜行业/主题 + 一句话结论
+模块/标的｜模块；标的（若原文没有明确标的则写“无明确标的”）
+方向/共识｜看多/看空/中性 + 谁形成共识
+风险/分歧｜最重要的反方、盲区或待验证点
+标注能力圈 (✅强项 / ⚠️打折)，不写 R12 过滤项。
 """
     user = f"今日 4 大V 有效判断数据 ({len(data)} 条):\n{data_str}\n\n输出今日综合总结 (≤100 字):"
 
@@ -196,11 +197,10 @@ def gen_consensus_summary(con: sqlite3.Connection, window: str, days: int) -> st
     system = f"""你是大V情报分析师。提炼 {window_label} 4 大V 共识 (多人共同提的方向/卡点)。
 {kols_prompt}
 
-【输出要求】
-- ≤100 字, 中文
-- 共识 = 多人都提到的卡点/方向
-- 分歧 (有人相左) 简要标出, 注意相左方是否在盲区
-- 客观, 不堆细节
+【输出要求】严格输出以下3行，总计≤160字：
+共识方向｜模块/主题 + 看多/看空/中性 + 参与者
+核心标的｜按方向列出明确 ticker；没有则写“无明确标的”
+分歧/风险｜相左观点、盲区或待验证点；没有则写“暂无明显分歧”
 """
     user = f"{window_label} 4 大V 有效判断 ({len(data)} 条):\n{data_str}\n\n输出共识总结 (≤100 字):"
 
@@ -226,8 +226,10 @@ def gen_person_summary(con: sqlite3.Connection, kol: str, window: str, days: int
 
 【该 KOL 重点】强项: {', '.join(info['strong'])}; 弱项/盲区: {', '.join(info['weak'])}
 
-【输出要求】
-- ≤100 字, 中文, 客观
+【输出要求】严格输出以下3行，总计≤140字：
+核心方向｜模块 + 看多/看空/中性
+明确标的｜ticker + 方向；没有则写“无明确标的”
+依据/风险｜最核心依据 + 能力圈可信度
 - 优先讲【强项】领域的方向性表态 (✅可信)
 - 弱项领域如有发言 → 标注'打折/仅参考'
 - 过滤 R12 (victory_lap/disclosure/自报收益) 不算当下表态
