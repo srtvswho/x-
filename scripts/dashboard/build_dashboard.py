@@ -415,7 +415,7 @@ def query_call_performance(conn):
     """
     rows = conn.execute("""
         SELECT e.post_id, e.source_id, e.direction, e.ticker, e.bottleneck,
-               r.published_at
+               r.published_at, r.raw_text, r.raw_url
         FROM extractions_intel e
         JOIN raw_posts r ON r.post_id = e.post_id
         WHERE e.direction IN ('long', 'short')
@@ -425,7 +425,7 @@ def query_call_performance(conn):
         ORDER BY r.published_at ASC
     """).fetchall()
     grouped = {}
-    for post_id, src, direction, ticker_json, bottleneck, published_at in rows:
+    for post_id, src, direction, ticker_json, bottleneck, published_at, raw_text, raw_url in rows:
         kol = SRC2KOL.get(src, src.replace("tw_", ""))
         for ticker in parse_json_arr(ticker_json):
             key = (kol, ticker)
@@ -435,6 +435,8 @@ def query_call_performance(conn):
                     "direction": direction, "published_at": published_at,
                     "latest_published_at": published_at, "bottleneck": bottleneck,
                     "n_mentions": 1,
+                    "raw_text": raw_text or "",
+                    "raw_url": raw_url or f"https://x.com/{src.replace('tw_', '')}/status/{post_id}",
                 }
             else:
                 grouped[key]["latest_published_at"] = published_at
