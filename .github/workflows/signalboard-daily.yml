@@ -135,7 +135,7 @@ jobs:
           set -Eeuo pipefail
           git config user.name "signalboard-bot"
           git config user.email "signalboard-bot@users.noreply.github.com"
-          git add             data/signalboard.db.gz             scripts/dashboard/summaries.json             scripts/dashboard/dashboard.html             dashboard_deploy_dist/index.html             dashboard.html
+          git add data/signalboard.db.gz scripts/dashboard/summaries.json scripts/dashboard/dashboard.html dashboard.html\n          git add -f dashboard_deploy_dist/index.html
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
