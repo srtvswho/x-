@@ -33,7 +33,10 @@ a{color:inherit;text-decoration:none}
 .live .dot{width:7px;height:7px;border-radius:50%;background:#25a36f;animation:pulse 2.4s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(72,201,214,.5)}70%{box-shadow:0 0 0 7px rgba(72,201,214,0)}100%{box-shadow:0 0 0 0 rgba(72,201,214,0)}}
 
-.wrap{max-width:1120px;margin:0 auto;padding:20px 24px 88px}
+.layout{max-width:1360px;margin:0 auto;display:grid;grid-template-columns:176px minmax(0,1120px);gap:24px;padding:0 24px}
+.wrap{min-width:0;padding:20px 0 88px}
+.side-nav{position:sticky;top:84px;align-self:start;padding-top:20px}.side-nav a{display:block;padding:9px 12px;margin-bottom:5px;border-radius:9px;color:var(--ink-faint);font-size:12px}.side-nav a:hover{background:var(--blue-soft);color:var(--blue)}
+.side-nav .nav-title{font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:var(--ink-faint);margin:0 0 9px 12px}.section-anchor{scroll-margin-top:78px}
 
 .shead{display:flex;align-items:center;gap:12px;margin:36px 0 14px}
 .shead:first-child{margin-top:18px}
@@ -217,11 +220,11 @@ a{color:inherit;text-decoration:none}
 
 
 /* 原文依据 */
-.evidence{margin-top:8px;border-top:1px dashed var(--line);padding-top:7px}
+.evidence{margin-top:8px;border-top:1px dashed var(--line);padding-top:7px;position:relative}
 .evidence summary{cursor:pointer;list-style:none;color:var(--blue);font-family:var(--mono);font-size:10.5px;font-weight:700}
 .evidence summary::-webkit-details-marker{display:none}.evidence summary:before{content:'＋';margin-right:5px}.evidence[open] summary:before{content:'－'}
-.evidence-text{margin-top:8px;padding:10px 11px;border-radius:8px;background:var(--panel-2);color:var(--ink-dim);font-size:12.5px;line-height:1.65;white-space:pre-wrap;max-width:520px}
-.evidence-link{margin-top:6px}.evidence-link a{color:var(--blue);font-size:11px;font-weight:650}
+.evidence-pop{position:fixed;z-index:90;left:50%;top:50%;transform:translate(-50%,-50%);width:min(560px,calc(100vw - 32px));max-height:min(70vh,620px);overflow:auto;padding:18px;border:1px solid #d7def1;border-radius:18px;background:#fff;box-shadow:0 24px 80px rgba(23,32,51,.24)}
+.evidence-pop:before{content:'原文';display:block;margin-bottom:10px;font-size:11px;font-weight:800;color:var(--blue);letter-spacing:.08em}.evidence-text{padding:12px 13px;border-radius:11px;background:var(--panel-2);color:var(--ink-dim);font-size:13px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}.evidence-link{margin-top:10px}.evidence-link a{color:var(--blue);font-size:11px;font-weight:650}.filter-note{font-size:11px;color:var(--ink-faint);margin:-5px 0 14px}
 /* ===== explainable signal strength ===== */
 .signal-strip{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 15px;padding:11px 13px;border:1px solid var(--line-soft);border-radius:10px;background:#fbfcfe}
 .signal-strip span{font-size:11px;color:var(--ink-dim)}.signal-strip b{color:var(--ink)}
@@ -235,7 +238,7 @@ a{color:inherit;text-decoration:none}
 .return-bar.in{left:50%;background:#25a36f}.return-bar.out{right:50%;background:#d45467}.return-value{min-width:50px;font-family:var(--mono);font-size:11px;font-weight:800}
 .return-value.in{color:#16845a}.return-value.out{color:#c13e55}
 
-@media(max-width:1080px){.kolgrid{grid-template-columns:repeat(2,1fr)}.stance-grid{grid-template-columns:1fr}}
+@media(max-width:1080px){.layout{display:block}.side-nav{display:none}.kolgrid{grid-template-columns:repeat(2,1fr)}.stance-grid{grid-template-columns:1fr}}
 @media(max-width:680px){
   .topbar{padding:0 14px;height:58px}.brand .sub,.clock{display:none}
   .kolgrid{grid-template-columns:1fr}.wrap{padding:12px 14px 60px}.shead{margin-top:30px}.shead:first-child{margin-top:14px}.shead .hint,.shead .rule{display:none}
@@ -258,23 +261,24 @@ a{color:inherit;text-decoration:none}
   <span class="live" id="live-meta"><span class="dot"></span><span id="live-text">loading...</span></span>
 </div>
 
-<div class="wrap">
+<div class="layout"><nav class="side-nav"><div class="nav-title">页面导航</div><a href="#market">01 市场态度</a><a href="#tracking">02 标的追踪</a><a href="#feed-section">03 近期明细</a><a href="#people">04 追踪对象</a></nav><div class="wrap">
 
   <!-- ===== 市场态度：今日总结与近期态度合并 ===== -->
-  <div class="shead"><span class="num">01</span><h2>市场态度</h2>
+  <div class="shead section-anchor" id="market"><span class="num">01</span><h2>市场态度</h2>
     <span class="hint">共识结论 · 个人立场 · 每条判断可查看原文</span><span class="rule"></span></div>
   <div class="period-control"><label for="stance-window">时间范围</label><select id="stance-window">
-    <option value="0" selected>今日</option><option value="1">近 1 个月</option><option value="3">近 3 个月</option>
+    <option value="0" selected>今日</option><option value="0.25">近 1 周</option><option value="1">近 1 个月</option><option value="3">近 3 个月</option>
     <option value="6">近 6 个月</option><option value="12">近 1 年</option></select></div>
   <div class="consensus" id="consensus"></div>
   <div class="signal-strip"><span><b>信号口径：</b>重点 = 能力圈内、方向明确并有行动证据；参考 = 有价值但不能直接跟单；一般 = 转述、回顾、模糊或已过期。</span><span><b>更新：</b>信号每日衰减 · 人物表现每月更新 · 定位每季度复核。</span></div>
   <div class="stance-grid" id="stancegrid"></div>
 
   <!-- ===== 标的追踪：优先于明细 ===== -->
-  <div class="shead"><span class="num">02</span><h2>标的追踪</h2>
+  <div class="shead section-anchor" id="tracking"><span class="num">02</span><h2>标的追踪</h2>
     <span class="hint">首次明确方向计分 · 最近发言优先 · 点击查看首条原文</span><span class="rule"></span></div>
   <div class="filters"><label for="perf-kol">人物</label><select id="perf-kol"></select>
-    <label for="perf-window">首次喊单</label><select id="perf-window"><option value="7">近 1 周</option><option value="30" selected>近 1 个月</option><option value="90">近 3 个月</option><option value="365">近 1 年</option></select></div>
+    <label for="perf-window">首次喊单</label><select id="perf-window"><option value="7">近 1 周</option><option value="30" selected>近 1 个月</option><option value="90">近 3 个月</option><option value="365">近 1 年</option></select><label for="perf-sort">排序</label><select id="perf-sort"><option value="return_desc">方向收益高 → 低</option><option value="return_asc">方向收益低 → 高</option><option value="latest">最近提及优先</option><option value="first">首次喊单最新</option></select></div>
+  <div class="filter-note" id="perf-note"></div>
   <div class="perfgrid" id="perf-summary"></div>
   <div class="tcard"><table class="ttable">
     <thead><tr><th>标的</th><th>谁 · 首次方向</th><th>追踪周期</th><th>首次价</th>
@@ -282,14 +286,14 @@ a{color:inherit;text-decoration:none}
     <tbody id="tbody"></tbody></table></div>
 
   <!-- ===== 近期明细 ===== -->
-  <div class="shead"><span class="num">03</span><h2>近期明细</h2>
+  <div class="shead section-anchor" id="feed-section"><span class="num">03</span><h2>近期明细</h2>
     <span class="hint" id="feed-date"></span><span class="rule"></span></div>
-  <div class="filters"><label for="feed-kol">人物</label><select id="feed-kol"></select>
+  <div class="filters"><label for="feed-kol">人物</label><select id="feed-kol"></select><label for="feed-level">信号等级</label><select id="feed-level"><option value="all">全部</option><option value="focus">重点</option><option value="reference">参考</option><option value="general">一般</option></select>
     <label for="feed-size">每页</label><select id="feed-size"><option>20</option><option selected>30</option><option>50</option></select></div>
   <div class="feed-empty" id="feed-empty"></div><div class="feed" id="feed"></div><div class="pager" id="feed-pager"></div>
 
   <!-- ===== 追踪对象 (ref, bottom) ===== -->
-  <div class="shead"><span class="num">04</span><h2>追踪对象</h2>
+  <div class="shead section-anchor" id="people"><span class="num">04</span><h2>追踪对象</h2>
     <span class="hint">能力圈备忘 · 信什么 / 略过什么</span><span class="rule"></span></div>
   <div class="kolgrid" id="kolgrid"></div>
 
@@ -297,7 +301,7 @@ a{color:inherit;text-decoration:none}
     <span>4 sources</span><span class="sep">/</span><span id="foot-count"></span><span class="sep">/</span>
     <span id="foot-build"></span><span class="sep">/</span>
     <span id="foot-datauntil"></span></div>
-</div>
+</div></div>
 
 <script id="DATA" type="application/json">__RECORDS__</script>
 <script id="KOLS" type="application/json">__KOLS__</script>
@@ -389,7 +393,7 @@ function evidenceDetails(r,label){
   label=label||'查看原文';
   const text=r&&r.raw_text?escHtml(r.raw_text):'暂无原文';
   const link=r&&r.raw_url?'<a href="'+escHtml(r.raw_url)+'" target="_blank" rel="noopener">在 X 打开 ↗</a>':'';
-  return '<details class="evidence"><summary>'+label+'</summary><div class="evidence-text">'+text+'</div><div class="evidence-link">'+link+'</div></details>';
+  return '<details class="evidence"><summary>'+label+'</summary><div class="evidence-pop"><div class="evidence-text">'+text+'</div><div class="evidence-link">'+link+'</div></div></details>';
 }
 
 /* ---- 01 市场态度（原今日总结已合并） ---- */
@@ -408,15 +412,19 @@ function renderLiveMeta(){
 /* ---- 02 近期态度 ---- */
 let win=0;
 function renderStance(){
+  const weekly=win===0.25;
+  const weeklyRecords=weekly?RECORDS.filter(r=>new Date(r.published_at)>=Date.now()-7*86400000):[];
+  const weeklyDirectional=weeklyRecords.filter(r=>r.direction==='long'||r.direction==='short'||r.bottleneck);
+  const weeklyConsensus=weeklyDirectional.length?`最近 7 天共有 ${weeklyDirectional.length} 条方向或产业判断；以下结论只依据本窗口可见推文，不沿用月度摘要。`:'最近 7 天无明确方向证据。';
   // consensus
   document.getElementById('consensus').innerHTML=`
     <div class="ch"><span class="clabel">◇ 近期四人共识</span><span class="cwin">${winLabel(win)}</span></div>
-    <div class="ctext">${formatStructuredSummary(SUM.consensus[win])}</div>`;
+    <div class="ctext">${formatStructuredSummary(weekly?weeklyConsensus:SUM.consensus[win])}</div>`;
   let cut;
   if(win===0){
     // 1D: 24h 滚动窗口 (跟 query_today_stats / SUM.consensus[0] / SUM.person[*][0] / renderBrief 共用同一窗口)
     cut = new Date(BUILD_META.window_start_utc);
-  } else { cut=new Date(); cut.setMonth(cut.getMonth()-win); }
+  } else if(weekly){cut=new Date(Date.now()-7*86400000);} else { cut=new Date(); cut.setMonth(cut.getMonth()-win); }
   // 1D 必须使用 TODAY_RECORDS (含所有 raw_posts, 包括无 extraction 的普通推文)
   // 1M/3M/6M/1Y 仍用 RECORDS (有效判断)
   const dataSrc = (win===0) ? TODAY_RECORDS : RECORDS;
@@ -447,7 +455,8 @@ function renderStance(){
     }).join(''):(win===0
       ? `<div class="stmt"><div class="dir neutral">·</div><div class="body"><div class="txt" style="color:var(--ink-faint)">${winLabel(0)} 无新推文</div></div></div>`
       : `<div class="stmt"><div class="dir neutral">·</div><div class="body"><div class="txt" style="color:var(--ink-faint)">该窗口内无强项方向性表态</div></div></div>`);
-    const psum=(SUM.person[key]&&SUM.person[key][win])||'';
+    const directional=recs.filter(r=>r.direction==='long'||r.direction==='short'||r.bottleneck);
+    const psum=directional.length?(weekly?`本周捕捉到 ${directional.length} 条方向/产业判断，以下逐条为依据。`:((SUM.person[key]&&SUM.person[key][win])||'')):'本窗口无明确方向证据';
     return `<div class="stance">
       <div class="sh"><div class="av" style="background:${c}">${initials(k.name)}</div>
         <div class="nm">${k.name}</div><div class="tp ${k.type}">${k.type}</div><div class="ct">${recs.length} 条</div></div>
@@ -455,15 +464,16 @@ function renderStance(){
       ${rows}</div>`;
   }).join('');
 }
-function winLabel(w){return ({0:'今日',1:'近 1 个月',3:'近 3 个月',6:'近 6 个月',12:'近 1 年'})[w]}
+function winLabel(w){return ({0:'今日',0.25:'近 1 周',1:'近 1 个月',3:'近 3 个月',6:'近 6 个月',12:'近 1 年'})[w]}
 
 /* ---- 03 近期明细：按人筛选 + 全量分页 ---- */
-let feedKol='all',feedPage=1,feedSize=30;
+let feedKol='all',feedLevel='all',feedPage=1,feedSize=30;
 function initKolFilters(){
   const options=`<option value="all">全部人物</option>`+ORDER.map(k=>`<option value="${k}">${KOLS[k].name}</option>`).join('');
   document.getElementById('feed-kol').innerHTML=options;
   document.getElementById('perf-kol').innerHTML=options;
   document.getElementById('feed-kol').onchange=e=>{feedKol=e.target.value;feedPage=1;renderFeed();};
+  document.getElementById('feed-level').onchange=e=>{feedLevel=e.target.value;feedPage=1;renderFeed();};
   document.getElementById('feed-size').onchange=e=>{feedSize=+e.target.value;feedPage=1;renderFeed();};
 }
 function renderFeed(){
@@ -477,7 +487,7 @@ function renderFeed(){
   for (const r of (RECORDS || [])) {
     if (!seen.has(r.post_id)) { seen.add(r.post_id); merged.push(r); }
   }
-  const sorted = merged.filter(r=>feedKol==='all'||r.kol===feedKol)
+  const sorted = merged.filter(r=>(feedKol==='all'||r.kol===feedKol)&&(feedLevel==='all'||signalStrength(r).level===feedLevel))
     .sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
   // 顶部今日窗口横幅: 明确窗口跟计数
   const feedEmpty = document.getElementById('feed-empty');
@@ -560,11 +570,16 @@ function renderFeed(){
 }
 
 /* ---- 04 标的 ---- */
-let perfKol='all',perfDays=30;
+let perfKol='all',perfDays=30,perfSort='return_desc';
 function renderTickers(){
   const cut=Date.now()-perfDays*86400000;
-  const rows=CALL_PERFORMANCE.filter(t=>(perfKol==='all'||t.kol===perfKol)&&new Date(t.published_at).getTime()>=cut)
-    .sort((a,b)=>new Date(b.latest_published_at||b.published_at)-new Date(a.latest_published_at||a.published_at));
+  const rows=CALL_PERFORMANCE.filter(t=>(perfKol==='all'||t.kol===perfKol)&&new Date(t.published_at).getTime()>=cut);
+  const sorters={return_desc:(a,b)=>(b.directional_return??-Infinity)-(a.directional_return??-Infinity),return_asc:(a,b)=>(a.directional_return??Infinity)-(b.directional_return??Infinity),latest:(a,b)=>new Date(b.latest_published_at||b.published_at)-new Date(a.latest_published_at||a.published_at),first:(a,b)=>new Date(b.published_at)-new Date(a.published_at)};
+  rows.sort(sorters[perfSort]);
+  const scoped=CALL_PERFORMANCE.filter(t=>perfKol==='all'||t.kol===perfKol),dates=scoped.map(t=>new Date(t.published_at)).filter(d=>!isNaN(d));
+  const minDate=dates.length?new Date(Math.min(...dates)):null,maxDate=dates.length?new Date(Math.max(...dates)):null;
+  const rows90=scoped.filter(t=>new Date(t.published_at).getTime()>=Date.now()-90*86400000).length;
+  document.getElementById('perf-note').textContent=`筛选后 ${rows.length} 个标的 · 当前样本实际覆盖 ${minDate?fmtFull(minDate.toISOString()):'—'} 至 ${maxDate?fmtFull(maxDate.toISOString()):'—'}${perfDays>90&&rows.length===rows90?' · 近一年与近三个月相同：更早没有额外首次喊单样本':''}`;
   const valid=rows.filter(t=>t.directional_return!=null);
   const avg=valid.length?valid.reduce((s,t)=>s+t.directional_return,0)/valid.length:null;
   const wins=valid.filter(t=>t.directional_return>0).length;
@@ -624,6 +639,7 @@ document.getElementById('stance-window').onchange=e=>{win=+e.target.value;render
 initKolFilters();
 document.getElementById('perf-kol').onchange=e=>{perfKol=e.target.value;renderTickers();};
 document.getElementById('perf-window').onchange=e=>{perfDays=+e.target.value;renderTickers();};
+document.getElementById('perf-sort').onchange=e=>{perfSort=e.target.value;renderTickers();};
 renderLiveMeta();renderStance();renderFeed();renderTickers();renderKols();
 </script>
 </body>
