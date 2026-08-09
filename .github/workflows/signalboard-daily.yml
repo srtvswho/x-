@@ -1,0 +1,145 @@
+name: Signalboard Daily Update
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 6 * * *"
+      timezone: "Asia/Shanghai"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: signalboard-daily-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+      POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
+      POLYGON_REQUEST_INTERVAL: "13"
+
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v6
+        with:
+          ref: master
+          fetch-depth: 1
+
+      - name: Verify required secrets
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          for key in APIFY_TOKEN DEEPSEEK_API_KEY POLYGON_API_KEY; do
+            if [ -z "${!key:-}" ]; then
+              echo "::error::Required repository secret is missing: $key"
+              exit 1
+            fi
+          done
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check requests apify-client
+
+      - name: Restore and verify database
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          gzip -t data/signalboard.db.gz
+          gzip -cd data/signalboard.db.gz > data/signalboard_full.db
+          python - <<'PY'
+          import sqlite3
+          db = "data/signalboard_full.db"
+          con = sqlite3.connect(db, timeout=30)
+          result = con.execute("PRAGMA quick_check").fetchone()[0]
+          if result != "ok":
+              raise SystemExit(f"Database check failed: {result}")
+          print("raw_posts:", con.execute("SELECT COUNT(*) FROM raw_posts").fetchone()[0])
+          print("predictions:", con.execute("SELECT COUNT(*) FROM predictions").fetchone()[0])
+          print("verifications:", con.execute("SELECT COUNT(*) FROM verifications").fetchone()[0])
+          con.close()
+          PY
+          sudo ln -sfn "$GITHUB_WORKSPACE" /workspace
+
+      - name: Incremental scrape
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir -p logs/intel_cron
+          pids=()
+          names=()
+          for kol in jukan05 aleabitoreddit zephyr_z9 austinsemis; do
+            python scripts/intel_incremental_scrape.py --kol "$kol"               > "logs/intel_cron/${kol}.log" 2>&1 &
+            pids+=("$!")
+            names+=("$kol")
+          done
+          failures=0
+          for i in "${!pids[@]}"; do
+            if ! wait "${pids[$i]}"; then
+              echo "::warning::Scrape failed for ${names[$i]}"
+              tail -50 "logs/intel_cron/${names[$i]}.log" || true
+              failures=$((failures + 1))
+            fi
+          done
+          if [ "$failures" -eq 4 ]; then
+            echo "::error::All four scrapers failed"
+            exit 1
+          fi
+
+      - name: Incremental extraction
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          since=$(TZ=Asia/Shanghai date -d "7 days ago" +%Y-%m-%d)
+          python scripts/intel_extract.py --since "$since"
+
+      - name: Database health check
+        run: python scripts/intel_daily_health.py
+
+      - name: Refresh prices
+        run: python scripts/dashboard/refresh_prices_polygon.py
+
+      - name: Generate summaries
+        run: python scripts/dashboard/intel_gen_summaries.py
+
+      - name: Build dashboard
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          python scripts/dashboard/build_dashboard.py
+          test -s scripts/dashboard/dashboard.html
+          test "$(stat -c%s scripts/dashboard/dashboard.html)" -ge 10000
+          mkdir -p dashboard_deploy_dist
+          cp scripts/dashboard/dashboard.html dashboard_deploy_dist/index.html
+          cp scripts/dashboard/dashboard.html dashboard.html
+
+      - name: Save updated database
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          gzip -c data/signalboard_full.db > data/signalboard.db.gz.new
+          gzip -t data/signalboard.db.gz.new
+          mv data/signalboard.db.gz.new data/signalboard.db.gz
+
+      - name: Commit daily update
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git config user.name "signalboard-bot"
+          git config user.email "signalboard-bot@users.noreply.github.com"
+          git add             data/signalboard.db.gz             scripts/dashboard/summaries.json             scripts/dashboard/dashboard.html             dashboard_deploy_dist/index.html             dashboard.html
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "Daily Signalboard update $(TZ=Asia/Shanghai date +%Y-%m-%d)"
+          git push origin HEAD:master
