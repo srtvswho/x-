@@ -224,7 +224,7 @@ a{color:inherit;text-decoration:none}
 .evidence summary{cursor:pointer;list-style:none;color:var(--blue);font-family:var(--mono);font-size:10.5px;font-weight:700}
 .evidence summary::-webkit-details-marker{display:none}.evidence summary:before{content:'＋';margin-right:5px}.evidence[open] summary:before{content:'－'}
 .evidence-pop{position:fixed;z-index:90;left:50%;top:50%;transform:translate(-50%,-50%);width:min(560px,calc(100vw - 32px));max-height:min(70vh,620px);overflow:auto;padding:18px;border:1px solid #d7def1;border-radius:18px;background:#fff;box-shadow:0 24px 80px rgba(23,32,51,.24)}
-.evidence-pop:before{content:'原文';display:block;margin-bottom:10px;font-size:11px;font-weight:800;color:var(--blue);letter-spacing:.08em}.evidence-text{padding:12px 13px;border-radius:11px;background:var(--panel-2);color:var(--ink-dim);font-size:13px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}.evidence-link{margin-top:10px}.evidence-link a{color:var(--blue);font-size:11px;font-weight:650}.filter-note{font-size:11px;color:var(--ink-faint);margin:-5px 0 14px}
+.evidence-pop:before{content:'原文';display:block;margin-bottom:10px;padding-right:42px;font-size:11px;font-weight:800;color:var(--blue);letter-spacing:.08em}.evidence-close{position:absolute;z-index:2;right:12px;top:12px;width:36px;height:36px;display:grid;place-items:center;border:1px solid var(--line);border-radius:50%;background:#fff;color:var(--ink-dim);font-size:22px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(23,32,51,.08)}.evidence-close:hover{background:var(--blue-soft);color:var(--blue);border-color:#cfd8ff}.evidence-close:focus-visible{outline:3px solid rgba(49,94,251,.25);outline-offset:2px}.evidence-text{padding:12px 13px;border-radius:11px;background:var(--panel-2);color:var(--ink-dim);font-size:13px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}.evidence-link{margin-top:10px}.evidence-link a{color:var(--blue);font-size:11px;font-weight:650}.filter-note{font-size:11px;color:var(--ink-faint);margin:-5px 0 14px}
 /* ===== explainable signal strength ===== */
 .signal-strip{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 15px;padding:11px 13px;border:1px solid var(--line-soft);border-radius:10px;background:#fbfcfe}
 .signal-strip span{font-size:11px;color:var(--ink-dim)}.signal-strip b{color:var(--ink)}
@@ -389,11 +389,15 @@ function signalBadges(r){
   const s=signalStrength(r),left=Math.max(0,s.days-s.age);
   return '<span class="sig '+s.level+'">'+s.label+'</span><span class="cycle">'+s.horizon+' · '+(left?'约余 '+left+' 天':'已到期')+'</span><span class="sigwhy">'+s.why+'</span>';
 }
+function closeEvidence(el){
+  const details=el&&el.closest?el.closest('details.evidence'):null;
+  if(details)details.open=false;
+}
 function evidenceDetails(r,label){
   label=label||'查看原文';
   const text=r&&r.raw_text?escHtml(r.raw_text):'暂无原文';
   const link=r&&r.raw_url?'<a href="'+escHtml(r.raw_url)+'" target="_blank" rel="noopener">在 X 打开 ↗</a>':'';
-  return '<details class="evidence"><summary>'+label+'</summary><div class="evidence-pop"><div class="evidence-text">'+text+'</div><div class="evidence-link">'+link+'</div></div></details>';
+  return '<details class="evidence"><summary>'+label+'</summary><div class="evidence-pop" role="dialog" aria-modal="true" aria-label="原文"><button type="button" class="evidence-close" aria-label="关闭原文" title="关闭" onclick="closeEvidence(this)">×</button><div class="evidence-text">'+text+'</div><div class="evidence-link">'+link+'</div></div></details>';
 }
 
 /* ---- 01 市场态度（原今日总结已合并） ---- */
@@ -675,6 +679,14 @@ initKolFilters();
 document.getElementById('perf-kol').onchange=e=>{perfKol=e.target.value;renderTickers();};
 document.getElementById('perf-window').onchange=e=>{perfDays=+e.target.value;renderTickers();};
 document.getElementById('perf-sort').onchange=e=>{perfSort=e.target.value;renderTickers();};
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')document.querySelectorAll('details.evidence[open]').forEach(d=>d.open=false);
+});
+document.addEventListener('click',e=>{
+  document.querySelectorAll('details.evidence[open]').forEach(d=>{
+    if(!d.contains(e.target))d.open=false;
+  });
+});
 renderLiveMeta();renderStance();renderFeed();renderTickers();renderKols();
 </script>
 </body>
