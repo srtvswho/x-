@@ -1,0 +1,869 @@
+{
+  "generated_at": "2026-08-11T13:38:19.607561+00:00",
+  "method_version": "memory-startup-light-validation-v1",
+  "validation_windows": [
+    [
+      "2024-10-01",
+      "2025-04-06"
+    ],
+    [
+      "2025-09-12",
+      "2026-05-14"
+    ]
+  ],
+  "discovery_window_excluded": [
+    "2025-04-07",
+    "2025-09-11"
+  ],
+  "stats": {
+    "raw_posts": 1920,
+    "dedup_events": 344,
+    "verified_events": 337,
+    "flash_failures": 0,
+    "price_tickers": 177
+  },
+  "fetch_stats": [
+    {
+      "handle": "dgretta_author",
+      "window": [
+        "2024-10-01",
+        "2025-04-06"
+      ],
+      "returned": 240,
+      "valid": 240,
+      "hit_cap": true,
+      "earliest": "2024-10-04",
+      "latest": "2025-04-06"
+    },
+    {
+      "handle": "dgretta_author",
+      "window": [
+        "2025-09-12",
+        "2026-05-14"
+      ],
+      "returned": 240,
+      "valid": 240,
+      "hit_cap": true,
+      "earliest": "2025-09-14",
+      "latest": "2026-05-14"
+    },
+    {
+      "handle": "sam_badawi",
+      "window": [
+        "2024-10-01",
+        "2025-04-06"
+      ],
+      "returned": 240,
+      "valid": 240,
+      "hit_cap": true,
+      "earliest": "2024-10-19",
+      "latest": "2025-04-06"
+    },
+    {
+      "handle": "sam_badawi",
+      "window": [
+        "2025-09-12",
+        "2026-05-14"
+      ],
+      "returned": 240,
+      "valid": 240,
+      "hit_cap": true,
+      "earliest": "2025-09-12",
+      "latest": "2026-05-14"
+    },
+    {
+      "handle": "tradexwhisperer",
+      "window": [
+        "2025-09-12",
+        "2026-05-14"
+      ],
+      "returned": 240,
+      "valid": 240,
+      "hit_cap": true,
+      "earliest": "2025-09-13",
+      "latest": "2026-05-14"
+    },
+    {
+      "handle": "tradexwhisperer",
+      "window": [
+        "2024-10-01",
+        "2025-04-06"
+      ],
+      "returned": 240,
+      "valid": 240,
+      "hit_cap": true,
+      "earliest": "2024-10-25",
+      "latest": "2025-04-06"
+    },
+    {
+      "handle": "thevalueist",
+      "window": [
+        "2025-09-12",
+        "2026-05-14"
+      ],
+      "returned": 240,
+      "valid": 240,
+      "hit_cap": true,
+      "earliest": "2025-09-24",
+      "latest": "2026-05-14"
+    },
+    {
+      "handle": "thevalueist",
+      "window": [
+        "2024-10-01",
+        "2025-04-06"
+      ],
+      "returned": 240,
+      "valid": 240,
+      "hit_cap": true,
+      "earliest": "2025-01-02",
+      "latest": "2025-04-03"
+    }
+  ],
+  "ranking": [
+    {
+      "handle": "dgretta_author",
+      "n": 59,
+      "wins": 38,
+      "hit_rate": 0.6440677966101694,
+      "wilson_lower": 0.5165525967226601,
+      "median_raw_return": 0.05535238185121405,
+      "median_excess_soxx": 0.015349956658446406,
+      "median_mfe": 0.14694148936170204,
+      "median_mae": -0.07246376811594202,
+      "raw_posts": 480,
+      "hit_cap": true,
+      "extracted_events": 59,
+      "worst": [
+        {
+          "ticker": "BZAI",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.8,
+          "reason": "Went all-in at $4, expects $8, bullish",
+          "post": {
+            "post_id": "1978183390286184864",
+            "handle": "dgretta_author",
+            "date": "2025-10-14",
+            "published_at": "2025-10-14T19:37:27+00:00",
+            "text": "I went all-in $BZAI at $4. I have this going to $8, as well as MANY other stock analysts. This company has their fingers in a lot of 🔥 stuff. You should study up on them.",
+            "url": "https://x.com/DGretta_Author/status/1978183390286184864",
+            "validation_window": [
+              "2025-09-12",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2025-10-15",
+          "exit_date": "2025-11-11",
+          "entry_price": 5.68,
+          "exit_price": 2.86,
+          "raw_return": -0.4964788732394366,
+          "excess_soxx": -0.5275705762962052,
+          "mfe": 0.10739436619718323,
+          "mae": -0.4964788732394366,
+          "hit": false
+        },
+        {
+          "ticker": "SLNH",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.8,
+          "reason": "明确表示买入",
+          "post": {
+            "post_id": "1983540753952645365",
+            "handle": "dgretta_author",
+            "date": "2025-10-29",
+            "published_at": "2025-10-29T14:25:42+00:00",
+            "text": "I made my first BUY in a long time in $SLNH stock today. Feel free to call me an idiot. Thanks. https://t.co/MUfTAodycO",
+            "url": "https://x.com/DGretta_Author/status/1983540753952645365",
+            "validation_window": [
+              "2025-09-12",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2025-10-30",
+          "exit_date": "2025-11-26",
+          "entry_price": 3.03,
+          "exit_price": 1.54,
+          "raw_return": -0.4917491749174917,
+          "excess_soxx": -0.43800493902738324,
+          "mfe": 0.15181518151815188,
+          "mae": -0.5016501650165016,
+          "hit": false
+        },
+        {
+          "ticker": "SMLR",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.8,
+          "reason": "作者明确将其作为2025年彩票股，看好其复制MicroStrategy策略。",
+          "post": {
+            "post_id": "1888214590112076053",
+            "handle": "dgretta_author",
+            "date": "2025-02-08",
+            "published_at": "2025-02-08T13:13:34+00:00",
+            "text": "My 'lottery ticket' stock pick in 2025 is $SMLR Semler Scientific which also trades at 1/85th the market cap of MicroStrategy and whose CEO is trying to replicate Michael Saylor.",
+            "url": "https://x.com/DGretta_Author/status/1888214590112076053",
+            "validation_window": [
+              "2024-10-01",
+              "2025-04-06"
+            ]
+          },
+          "entry_date": "2025-02-10",
+          "exit_date": "2025-03-10",
+          "entry_price": 50.05,
+          "exit_price": 32.74,
+          "raw_return": -0.34585414585414576,
+          "excess_soxx": -0.2358518570008612,
+          "mfe": 0.04375624375624376,
+          "mae": -0.34585414585414576,
+          "hit": false
+        }
+      ],
+      "best": [
+        {
+          "ticker": "EOSE",
+          "direction": "long",
+          "action": "hold",
+          "confidence": 0.8,
+          "reason": "作者认为EOSE是HODL股票，隐含长期看多，但未明确新开仓或加仓，故为持有判断",
+          "post": {
+            "post_id": "1968745847052501109",
+            "handle": "dgretta_author",
+            "date": "2025-09-18",
+            "published_at": "2025-09-18T18:36:02+00:00",
+            "text": "My God. $EOSE on CNBC and other television channels almost every day a big catalyst.  This stock starting to remind me A LOT of $BE Bloom Energy. $EOSE a HODL stock imo.",
+            "url": "https://x.com/DGretta_Author/status/1968745847052501109",
+            "validation_window": [
+              "2025-09-12",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2025-09-19",
+          "exit_date": "2025-10-16",
+          "entry_price": 9.225,
+          "exit_price": 15.45,
+          "raw_return": 0.6747967479674797,
+          "excess_soxx": 0.593669154858742,
+          "mfe": 0.9815718157181574,
+          "mae": 0.057994579945799485,
+          "hit": true
+        },
+        {
+          "ticker": "RR",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "作者认为RR将突破至$5甚至$6，属于前瞻性判断",
+          "post": {
+            "post_id": "1967711320410927515",
+            "handle": "dgretta_author",
+            "date": "2025-09-15",
+            "published_at": "2025-09-15T22:05:11+00:00",
+            "text": "$RR just hit $4 after hours. $5 next. Cup forming. Should we just skip the handle and vertical line to $6? https://t.co/um6mPTitDy",
+            "url": "https://x.com/DGretta_Author/status/1967711320410927515",
+            "validation_window": [
+              "2025-09-12",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2025-09-16",
+          "exit_date": "2025-10-13",
+          "entry_price": 3.95,
+          "exit_price": 6.45,
+          "raw_return": 0.6329113924050633,
+          "excess_soxx": 0.5300038079070186,
+          "mfe": 0.7873417721518985,
+          "mae": -0.020253164556962022,
+          "hit": true
+        },
+        {
+          "ticker": "SLNH",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "作者给出自己的价格目标$20，并认为市场狂热，隐含看多。",
+          "post": {
+            "post_id": "1970445881959920086",
+            "handle": "dgretta_author",
+            "date": "2025-09-23",
+            "published_at": "2025-09-23T11:11:22+00:00",
+            "text": "$SLNH mania has begun. Seeing $29 and even $62 price targets. My stupid $20 price target is lower than everyone's. https://t.co/ItKMpsd7R5",
+            "url": "https://x.com/DGretta_Author/status/1970445881959920086",
+            "validation_window": [
+              "2025-09-12",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2025-09-24",
+          "exit_date": "2025-10-21",
+          "entry_price": 2.185,
+          "exit_price": 3.48,
+          "raw_return": 0.5926773455377574,
+          "excess_soxx": 0.5086184038096933,
+          "mfe": 1.0228832951945077,
+          "mae": -0.17620137299771166,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "handle": "tradexwhisperer",
+      "n": 54,
+      "wins": 34,
+      "hit_rate": 0.6296296296296297,
+      "wilson_lower": 0.4962722279108102,
+      "median_raw_return": 0.0802771571585571,
+      "median_excess_soxx": -0.008070203726793457,
+      "median_mfe": 0.1602415109306914,
+      "median_mae": -0.08871546708060613,
+      "raw_posts": 480,
+      "hit_cap": true,
+      "extracted_events": 57,
+      "worst": [
+        {
+          "ticker": "PLTR",
+          "direction": "short",
+          "action": "reduce",
+          "confidence": 0.7,
+          "reason": "削减持仓，看空",
+          "post": {
+            "post_id": "1905685664726962331",
+            "handle": "tradexwhisperer",
+            "date": "2025-03-28",
+            "published_at": "2025-03-28T18:17:23+00:00",
+            "text": "🟥 BRUTAL DAY but our Patreon group was WARNED in ADVANCE today at market open and yesterday with our smart algo candles\n\n$VIX turned BLUE and $SPY &amp; $PLTR turned PINK, a recipe for a storm.\n\nWe've hedged against the tide by trimming positions and buying $VIX tracker",
+            "url": "https://x.com/TradexWhisperer/status/1905685664726962331",
+            "validation_window": [
+              "2024-10-01",
+              "2025-04-06"
+            ]
+          },
+          "entry_date": "2025-03-31",
+          "exit_date": "2025-04-28",
+          "entry_price": 80,
+          "exit_price": 114.65,
+          "raw_return": -0.433125,
+          "excess_soxx": -0.4343161207363292,
+          "mfe": 0.07487499999999991,
+          "mae": -0.433125,
+          "hit": false
+        },
+        {
+          "ticker": "PLTR",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "作者认为TAM将因Warp Speed而抛物线增长，是下一个收入来源，明确看多。",
+          "post": {
+            "post_id": "1888455408760864891",
+            "handle": "tradexwhisperer",
+            "date": "2025-02-09",
+            "published_at": "2025-02-09T05:10:29+00:00",
+            "text": "🌌 $PLTR's TAM will go PARABOLIC with Warp Speed @panasonic @L3HarrisTech @anduriltech @shieldaitech \n\n\"Warp Speed helps us ensure manufacturing capabilities for our customers quickly. By using the software, we've seen up to 200x efficiency gain in our ability to anticipate and respond to supply shortages.\" -Tom Bosco, Chief Information Officer, Anduril\n\nModern Manufacturing OS\n\nPalantir continies to expand its TAM. This is the next revenue generator.\n\nBullish 🔥",
+            "url": "https://x.com/TradexWhisperer/status/1888455408760864891",
+            "validation_window": [
+              "2024-10-01",
+              "2025-04-06"
+            ]
+          },
+          "entry_date": "2025-02-10",
+          "exit_date": "2025-03-10",
+          "entry_price": 112.03,
+          "exit_price": 76.38,
+          "raw_return": -0.31821833437472113,
+          "excess_soxx": -0.20821604552143658,
+          "mfe": 0.1123806123359814,
+          "mae": -0.31821833437472113,
+          "hit": false
+        },
+        {
+          "ticker": "HIMS",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "基于周线蓝色蜡烛买入信号，但未明确当前是否触发",
+          "post": {
+            "post_id": "1903658461810000352",
+            "handle": "tradexwhisperer",
+            "date": "2025-03-23",
+            "published_at": "2025-03-23T04:02:00+00:00",
+            "text": "💰 $HIMS Such an easy way to protect &amp; boost profits \n\nWeekly BLUE candle: Buy\nWeekly PINK candle: Sell\n\nRinse and Repeat. We will notify our group of the next BLUE weekly candle. Stay tuned! https://t.co/Uu6Gbi85qN",
+            "url": "https://x.com/TradexWhisperer/status/1903658461810000352",
+            "validation_window": [
+              "2024-10-01",
+              "2025-04-06"
+            ]
+          },
+          "entry_date": "2025-03-24",
+          "exit_date": "2025-04-21",
+          "entry_price": 35.85,
+          "exit_price": 25.84,
+          "raw_return": -0.2792189679218968,
+          "excess_soxx": -0.08307022301842382,
+          "mfe": 0.04351464435146424,
+          "mae": -0.2792189679218968,
+          "hit": false
+        }
+      ],
+      "best": [
+        {
+          "ticker": "MU",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.8,
+          "reason": "Memory shortage, low PE",
+          "post": {
+            "post_id": "2050650949157638331",
+            "handle": "tradexwhisperer",
+            "date": "2026-05-02",
+            "published_at": "2026-05-02T18:57:40+00:00",
+            "text": "Listen up and rejoice. The market has not priced in the Agentic AI inflection, yet. Not even close.\n\nCPU-to-GPU ratio: 1:8 → 1:1\nMemory shortage through 2027+\nNAND prices up 70-75% QoQ\nDDR5 up 58-63% QoQ\n$MU Forward PE 6-9 😂\n\nA token that used to answer questions now automates entire workflows. That token is worth 10x more compute, 10x more memory, 10x more storage.\n\nBeen saying this since February.\n\nBuckle up. Things are about to get wild.\n\n$MU $SNDK $DRAM $INTC $AMD $LITE $TSM $PLTR",
+            "url": "https://x.com/TradexWhisperer/status/2050650949157638331",
+            "validation_window": [
+              "2025-09-12",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2026-05-04",
+          "exit_date": "2026-06-01",
+          "entry_price": 560.6,
+          "exit_price": 1035.5,
+          "raw_return": 0.8471280770602925,
+          "excess_soxx": 0.6248726114992045,
+          "mfe": 0.8471280770602925,
+          "mae": 0.028273278630039256,
+          "hit": true
+        },
+        {
+          "ticker": "MU",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "Demand signal for HBM implies positive for MU",
+          "post": {
+            "post_id": "2043064511352181094",
+            "handle": "tradexwhisperer",
+            "date": "2026-04-11",
+            "published_at": "2026-04-11T20:31:52+00:00",
+            "text": "$MU $DRAM The model consuming the most HBM is also winning the AI race. That is not a coincidence. That is a demand signal. https://t.co/g91vrUOIV9",
+            "url": "https://x.com/TradexWhisperer/status/2043064511352181094",
+            "validation_window": [
+              "2025-09-12",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2026-04-13",
+          "exit_date": "2026-05-08",
+          "entry_price": 416.47,
+          "exit_price": 746.81,
+          "raw_return": 0.7931903858621268,
+          "excess_soxx": 0.4413404586120748,
+          "mfe": 0.7931903858621268,
+          "mae": 0.024227435349484905,
+          "hit": true
+        },
+        {
+          "ticker": "DRAM",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.8,
+          "reason": "Same projection, memory sector bullish",
+          "post": {
+            "post_id": "2049347730414420152",
+            "handle": "tradexwhisperer",
+            "date": "2026-04-29",
+            "published_at": "2026-04-29T04:39:08+00:00",
+            "text": "$MU $DRAM Unbelievable\n\n$707,000,000,000.\n\nThat is the projected 2027 operating profit of 3 memory companies.\n\nApple + Microsoft + Google + Amazon + Meta + Tesla combined? ~$661 Billion.\n\nThe Memory Trio beats the Magnificent 6.\nNot revenue. Operating profit.\n\nLet that sink in. https://t.co/SGR3wmIJG7",
+            "url": "https://x.com/TradexWhisperer/status/2049347730414420152",
+            "validation_window": [
+              "2025-09-12",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2026-04-30",
+          "exit_date": "2026-05-28",
+          "entry_price": 39.21,
+          "exit_price": 62.57,
+          "raw_return": 0.5957663861259883,
+          "excess_soxx": 0.3460928105984973,
+          "mfe": 0.5957663861259883,
+          "mae": 0.003060443764345777,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "handle": "thevalueist",
+      "n": 92,
+      "wins": 42,
+      "hit_rate": 0.45652173913043476,
+      "wilson_lower": 0.35852497382933834,
+      "median_raw_return": -0.020231771188723824,
+      "median_excess_soxx": -0.03514293912399635,
+      "median_mfe": 0.07843031474090989,
+      "median_mae": -0.10672653760530004,
+      "raw_posts": 480,
+      "hit_cap": true,
+      "extracted_events": 92,
+      "worst": [
+        {
+          "ticker": "POET",
+          "direction": "long",
+          "action": "avoid",
+          "confidence": 0.7,
+          "reason": "Advises against shorting optical names, implying a long bias but not a clear actionable signal.",
+          "post": {
+            "post_id": "2054895711527825498",
+            "handle": "thevalueist",
+            "date": "2026-05-14",
+            "published_at": "2026-05-14T12:04:50+00:00",
+            "text": "Don't short the optical networking names. If you don't believe the story, sit on the sidelines, or you'd better damn well thread the needle on timing. These companies are so small that one announced deal, as we see with POET this morning, and the stocks rip.\n\n$POET  $AAOI  \n\ncc: @WolfpackReports",
+            "url": "https://x.com/TheValueist/status/2054895711527825498",
+            "validation_window": [
+              "2025-09-12",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2026-05-15",
+          "exit_date": "2026-06-12",
+          "entry_price": 18.322,
+          "exit_price": 12.53,
+          "raw_return": -0.31612269402903614,
+          "excess_soxx": -0.4814245487400802,
+          "mfe": -0.12837026525488482,
+          "mae": -0.4121820761925554,
+          "hit": false
+        },
+        {
+          "ticker": "MU",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "HBM capacity bottleneck highlighted, MU key beneficiary",
+          "post": {
+            "post_id": "1901789558389473662",
+            "handle": "thevalueist",
+            "date": "2025-03-18",
+            "published_at": "2025-03-18T00:15:38+00:00",
+            "text": "One of my biggest takeaways from $NVDA GTC today was that HBM capacity is possibly the most significant bottleneck to improvement in speed and output quality of reasoning LLMs. They are moving as fast as possible to get HBM3e 12-Hi and next generation HBM4 ready to be deployed. Among others, I spoke with a senior engineer at $MSFT working on the Maia chip who crystallized this. $MU a key beneficiary as well as SK Hynix.",
+            "url": "https://x.com/TheValueist/status/1901789558389473662",
+            "validation_window": [
+              "2024-10-01",
+              "2025-04-06"
+            ]
+          },
+          "entry_date": "2025-03-19",
+          "exit_date": "2025-04-15",
+          "entry_price": 100.82,
+          "exit_price": 71.04,
+          "raw_return": -0.29537790121007723,
+          "excess_soxx": -0.15946882158030984,
+          "mfe": 0.02162269390993865,
+          "mae": -0.35806387621503666,
+          "hit": false
+        },
+        {
+          "ticker": "VRT",
+          "direction": "long",
+          "action": "add",
+          "confidence": 0.8,
+          "reason": "作者明确表示今天加仓VRT，长期持有",
+          "post": {
+            "post_id": "1889727144957182159",
+            "handle": "thevalueist",
+            "date": "2025-02-12",
+            "published_at": "2025-02-12T17:23:55+00:00",
+            "text": "Breakdown of $VRT Q4 call. I didn't hear anything concerning. The market is overreacting to a lower than expected 2025 growth number which was a result of them having such a strong Q4-2024. The business is lumpy and people must understand and accept that. There is no indication of slowing revenue growth.\n\nI am adding $VRT today; long-term +18 month hold.\n\n____________\n\n1. General Tone & Key Themes\nExecution ConfidenceManagement highlighted that Q4 revenue exceeded expectations by over $200 million. This over-delivery was broad-based across all regions, fueled by strong backlog and accelerated product launches.\nDespite macro uncertainty, Vertiv sees continued demand momentum—particularly from AI-driven hyperscale and colocation (colo) infrastructure.\n\nEnd-Market Strength vs. Order VolatilityTrailing 12-month (TTM) orders for the Americas were up 50%, while global TTM orders increased ~30%.\nSeveral analysts pressed on quarterly order lumpiness and a Q4 EMEA orders dip; management stressed that large-scale data center orders can be “lumpy” by nature.\nThe pipeline is described as “robust,” giving management high conviction for 2025 guidance.\n\nAI & Compute EfficiencyManagement (Dave Cote, Gio Albertazzi) underscored that improving compute efficiency leads to increased AI adoption, thus more data, more data centers, and “more Vertiv.”\nThey see custom silicon (NVIDIA, others) and server densification as positive catalysts for their high-density power and thermal solutions.\n\nCost & Supply Chain PositioningVertiv continued to gain manufacturing efficiencies, with leadership citing regionalization (more U.S. production) and improved supply chain resilience.\nManagement expects to remain price/cost positive in 2025, while noting tariff uncertainties and a prepared “playbook” to mitigate potential impacts.\n\n2. Financial & Guidance Insights\n2.1 Q4 2024 Highlights\nRevenue Beat: $2.346B vs. guidance, up 26% YoY.\nAdjusted Operating Margin: 21.5% (a 380 bps expansion YoY), attributed to volume leverage and commercial execution.\n\nEPS & FCF: $0.99 of adjusted EPS and $362M of adjusted free cash flow, outpacing internal guidance by $135M.\nImplications: Management’s emphasis on repeatable execution sets the stage for 2025. The operating margin “beat” suggests that manufacturing, sourcing, and pricing initiatives are effectively scaling.\n2.2 2025 Outlook\n\nMetric2025 GuidanceYoY GrowthNet Sales$9.125B – $9.275B~+16% organic vs. 2024Adjusted Operating Profit$1.910B – $1.960B+25% at midpointAdjusted Operating Margin~21%+~160 bps from 19.4% (’24)Adjusted Diluted EPS$3.50 – $3.60+25% (midpoint)Free Cash Flow$1.275B – $1.325B+15%\nHigher 2025 Sales vs. Nov. Guidance: Management raised the sales outlook by $75M despite $125M in FX headwinds.\nSequential Quarterly Growth: Management expects quarterly revenue and operating profit to ramp through 2025, mirroring prior seasonal patterns.\nCapEx & Investment: Projected $275M in capital spending (~3% of sales) to expand capacity and drive R&D in next-generation solutions (e.g., liquid cooling, integrated power).\nImplications: The 25% EPS growth and 21% margin target underscore operating leverage. Free cash flow generation near $1.3B shows ample capacity for share buybacks, dividends, and M&A.\n\n3. Geographic & Product Commentary\n3.1 Regional Nuances\nAmericasQ4 organic growth of ~25% YoY.\nOrders for hyperscale and colo remain “extraordinarily strong,” bolstering 2025 backlog.\nManagement emphasized multiple U.S. manufacturing sites, mitigating tariff risks.\n\nAPACQ4 organic sales +27%; continued strength in India, Southeast Asia, and Australia/NZ.\nChina up in the “high teens,” but management remains “cautiously optimistic” given broader economic volatility.\n\nEMEAQ4 organic sales +33%.\nOrders dipped in Q4 due to project timing shifts into 2025. Management sees no structural weakness, pointing to strong pipeline heading into late 2025.\n\nImplications: While EMEA’s short-term lumpiness triggered questions, management’s view is that AI and colo build-outs in Europe are simply at a time lag to the U.S.—not a reduction in overall demand.\n3.2 Product Segments\nPower Infrastructure: ~one-third of revenue. Management stressed “system matters”—the integrated power distribution & UPS approach is a competitive advantage, especially for future-proofing AI data centers.\nThermal & Cooling: The liquid-cooling roadmap, aided by prior acquisitions like Coultera and now BSC, positions Vertiv to meet high-density compute demands.\nServices: Continues to provide steady revenue and margin contribution, though not as explosive in short-term growth as products.\n\n4. Capital Allocation & Balance Sheet\nNet Leverage ~1.0xThis improvement sets up a flexible capital deployment roadmap.\nManagement reiterated its desire to maintain investment-grade profiles.\n\nShare Repurchases & Dividends~$600M shares repurchased in 2024. $2.4B remains under Board authorization.\nDividend increased 50% (to $0.15 annualized) in November, with plans to double it over five years.\n\nM&A StrategyPriority remains on bolt-on, technology-focused acquisitions, similar to BSC.\nManagement will remain “opportunistic” about buybacks, balancing them against inorganic growth opportunities.\n\nImplications: Expect more targeted acquisitions in specialized cooling or power segments to accelerate product innovation. Meanwhile, healthy FCF and net leverage near 1× support shareholder returns if the market undervalues the stock.\n\n5. Notable Q&A Takeaways\nQuarterly Orders VolatilityMultiple analysts pressed on the quarterly sequential drop in bookings.\nVertiv emphasized the lumpiness of hyperscale projects and reaffirmed that the TTM lens is more representative.\nLarge pipeline expansions and strong TTM order growth validate the 2025 outlook.\n\nEMEA SpecificsAnalysts queried “weakness” in Q4 EMEA orders. Management attributed it to “timing pushes into 2025,” not a structural slowdown.\nThey expect high single-digit EMEA growth in 2025 after an exceptionally strong 2024.\n\nAI & Future Compute RoadmapsOn DeepSeek or custom silicon potential: Vertiv is “agnostic” to the specific AI hardware used; the trend of increasing rack densities underpins growing infrastructure demand.\nManagement expects more hybrid compute designs (training + inference), which benefits both power and thermal offerings.\n\nTariff ExposureManagement withheld detailed breakdowns of manufacturing footprints but indicated multiple U.S. plants provide flexibility.\nThey stressed a prepared set of mitigation strategies, with a wait-and-see approach until official policies are clarified.\n\n6. Investment Conclusion & Perspective\n\nSustained Demand TrajectoryDespite Q4 EMEA order timing issues, TTM orders and a robust pipeline suggest sustained data center build-outs, driven by AI, 5G, and enterprise expansions.\n~16% organic revenue growth in 2025, 21%+ adjusted margin, and 25% EPS expansion underscore confidence in operational execution.\n\nValuation & UpsideAt 15× 2025 EPS ($3.55 midpoint), the stock implies a $53+ fair value. The current consensus sees the possibility of higher multiples if AI-driven expansions accelerate.\n\nCatalysts & RisksCatalysts: Large-scale AI deployments, further M&A for specialized technologies, potential buybacks if the stock trades at a discount.\nRisks: Tariff uncertainties, global macro slowdown, and increased competitive pressure from other large OEMs in power and thermal.\n\nPortfolio Manager’s View\nOverweight/Bullish on continued AI/hyperscale tailwinds, margin expansion, and multi-year free cash flow growth. The market may be overly focused on minor quarterly booking fluctuations, overlooking strong TTM data and consistent outperformance.\nWatch for updates on EMEA demand reacceleration, tariff rule changes, and M&A execution as the next key signposts.\n\nBottom Line: Vertiv’s Q4 2024 call reinforced the thesis of secular AI/data center growth, bolstered by a strong backlog, operational excellence, and financial flexibility. Management’s track record of meeting or exceeding guidance underpins credibility, justifying an accumulation strategy in the current environment.",
+            "url": "https://x.com/TheValueist/status/1889727144957182159",
+            "validation_window": [
+              "2024-10-01",
+              "2025-04-06"
+            ]
+          },
+          "entry_date": "2025-02-13",
+          "exit_date": "2025-03-13",
+          "entry_price": 113,
+          "exit_price": 83.09,
+          "raw_return": -0.2646902654867256,
+          "excess_soxx": -0.1517100427088215,
+          "mfe": -0.026902654867256737,
+          "mae": -0.30955752212389387,
+          "hit": false
+        }
+      ],
+      "best": [
+        {
+          "ticker": "MU",
+          "direction": "long",
+          "action": "add",
+          "confidence": 0.7,
+          "reason": "同上，作者对HBM/DRAM超看多。",
+          "post": {
+            "post_id": "2044554328292401516",
+            "handle": "thevalueist",
+            "date": "2026-04-15",
+            "published_at": "2026-04-15T23:11:52+00:00",
+            "text": "$NVDA $MU $SNDK $LITE - I listened to this Jensen interview in its entirety. The thing it did unquestionably was make me even more hyperbullish (if that is possible) on HBM/DRAM and networking. Lots of FUD on GPUs and the vagaries of the market will take advantage of it. No real incremental signal on SSD.\n-------\nEXECUTIVE SUMMARY\n\nThe Dwarkesh Patel interview with Jensen Huang should be read less as a media appearance and more as a strategic manifesto for NVIDIA’s next phase. Huang’s central claim is that NVIDIA’s moat is not a narrow chip-spec lead but a control system spanning the 5-layer AI stack: algorithms, libraries, system design, supply-chain orchestration, developer lock-in, and geopolitical standard-setting. The most important exchange is the China debate, because it reveals Huang’s real thesis: the decisive asset is not merely frontier compute scarcity but control of the software-hardware standard on which global AI is built. NVIDIA’s own FY2026 disclosures partly validate that thesis. The company stated that it was effectively foreclosed from China’s data-center compute market by the end of FY2026 and that this helped competitors build developer and customer ecosystems that can challenge NVIDIA worldwide. The gendered-value implication is indirect but material: the interview elevates a hierarchy of labor and legitimacy coded as masculine in both the U.S. and China—speed, domination, abstraction, winner-take-most competition, technical hardness, and total availability—while care, inclusion, and social reproduction remain largely invisible except when they become throughput constraints. (SEC)\n\nTHE INTERVIEW AS A THEORY OF POWER\n\nHuang repeatedly defines NVIDIA as the entity that converts electrons into tokens and insists that the company should do as much as necessary and as little as possible. That phrase is not rhetorical filler. It is a doctrine of capital-light control. NVIDIA will build what nobody else will build, invest where the ecosystem would otherwise fail to form, and stop short of becoming the cloud, the financier, or the application winner unless forced to do so. The interview applies that doctrine across supply commitments, neocloud financing, lab investments, annual roadmap cadence, pricing behavior during shortages, and global partner management. GTC is described less as a conference than as a market-coordination mechanism in which upstream suppliers, downstream customers, model builders, and startups are taught to plan around NVIDIA’s roadmap.\n\nThis is why Huang’s moat argument is broader than conventional semiconductor framing. The claim is that GPUs do not win because matrix multiply hardware is inherently unbeatable. They win because the programmable stack allows NVIDIA to repeatedly re-optimize processors, fabrics, libraries, and algorithms together as models change. That is strategically coherent. Stanford HAI reports that the U.S.-China frontier-model performance gap had narrowed to 2.7% by March 2026, which is a reminder that algorithmic and software iteration can compress pure hardware leads faster than standard semiconductor cycles would imply. At the same time, Huang’s insistence that NVIDIA is far broader than AI must be balanced against the company’s actual economics: FY2026 data-center revenue was $193.7B of $215.9B total revenue, or about 90%, so the company is conceptually diversified but financially AI-centric. (Stanford HAI)\n\nAn additional underappreciated element of the moat is relational power. Huang emphasizes stable pricing even in shortages, FIFO allocation subject to purchase orders and data-center readiness, and a trust-based planning relationship with TSMC. These softer-coded behaviors are not a deviation from the moat; they are part of it. Customers are being asked to treat NVIDIA not as an opportunistic scarcity seller but as industrial infrastructure. That helps explain why gross margin can remain unusually high even as system complexity rises and competitive narratives proliferate. FY2026 gross margin was still 71.1% even after the H20-related charge and a mix shift toward more complex full-scale data-center solutions. The same FY2026 filing shows that 2 direct customers accounted for 22% and 14% of revenue, which means the moat remains strong but bargaining-power concentration is real. (SEC)\n\nWHERE HUANG IS STRONGEST\n\nHuang is strongest when arguing that AI moats are not reducible to dies. The fact that Chinese challengers are increasingly emphasizing compatibility with CUDA rather than complete escape from it is itself evidence that developer-standard control has real value. Reuters reported that Huawei’s 950PR was being positioned as more compatible with NVIDIA’s CUDA software system, while Stanford HAI argued that Chinese open-weight labs are prioritizing computational efficiency and flexible downstream deployment rather than only brute-force scale. That is consistent with Huang’s claim that the winning platform is the one developers program against 1st, the one clouds can operate across the broadest customer base, and the one that can absorb algorithmic change fastest. (Reuters)\n\nHe is also strong when describing supply-chain orchestration as a moat. NVIDIA’s 10-K shows that ecosystem financing is now balance-sheet material, not just narrative. The company disclosed $17.5B of investments in private companies and infrastructure funds, primarily to support early-stage startups, plus $3.5B of land, power, and shell guarantees to support datacenter buildout. That aligns with the interview’s repeated description of NVIDIA as the actor that prefetches bottlenecks, commits upstream, and ensures that the next capacity layer exists before customers are ready to buy it. The moat, in that sense, is partly the ability to socialize capex risk across the ecosystem while keeping platform control centralized. (SEC)\n\nWHERE HUANG IS WEAKER\n\nHuang is weaker when dismissing marginal-compute concerns as essentially irrelevant. The cyber risk scenario Patel raised is not science fiction. Anthropic stated that Claude Mythos Preview was capable of identifying and exploiting 0-day vulnerabilities across every major operating system and every major web browser it tested, and the oldest such bug it found was a patched 27-year-old OpenBSD vulnerability. The UK AI Security Institute separately found materially improved multi-step offensive cyber performance, while still stopping short of claims about highly defended enterprises. In that environment, marginal training and inference compute can matter even if China already has nonzero compute capacity. Patel’s question was therefore strategically serious, not unserious. (Red Anthropic)\n\nHe also overstates some empirical claims. Huang’s loose formulation that China has 50% of the world’s AI researchers is directionally consistent with China’s enormous talent base but numerically imprecise. MacroPolo’s current tracker says 38% of top AI researchers were educated in China in 2024, while its broader archive framing says 47% of the world’s top AI researchers were trained in China and 72% of them now work in the U.S. Public GitHub data similarly do not support a literal reading of the claim that China is the world’s largest open-source contributor. In 2025, India had the largest public and open-source contributor base on GitHub, while the U.S. remained the largest GitHub developer population and led total contributions. The directional point remains valid—China’s developer base matters enormously—but the numerical rhetoric is aggressive. (MacroPolo Archive)\n\nTHE CHINA ARGUMENT\n\nThe most important contradiction in the interview is only apparent, not complete. Huang argues, 1st, that China already has enough compute, energy, and talent that absolute denial is impossible. He argues, 2nd, that excluding NVIDIA from China is strategically disastrous because it pushes Chinese developers and model builders onto domestic stacks that can later diffuse globally. Those claims can coexist. They imply that export controls may have limited absolute effect on China’s long-run AI capability while having very large relative effects on ecosystem direction, developer habits, and standard-setting. NVIDIA’s own 10-K materially supports the 2nd claim. The company stated that effective foreclosure from China helped competitors build larger developer and customer ecosystems to challenge NVIDIA worldwide. (SEC)\n\nCurrent facts support a balanced rather than absolutist view. Stanford HAI reports that the U.S. still leads massively in datacenter footprint, with 5,427 datacenters, and in private AI investment, with $285.9B in 2025 versus $12.4B in China. At the same time, Stanford reports that the frontier-model gap between the U.S. and China had narrowed to 2.7% by March 2026. NVIDIA’s China-headquartered revenue fell from $25.0B in FY2025 to $19.7B in FY2026, about 9% of FY2026 revenue, although the company warns that geographic revenue is based on customer headquarters rather than ultimate end use. The same filing states that under the then-current rules and geopolitical landscape, NVIDIA was unable to create and deliver a competitive approved product for China’s data-center market. That is direct evidence that the company’s China problem is not theoretical. (Stanford HAI)\n\nThe policy environment is also more nuanced than either absolutist camp suggests. BIS further tightened China-related restrictions in March 2025, including Entity List actions tied to advanced AI, supercomputing, and high-performance AI chip development for military-linked Chinese end users. Yet BIS revised licensing policy in January 2026 to case-by-case review for H200-, MI325X-, and similar-chip exports if specified security requirements were met. Export control policy is therefore simultaneously a national-security instrument, a bargaining lever, and a force reshaping private capital allocation. NVIDIA’s filings show the operational cost of that whiplash: a $4.5B H20 charge in FY2026 and only about $60M of H20 revenue under limited licenses. (Bureau of Industry and Security)\n\nChina, meanwhile, is not standing still. Reuters reported that Huawei prepared mass shipments of Ascend 910C in 2025, that U.S. officials estimated Huawei could produce no more than 200,000 advanced AI chips in 2025 but warned China was catching up quickly, and that Huawei’s newer 950PR is attracting interest from ByteDance and Alibaba with around 750,000 units planned for 2026 and greater CUDA compatibility. CSIS argues that allied export controls have galvanized China into developing autonomous semiconductor design, manufacturing, and infrastructure capabilities, and cites TrendForce projections that domestic suppliers could reach 50% of China’s AI chip market in 2026. The proper inference is not that controls are futile. The proper inference is that controls buy time but also intensify substitution and localization. (Reuters)\n\nTHE GENDERED VALUE SYSTEM: ANALYTIC FRAME\n\nThe interview does not discuss gender explicitly. The relevant lens is therefore not simple representation but the distribution of status among forms of work, authority, and social legitimacy. Gender research on STEM identifies “masculine defaults,” in which cultures treat male-coded traits and characteristics as standard and reward them disproportionately. Research on engineering culture likewise finds that meritocracy and individualism can mute critique and reproduce hierarchy even when participants directly experience exclusion. Huang’s language maps closely onto that template. The ideal actor in the interview is relentlessly available, strategically aggressive, technically abstract, comfortable with scale, and oriented toward winning. Caution, dependence, and social mediation are either minimized or reframed as weakness, delay, or throughput loss. (Sage Journals)\n\nA 3-tier hierarchy of valued labor is visible. Tier 1 is frontier technical and allocative labor: architects, kernel engineers, system designers, roadmap owners, capital allocators, and CEOs who coordinate global supply chains. Tier 2 is enabling infrastructure labor: cloud operators, packaging partners, network builders, and, when bottlenecks bite, electricians and plumbers. Tier 3 is structurally necessary but largely invisible labor: care, teaching, clerical coordination, compliance, emotional labor, and family reproduction. Huang briefly acknowledges the hidden layer when he distinguishes the job of a radiologist from the task of image reading and when he elevates plumbers as critical bottlenecks. But those recognitions remain instrumentally framed. They matter because the system needs them to keep scaling, not because they reorganize what the system treats as socially central. The result is gender hierarchy by valuation rather than by formal exclusion. (Sage Journals)\n\nIMPLICATIONS FOR THE U.S.\n\nIn the U.S., this value system interacts with an already unequal technical pipeline. Current BLS household data show that in 2025 women were 26.0% of computer occupations and 19.3% of architecture and engineering occupations. McKinsey reports that only 93 women are promoted to manager for every 100 men, that entry-level women have meaningfully less sponsorship, and that only 21% of entry-level women are encouraged by managers to use AI tools versus 33% of men. LeanIn finds heavier workplace AI use among men as well, with 33% of men versus 27% of women using AI daily or constantly. A global study covering 18 datasets and 143,008 people finds women are about 20% less likely than men to directly use generative AI. In a frontier economy where promotion, pay, and status increasingly attach to AI fluency, these are not peripheral HR issues. They are mechanisms of compounding advantage. (Bureau of Labor Statistics)\n\nThe interview’s rhetoric also has governance consequences in the U.S. PNAS Nexus research using U.S. and Canadian survey data finds that women perceive AI as riskier than men, are more skeptical of its benefits, and are more supportive of slowing adoption when employment risks rise. Huang repeatedly opposes mature nuance to what he calls loser-style, absolutist, or childish fear. That framing is strategically effective if the goal is accelerated buildout. But it also tends to delegitimize precisely the voices most likely to foreground uncertainty, social downside, or institutional fragility. The result is a discourse that can underweight resilience, governance, and distributional risk at the exact moment when those issues are becoming economically material. (OUP Academic)\n\nThe U.S. implication is therefore not simply that men benefit more than women. It is that the social definition of valuable work shifts toward roles already disproportionately held by men and away from roles where women are more present or where women’s career progression depends more heavily on sponsorship, managerial recognition, and organizational slack. Even the interview’s partial rehabilitation of nonsoftware labor—plumbers, electricians, radiologists—does not challenge the underlying value system. It expands the coalition of labor that serves AI factories, but it does so inside the same high-intensity, throughput-1st, male-coded industrial order. (McKinsey & Company)\n\nIMPLICATIONS FOR CHINA\n\nIn China, the gendered pattern is different in form but not in direction. Female labor-force participation remains comparatively high, and Chinese tech has produced significant female entrepreneurship. Reuters cites 60.5% female employment in 2023, above both the U.S. and the UK, and notes that 41% of Chinese tech companies in a 2020 study had female founders. But that broad participation coexists with sharp stratification. Reuters also reports that women’s representation falls to 22% in middle management, that 61.1% of female respondents in a 2023 survey had faced family-status questions in interviews, and that traditional breadwinner-caregiver expectations remain deeply rooted. Broad labor participation therefore does not eliminate the gendered ranking of technical authority and career durability. (Reuters)\n\nResearch on China’s IT sector makes the mechanism more explicit. Programming work is often split between technical and social aspects, with the technical side associated with logic, rationality, abstract thinking, and deep engagement with code. Overtime culture then defines the ideal worker as continuously available, while traditional gender-role expectations make that model harder for women to satisfy without career penalty. Chatham House adds that workplace AI in China often reproduces or even operationalizes employer bias because recruitment systems are built in a labor market where age, gender, and marital status remain salient filters. Under an AI industrial strategy centered on stack localization, hardware self-sufficiency, and national competition, women can participate at scale while still being filtered away from the most prestigious technical core or penalized at promotion points linked to marriage and childbearing. (Springer)\n\nThis is why Huang’s preferred geopolitical outcome—keeping Chinese developers on the American stack—would not dissolve the gendered hierarchy inside China. It would more likely globalize a U.S.-centered technical regime that remains male-dominated at the highest-status layers, even as it competes with a Chinese alternative that is itself shaped by long-hours culture, state priorities, and family-role expectations. The competition is therefore not between a gendered system and a neutral 1. It is between 2 differently organized, differently justified, but structurally similar high-performance technical orders. (Springer)\n\nCOMPARATIVE SYNTHESIS\n\nThe U.S. and China converge more than they diverge at the level of the gendered value system. In both systems, the highest-status labor is abstract rather than relational, large-scale rather than intimate, aggressive rather than precautionary, and always-on rather than bounded. In both systems, frontier engineering is treated as civilizational labor, while care, training, administration, and governance are secondary until they become bottlenecks. The difference is mainly in legitimation. The U.S. version is meritocratic, founder-led, and capital-market intensive. The Chinese version is state-steered, overtime-tolerant, and more openly shaped by family-role expectations. Huang’s argument that the American tech stack should diffuse through China and the global South is therefore also an argument about exporting a particular model of status and legitimacy, not just a chip platform. (Sage Journals)\n\nThe most revealing line in comparative terms may be Huang’s sudden elevation of plumbers and electricians. That moment shows that the system can value maintenance, but only after maintenance threatens scale. It does not displace the top of the hierarchy; it temporarily widens the set of labor categories that are permitted prestige. That is not a transition to a less gendered order. It is a shift from purely digital elite masculinity toward a broader industrial masculinity in which the valued worker is still defined by hardness, endurance, technical mastery, and availability to large systems. (Sage Journals)\n\nINVESTMENT IMPLICATIONS\n\nFor investors, the deepest takeaway is that NVIDIA should be modeled as a coordinator of standards, capital, and labor prestige rather than as a pure semiconductor vendor. Gross margin remains exceptional at 71.1% despite the H20 charge and a mix shift toward more complex datacenter systems. The deeper long-duration asset, however, is not just margin. It is the ability to make every layer of the ecosystem organize around NVIDIA’s roadmap, tools, and optimization practices. The largest strategic risk is not 1 competing accelerator in isolation. It is ecosystem bifurcation: a Chinese open-weight plus domestic-chip stack that becomes good enough, locally sticky, and globally exportable, especially across price-sensitive regions. Stanford HAI already argues that Chinese open-weight models have caught up or even pulled ahead in some dimensions and are now unavoidable in the global competitive landscape. (SEC)\n\nA 2nd-order but economically material implication is that gendered adoption and promotion gaps will affect who captures AI productivity gains. If women are less sponsored, less encouraged to use AI, slower to adopt it, and more likely to be positioned outside the highest-status technical core, then firms and national systems are extracting less value from a large share of their talent base. In the U.S., that means lower enterprise absorption and weaker leadership diversity in the very functions now receiving the most capital. In China, it means that a self-sufficiency drive can still leave part of the labor pool underutilized or channeled into lower-status roles. In both countries, the gendered value system reduces adaptability precisely when AI is supposed to expand it. (McKinsey & Company)\n\nBOTTOM LINE\n\nHuang is most convincing on ecosystem economics and least convincing on the claim that marginal compute access for China is strategically unimportant. The SEC filing, Stanford data, Reuters reporting, BIS actions, and the interview itself all point to a more complex equilibrium. The U.S. still leads in capital, datacenters, and some frontier capabilities. China has nevertheless narrowed model-performance gaps, is localizing its stack faster, and is increasingly capable of turning exclusion into substitution. The gendered consequence in both countries is the further elevation of a frontier-AI value order organized around male-coded forms of labor and authority. Unless intentionally counterbalanced, that order will continue to route capital, status, and political legitimacy toward the hardest technical core while recognizing care, training, governance, and social reproduction only when they threaten throughput. (Stanford HAI)",
+            "url": "https://x.com/TheValueist/status/2044554328292401516",
+            "validation_window": [
+              "2025-09-12",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2026-04-16",
+          "exit_date": "2026-05-13",
+          "entry_price": 452.96,
+          "exit_price": 803.63,
+          "raw_return": 0.7741743200282587,
+          "excess_soxx": 0.4554274403477796,
+          "mfe": 0.7741743200282587,
+          "mae": -0.010022960084775656,
+          "hit": true
+        },
+        {
+          "ticker": "SNDK",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "KV cache on NAND SSDs, not HDDs, Jensen's preference",
+          "post": {
+            "post_id": "2008561460373504427",
+            "handle": "thevalueist",
+            "date": "2026-01-06",
+            "published_at": "2026-01-06T15:29:04+00:00",
+            "text": "$SNDK $MU $NVDA A follow-up to this SSD/HDD debate in reference Jensen's commentary on storage yesterday - there is no possibility (at least for now) that KV cache will be stored on HDDs, Jensen’s preference is to put it on NAND SSDs, after HBM/DRAM. https://t.co/ZU3cO7b7mW",
+            "url": "https://x.com/TheValueist/status/2008561460373504427",
+            "validation_window": [
+              "2025-09-12",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2026-01-07",
+          "exit_date": "2026-02-04",
+          "entry_price": 340.88,
+          "exit_price": 584.55,
+          "raw_return": 0.7148263318469841,
+          "excess_soxx": 0.6984288545358013,
+          "mfe": 1.0403367754048345,
+          "mae": -0.01859892044121092,
+          "hit": true
+        },
+        {
+          "ticker": "SNDK",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.8,
+          "reason": "作者明确将SNDK列为长期看多标的，作为AI数据中心存储基础设施。",
+          "post": {
+            "post_id": "1997030230343483509",
+            "handle": "thevalueist",
+            "date": "2025-12-05",
+            "published_at": "2025-12-05T19:48:04+00:00",
+            "text": "$SNDK $WDC $LITE and $COHR are compelling long ideas here because they are effectively platform‑agnostic picks-and-shovels on the AI datacenter build‑out. Whether the incremental capex goes to NVIDIA GPUs, AMD GPUs, Google TPUs, Amazon Trainium, or any other accelerator roadmap, every one of those architectures requires the same core infrastructure: flash and HDD storage (SNDK, WDC) and high‑speed optics and lasers for intra‑ and inter‑datacenter networking (LITE, COHR). These companies are leaders in those segments, which means they participate in AI datacenter growth regardless of who wins the GPU share battle. \n\nThat makes this basket structurally less exposed to the narrative whipsaw, FUD, and positioning volatility we’re seeing in the GPU complex. The key question for 2026 isn’t whether their products will be used in AI datacenters – they are non‑discretionary components – but how fast the overall footprint grows. As hyperscalers and cloud providers continue to scale AI capacity, storage and networking intensity per rack keeps rising, leaving SNDK, WDC, LITE, and COHR very well positioned for the next leg of the build‑out.\n\nThe immediate valuation might be considered stretched, and that needs to be weighed against earnings growth and TAM/multiple expansion over the next 18-24 months.",
+            "url": "https://x.com/TheValueist/status/1997030230343483509",
+            "validation_window": [
+              "2025-09-12",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2025-12-08",
+          "exit_date": "2026-01-06",
+          "entry_price": 235.66,
+          "exit_price": 349.63,
+          "raw_return": 0.4836204701688873,
+          "excess_soxx": 0.43096358149372493,
+          "mfe": 0.4836204701688873,
+          "mae": -0.14338453704489518,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "handle": "sam_badawi",
+      "n": 132,
+      "wins": 57,
+      "hit_rate": 0.4318181818181818,
+      "wilson_lower": 0.3504261969873424,
+      "median_raw_return": -0.013626982920461161,
+      "median_excess_soxx": 0.011773933450065333,
+      "median_mfe": 0.06433358323013016,
+      "median_mae": -0.08212766204973265,
+      "raw_posts": 480,
+      "hit_cap": true,
+      "extracted_events": 136,
+      "worst": [
+        {
+          "ticker": "LAC",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "Battery suppliers demand from datacenters",
+          "post": {
+            "post_id": "1974894101729546425",
+            "handle": "sam_badawi",
+            "date": "2025-10-05",
+            "published_at": "2025-10-05T17:47:00+00:00",
+            "text": "ENERGY DEMAND FROM DATACENTERS HAS A 10Y CAGR AT 14.8%\n\nCompanies to benefit from this demand:\n\nNuclear: $CEG $CCJ $OKLO $NNE $SMR $GEV $BN $BAM (Westinghouse) $BWXT $LTBR\n\nLNG (Natural Gas): $NEXT $VG $LNG $TELL\n\nRenewables: $NEE $BE $FSLR $ENPH $RUN $ORA\n\nBattery Suppliers: $TSLA $EOSE $ENS $ALB $LAC\n\nGrid / Utilities: $DUK $SO $EXC $D $AEP $ED $PCG $XEL $EIX",
+            "url": "https://x.com/Sam_Badawi/status/1974894101729546425",
+            "validation_window": [
+              "2025-09-12",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2025-10-06",
+          "exit_date": "2025-10-31",
+          "entry_price": 9.45,
+          "exit_price": 5.5,
+          "raw_return": -0.4179894179894179,
+          "excess_soxx": -0.47146204591477625,
+          "mfe": 0.06349206349206371,
+          "mae": -0.4179894179894179,
+          "hit": false
+        },
+        {
+          "ticker": "VG",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "LNG demand from datacenters",
+          "post": {
+            "post_id": "1974894101729546425",
+            "handle": "sam_badawi",
+            "date": "2025-10-05",
+            "published_at": "2025-10-05T17:47:00+00:00",
+            "text": "ENERGY DEMAND FROM DATACENTERS HAS A 10Y CAGR AT 14.8%\n\nCompanies to benefit from this demand:\n\nNuclear: $CEG $CCJ $OKLO $NNE $SMR $GEV $BN $BAM (Westinghouse) $BWXT $LTBR\n\nLNG (Natural Gas): $NEXT $VG $LNG $TELL\n\nRenewables: $NEE $BE $FSLR $ENPH $RUN $ORA\n\nBattery Suppliers: $TSLA $EOSE $ENS $ALB $LAC\n\nGrid / Utilities: $DUK $SO $EXC $D $AEP $ED $PCG $XEL $EIX",
+            "url": "https://x.com/Sam_Badawi/status/1974894101729546425",
+            "validation_window": [
+              "2025-09-12",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2025-10-06",
+          "exit_date": "2025-10-31",
+          "entry_price": 14.15,
+          "exit_price": 8.57,
+          "raw_return": -0.3943462897526502,
+          "excess_soxx": -0.4478189176780085,
+          "mfe": -0.014134275618374659,
+          "mae": -0.3943462897526502,
+          "hit": false
+        },
+        {
+          "ticker": "TMDX",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "作者认为器官移植需求增长且现有技术无法满足，TMDX的OCS和服务有前景，隐含看多。",
+          "post": {
+            "post_id": "1847710561426878648",
+            "handle": "sam_badawi",
+            "date": "2024-10-19",
+            "published_at": "2024-10-19T18:45:01+00:00",
+            "text": "$TMDX Heart and Liver transplants are growing in double digits. This number is expected to accelerate considering the number of patients on the waitlist alone. Supply cannot meet demand with existing technology. This is where TransMedic's OCS and Services industry comes in. https://t.co/6xODQdqNCT",
+            "url": "https://x.com/Sam_Badawi/status/1847710561426878648",
+            "validation_window": [
+              "2024-10-01",
+              "2025-04-06"
+            ]
+          },
+          "entry_date": "2024-10-21",
+          "exit_date": "2024-11-15",
+          "entry_price": 126.6,
+          "exit_price": 80.48,
+          "raw_return": -0.3642969984202211,
+          "excess_soxx": -0.2888723792642065,
+          "mfe": -0.0028436018957346265,
+          "mae": -0.3642969984202211,
+          "hit": false
+        }
+      ],
+      "best": [
+        {
+          "ticker": "IREN",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "Added to Utility Layer theme, bullish on datacenter compute demand",
+          "post": {
+            "post_id": "1972482868959142199",
+            "handle": "sam_badawi",
+            "date": "2025-09-29",
+            "published_at": "2025-09-29T02:05:37+00:00",
+            "text": "ALL EYES ON MINERS AND NEOCLOUDS\n\nThe Futurum AI Fifteen just added $NBIS and $IREN to the new Utility Layer, a theme poised for strong tailwinds as datacenter compute continues to fall short of demand.\n\nThey also added $RBRK to the Operating Layer. Data resiliency isn’t just about disaster recovery, it’s about protecting critical infrastructure from ransomware and the growing wave of security threats.\n\nVery bullish on these themes over the next 2-3 years.",
+            "url": "https://x.com/Sam_Badawi/status/1972482868959142199",
+            "validation_window": [
+              "2025-09-12",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2025-09-30",
+          "exit_date": "2025-10-27",
+          "entry_price": 45.315,
+          "exit_price": 64.99,
+          "raw_return": 0.4341829416308065,
+          "excess_soxx": 0.30314332846361314,
+          "mfe": 0.53503254992828,
+          "mae": 0.03563941299790363,
+          "hit": true
+        },
+        {
+          "ticker": "NOW",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "同上。",
+          "post": {
+            "post_id": "1908193336189706414",
+            "handle": "sam_badawi",
+            "date": "2025-04-04",
+            "published_at": "2025-04-04T16:21:58+00:00",
+            "text": "Put a lot of money to work today.\n\nWhat else can you do? $SPX 17% from ATH.\n\n$AMZN $GOOGL $NOW $HOOD $MELI $AXON",
+            "url": "https://x.com/Sam_Badawi/status/1908193336189706414",
+            "validation_window": [
+              "2024-10-01",
+              "2025-04-06"
+            ]
+          },
+          "entry_date": "2025-04-07",
+          "exit_date": "2025-05-05",
+          "entry_price": 137.6,
+          "exit_price": 195.61,
+          "raw_return": 0.42158430232558164,
+          "excess_soxx": 0.18123700245055696,
+          "mfe": 0.42158430232558164,
+          "mae": 0.05755813953488387,
+          "hit": true
+        },
+        {
+          "ticker": "BE",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "Renewables demand from datacenters",
+          "post": {
+            "post_id": "1974894101729546425",
+            "handle": "sam_badawi",
+            "date": "2025-10-05",
+            "published_at": "2025-10-05T17:47:00+00:00",
+            "text": "ENERGY DEMAND FROM DATACENTERS HAS A 10Y CAGR AT 14.8%\n\nCompanies to benefit from this demand:\n\nNuclear: $CEG $CCJ $OKLO $NNE $SMR $GEV $BN $BAM (Westinghouse) $BWXT $LTBR\n\nLNG (Natural Gas): $NEXT $VG $LNG $TELL\n\nRenewables: $NEE $BE $FSLR $ENPH $RUN $ORA\n\nBattery Suppliers: $TSLA $EOSE $ENS $ALB $LAC\n\nGrid / Utilities: $DUK $SO $EXC $D $AEP $ED $PCG $XEL $EIX",
+            "url": "https://x.com/Sam_Badawi/status/1974894101729546425",
+            "validation_window": [
+              "2025-09-12",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2025-10-06",
+          "exit_date": "2025-10-31",
+          "entry_price": 92.99,
+          "exit_price": 132.16,
+          "raw_return": 0.4212280890418325,
+          "excess_soxx": 0.36775546111647417,
+          "mfe": 0.4378965480159158,
+          "mae": -0.0745241423809011,
+          "hit": true
+        }
+      ]
+    }
+  ]
+}
