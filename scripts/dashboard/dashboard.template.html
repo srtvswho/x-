@@ -423,13 +423,48 @@ function stanceTopic(r){
   if(/半导体|晶圆|代工|封装|tsm|asml/.test(s)) return '半导体';
   return '其他方向';
 }
+function recordStances(r){
+  const text=((r.summary||'')+' '+(r.raw_text||'')).toLowerCase();
+  const topicDefs=[
+    {topic:'存储/HBM',terms:'(?:hbm|dram|nand|memory|存储|内存|海力士|三星)'},
+    {topic:'光通信/CPO/InP',terms:'(?:光通信|光模块|cpo|inp|激光器|aaoi|lite|cohr|axti|sive|mtsi)'},
+    {topic:'AI算力',terms:'(?:算力|gpu|ai芯片|nvda|amd|googl|nbis)'},
+    {topic:'半导体',terms:'(?:半导体|晶圆|代工|封装|tsm|asml)'}
+  ];
+  const out=[],seen=new Set();
+  const add=(topic,direction)=>{const key=topic+'|'+direction;if(!seen.has(key)){seen.add(key);out.push({topic,direction});}};
+  const baseDirection=(r.direction==='long'||r.direction==='short')?r.direction:null;
+  const baseTopic=stanceTopic(r);
+  if(baseDirection)add(baseTopic,baseDirection);
+  topicDefs.forEach(def=>{
+    const gap='[^，。；、\\n]{0,8}';
+    const longPattern=new RegExp('(?:看多|偏多|做多|long|bullish)'+gap+def.terms+'|'+def.terms+gap+'(?:看多|偏多|做多|long|bullish)','i');
+    const shortPattern=new RegExp('(?:看空|偏空|做空|short|bearish)'+gap+def.terms+'|'+def.terms+gap+'(?:看空|偏空|做空|short|bearish)','i');
+    [['long',longPattern],['short',shortPattern]].forEach(([direction,pattern])=>{
+      if(pattern.test(text)&&(def.topic!==baseTopic||direction===baseDirection))add(def.topic,direction);
+    });
+  });
+  return out;
+}
+function selectStanceEvidence(records,limit){
+  const sorted=records.slice().sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
+  const chosen=[],usedPosts=new Set(),covered=new Set();
+  sorted.forEach(r=>{
+    const keys=recordStances(r).map(s=>s.topic+'|'+s.direction);
+    if(keys.some(key=>!covered.has(key))&&!usedPosts.has(r.post_id)){
+      chosen.push(r);usedPosts.add(r.post_id);keys.forEach(key=>covered.add(key));
+    }
+  });
+  sorted.forEach(r=>{if(chosen.length<limit&&!usedPosts.has(r.post_id)){chosen.push(r);usedPosts.add(r.post_id);}});
+  return chosen.slice(0,limit).sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
+}
 function liveConsensus(records){
-  const directional=records.filter(r=>r.direction==='long'||r.direction==='short');
+  const directional=records.flatMap(r=>recordStances(r).map(s=>({r,...s})));
   if(!directional.length) return '共识方向｜本窗口无明确方向证据\n核心标的｜无明确标的\n分歧/风险｜暂无可由本窗口证据验证的分歧';
   const groups=new Map();
-  directional.forEach(r=>{
-    const topic=stanceTopic(r),key=topic+'|'+r.direction;
-    if(!groups.has(key))groups.set(key,{topic,direction:r.direction,kols:new Set(),tickers:new Set()});
+  directional.forEach(({r,topic,direction})=>{
+    const key=topic+'|'+direction;
+    if(!groups.has(key))groups.set(key,{topic,direction,kols:new Set(),tickers:new Set()});
     const g=groups.get(key);g.kols.add(r.kol);(r.ticker||[]).forEach(t=>g.tickers.add(t));
   });
   const all=[...groups.values()].sort((a,b)=>b.kols.size-a.kols.size);
@@ -446,14 +481,14 @@ function liveConsensus(records){
   return `共识方向｜${line1}\n单人方向｜${singleLine}\n核心标的｜${tickers.length?tickers.join('、'):'无明确标的'}\n分歧/风险｜${conflicts.length?conflicts.join('；'):'本窗口可见证据中暂无直接多空分歧'}`;
 }
 function livePersonSummary(records){
-  const directional=records.filter(r=>r.direction==='long'||r.direction==='short');
+  const directional=records.flatMap(r=>recordStances(r).map(s=>({r,...s})));
   if(!directional.length)return '本窗口无明确方向证据';
   const groups=new Map();
-  directional.forEach(r=>{const key=stanceTopic(r)+'|'+r.direction;if(!groups.has(key))groups.set(key,{topic:stanceTopic(r),direction:r.direction,tickers:new Set()});(r.ticker||[]).forEach(t=>groups.get(key).tickers.add(t));});
+  directional.forEach(({r,topic,direction})=>{const key=topic+'|'+direction;if(!groups.has(key))groups.set(key,{topic,direction,tickers:new Set()});(r.ticker||[]).forEach(t=>groups.get(key).tickers.add(t));});
   const all=[...groups.values()];
   const directions=all.map(g=>`${g.topic}${g.direction==='long'?'看多':'看空'}`).join('；');
   const tickers=[...new Set(all.flatMap(g=>[...g.tickers]))];
-  return `核心方向｜${directions}\n明确标的｜${tickers.length?tickers.join('、'):'无明确标的'}\n证据口径｜仅汇总下方当前窗口可见的明确多空推文`;
+  return `核心方向｜${directions}\n明确标的｜${tickers.length?tickers.join('、'):'无明确标的'}\n证据口径｜扫描本窗口全部 ${records.length} 条有效推文；下方优先展示方向证据`;
 }
 function renderStance(){
   const weekly=win===0.25;
@@ -466,17 +501,18 @@ function renderStance(){
   // 1M/3M/6M/1Y 仍用 RECORDS (有效判断)
   const dataSrc = (win===0) ? TODAY_RECORDS : RECORDS;
   const g=document.getElementById('stancegrid');
-  const visibleByKol={};
+  const allByKol={},visibleByKol={};
   ORDER.forEach(key=>{
     let recs=dataSrc.filter(r=>r.kol===key&&new Date(r.published_at)>=cut);
-    if(win===0){recs=recs.slice().sort((a,b)=>new Date(b.published_at)-new Date(a.published_at)).slice(0,4);}
-    else{recs=recs.filter(r=>(r.direction!=='neutral'||r.bottleneck)).slice().sort((a,b)=>new Date(b.published_at)-new Date(a.published_at)).slice(0,4);}
-    visibleByKol[key]=recs;
+    recs=recs.slice().sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
+    if(win!==0)recs=recs.filter(r=>(recordStances(r).length||r.bottleneck));
+    allByKol[key]=recs;
+    visibleByKol[key]=(win===0)?recs.slice(0,4):selectStanceEvidence(recs,4);
   });
-  const visibleEvidence=ORDER.flatMap(key=>visibleByKol[key]).filter(r=>r.direction==='long'||r.direction==='short');
+  const windowEvidence=ORDER.flatMap(key=>allByKol[key]);
   document.getElementById('consensus').innerHTML=`
     <div class="ch"><span class="clabel">◇ 当前窗口观点汇总</span><span class="cwin">${winLabel(win)}</span></div>
-    <div class="ctext">${formatStructuredSummary(liveConsensus(visibleEvidence))}</div>`;
+    <div class="ctext">${formatStructuredSummary(liveConsensus(windowEvidence))}</div>`;
   g.innerHTML=ORDER.map(key=>{
     const k=KOLS[key];const c=COLORS[key];
     const recs=visibleByKol[key];
@@ -495,7 +531,7 @@ function renderStance(){
     }).join(''):(win===0
       ? `<div class="stmt"><div class="dir neutral">·</div><div class="body"><div class="txt" style="color:var(--ink-faint)">${winLabel(0)} 无新推文</div></div></div>`
       : `<div class="stmt"><div class="dir neutral">·</div><div class="body"><div class="txt" style="color:var(--ink-faint)">该窗口内无强项方向性表态</div></div></div>`);
-    const psum=livePersonSummary(recs);
+    const psum=livePersonSummary(allByKol[key]);
     return `<div class="stance">
       <div class="sh"><div class="av" style="background:${c}">${initials(k.name)}</div>
         <div class="nm">${k.name}</div><div class="tp ${k.type}">${k.type}</div><div class="ct">${recs.length} 条</div></div>
