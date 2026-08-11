@@ -34,6 +34,14 @@ def test_event_uses_high_and_first_drawdown_confirmation():
     assert event["confirmation_date"] == "2026-06-10"
 
 
+def test_apify_v3_run_object_and_v2_dict_are_supported():
+    class Run:
+        default_dataset_id = "dataset-v3"
+
+    assert mod.dataset_id_from_run(Run()) == "dataset-v3"
+    assert mod.dataset_id_from_run({"defaultDatasetId": "dataset-v2"}) == "dataset-v2"
+
+
 def test_candidate_score_rewards_repeated_independent_evidence():
     row = {
         "post": {"published_date": "2026-06-01", "likes": 10, "reposts": 2},
