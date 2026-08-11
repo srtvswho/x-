@@ -1,43 +1,43 @@
 {
-  "today": "市场主线｜存储/光通信双主线；存储涨价持续，光通信受制裁传闻扰动剧烈。\n模块/标的｜存储；Solidigm、Macronix、ESMT、Nanya；光通信；AAOI、LITE、Coherent。\n方向/共识｜看多存储（jukan✅、zephyr✅）；看多光通信反弹（serenity✅）。\n风险/分歧｜光通信制裁传闻反复，中美股同跌；内存交易未见底，小米称下半年缓解遭反驳。\n标注能力圈 (✅强项 / ⚠️打折)，不写 R12 过滤项。",
+  "today": "市场主线｜存储涨价持续，光通信受制裁传闻扰动\n模块/标的｜存储；SK海力士/Solidigm、Marvell\n方向/共识｜看多存储（jukan、zephyr）；Marvell获zephyr看多\n风险/分歧｜光通信制裁不确定性；内存交易未确认见底\n标注能力圈：存储✅（jukan/zephyr）、光通信✅（serenity）、代工✅（jukan）",
   "consensus": {
-    "0": "共识方向｜存储涨价持续（看多，jukan/zephyr）；光通信制裁传闻扰动（中性，jukan/serenity）；代工产能紧张（中性，jukan/austin）\n核心标的｜存储：无明确标的；光通信：AAOI/LITE；代工：TSM/INTC\n分歧/风险｜zephyr看多MRVL（强项外，仅参考）；jukan看空内存见底与小米缓解论相左",
-    "1": "共识方向｜光通信/CPO激光器瓶颈看多（Serenity、Jukan、zephyr）；存储短期看空/长期看多（Jukan、zephyr）\n核心标的｜SIVE、AAOI、LITE、AXTI、MTSI、MU\n分歧/风险｜存储见顶时点存分歧；Jukan短期看空存储，Serenity仍看多；zephyr看空Google与AI泡沫论存盲区",
-    "3": "共识方向｜光通信/CPO激光器瓶颈看多（jukan、serenity、zephyr）；存储短期看空/中期看多（jukan、zephyr）\n核心标的｜SIVE、AAOI、LITE、AXTI、MTSI、MU\n分歧/风险｜jukan短期看空存储vs zephyr认为未见顶；存储价格见顶时点存分歧",
-    "6": "共识方向｜光通信/CPO激光器瓶颈看多（Serenity、Jukan、zephyr）；存储短期看空/长期看多（Jukan、zephyr）\n核心标的｜SIVE、AAOI、LITE、AXTI、MTSI、MU\n分歧/风险｜Jukan短期看空存储vs Serenity看多；zephyr看空AI泡沫盲区；存储价格见顶时点存争议",
-    "12": "共识方向｜光通信/CPO激光器瓶颈看多（Serenity、Zephyr、Jukan）；存储短期看空/长期看多（Jukan、Zephyr）；HBM供给挤压DRAM（Jukan、Zephyr）\n核心标的｜SIVE、AAOI、LITE、AXTI、MTSI、MU、MRVL\n分歧/风险｜Jukan短期看空存储vs Zephyr长期看多；Serenity看多AI龙头（盲区）；Zephyr看空全错历史（盲区）"
+    "0": "共识方向｜存储/内存涨价持续（看多，Jukan 强项✅）；光通信波动大（中性，Serenity 强项✅）；代工产能紧张（中性，Jukan/Austin 提及）\n核心标的｜MRVL（Zephyr 看多）；AAOI、LITE（光通信）；TSM、INTC（代工）\n分歧/风险｜Jukan 反驳小米称内存下半年缓解；Zephyr 看多 MRVL 但无其他大V呼应；光通信制裁传闻方向不明",
+    "1": "共识方向｜光通信/CPO激光器瓶颈看多（Serenity、Jukan、zephyr）；存储短期看空/长期看多（Jukan、zephyr）\n核心标的｜SIVE、AAOI、LITE、AXTI、MTSI、MU、TSEM\n分歧/风险｜Jukan短期看空存储vs Serenity看多；zephyr看空AI泡沫盲区；存储价格见顶待验证",
+    "3": "共识方向｜光通信/CPO激光器瓶颈看多（Serenity、Jukan、Zephyr）；存储短期看空/长期看多（Jukan、Zephyr）\n核心标的｜SIVE、AAOI、LITE、AXTI、MTSI、MU\n分歧/风险｜Jukan短期看空存储vs Zephyr长期看多；存储价格见顶时点存分歧",
+    "6": "共识方向｜光通信/CPO激光器瓶颈看多（Serenity强项✅、Jukan短期看多✅、zephyr中性✅）；存储短期看空/长期看多（Jukan、zephyr✅）\n核心标的｜SIVE、AAOI、LITE、AXTI、MTSI、MU\n分歧/风险｜Serenity追高⚠️；zephyr看空全错⚠️；存储见顶时点存分歧",
+    "12": "共识方向｜光通信/CPO激光器瓶颈看多（Serenity、Zephyr、Jukan）；存储短期看空/长期看多（Jukan、Zephyr）；HBM供应挤压DRAM（Jukan、Zephyr）\n核心标的｜SIVE、AAOI、LITE、AXTI、MTSI、MU、SKHY\n分歧/风险｜Jukan短期看空存储vs Serenity看多；Zephyr看空AI泡沫盲区；存储见顶时间存分歧"
   },
   "person": {
     "jukan": {
-      "0": "核心方向｜存储/代工 + 中性偏多（内存未触底、TSMC产能紧张）\n明确标的｜TSM、INTC（关注）；无明确多空标的\n依据/风险｜存储涨价持续、TSMC产能卡点；✅强项高可信，光通信/龙头仅参考",
-      "1": "核心方向｜存储/HBM/代工 中性偏空（短期），长期看多存储\n明确标的｜TSEM 看多；MU 短期看空\n依据/风险｜HBM4E耗晶圆、Rubin削减HBM冲击供应；Citi下调MU评级。强项领域表态✅可信，短期偏空为当下新表态。",
-      "3": "核心方向｜存储/HBM/代工 看多，短期内存偏空、光通信偏多\n明确标的｜TSEM 看多；MU 短期偏空\n依据/风险｜HBM4E 消耗 DRAM 晶圆、供给挤压逻辑；TSMC 产能瓶颈；CXMT 涨价。强项领域表态可信，短期空内存为战术性判断。",
-      "6": "核心方向｜存储/HBM看多，短期偏空；代工看多\n明确标的｜TSEM（看多）、MU（短期看空）\n依据/风险｜HBM4E耗晶圆、DRAM供给紧；TSMC产能瓶颈利好TSEM。短期看空内存因杠杆ETF赎回、Rubin削减HBM。✅强项可信",
-      "12": "核心方向｜存储/HBM/代工 看多；短期内存偏空、光通信偏多\n明确标的｜TSEM 看多；MU 短期看空（转述Citi）\n依据/风险｜HBM4E耗晶圆、供给挤压DRAM；TSMC产能瓶颈；CXMT/YMTC扩产压制价格。✅强项可信；光通信为弱项，仅参考"
+      "0": "核心方向｜存储 + 看多（内存未到底，供应紧张持续）\n明确标的｜无明确标的\n依据/风险｜反驳小米“下半年缓解”论，称内存交易未触底；转推TrendForce称iPhone 18 Pro因存储涨价成本增38%。属强项领域，✅高可信。",
+      "1": "核心方向｜存储/HBM看多（短期偏空），代工看多；光通信短期看多\n明确标的｜TSEM（看多）、MU（短期看空）\n依据/风险｜HBM4E耗晶圆、供给挤压DRAM；TSMC产能受限利好TSEM。存储为强项✅，光通信为弱项⚠️仅参考",
+      "3": "核心方向｜存储/HBM/代工 看多，短期内存偏空、光通信偏多\n明确标的｜TSEM 看多；MU 短期看空\n依据/风险｜HBM4E 消耗 DRAM 晶圆、供给挤压逻辑；TSMC 产能瓶颈；Citi 下调 MU 评级。强项领域表态可信，短期观点仅参考。",
+      "6": "核心方向｜存储/代工/卡点，短期看空内存、看多光通信，中长期看多内存\n明确标的｜TSEM（看多）、MU（短期看空）\n依据/风险｜HBM4E耗晶圆、Rubin削减HBM利好光通信；存储见顶担忧。强项领域表态✅可信",
+      "12": "核心方向｜存储/HBM/代工 看多，短期内存偏空、光通信偏多\n明确标的｜TSEM 看多；MU 短期看空\n依据/风险｜HBM4E 耗晶圆、供给挤压普通 DRAM；TSMC 产能瓶颈。✅强项可信；短期空内存为战术性表态"
     },
     "serenity": {
-      "0": "核心方向｜光通信 + 中性\n明确标的｜AAOI、LITE、SIVE、Coherent（提及反弹，无明确多空）\n依据/风险｜讽刺Barron's对光通信供应链报道不专业；引用研究建议散户避免波动割肉。属强项领域表态，可信✅，但均为中性描述，无明确方向。",
-      "1": "核心方向｜光通信/CPO/InP 激光器 + 看多\n明确标的｜SIVE、AAOI、AXTI、LITE、POET + 看多\n依据/风险｜激光器/InP衬底供需失衡2-3年，AAOI/LITE/MTSI财报验证；✅强项领域高可信。弱项追高倾向需打折。",
-      "3": "核心方向｜光通信/CPO/InP 看多；激光器与InP衬底为最严重瓶颈\n明确标的｜SIVE、AAOI、AXTI、LITE、POET 看多；MTSI 利好\n依据/风险｜AAOI/LITE/MTSI财报验证供需失衡20-40%，激光器瓶颈2-3年；✅强项领域高可信，但整体追高需打折",
-      "6": "核心方向｜光通信/CPO/InP 看多；激光器与InP衬底为最严重瓶颈\n明确标的｜SIVE、AAOI、AXTI、LITE、POET 看多\n依据/风险｜AAOI/LITE/MTSI财报验证供需失衡20-40%，激光器瓶颈2-3年；✅强项领域高可信",
-      "12": "核心方向｜光通信/CPO/InP 看多；激光器为最严重瓶颈\n明确标的｜SIVE、AAOI、AXTI、LITE、POET 看多\n依据/风险｜强项领域，多财报验证供需失衡20-40%，激光器瓶颈2-3年；✅高可信。弱项追高倾向，注意估值风险。"
+      "0": "核心方向｜光通信板块反弹，中性偏谨慎\n明确标的｜AAOI、LITE、SIVE、Coherent（提及，无明确多空）\n依据/风险｜讽刺媒体非专业报道光通信，建议散户避免波动割肉；强项领域表态✅可信，但无明确方向性操作建议",
+      "1": "核心方向｜光通信/CPO/InP 看多；激光器为最大瓶颈，供需失衡2-3年\n明确标的｜SIVE、AAOI、AXTI、LITE、POET 看多；MTSI 利好\n依据/风险｜AAOI财报验证20-40%供需缺口，LITE称出货低于需求30%+，InP衬底瓶颈获多方印证；✅强项领域高可信，但整体追高需注意估值风险",
+      "3": "核心方向｜光通信/CPO/InP 看多；激光器为最大瓶颈，供需失衡 20-40% 持续 2-3 年\n明确标的｜SIVE、AAOI、AXTI、LITE、POET 看多\n依据/风险｜AAOI/LITE/MTSI 财报验证激光器短缺，独立产能稀缺；✅强项领域高可信，但整体追高需打折",
+      "6": "核心方向｜光通信/CPO/InP 看多；激光器为最大瓶颈\n明确标的｜SIVE、AAOI、AXTI、LITE 看多；POET 中性偏多\n依据/风险｜AAOI 财报验证需求缺口20-40%，InP衬底/激光器短缺2-3年，独立产能稀缺。强项领域表态✅可信；弱项追高倾向需警惕。",
+      "12": "核心方向｜光通信/CPO/InP 看多；激光器与InP衬底为最严重瓶颈\n明确标的｜SIVE、AAOI、AXTI、LITE、POET 看多\n依据/风险｜AAOI/LITE/MTSI财报验证供需失衡20-40%，激光器瓶颈2-3年；✅强项领域高可信，但整体追高需注意估值风险"
     },
     "zephyr": {
-      "0": "核心方向｜存储/Substrate中性，MRVL看多\n明确标的｜MRVL（看多）\n依据/风险｜传统存储与先进内存分化显著；Substrate方案转向M9/PTFE，Shengyi主供、Taifex认证中。存储/卡点为强项✅，MRVL表态简短但属强项外，仅参考。",
-      "1": "核心方向｜存储/光通信/HBM 中性偏多；AI算力中性\n明确标的｜MRVL看多、AMD看多；无其他明确标的\n依据/风险｜HBM折扣20-25%非半价、存储供应受限3-4年、光学短期跑赢；看空为盲区(0/22)仅参考",
-      "3": "核心方向｜存储/光通信/HBM 看多，AI算力中性\n明确标的｜无明确标的\n依据/风险｜存储供应受限3-4年、HBM折扣20-25%、光学短期跑赢；✅强项高可信。⚠️看空表态（Google）属盲区，仅参考。",
-      "6": "核心方向｜存储/光通信/HBM 看多，AI算力中性\n明确标的｜MRVL看多、AMD看多；无其他明确标的\n依据/风险｜HBM折扣20-25%非半价、存储供给受限3-4年、光学短期跑赢；看空全错0/22，AI泡沫论仅参考",
-      "12": "核心方向｜存储/光通信/HBM/电力 看多；AI算力中性\n明确标的｜无明确标的\n依据/风险｜存储供应受限3-4年、HBM折扣20-25%澄清、光学短期跑赢；✅强项可信。⚠️看空历史0/22，AI泡沫论仅参考。"
+      "0": "核心方向｜Substrate（载板）中性偏多；MRVL 看多\n明确标的｜Shengyi（生益）、Taifex（台燿）；MRVL\n依据/风险｜Q-glass 采样失败，M9/PTFE 混合方案成主流，Shengyi 主供、Taifex 认证中（✅存储/卡点强项）；MRVL 表态简短，属强项外，仅参考。",
+      "1": "核心方向｜存储/光通信/卡点 中性偏多；HBM折扣澄清\n明确标的｜无明确标的\n依据/风险｜存储供应受限3-4年、SLC需求被低估；光学短期跑赢；HBM实际折扣20-25%非半价。强项领域✅可信；看空表态无，规避AI泡沫盲区。",
+      "3": "核心方向｜存储/光通信/HBM 中性偏多；AI算力中性\n明确标的｜无明确标的\n依据/风险｜存储供应受限3-4年、HBM折扣20-25%、光学短期跑赢；强项领域✅可信。看空表态0/22，AI泡沫论仅参考⚠️",
+      "6": "核心方向｜存储/光通信/HBM 中性偏多，AI算力中性\n明确标的｜MRVL(看多)、AMD(看多)、GOOGL(看空情绪)\n依据/风险｜HBM折扣20-25%非半价、存储供应受限3-4年、光学短期跑赢；看空记录0/22，AI泡沫论仅参考",
+      "12": "核心方向｜存储/光通信/HBM 看多，AI算力中性\n明确标的｜无明确标的\n依据/风险｜存储供应受限3-4年、HBM折扣20-25%、光学短期跑赢；✅强项可信。⚠️看空历史0/22，AI泡沫论仅参考。"
     },
     "austin": {
-      "0": "核心方向｜EDA/Foundry 模式 + 中性\n明确标的｜无明确标的\n依据/风险｜强调设计≠流片，EDA 公司才掌握代工 PDK，属强项领域✅可信；ARM 仅提及无方向，不计入表态。",
-      "1": "核心方向｜存储/HBM/推理/代工 + 中性偏多\n明确标的｜AMD（看多）、TSM/ASML（中性）\n依据/风险｜强项商业格局：AMD收购Taalas分析、CapEx过度担忧反驳✅；HBF/NAND存储层级、ASML定价偏低✅；看多AMD属弱项⚠️打折",
-      "3": "核心方向｜存储/HBF、推理架构、Foundry模式；中性偏多\n明确标的｜AMD（看多）、TSM/ASML（中性）\n依据/风险｜强项在商业格局与Foundry模式，AMD CapEx解读可信✅；HBF/NAND存储层级分析属强项延伸✅；ASML定价质疑有洞察。看多龙头属盲区，AMD观点⚠️打折。",
-      "6": "核心方向｜商业格局/Foundry模式 + 中性偏多\n明确标的｜AMD（看多）、TSM/ASML（中性）\n依据/风险｜AMD CapEx担忧过度，健康增长；ASML定价偏低。强项领域表态可信，但看多AMD属弱项，仅参考。",
-      "12": "核心方向｜商业格局/Foundry模式+中性偏多；AMD看多\n明确标的｜AMD（看多）；TSM/ASML（中性，ASML定价偏低）\n依据/风险｜AMD CapEx担忧过度，健康增长；ASML定价或留空间。强项领域✅可信；看多龙头⚠️打折"
+      "0": "核心方向｜EDA/Foundry生态 + 中性\n明确标的｜无明确标的\n依据/风险｜强调设计≠流片，EDA掌握PDK入口，属强项商业格局判断✅可信；ARM仅提及无方向，不计入表态。",
+      "1": "核心方向｜存储/HBM/推理架构 + 中性偏多\n明确标的｜AMD（看多）、TSM/ASML（中性）\n依据/风险｜强项商业格局：AMD收购Taalas分析深入，CapEx担忧过度判断可信；HBF/NAND存储层级讨论专业。看多AMD属弱项，仅参考。",
+      "3": "核心方向｜存储/推理/代工 中性偏多；AMD 看多\n明确标的｜AMD 看多；TSM/ASML 中性\n依据/风险｜强项 Foundry/商业格局：TSMC 定价优于 ASML；AMD 收购 Taalas 补推理短板。看多龙头属弱项，AMD 观点打折。",
+      "6": "核心方向｜存储/HBM/推理/代工 + 中性偏多\n明确标的｜AMD（看多，CapEx担忧过度）；TSM/ASML（中性，ASML定价偏低）\n依据/风险｜强项商业格局/Foundry模式判断可信✅；AMD看多属弱项⚠️仅参考；无看空表态",
+      "12": "核心方向｜Foundry/存储/推理架构 + 中性偏多\n明确标的｜AMD（看多）、TSM/ASML（中性）\n依据/风险｜强项商业格局：AMD CapEx担忧过度、健康增长✅；TSMC定价优于ASML✅。弱项看多龙头跑输板块⚠️打折。"
     }
   },
-  "generated_at": "2026-08-11T03:33:33.252299Z",
+  "generated_at": "2026-08-11T06:40:14.162734Z",
   "data_until": "2026-08-10T23:39:13+00:00",
   "stale": false,
   "daily_history": {
@@ -52,8 +52,8 @@
       "data_until": "2026-08-09T23:59:41+00:00"
     },
     "2026-08-11": {
-      "summary": "市场主线｜存储/光通信双主线；存储涨价持续，光通信受制裁传闻扰动剧烈。\n模块/标的｜存储；Solidigm、Macronix、ESMT、Nanya；光通信；AAOI、LITE、Coherent。\n方向/共识｜看多存储（jukan✅、zephyr✅）；看多光通信反弹（serenity✅）。\n风险/分歧｜光通信制裁传闻反复，中美股同跌；内存交易未见底，小米称下半年缓解遭反驳。\n标注能力圈 (✅强项 / ⚠️打折)，不写 R12 过滤项。",
-      "generated_at": "2026-08-11T03:33:33.252299Z",
+      "summary": "市场主线｜存储涨价持续，光通信受制裁传闻扰动\n模块/标的｜存储；SK海力士/Solidigm、Marvell\n方向/共识｜看多存储（jukan、zephyr）；Marvell获zephyr看多\n风险/分歧｜光通信制裁不确定性；内存交易未确认见底\n标注能力圈：存储✅（jukan/zephyr）、光通信✅（serenity）、代工✅（jukan）",
+      "generated_at": "2026-08-11T06:40:14.162734Z",
       "data_until": "2026-08-10T23:39:13+00:00"
     }
   }
