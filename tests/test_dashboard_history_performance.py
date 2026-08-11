@@ -150,6 +150,7 @@ def test_daily_deepseek_calls_all_use_flash():
 
     assert "python scripts/intel_extract.py" in workflow
     assert "python scripts/dashboard/intel_gen_summaries.py" in workflow
+    assert '- "scripts/intel_extract.py"' in workflow
     assert 'DEEPSEEK_MODEL = "deepseek-v4-flash"' in extractor
     assert 'DEEPSEEK_MODEL = "deepseek-v4-flash"' in summaries
     assert 'DEEPSEEK_MODEL = "deepseek-v4-pro"' not in extractor
