@@ -51,6 +51,15 @@ QUERIES = (
     "(存储 OR 内存 OR 闪迪 OR 海力士) (顶部 OR 见顶 OR 减仓 OR 清仓 OR 做空 OR 降速)",
 )
 
+# Successful Apify runs from 2026-08-11. Reusing them avoids paying to refetch the
+# same event window when only downstream classification code changes.
+REUSE_RUN_IDS = dict(zip(QUERIES, (
+    "tutG69RZlu2HP45Ar", "LhvmRpwq6d7O3bpGy", "zzxfUfhOtz9rrVvm0",
+    "5g17GdI5o7VpToRf8", "N5zmUI9HvSWImoK18", "HuW6Cca9WtXAsKUOF",
+    "uXT7UAqFF6ESFKCAr", "3RPN8tFTpkWJRRGAF", "2xaKMLRfnCqj5Lwnc",
+    "m1ERONaS37Oayahtt", "PuTgDI3Ea3e1eS4hv", "4NetaXblGoqIOz4m0",
+)))
+
 
 def parse_datetime(value: Any) -> datetime | None:
     if value is None:
@@ -178,10 +187,21 @@ def dataset_id_from_run(run: Any) -> str:
     return str(dataset_id)
 
 
-def run_search(apify_token: str, query: str) -> list[dict[str, Any]]:
+def run_search(apify_token: str, query: str, reuse_run_id: str | None = None) -> list[dict[str, Any]]:
     from apify_client import ApifyClient
 
     client = ApifyClient(apify_token)
+    if reuse_run_id:
+        response = requests.get(
+            f"https://api.apify.com/v2/actor-runs/{reuse_run_id}",
+            params={"token": apify_token}, timeout=60,
+        )
+        response.raise_for_status()
+        dataset_id = response.json().get("data", {}).get("defaultDatasetId")
+        if not dataset_id:
+            raise RuntimeError(f"Cannot resolve dataset for reused Apify run {reuse_run_id}")
+        return list(client.dataset(dataset_id).iterate_items())
+
     advanced = f"{query} since:{SEARCH_FROM.isoformat()} until:{(SEARCH_TO + timedelta(days=1)).isoformat()}"
     run_input = {
         "searchTerms": [advanced],
@@ -231,11 +251,12 @@ def classify_batch(posts: list[dict[str, Any]], events: dict[str, Any], api_key:
         "response_format": {"type": "json_object"},
         "temperature": 0.0,
         "max_tokens": 5000,
+        "thinking": {"type": "disabled"},
     }
     last_error = None
     for attempt in range(4):
         try:
-            response = requests.post("https://api.deepseek.com/chat/completions", json=payload,
+            response = requests.post("https://api.deepseek.com/v1/chat/completions", json=payload,
                                      headers={"Authorization": f"Bearer {api_key}"}, timeout=180)
             response.raise_for_status()
             body = response.json()
@@ -306,6 +327,7 @@ def render_markdown(result: dict[str, Any]) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-dir", default="outputs/memory_top_discovery_20260811")
+    parser.add_argument("--reuse-apify-runs", action="store_true")
     args = parser.parse_args()
     apify_token = os.environ["APIFY_TOKEN"]
     deepseek_key = os.environ["DEEPSEEK_API_KEY"]
@@ -317,7 +339,8 @@ def main() -> None:
     dedup: dict[str, dict[str, Any]] = {}
     query_stats = []
     with ThreadPoolExecutor(max_workers=6) as pool:
-        futures = {pool.submit(run_search, apify_token, query): (pos, query)
+        futures = {pool.submit(run_search, apify_token, query,
+                               REUSE_RUN_IDS.get(query) if args.reuse_apify_runs else None): (pos, query)
                    for pos, query in enumerate(QUERIES, 1)}
         for future in as_completed(futures):
             pos, query = futures[future]
@@ -339,17 +362,40 @@ def main() -> None:
                     dedup.setdefault(post["post_id"], post)
                     valid += 1
             query_stats.append({"position": pos, "query": query,
-                                "returned": len(items), "in_window": valid})
+                                "returned": len(items), "in_window": valid,
+                                "reused_run_id": REUSE_RUN_IDS.get(query) if args.reuse_apify_runs else None})
     query_stats.sort(key=lambda row: row["position"])
 
     posts = sorted(dedup.values(), key=lambda p: (p["published_at"], p["handle"]))
-    classified = []
-    for start in range(0, len(posts), 16):
-        batch = posts[start:start + 16]
-        print(f"Classify {start + 1}-{start + len(batch)}/{len(posts)}", flush=True)
-        labels = classify_batch(batch, events, deepseek_key)
-        classified.extend({"post": post, "classification": label} for post, label in zip(batch, labels))
-        time.sleep(0.2)
+    batches = [(start, posts[start:start + 16]) for start in range(0, len(posts), 16)]
+    classified_by_start: dict[int, list[dict[str, Any]]] = {}
+    failed_classifications = 0
+    with ThreadPoolExecutor(max_workers=5) as pool:
+        futures = {pool.submit(classify_batch, batch, events, deepseek_key): (start, batch)
+                   for start, batch in batches}
+        completed = 0
+        for future in as_completed(futures):
+            start, batch = futures[future]
+            completed += 1
+            try:
+                labels = future.result()
+            except Exception as exc:
+                failed_classifications += len(batch)
+                print(f"Classification batch {start} failed: {exc}", flush=True)
+                labels = [{"index": i, "category": "classification_error", "tickers": [],
+                           "actionable": False, "original_judgment": False,
+                           "reasoning_quality": 0, "explicitness": 0,
+                           "reason": str(exc)[:300]} for i in range(len(batch))]
+            classified_by_start[start] = [
+                {"post": post, "classification": label} for post, label in zip(batch, labels)
+            ]
+            if completed == 1 or completed % 20 == 0 or completed == len(batches):
+                print(f"Classified batches {completed}/{len(batches)}", flush=True)
+    if failed_classifications > max(16, int(len(posts) * 0.05)):
+        raise RuntimeError(
+            f"Flash classification failures too high: {failed_classifications}/{len(posts)}"
+        )
+    classified = [row for start, _ in batches for row in classified_by_start[start]]
 
     earliest_cutoff = min(date.fromisoformat(e["evidence_cutoff"]) for e in events.values())
     eligible_rows = []
@@ -397,7 +443,8 @@ def main() -> None:
         "events": events,
         "queries": query_stats,
         "stats": {"unique_posts": len(posts), "eligible_posts": len(eligible_rows),
-                  "candidate_count": len(candidates)},
+                  "candidate_count": len(candidates),
+                  "classification_failed_posts": failed_classifications},
         "candidates": candidates,
     }
     (output_dir / "candidates.json").write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
