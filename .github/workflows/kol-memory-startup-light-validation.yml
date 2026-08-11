@@ -1,0 +1,67 @@
+name: KOL Memory Startup Light Validation
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - "scripts/validate_memory_startup_candidates.py"
+      - "tests/test_memory_startup_light_validation.py"
+      - ".github/workflows/kol-memory-startup-light-validation.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: kol-memory-startup-light-validation
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+      POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: master
+          fetch-depth: 5
+      - name: Verify secrets
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          for key in APIFY_TOKEN DEEPSEEK_API_KEY POLYGON_API_KEY; do
+            test -n "${!key:-}" || { echo "::error::Missing $key"; exit 1; }
+          done
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests apify-client pytest
+      - run: pytest -q tests/test_memory_startup_light_validation.py
+      - name: Run capped out-of-sample light validation
+        run: python scripts/validate_memory_startup_candidates.py --output-dir outputs/memory_startup_light_validation_20260811
+      - name: Validate outputs
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d = json.loads(Path("outputs/memory_startup_light_validation_20260811/validation.json").read_text())
+          assert d["discovery_window_excluded"] == ["2025-04-07", "2025-09-11"]
+          assert len(d["ranking"]) == 4
+          assert d["stats"]["raw_posts"] > 0
+          print(d["stats"])
+          PY
+      - name: Commit light-validation report
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git config user.name "signalboard-bot"
+          git config user.email "signalboard-bot@users.noreply.github.com"
+          git add outputs/memory_startup_light_validation_20260811/validation.json
+          git add outputs/memory_startup_light_validation_20260811/report.md
+          git commit -m "Add memory-startup candidate light validation"
+          git pull --rebase origin master
+          git push origin HEAD:master
