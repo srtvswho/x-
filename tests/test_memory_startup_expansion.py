@@ -3,7 +3,9 @@ import importlib.util
 from pathlib import Path
 
 
-SCRIPT = Path(__file__).with_name("expand_memory_startup_discovery.py")
+SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "expand_memory_startup_discovery.py"
+if not SCRIPT.exists():
+    SCRIPT = Path(__file__).with_name("expand_memory_startup_discovery.py")
 spec = importlib.util.spec_from_file_location("memory_startup_expansion", SCRIPT)
 e = importlib.util.module_from_spec(spec)
 assert spec and spec.loader
