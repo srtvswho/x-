@@ -14,6 +14,7 @@ import os
 import re
 import time
 from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
@@ -168,7 +169,10 @@ def normalize_post(item: dict[str, Any], query: str) -> dict[str, Any] | None:
     }
 
 
-def run_search(client: Any, query: str) -> list[dict[str, Any]]:
+def run_search(apify_token: str, query: str) -> list[dict[str, Any]]:
+    from apify_client import ApifyClient
+
+    client = ApifyClient(apify_token)
     advanced = f"{query} since:{SEARCH_FROM.isoformat()} until:{(SEARCH_TO + timedelta(days=1)).isoformat()}"
     run_input = {
         "searchTerms": [advanced],
@@ -297,33 +301,37 @@ def main() -> None:
     apify_token = os.environ["APIFY_TOKEN"]
     deepseek_key = os.environ["DEEPSEEK_API_KEY"]
     polygon_key = os.environ["POLYGON_API_KEY"]
-    from apify_client import ApifyClient
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
     events = {ticker: define_event(ticker, polygon_bars(ticker, polygon_key)) for ticker in TICKERS}
-    client = ApifyClient(apify_token)
     dedup: dict[str, dict[str, Any]] = {}
     query_stats = []
-    for pos, query in enumerate(QUERIES, 1):
-        print(f"[{pos}/{len(QUERIES)}] {query}", flush=True)
-        try:
-            items = run_search(client, query)
-        except Exception as exc:
-            print(f"Query failed: {exc}", flush=True)
-            query_stats.append({"query": query, "returned": 0, "in_window": 0,
-                                "error": str(exc)[:500]})
-            continue
-        valid = 0
-        for item in items:
-            post = normalize_post(item, query)
-            if not post:
+    with ThreadPoolExecutor(max_workers=6) as pool:
+        futures = {pool.submit(run_search, apify_token, query): (pos, query)
+                   for pos, query in enumerate(QUERIES, 1)}
+        for future in as_completed(futures):
+            pos, query = futures[future]
+            print(f"[{pos}/{len(QUERIES)} complete] {query}", flush=True)
+            try:
+                items = future.result()
+            except Exception as exc:
+                print(f"Query failed: {exc}", flush=True)
+                query_stats.append({"position": pos, "query": query, "returned": 0,
+                                    "in_window": 0, "error": str(exc)[:500]})
                 continue
-            d = date.fromisoformat(post["published_date"])
-            if SEARCH_FROM <= d <= SEARCH_TO:
-                dedup.setdefault(post["post_id"], post)
-                valid += 1
-        query_stats.append({"query": query, "returned": len(items), "in_window": valid})
+            valid = 0
+            for item in items:
+                post = normalize_post(item, query)
+                if not post:
+                    continue
+                d = date.fromisoformat(post["published_date"])
+                if SEARCH_FROM <= d <= SEARCH_TO:
+                    dedup.setdefault(post["post_id"], post)
+                    valid += 1
+            query_stats.append({"position": pos, "query": query,
+                                "returned": len(items), "in_window": valid})
+    query_stats.sort(key=lambda row: row["position"])
 
     posts = sorted(dedup.values(), key=lambda p: (p["published_at"], p["handle"]))
     classified = []
