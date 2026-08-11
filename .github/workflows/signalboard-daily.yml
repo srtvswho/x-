@@ -6,6 +6,7 @@ on:
     branches: [master]
     paths:
       - "scripts/dashboard/**"
+      - "scripts/intel_extract.py"
       - ".github/workflows/signalboard-daily.yml"
   schedule:
     - cron: "17 6 * * *"
