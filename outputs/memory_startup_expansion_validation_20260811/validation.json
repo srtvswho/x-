@@ -1,0 +1,1289 @@
+{
+  "generated_at": "2026-08-11T14:57:43.914169+00:00",
+  "method_version": "memory-startup-light-validation-v1",
+  "validation_windows": [
+    [
+      "2024-06-01",
+      "2025-02-28"
+    ],
+    [
+      "2025-11-01",
+      "2026-05-14"
+    ]
+  ],
+  "discovery_window_excluded": [
+    "2025-03-01",
+    "2025-10-31"
+  ],
+  "stats": {
+    "raw_posts": 1660,
+    "dedup_events": 385,
+    "verified_events": 374,
+    "flash_failures": 12,
+    "price_tickers": 187
+  },
+  "fetch_stats": [
+    {
+      "handle": "hypertechinvest",
+      "window": [
+        "2025-11-01",
+        "2026-05-14"
+      ],
+      "returned": 180,
+      "valid": 180,
+      "hit_cap": true,
+      "earliest": "2025-11-04",
+      "latest": "2026-05-14"
+    },
+    {
+      "handle": "hypertechinvest",
+      "window": [
+        "2024-06-01",
+        "2025-02-28"
+      ],
+      "returned": 180,
+      "valid": 180,
+      "hit_cap": true,
+      "earliest": "2024-09-13",
+      "latest": "2025-02-28"
+    },
+    {
+      "handle": "jp_money_95630",
+      "window": [
+        "2025-11-01",
+        "2026-05-14"
+      ],
+      "returned": 180,
+      "valid": 180,
+      "hit_cap": true,
+      "earliest": "2025-11-14",
+      "latest": "2026-05-14"
+    },
+    {
+      "handle": "jp_money_95630",
+      "window": [
+        "2024-06-01",
+        "2025-02-28"
+      ],
+      "returned": 180,
+      "valid": 180,
+      "hit_cap": true,
+      "earliest": "2024-06-02",
+      "latest": "2025-02-28"
+    },
+    {
+      "handle": "venu_7_",
+      "window": [
+        "2024-06-01",
+        "2025-02-28"
+      ],
+      "returned": 180,
+      "valid": 180,
+      "hit_cap": true,
+      "earliest": "2024-07-12",
+      "latest": "2025-02-28"
+    },
+    {
+      "handle": "venu_7_",
+      "window": [
+        "2025-11-01",
+        "2026-05-14"
+      ],
+      "returned": 180,
+      "valid": 180,
+      "hit_cap": true,
+      "earliest": "2025-11-01",
+      "latest": "2026-05-14"
+    },
+    {
+      "handle": "feroceresearch",
+      "window": [
+        "2025-11-01",
+        "2026-05-14"
+      ],
+      "returned": 180,
+      "valid": 180,
+      "hit_cap": true,
+      "earliest": "2025-12-28",
+      "latest": "2026-05-14"
+    },
+    {
+      "handle": "akinatorassets",
+      "window": [
+        "2024-06-01",
+        "2025-02-28"
+      ],
+      "returned": 2,
+      "valid": 0,
+      "hit_cap": false,
+      "earliest": null,
+      "latest": null
+    },
+    {
+      "handle": "feroceresearch",
+      "window": [
+        "2024-06-01",
+        "2025-02-28"
+      ],
+      "returned": 91,
+      "valid": 91,
+      "hit_cap": false,
+      "earliest": "2024-09-19",
+      "latest": "2025-01-18"
+    },
+    {
+      "handle": "d27357",
+      "window": [
+        "2024-06-01",
+        "2025-02-28"
+      ],
+      "returned": 2,
+      "valid": 0,
+      "hit_cap": false,
+      "earliest": null,
+      "latest": null
+    },
+    {
+      "handle": "akinatorassets",
+      "window": [
+        "2025-11-01",
+        "2026-05-14"
+      ],
+      "returned": 180,
+      "valid": 180,
+      "hit_cap": true,
+      "earliest": "2025-11-01",
+      "latest": "2026-05-13"
+    },
+    {
+      "handle": "d27357",
+      "window": [
+        "2025-11-01",
+        "2026-05-14"
+      ],
+      "returned": 129,
+      "valid": 129,
+      "hit_cap": false,
+      "earliest": "2025-11-04",
+      "latest": "2026-05-13"
+    }
+  ],
+  "ranking": [
+    {
+      "handle": "feroceresearch",
+      "n": 68,
+      "wins": 42,
+      "hit_rate": 0.6176470588235294,
+      "wilson_lower": 0.49880494200915176,
+      "median_raw_return": 0.020385072664023673,
+      "median_excess_soxx": 0.01831401775735353,
+      "median_mfe": 0.1112327843716554,
+      "median_mae": -0.06898701366309273,
+      "raw_posts": 271,
+      "hit_cap": true,
+      "extracted_events": 69,
+      "worst": [
+        {
+          "ticker": "PLTR",
+          "direction": "short",
+          "action": "reduce",
+          "confidence": 0.7,
+          "reason": "Downgrading price target to 28, bearish concerns",
+          "post": {
+            "post_id": "1853497590056202327",
+            "handle": "feroceresearch",
+            "date": "2024-11-04",
+            "published_at": "2024-11-04T18:00:36+00:00",
+            "text": "I am issuing a price target DOWNGRADE of $28 to $PLTR \n\nOver-bloating momentum and company mismanagement issues are a rising concern which will become a narrative moving forward\n\n—\n\n3 months ago I had stated $NVDA will overtake $INTC in the DOW which takes NVDA and $TSM to ATH’s https://t.co/hRcO0BwHk2",
+            "url": "https://x.com/FeroceResearch/status/1853497590056202327",
+            "validation_window": [
+              "2024-06-01",
+              "2025-02-28"
+            ]
+          },
+          "entry_date": "2024-11-05",
+          "exit_date": "2024-12-03",
+          "entry_price": 47.86,
+          "exit_price": 70.96,
+          "raw_return": -0.48265775177601333,
+          "excess_soxx": -0.480834680812976,
+          "mfe": -0.0683242791475136,
+          "mae": -0.48265775177601333,
+          "hit": false
+        },
+        {
+          "ticker": "UPST",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.8,
+          "reason": "强烈看多，暗示对空头不利。",
+          "post": {
+            "post_id": "1867613750699622472",
+            "handle": "feroceresearch",
+            "date": "2024-12-13",
+            "published_at": "2024-12-13T16:53:11+00:00",
+            "text": "Dear God, please forgive Upstart nation in advance for what they’ll do to poor shorts. If what they did previously was bad, what they’re about to do is 10x worse. There’s no choice at this point 🤲🏼🙏🏼 \n\n$UPST #UPST",
+            "url": "https://x.com/FeroceResearch/status/1867613750699622472",
+            "validation_window": [
+              "2024-06-01",
+              "2025-02-28"
+            ]
+          },
+          "entry_date": "2024-12-16",
+          "exit_date": "2025-01-15",
+          "entry_price": 85.33,
+          "exit_price": 62.67,
+          "raw_return": -0.2655572483300128,
+          "excess_soxx": -0.26198597919024236,
+          "mfe": -0.016641275049806614,
+          "mae": -0.3320051564514239,
+          "hit": false
+        },
+        {
+          "ticker": "SLV",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.8,
+          "reason": "作者认为白银涨势处于早期阶段，建议买入SLV期权或股票",
+          "post": {
+            "post_id": "2054580809303003222",
+            "handle": "feroceresearch",
+            "date": "2026-05-13",
+            "published_at": "2026-05-13T15:13:31+00:00",
+            "text": "Silver is pushing $90 per oz now already \n\nEven if you had bought options going out to Jan 27’ for $SLV , they’d be up 100% now. Don’t even have to risk short term options to make money around here\n\nThe best part? This silver rally is just in its adolescence stage https://t.co/ibUgVU19lj",
+            "url": "https://x.com/FeroceResearch/status/2054580809303003222",
+            "validation_window": [
+              "2025-11-01",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2026-05-14",
+          "exit_date": "2026-06-11",
+          "entry_price": 77.29,
+          "exit_price": 60.82,
+          "raw_return": -0.2130935437960927,
+          "excess_soxx": -0.32788095868132416,
+          "mfe": -0.023030146202613566,
+          "mae": -0.2539785224479235,
+          "hit": false
+        }
+      ],
+      "best": [
+        {
+          "ticker": "LABX",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.8,
+          "reason": "明确建议买入LABX",
+          "post": {
+            "post_id": "2052797142360584513",
+            "handle": "feroceresearch",
+            "date": "2026-05-08",
+            "published_at": "2026-05-08T17:05:52+00:00",
+            "text": "Buy Astera Labs $ALAB , or the 2x etf $LABX",
+            "url": "https://x.com/FeroceResearch/status/2052797142360584513",
+            "validation_window": [
+              "2025-11-01",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2026-05-11",
+          "exit_date": "2026-06-08",
+          "entry_price": 7.385,
+          "exit_price": 20.355,
+          "raw_return": 1.7562626946513205,
+          "excess_soxx": 1.6658757308290033,
+          "mfe": 2.1136357481381176,
+          "mae": 0.06116452268111039,
+          "hit": true
+        },
+        {
+          "ticker": "ARM",
+          "direction": "long",
+          "action": "add",
+          "confidence": 0.7,
+          "reason": "作者提到实体在ARM财报前加仓看涨期权，并暗示ARM可能上涨，属于看多。",
+          "post": {
+            "post_id": "2052103537761632665",
+            "handle": "feroceresearch",
+            "date": "2026-05-06",
+            "published_at": "2026-05-06T19:09:44+00:00",
+            "text": "some entity is trying to price in a 17% upside move or so for $ARM into earnings today \n\ninstead of taking profits for May 8th calls when they doubled today, entity doubled the holding while paying even more than the ask \n\nif you like the Intel and AMD theme, then ARM could be of your taste",
+            "url": "https://x.com/FeroceResearch/status/2052103537761632665",
+            "validation_window": [
+              "2025-11-01",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2026-05-07",
+          "exit_date": "2026-06-04",
+          "entry_price": 222.395,
+          "exit_price": 393.44,
+          "raw_return": 0.7691045212347398,
+          "excess_soxx": 0.5706872464648911,
+          "mfe": 0.8517952292092896,
+          "mae": -0.06508689493918485,
+          "hit": true
+        },
+        {
+          "ticker": "SNDK",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "Memory industry will be greatest, those who took risk will be paid",
+          "post": {
+            "post_id": "2037961472085537234",
+            "handle": "feroceresearch",
+            "date": "2026-03-28",
+            "published_at": "2026-03-28T18:34:13+00:00",
+            "text": "The greatest tech industry coming out of April 2025 was Memory \n\nThe greatest tech industry coming out of current market drawdown will also be Memory \n\nThose who took the risk on $MU $SNDK since last year will continue being paid",
+            "url": "https://x.com/FeroceResearch/status/2037961472085537234",
+            "validation_window": [
+              "2025-11-01",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2026-03-30",
+          "exit_date": "2026-04-27",
+          "entry_price": 642.12,
+          "exit_price": 1070.2,
+          "raw_return": 0.6666666666666667,
+          "excess_soxx": 0.27290997194593225,
+          "mfe": 0.6666666666666667,
+          "mae": -0.10842210178782785,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "handle": "d27357",
+      "n": 34,
+      "wins": 19,
+      "hit_rate": 0.5588235294117647,
+      "wilson_lower": 0.3945361778918369,
+      "median_raw_return": 0.02337203648598707,
+      "median_excess_soxx": -0.18218808748793092,
+      "median_mfe": 0.10912670807453417,
+      "median_mae": -0.08108815056734997,
+      "raw_posts": 129,
+      "hit_cap": false,
+      "extracted_events": 37,
+      "worst": [
+        {
+          "ticker": "PATH",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "Believes PATH is a software company benefiting from AI despite consensus of disruption.",
+          "post": {
+            "post_id": "2014497218548429105",
+            "handle": "d27357",
+            "date": "2026-01-23",
+            "published_at": "2026-01-23T00:35:39+00:00",
+            "text": "@MitchMartan98 I think the ideal angle is finding software companies where consensus is that they're being disrupted by AI, but actually they're benefiting from AI. \nI believe that $PATH is such a company. Otherwise I'm not sure who else could be a huge beneficiary of AI.",
+            "url": "https://x.com/D27357/status/2014497218548429105",
+            "validation_window": [
+              "2025-11-01",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2026-01-26",
+          "exit_date": "2026-02-23",
+          "entry_price": 14.73,
+          "exit_price": 10.17,
+          "raw_return": -0.30957230142566194,
+          "excess_soxx": -0.34898504283962684,
+          "mfe": 0.012219959266802416,
+          "mae": -0.30957230142566194,
+          "hit": false
+        },
+        {
+          "ticker": "PATH",
+          "direction": "long",
+          "action": "add",
+          "confidence": 0.7,
+          "reason": "Rotated more into PATH, bullish",
+          "post": {
+            "post_id": "2007150618486640939",
+            "handle": "d27357",
+            "date": "2026-01-02",
+            "published_at": "2026-01-02T18:02:53+00:00",
+            "text": "My current portfolio:\n\n1. $PATH\n2. $SKYT\n3. $PGY\n4. $CCCX\n5. SK Hynix\n6. $YB\n7. $VELO\n8. $CPSH\n9. $CPLT\n10. $FIGR\n11. $SE\n\nRecent changes:\n-Started a position in $SE. I owned it in the past and waited for a good moment to get back in. Upside too limited for me to make it a major position though\n-Rotated some more into $PATH\n\nI'm again fully invested with 0 cash rn, so will try to accumulate some cash. The problem is that I'm super bullish on all of my holdings, so I'm really struggling to sell anything 😅\nNfa",
+            "url": "https://x.com/D27357/status/2007150618486640939",
+            "validation_window": [
+              "2025-11-01",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2026-01-05",
+          "exit_date": "2026-02-02",
+          "entry_price": 15.83,
+          "exit_price": 12.54,
+          "raw_return": -0.2078332280480102,
+          "excess_soxx": -0.3075837737293323,
+          "mfe": 0.12697409981048646,
+          "mae": -0.2078332280480102,
+          "hit": false
+        },
+        {
+          "ticker": "VELO",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "作者表达对VELO的喜爱，视为看多。",
+          "post": {
+            "post_id": "2031779078861152737",
+            "handle": "d27357",
+            "date": "2026-03-11",
+            "published_at": "2026-03-11T17:07:35+00:00",
+            "text": "@aayushtrades So you're literally all in? \nCongrats man! Conviction can pay off,,\nWell deserved 💪🏻\nAnother stock I love is $VELO. Most awesome CEO I've ever seen. \nBiggest holding for me currently is $PATH. Earnings tonight🤞🏻\n\n$FIGR, $VELO, $PATH my biggest conviction bets rn.",
+            "url": "https://x.com/D27357/status/2031779078861152737",
+            "validation_window": [
+              "2025-11-01",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2026-03-12",
+          "exit_date": "2026-04-09",
+          "entry_price": 13.79,
+          "exit_price": 10.95,
+          "raw_return": -0.20594633792603334,
+          "excess_soxx": -0.3283451047488235,
+          "mfe": 0.12545322697606975,
+          "mae": -0.3727338651196519,
+          "hit": false
+        }
+      ],
+      "best": [
+        {
+          "ticker": "SKYT",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "Re-industrialization for national security, central role",
+          "post": {
+            "post_id": "2005051066459849120",
+            "handle": "d27357",
+            "date": "2025-12-27",
+            "published_at": "2025-12-27T23:00:00+00:00",
+            "text": "$SKYT re-industrialization for national security purposes is not optional for the US.\nSkywater is at the centre of that as the only fully U.S.-owned pure-play foundry.",
+            "url": "https://x.com/D27357/status/2005051066459849120",
+            "validation_window": [
+              "2025-11-01",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2025-12-29",
+          "exit_date": "2026-01-27",
+          "entry_price": 18.05,
+          "exit_price": 33.54,
+          "raw_return": 0.8581717451523545,
+          "excess_soxx": 0.7009050411275664,
+          "mfe": 0.9268698060941829,
+          "mae": 0.006094182825484795,
+          "hit": true
+        },
+        {
+          "ticker": "VELO",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "作者买入VELO，基于改善的资产负债表和前景，是明确的前瞻性买入信号。",
+          "post": {
+            "post_id": "1999298949119705480",
+            "handle": "d27357",
+            "date": "2025-12-12",
+            "published_at": "2025-12-12T02:03:09+00:00",
+            "text": "My current portfolio:\n\n1. $PATH\n2. $SKYT\n3. $PGY\n4. $CCCX\n5. SK Hynix\n6. $CPSH\n7. $RKLB\n8. $YB\n9. $VELO\n10. $CLPT\n11. $FIGR\n12. $TIGR\n13. $CODI\n\nrecent changes: \n-bought $VELO at $6.31 after seeing improved balance sheet and promising developments re. pipeline. Cool company, which I've found especially interesting since new leadership stepped in and improved strategy. Doubled in 3 days lol, unfortunately only small position.\n-bought a small position in $FIGR, which is one of the most promising companies I've seen in a long time. I love the vision, insane potential imo. I will be looking into buying more of it, although I still have a lot of learning to do on the company. Hopefully there will be decent buying opportunities in the near future.\n\nI would like to ideally hold stocks over multiple years with stock price increases mostly driven by exponential growth of fundamentals, less by multiple expansion. \nWhat I mostly look for is an accelerating flywheel of revenue and earnings growth and I've been trying to steer my portfolio in that direction.\nIe, I don't really look for companies that have solid consistent growth, but aren't accelerating, even if they're undervalued. \nThe stocks that I'm currently holding that (arguably) don't fulfill this criteria are $YB, $TIGR and $CODI. These are therefore my lowest conviction holdings, although I do like $YB the most out of them. I therefore don't plan on holding them longterm, but rather hope that their price will adjust to fair value in the coming months. Even though I find all 3 of them significantly undervalued I might still rotate them into other stocks if opportunities arise. They might also serve as sort of near term hedges, which I can rotate into higher conviction holdings during market drawdowns. \nMarket is starting to show signs of overheating again, so I'm starting to think about taking some profits in order to have enough cash to buy the next dip.\nMacro and global liquidity situation continue to look very favourable for stock market imo, so any profit taking would only be temporary and in order to maximize shares in my holdings. As I am super bullish on my portfolio I will struggle to hold cash though. \n\nnfa",
+            "url": "https://x.com/D27357/status/1999298949119705480",
+            "validation_window": [
+              "2025-11-01",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2025-12-15",
+          "exit_date": "2026-01-13",
+          "entry_price": 11.21,
+          "exit_price": 20.085,
+          "raw_return": 0.7917038358608384,
+          "excess_soxx": 0.6902315709522973,
+          "mfe": 0.9705619982158784,
+          "mae": -0.18287243532560216,
+          "hit": true
+        },
+        {
+          "ticker": "FIGR",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "作者买入初始仓位，并计划在下跌时加仓，是明确的前瞻性买入信号。",
+          "post": {
+            "post_id": "1998961369136464283",
+            "handle": "d27357",
+            "date": "2025-12-11",
+            "published_at": "2025-12-11T03:41:43+00:00",
+            "text": "$FIGR is one of the most interesting companies I've come across this year.\nNot super cheap, but business is super interesting.\nBought a starter position, will analyze deeply and likely build out position if there are (hopefully) dips.",
+            "url": "https://x.com/D27357/status/1998961369136464283",
+            "validation_window": [
+              "2025-11-01",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2025-12-12",
+          "exit_date": "2026-01-12",
+          "entry_price": 42.23,
+          "exit_price": 52.23,
+          "raw_return": 0.2367984844896993,
+          "excess_soxx": 0.17389629658751127,
+          "mfe": 0.3829031494198438,
+          "mae": -0.1169784513379114,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "handle": "hypertechinvest",
+      "n": 77,
+      "wins": 41,
+      "hit_rate": 0.5324675324675324,
+      "wilson_lower": 0.4221482516277277,
+      "median_raw_return": 0.008679952781056821,
+      "median_excess_soxx": -0.018644266852819502,
+      "median_mfe": 0.14465232763700664,
+      "median_mae": -0.09569892473118269,
+      "raw_posts": 360,
+      "hit_cap": true,
+      "extracted_events": 80,
+      "worst": [
+        {
+          "ticker": "RGTI",
+          "direction": "short",
+          "action": "avoid",
+          "confidence": 0.7,
+          "reason": "同上。",
+          "post": {
+            "post_id": "1878833371716944159",
+            "handle": "hypertechinvest",
+            "date": "2025-01-13",
+            "published_at": "2025-01-13T15:55:57+00:00",
+            "text": "Quantum computing stocks aren’t still falling because of Jensen’s comments.\n\nThese meme shitcos have insanely high betas, so they crash much harder during downturns.\n\n$KULR $RR $RGTI $QUBT $QBTS $QMCO\n\nThat’s exactly what I predicted about a month ago. We’re seeing a normal market correction while the shitcos collapse. \n\nAs this plays out, the mania around them will die, and in a couple of years, most of these companies will be bankrupt.\n\nAnd that includes many shitcos that have skyrocketed during this bullish cycle, not just the ones on this list.",
+            "url": "https://x.com/HyperTechInvest/status/1878833371716944159",
+            "validation_window": [
+              "2024-06-01",
+              "2025-02-28"
+            ]
+          },
+          "entry_date": "2025-01-14",
+          "exit_date": "2025-02-11",
+          "entry_price": 6.57,
+          "exit_price": 11.02,
+          "raw_return": -0.6773211567732114,
+          "excess_soxx": -0.6748137485215586,
+          "mfe": -0.3622526636225265,
+          "mae": -1.1278538812785386,
+          "hit": false
+        },
+        {
+          "ticker": "SMCI",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.8,
+          "reason": "作者称SMCI为最大持仓，看好其液冷和Blackwell需求，认为低估。",
+          "post": {
+            "post_id": "1843397077864239317",
+            "handle": "hypertechinvest",
+            "date": "2024-10-07",
+            "published_at": "2024-10-07T21:04:46+00:00",
+            "text": "I'll be honest with you guys.\n\nAt this moment $SMCI is my largest holding.\n\nI know, it sounds risky, but normally there aren't big gains without big risks (I guess that's why I love $IONQ too).\n\nI think $SMCI will become a beast with their new Liquid Cooling Solutions and specially designed racks for Blackwell. I believe 2025 and 2026 are going to be MASSIVE years for them. \n\nAs Jensen Huang said, demand for Blackwell is \"insane\", and $SMCI is gonna be a great beneficiary of this.\n\nThey're expanding their production capacity in the US, Taiwan, Malaysia, Japan, China, Korea and Europe. They just can't keep up with server orders.\n\nMoreover, their headquarters are 10 minutes by car from Nvidia's, which obviously provides a relationship advantage against other competitors.\n\nIf you bet on AI, you want to bet on $SMCI, and at a $28b valuation, I think they're dirt cheap.",
+            "url": "https://x.com/HyperTechInvest/status/1843397077864239317",
+            "validation_window": [
+              "2024-06-01",
+              "2025-02-28"
+            ]
+          },
+          "entry_date": "2024-10-08",
+          "exit_date": "2024-11-04",
+          "entry_price": 50.09,
+          "exit_price": 26.03,
+          "raw_return": -0.480335396286684,
+          "excess_soxx": -0.4319951923378882,
+          "mfe": -0.019365142743062558,
+          "mae": -0.480335396286684,
+          "hit": false
+        },
+        {
+          "ticker": "SMR",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "作者列出首选股票，隐含看多。",
+          "post": {
+            "post_id": "1859710017257209878",
+            "handle": "hypertechinvest",
+            "date": "2024-11-21",
+            "published_at": "2024-11-21T21:26:34+00:00",
+            "text": "My 5 favorite industries for the next decade of investing and my preferred stocks in each one:\n\n🤖 Artificial Intelligence: $NVDA $AMD $MU\n\n🖥️ Quantum Computing: $IONQ\n\n☢️ Nuclear energy: $OKLO $NNE $SMR $CEG\n\n🤖 Robotics: $TSLA $SERV $AMZN $ISRG\n\n🚀 Space: $RDW $RKLB $LUNR",
+            "url": "https://x.com/HyperTechInvest/status/1859710017257209878",
+            "validation_window": [
+              "2024-06-01",
+              "2025-02-28"
+            ]
+          },
+          "entry_date": "2024-11-22",
+          "exit_date": "2024-12-20",
+          "entry_price": 28.4,
+          "exit_price": 19.77,
+          "raw_return": -0.3038732394366197,
+          "excess_soxx": -0.3001630084747423,
+          "mfe": 0.06373239436619738,
+          "mae": -0.33063380281690136,
+          "hit": false
+        }
+      ],
+      "best": [
+        {
+          "ticker": "IONQ",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "作者认为IONQ类似NVDA，长期看多。",
+          "post": {
+            "post_id": "1845280517681304011",
+            "handle": "hypertechinvest",
+            "date": "2024-10-13",
+            "published_at": "2024-10-13T01:48:53+00:00",
+            "text": "These are the stocks I look for—the ones that will be worth 500 times more in 20 years and will make me rich.\n\nI think $IONQ is the closest I can think to something like $NVDA.\n\nIn a different growth scale, I can picture, in the next 10 years...\n\n$HIMS surpassing $CVS, that'd be a 20x.\n\n$SOFI becoming as large as $BAC is today. That'd be a 34x.\n\n$AMD reaching $NVDA's current valuation, that'd be a 13x.\n\n$RKLB reaching today's SpaceX valuation, that'd be a 44x.\n\n$HOOD reaching $JPM's current valuation would be a 23x.\n\nAll these seem quite possible to me, especially in regard to $AMD and $HIMS. $HIMS isn't taking place in the pharmacy space; they're taking over, and with the revolution of AI, it's almost impossible for me not to see that growth for $AMD.",
+            "url": "https://x.com/HyperTechInvest/status/1845280517681304011",
+            "validation_window": [
+              "2024-06-01",
+              "2025-02-28"
+            ]
+          },
+          "entry_date": "2024-10-14",
+          "exit_date": "2024-11-08",
+          "entry_price": 10.7,
+          "exit_price": 24.79,
+          "raw_return": 1.316822429906542,
+          "excess_soxx": 1.3404551105277438,
+          "mfe": 1.316822429906542,
+          "mae": -0.019626168224298968,
+          "hit": true
+        },
+        {
+          "ticker": "MU",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "Memory prices rising and stock cheap at 6x forward earnings",
+          "post": {
+            "post_id": "2050085822351679502",
+            "handle": "hypertechinvest",
+            "date": "2026-05-01",
+            "published_at": "2026-05-01T05:32:03+00:00",
+            "text": "The memory top is far from over\n\n&gt; $AAPL CEO Tim Cook said today they anticipate a substantial rise in memory costs in the June quarter\n\n&gt; DRAM prices went up 26% between March and April\n\nStill, $MU trades at 6x forward earnings on a conservative basis https://t.co/BUjyXhDTNb",
+            "url": "https://x.com/HyperTechInvest/status/2050085822351679502",
+            "validation_window": [
+              "2025-11-01",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2026-05-04",
+          "exit_date": "2026-06-01",
+          "entry_price": 560.6,
+          "exit_price": 1035.5,
+          "raw_return": 0.8471280770602925,
+          "excess_soxx": 0.6248726114992045,
+          "mfe": 0.8471280770602925,
+          "mae": 0.028273278630039256,
+          "hit": true
+        },
+        {
+          "ticker": "SERV",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "作者列出首选股票，隐含看多。",
+          "post": {
+            "post_id": "1859710017257209878",
+            "handle": "hypertechinvest",
+            "date": "2024-11-21",
+            "published_at": "2024-11-21T21:26:34+00:00",
+            "text": "My 5 favorite industries for the next decade of investing and my preferred stocks in each one:\n\n🤖 Artificial Intelligence: $NVDA $AMD $MU\n\n🖥️ Quantum Computing: $IONQ\n\n☢️ Nuclear energy: $OKLO $NNE $SMR $CEG\n\n🤖 Robotics: $TSLA $SERV $AMZN $ISRG\n\n🚀 Space: $RDW $RKLB $LUNR",
+            "url": "https://x.com/HyperTechInvest/status/1859710017257209878",
+            "validation_window": [
+              "2024-06-01",
+              "2025-02-28"
+            ]
+          },
+          "entry_date": "2024-11-22",
+          "exit_date": "2024-12-20",
+          "entry_price": 8.43,
+          "exit_price": 14.61,
+          "raw_return": 0.7330960854092528,
+          "excess_soxx": 0.7368063163711301,
+          "mfe": 0.9786476868327403,
+          "mae": -0.011862396204033177,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "handle": "venu_7_",
+      "n": 100,
+      "wins": 50,
+      "hit_rate": 0.5,
+      "wilson_lower": 0.40382982859014716,
+      "median_raw_return": -0.0006226549660763303,
+      "median_excess_soxx": -0.02574695582647385,
+      "median_mfe": 0.10957504348328062,
+      "median_mae": -0.09623208648402515,
+      "raw_posts": 360,
+      "hit_cap": true,
+      "extracted_events": 100,
+      "worst": [
+        {
+          "ticker": "BBAI",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "Next resistance at $16.10 as target, as long as above 9/21 EMA, should be fine.",
+          "post": {
+            "post_id": "1891259382953877543",
+            "handle": "venu_7_",
+            "date": "2025-02-16",
+            "published_at": "2025-02-16T22:52:29+00:00",
+            "text": "@adreame09095277 $BBAI \nwe have $16.10 as our next resistance (Target)\nas long as it trades above 9/21 ema, should be fine https://t.co/MpWnhWAVjE",
+            "url": "https://x.com/Venu_7_/status/1891259382953877543",
+            "validation_window": [
+              "2024-06-01",
+              "2025-02-28"
+            ]
+          },
+          "entry_date": "2025-02-18",
+          "exit_date": "2025-03-17",
+          "entry_price": 9,
+          "exit_price": 3.49,
+          "raw_return": -0.6122222222222222,
+          "excess_soxx": -0.5220575582257826,
+          "mfe": -0.06444444444444442,
+          "mae": -0.6511111111111111,
+          "hit": false
+        },
+        {
+          "ticker": "AFRM",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "作者认为符合条件，看多，并提到期权。",
+          "post": {
+            "post_id": "1888812459647230203",
+            "handle": "venu_7_",
+            "date": "2025-02-10",
+            "published_at": "2025-02-10T04:49:17+00:00",
+            "text": "$AFRM\n\ngame plan is simple, we long stocks that are above all key moving average's, showing strong price action with volume. $AFRM checks all the boxes.  \n\nbroke out of previous resistance and retested those levels on friday.  \n\n$AFRM $80C 03/21 added to watchlist. https://t.co/i61vC3osHW",
+            "url": "https://x.com/Venu_7_/status/1888812459647230203",
+            "validation_window": [
+              "2024-06-01",
+              "2025-02-28"
+            ]
+          },
+          "entry_date": "2025-02-11",
+          "exit_date": "2025-03-11",
+          "entry_price": 77.71,
+          "exit_price": 46.77,
+          "raw_return": -0.39814695663363775,
+          "excess_soxx": -0.27987626958971656,
+          "mfe": 0.0420795264444731,
+          "mae": -0.40290824861665164,
+          "hit": false
+        },
+        {
+          "ticker": "NVO",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.8,
+          "reason": "Breaking out of Stage 1 base, reclaiming 200D SMA and 30-week MA, trend flip bullish",
+          "post": {
+            "post_id": "2015837108062323113",
+            "handle": "venu_7_",
+            "date": "2026-01-26",
+            "published_at": "2026-01-26T17:19:53+00:00",
+            "text": "$NVO - Novo Nordisk\n\nTextbook stage analysis setup.\n\nBreaking out of a Stage 1 base while reclaiming the 200D SMA and 30-week MA after a 7-month base.\n\nThis is where trend flips from bearish to bullish.\n\nStage 2 often starts from here. https://t.co/TaEVGBdcUI",
+            "url": "https://x.com/Venu_7_/status/2015837108062323113",
+            "validation_window": [
+              "2025-11-01",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2026-01-27",
+          "exit_date": "2026-02-24",
+          "entry_price": 62.89,
+          "exit_price": 38.59,
+          "raw_return": -0.3863889330577198,
+          "excess_soxx": -0.4262556609988962,
+          "mfe": 0.0,
+          "mae": -0.3863889330577198,
+          "hit": false
+        }
+      ],
+      "best": [
+        {
+          "ticker": "VSH",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "Breaking out of multi-year base with strong volume and relative strength.",
+          "post": {
+            "post_id": "2051663162156724462",
+            "handle": "venu_7_",
+            "date": "2026-05-05",
+            "published_at": "2026-05-05T13:59:50+00:00",
+            "text": "$VSH - breaking out of a multi-year base with strong volume and continued relative strength.\n\nNot flashy, but essential to power + signal flow across autos, industrial, and data centers.\n\nClean breakout. https://t.co/nlEHjxzXNN",
+            "url": "https://x.com/Venu_7_/status/2051663162156724462",
+            "validation_window": [
+              "2025-11-01",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2026-05-06",
+          "exit_date": "2026-06-03",
+          "entry_price": 32.95,
+          "exit_price": 63.97,
+          "raw_return": 0.9414264036418813,
+          "excess_soxx": 0.7050218731575051,
+          "mfe": 0.9414264036418813,
+          "mae": -0.010925644916540245,
+          "hit": true
+        },
+        {
+          "ticker": "ARM",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "Broke out of multi-year base, forming flag, heading to $270+, CPU demand and Agentic AI",
+          "post": {
+            "post_id": "2054976114087592361",
+            "handle": "venu_7_",
+            "date": "2026-05-14",
+            "published_at": "2026-05-14T17:24:19+00:00",
+            "text": "$ARM - Arm Holdings \n\nBroke out of a multi-year base since IPO with strong accumulation, earnings are now out of the way, and it's forming a daily flag before potentially heading toward $270+ \n\nlooks ready for the next leg higher.\n\nCPU demand + Agentic AI = $ARM https://t.co/DmUaA5DcBE",
+            "url": "https://x.com/Venu_7_/status/2054976114087592361",
+            "validation_window": [
+              "2025-11-01",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2026-05-15",
+          "exit_date": "2026-06-12",
+          "entry_price": 214.79,
+          "exit_price": 380.81,
+          "raw_return": 0.7729410121514038,
+          "excess_soxx": 0.6076391574403597,
+          "mfe": 0.9173611434424322,
+          "mae": -0.026211648586991876,
+          "hit": true
+        },
+        {
+          "ticker": "AAOI",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "Forming bullish pennant on daily, strong volume on Thursday's close.",
+          "post": {
+            "post_id": "2040162824794886636",
+            "handle": "venu_7_",
+            "date": "2026-04-03",
+            "published_at": "2026-04-03T20:21:36+00:00",
+            "text": "optics still looks like one of the hottest themes in the market\n\n$AAOI: had an insane run, now forming a bullish pennant on the daily - strong volume on Thursday’s close\n\n$LITE: multiple fakeout's so far, but looks like it’s setting up for the next leg higher\n\n$VIAV: recently reclaimed IPO VWAP and approaching a breakout from a mini base\n\n$TSEM: clean backtest of the 21-day EMA with a base retest \n\n$MRVL fits in this sector too and It deserves a separate post!",
+            "url": "https://x.com/Venu_7_/status/2040162824794886636",
+            "validation_window": [
+              "2025-11-01",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2026-04-06",
+          "exit_date": "2026-05-01",
+          "entry_price": 110.045,
+          "exit_price": 183.51,
+          "raw_return": 0.667590531146349,
+          "excess_soxx": 0.3038343821653229,
+          "mfe": 0.667590531146349,
+          "mae": -0.023581262210913723,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "handle": "akinatorassets",
+      "n": 53,
+      "wins": 26,
+      "hit_rate": 0.49056603773584906,
+      "wilson_lower": 0.36124029356039444,
+      "median_raw_return": -0.0075702431212694155,
+      "median_excess_soxx": -0.07638690032592743,
+      "median_mfe": 0.04979336088521524,
+      "median_mae": -0.07928461179002821,
+      "raw_posts": 180,
+      "hit_cap": true,
+      "extracted_events": 54,
+      "worst": [
+        {
+          "ticker": "IREN",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "作者分析IREN的估值和增长空间，属于前瞻性看多。",
+          "post": {
+            "post_id": "1985311405898170561",
+            "handle": "akinatorassets",
+            "date": "2025-11-03",
+            "published_at": "2025-11-03T11:41:39+00:00",
+            "text": "@StockSavvyShay $IREN is basically getting paid $10B per GW — @ 3 GW of capacity, there’s a lot of room for that &lt;$20B market cap to grow",
+            "url": "https://x.com/AkinatorAssets/status/1985311405898170561",
+            "validation_window": [
+              "2025-11-01",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2025-11-04",
+          "exit_date": "2025-12-02",
+          "entry_price": 64.215,
+          "exit_price": 41.12,
+          "raw_return": -0.3596511718445847,
+          "excess_soxx": -0.36797507142506025,
+          "mfe": 0.18990889978976866,
+          "mae": -0.3596511718445847,
+          "hit": false
+        },
+        {
+          "ticker": "CELH",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.8,
+          "reason": "Bull case with strong revenue growth and price target of $100",
+          "post": {
+            "post_id": "2027017558008672450",
+            "handle": "akinatorassets",
+            "date": "2026-02-26",
+            "published_at": "2026-02-26T13:47:00+00:00",
+            "text": "🐂 BULL CASE $CELH \n\nCelsius is back and crushed earnings this AM. The stock is up 13% in pre market, and the re-acceleration of growth has been the story. The company reported approximately $2.52 billion in total revenue for fiscal 2025, a roughly 86 % increase compared with about $1.36 billion in 2024. This marks the highest annual sales in its history. I believe this stock will reach $100 in the future. \n\n1. Exceptional Revenue Growth Trajectory\nThe 172.9% revenue growth rate demonstrates Celsius's continued ability to capture market share in the competitive energy drink sector. This growth rate significantly outpaces the broader beverage industry, suggesting strong product-market fit and effective distribution strategies. As noted in our search findings, investors are currently focusing on \"revenue growth trends in the current economic environment\" as a key metric.\n\n2. Forward P/E Compression Indicates Earnings Acceleration While the current P/E of 421.75 appears elevated, the forward P/E of 32.59 suggests analysts expect substantial earnings growth in the coming quarters. This compression between current and forward P/E ratios indicates confidence in the company's ability to translate revenue growth into improved profitability, potentially through economies of scale and operational efficiencies.\n\n3. Strong Market Sentiment and Analyst Support The \"Buy\" analyst consensus rating, coupled with the 86% price appreciation over the past year, reflects positive market sentiment despite broader economic uncertainties. According to our search findings, \"market sentiment and analyst ratings\" remain key focus areas for investors evaluating CELH in 2026, suggesting continued institutional confidence in the company's growth story.\n\n4. Resilient Consumer Category Operating in the functional beverage space positions Celsius well within a category that has demonstrated resilience during economic fluctuations. The company's focus on fitness-oriented consumers creates a loyal customer base that may be less price-sensitive than traditional beverage consumers. Our search results indicate that \"MOAT and market positioning\" are important considerations for investors in 2026.",
+            "url": "https://x.com/AkinatorAssets/status/2027017558008672450",
+            "validation_window": [
+              "2025-11-01",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2026-02-27",
+          "exit_date": "2026-03-26",
+          "entry_price": 55.17,
+          "exit_price": 35.59,
+          "raw_return": -0.3549030270074315,
+          "excess_soxx": -0.29554948009667636,
+          "mfe": -0.028276237085372524,
+          "mae": -0.3549030270074315,
+          "hit": false
+        },
+        {
+          "ticker": "TMDX",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "Price target of $350 implies >2x upside, with growth and profitability guidance",
+          "post": {
+            "post_id": "2028079371089535074",
+            "handle": "akinatorassets",
+            "date": "2026-03-01",
+            "published_at": "2026-03-01T12:06:16+00:00",
+            "text": "$TMDX 2031 price target = $350 \n\n🐂 Case: Strong growth, continued improvement for profitability, insider buying from ceo at ~$120, and has a moat\n\n>2x your money ➡️\n\n• 15% revenue cagr (guiding for 20-25% this year)\n• 30% profit margin (guiding to this by 2028)\n• 30 PE\n\n@nataninvesting @StockSavvyShay @moninvestor @HolySmokas @StockMKTNewz",
+            "url": "https://x.com/AkinatorAssets/status/2028079371089535074",
+            "validation_window": [
+              "2025-11-01",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2026-03-02",
+          "exit_date": "2026-03-27",
+          "entry_price": 139.5,
+          "exit_price": 99.05,
+          "raw_return": -0.2899641577060932,
+          "excess_soxx": -0.23088739572930506,
+          "mfe": 0.06093189964157708,
+          "mae": -0.2899641577060932,
+          "hit": false
+        }
+      ],
+      "best": [
+        {
+          "ticker": "OSCR",
+          "direction": "long",
+          "action": "hold",
+          "confidence": 0.8,
+          "reason": "作者明确表示非常看多并继续持有，属于前瞻判断。",
+          "post": {
+            "post_id": "2041619727588393050",
+            "handle": "akinatorassets",
+            "date": "2026-04-07",
+            "published_at": "2026-04-07T20:50:49+00:00",
+            "text": "@StockSavvyShay Now that’s an insider purchase! I remain very bullish on $OSCR and the long term potential of the company. Easy hold for me",
+            "url": "https://x.com/AkinatorAssets/status/2041619727588393050",
+            "validation_window": [
+              "2025-11-01",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2026-04-08",
+          "exit_date": "2026-05-05",
+          "entry_price": 14.335,
+          "exit_price": 17.94,
+          "raw_return": 0.25148238576909665,
+          "excess_soxx": -0.060676139877156476,
+          "mfe": 0.29543076386466693,
+          "mae": 0.00802232298569927,
+          "hit": true
+        },
+        {
+          "ticker": "CIFR",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.9,
+          "reason": "Explicit BUY verdict with valuation too low",
+          "post": {
+            "post_id": "1991496594777113049",
+            "handle": "akinatorassets",
+            "date": "2025-11-20",
+            "published_at": "2025-11-20T13:19:23+00:00",
+            "text": "🚨 $CIFR signs 10 year, $830M deal for 56 MW -> $1.48M/MW or $1.5B / GW / year. \n\n~ 3 GW of contracted energy = $4.5B / year vs market cap of sub $6B \n\nLesser upside but no risk from chip depreciation/capex due to collocation strategy vs ai cloud ( $GLXY / $CIFR vs $IREN / $NBIS) \n\nVerdict: $CIFR valuation is too low -> $CIFR is a BUY\n\n@Fibonacci_TA @mikealfred @FransBakker9812 @moninvestor @theBTCMiningGuy",
+            "url": "https://x.com/AkinatorAssets/status/1991496594777113049",
+            "validation_window": [
+              "2025-11-01",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2025-11-21",
+          "exit_date": "2025-12-19",
+          "entry_price": 14.2,
+          "exit_price": 16.21,
+          "raw_return": 0.14154929577464803,
+          "excess_soxx": 0.023960344551044344,
+          "mfe": 0.433098591549296,
+          "mae": -0.0035211267605632646,
+          "hit": true
+        },
+        {
+          "ticker": "MU",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "同上。",
+          "post": {
+            "post_id": "2013363742122106884",
+            "handle": "akinatorassets",
+            "date": "2026-01-19",
+            "published_at": "2026-01-19T21:31:37+00:00",
+            "text": "Demand for AI is set to TRIPLE by 2030 \n\nTRIPLE x3!!!\n\nYou are not bullish enough as @mikealfred would say. The buildout is still in its early stages as agents like Claude code are only starting to become more prevalent \n\nBULLISH $IREN $CIFR $NVDA $MU $TSM",
+            "url": "https://x.com/AkinatorAssets/status/2013363742122106884",
+            "validation_window": [
+              "2025-11-01",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2026-01-20",
+          "exit_date": "2026-02-17",
+          "entry_price": 364.68,
+          "exit_price": 399.78,
+          "raw_return": 0.09624876604146082,
+          "excess_soxx": 0.043006648254429125,
+          "mfe": 0.20050455193594385,
+          "mae": 0.0008774816277283826,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "handle": "jp_money_95630",
+      "n": 42,
+      "wins": 19,
+      "hit_rate": 0.4523809523809524,
+      "wilson_lower": 0.3122316381863853,
+      "median_raw_return": -0.014106617052143111,
+      "median_excess_soxx": -0.03914061904410088,
+      "median_mfe": 0.04693041858106317,
+      "median_mae": -0.0462414937066471,
+      "raw_posts": 360,
+      "hit_cap": true,
+      "extracted_events": 45,
+      "worst": [
+        {
+          "ticker": "PLTR",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "作者明确看多PLTR，目标130，建议在NVDA财报前逢低买入，并提及期权策略，属于前瞻性方向判断。",
+          "post": {
+            "post_id": "1891201444646412376",
+            "handle": "jp_money_95630",
+            "date": "2025-02-16",
+            "published_at": "2025-02-16T19:02:15+00:00",
+            "text": "$PLTR a Path to $130 looks intact. \n\nWhales Holding and Institutional Buying Continues. \n\nEarnings are May 5th 2025\n\nJune 20th or July 18th Calls for ITM or OTM calls look decent. Buy on any weakness BEFORE NVDA Earnings 2/26.\n\nApril Weakness Pull Back of the whole market may create an entry point for PLTR May 5th Earnings if you prefer to wait. \n@amitisinvesting @dannycheng2022 @alc2022 \n@blondebroker1 @StockPatternPro @StockSavvyShay @SuperLuckeee",
+            "url": "https://x.com/JP_Money_95630/status/1891201444646412376",
+            "validation_window": [
+              "2024-06-01",
+              "2025-02-28"
+            ]
+          },
+          "entry_date": "2025-02-18",
+          "exit_date": "2025-03-17",
+          "entry_price": 120.94,
+          "exit_price": 87.35,
+          "raw_return": -0.2777410286092278,
+          "excess_soxx": -0.18757636461278815,
+          "mfe": 0.030428311559451027,
+          "mae": -0.3684471638829172,
+          "hit": false
+        },
+        {
+          "ticker": "MBLY",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.8,
+          "reason": "作者提到21%空头持仓和伽马挤压潜力，并建议买入长期看涨期权，明确看多。",
+          "post": {
+            "post_id": "1799155958180159550",
+            "handle": "jp_money_95630",
+            "date": "2024-06-07",
+            "published_at": "2024-06-07T19:06:21+00:00",
+            "text": "GAMMA 💎 💎💎🫳🚀🚀\n21% Short Interest \nSteady.... $MBLY \nLong Calls FTW \nYou know The Lidar Chip Maker that was originally in the Tesla Model S to allow autonomous driving! Yeah those guys!\nThey play on a bigger scale these days if you didn't know.\n@Banana3Stocks \n@SuperLuckeee \n@blondebroker1 \n\nhttps://t.co/wsVThzHfCN",
+            "url": "https://x.com/JP_Money_95630/status/1799155958180159550",
+            "validation_window": [
+              "2024-06-01",
+              "2025-02-28"
+            ]
+          },
+          "entry_date": "2024-08-12",
+          "exit_date": "2024-09-09",
+          "entry_price": 15.21,
+          "exit_price": 11.15,
+          "raw_return": -0.26692965154503623,
+          "excess_soxx": -0.24741055677841672,
+          "mfe": -0.0032873109796187627,
+          "mae": -0.26692965154503623,
+          "hit": false
+        },
+        {
+          "ticker": "HIMS",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "Wave 3 projection to $86+ by April 3, entry March 3 after IV cools.",
+          "post": {
+            "post_id": "1894623771765698998",
+            "handle": "jp_money_95630",
+            "date": "2025-02-26",
+            "published_at": "2025-02-26T05:41:22+00:00",
+            "text": "🚨 $HIMS - Wave 3 in Motion? \n\nNew ATH Incoming? 🚨\n\n🔥 Post-earnings IV crush shook out many players, but the setup remains strong!\n\n📊 Wave 1: Squeezed to $72\n🔻 Wave 2: Healthy pullback (-47.6%)\n🚀 Wave 3 Projection: Eyeing $86+ by April 3rd?\n\n🔍 Volume is spiking, RSI cooling off, and the next leg up looks primed.\n\n💎 When momentum changes, this could be the run that pushes $HIMS to new highs!\n\nBE MINDFUL:\nDO NOT WANT TO FALL BELOW LEGACY WAVE 5 AT $34, that will start CORRECTIVE MOVES.\n\nEARNINGS WERE STRONG BUT IV was 200%!\nSeek ENTRY MARCH 3rd for a 30 DAY RUN AFTER IV COOLS OFF!\n\n#HIMS #Stocks #Earnings #IVCrush #ElliottWave #ATH #Bullish\n\n@HeidingOut @BullTradeFinder @himshouse @alc2022 @dannycheng2022",
+            "url": "https://x.com/JP_Money_95630/status/1894623771765698998",
+            "validation_window": [
+              "2024-06-01",
+              "2025-02-28"
+            ]
+          },
+          "entry_date": "2025-02-27",
+          "exit_date": "2025-03-26",
+          "entry_price": 43.21,
+          "exit_price": 33.36,
+          "raw_return": -0.22795649155288134,
+          "excess_soxx": -0.1334679433276783,
+          "mfe": 0.04350844711872259,
+          "mae": -0.2712335107613979,
+          "hit": false
+        }
+      ],
+      "best": [
+        {
+          "ticker": "MU",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "作者认为内存超级周期，看涨美光。",
+          "post": {
+            "post_id": "2053244753240871183",
+            "handle": "jp_money_95630",
+            "date": "2026-05-09",
+            "published_at": "2026-05-09T22:44:31+00:00",
+            "text": "Memory Super Cycle Gain Window!!! \n\nEyes Up!\n\n$AMD kicked off the AI semiconductor earnings cycle with a BEAT + RAISE.\n\nNext up: $NVDA on May 20th.\n\nThen the MEMORY SUPER CYCLE takes over:\n\n➡️ $MU — June 23\n➡️ Samsung — Late July\n➡️ SK Hynix — Late July\n\nThis creates a compressed 4–5 week “Gain Window” where AI demand, HBM pricing power, and supply constraints all collide.\n\nThe key setup:\n\n• AMD confirms AI compute demand\n• NVDA confirms hyperscaler acceleration + Blackwell ramp\n• Memory giants confirm HBM supply shortages + pricing strength\n\nThat’s the full AI stack:\n\nCOMPUTE ➜ GPU ➜ MEMORY\n\nThe market is now watching whether:\n\n• HBM remains sold out into 2027\n• AI infrastructure spending continues accelerating\n• Gross margins expand from constrained supply\n• Memory pricing power strengthens quarter-over-quarter\n\nMicron already reported record AI-driven momentum.\nSamsung and SK Hynix are expected to reinforce the same trend during the July earnings cluster.\n\nThis is why the next few months matter.\n\n3 earnings waves.\n1 AI infrastructure trade.\n1 Memory Super Cycle.\n\n$AMD $NVDA $MU $SMH $SOXX \n$DRAM $SOXL \n\n @dannycheng2022 @smartertrader @Micro2Macr0 @TradexWhisperer @jukan05 @aleabitoreddit @TrendSpider",
+            "url": "https://x.com/JP_Money_95630/status/2053244753240871183",
+            "validation_window": [
+              "2025-11-01",
+              "2026-05-14"
+            ]
+          },
+          "entry_date": "2026-05-11",
+          "exit_date": "2026-06-08",
+          "entry_price": 792.98,
+          "exit_price": 949.28,
+          "raw_return": 0.197104592801836,
+          "excess_soxx": 0.10671762897951886,
+          "mfe": 0.36140886277081385,
+          "mae": -0.14053317864258874,
+          "hit": true
+        },
+        {
+          "ticker": "HIMS",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.8,
+          "reason": "High short interest suggests potential squeeze, indicating bullish outlook.",
+          "post": {
+            "post_id": "1870556419084431590",
+            "handle": "jp_money_95630",
+            "date": "2024-12-21",
+            "published_at": "2024-12-21T19:46:18+00:00",
+            "text": "@MrMikeInvesting 20% of the Float is Short!!\n\nThat's 39M shares last I checked. \n\nSqueeeeeeze..... 🍋 🍋 $HIMS \n\n@alc2022 @BullTradeFinder",
+            "url": "https://x.com/JP_Money_95630/status/1870556419084431590",
+            "validation_window": [
+              "2024-06-01",
+              "2025-02-28"
+            ]
+          },
+          "entry_date": "2024-12-23",
+          "exit_date": "2025-01-23",
+          "entry_price": 26.93,
+          "exit_price": 30.89,
+          "raw_return": 0.1470479019680655,
+          "excess_soxx": 0.05973788210388098,
+          "mfe": 0.1470479019680655,
+          "mae": -0.1021165985889343,
+          "hit": true
+        },
+        {
+          "ticker": "PLTR",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.7,
+          "reason": "Step-by-step strategy to accumulate calls on down days, sell into strength, re-acquire on pullbacks",
+          "post": {
+            "post_id": "1833154217529503885",
+            "handle": "jp_money_95630",
+            "date": "2024-09-09",
+            "published_at": "2024-09-09T14:43:18+00:00",
+            "text": "Palantir $PLTR Banger!! 💰✌️\n\nStep 1. Look for the companies dominating the AI landscape.\n\nStep 2. Aquire and Accumulate Calls with Leap Time Horizon during DOWN market days. \n\nStep 3. Look for events that help boost accumulation like Earnings or Inclusion into the S&P500!\n\nStep 4. Sell Contracts into Strength,  ahead of volatility like the week of 9/18.\n\nStep 5. Re-aquire Calls or Stock on Pull Backs Profit Taking Sell Offs.\n\n@SuperLuckeee @amitisinvesting @StockSavvyShay @DivesTech @alc2022 @TLAMB91 @Banana3Stocks @blondebroker1 \n@DailyPalantir @PLTRs_Palantir @RyanDetrick @fundstrat @EliteOptions2",
+            "url": "https://x.com/JP_Money_95630/status/1833154217529503885",
+            "validation_window": [
+              "2024-06-01",
+              "2025-02-28"
+            ]
+          },
+          "entry_date": "2024-09-10",
+          "exit_date": "2024-10-07",
+          "entry_price": 34.81,
+          "exit_price": 38.89,
+          "raw_return": 0.11720769893708693,
+          "excess_soxx": 0.011083094924415393,
+          "mfe": 0.14938236139040484,
+          "mae": -0.0014363688595232516,
+          "hit": true
+        }
+      ]
+    }
+  ]
+}
