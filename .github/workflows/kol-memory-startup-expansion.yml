@@ -1,0 +1,82 @@
+name: KOL Memory Startup Time-Sliced Expansion
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - "scripts/expand_memory_startup_discovery.py"
+      - "tests/test_memory_startup_expansion.py"
+      - ".github/workflows/kol-memory-startup-expansion.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: kol-memory-startup-expansion
+  cancel-in-progress: false
+
+jobs:
+  expand:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: master
+          fetch-depth: 5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - run: python -m pip install --disable-pip-version-check requests apify-client pytest
+
+      - name: Verify reusable first-pass data and secrets
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test -n "${APIFY_TOKEN:-}" || { echo "::error::Missing APIFY_TOKEN"; exit 1; }
+          test -n "${DEEPSEEK_API_KEY:-}" || { echo "::error::Missing DEEPSEEK_API_KEY"; exit 1; }
+          gzip -t outputs/memory_startup_probe_20260811/raw_posts.json.gz
+
+      - name: Run regression tests
+        run: pytest -q tests/test_memory_startup_expansion.py tests/test_memory_startup_probe.py
+
+      - name: Run capped time-sliced expansion
+        run: |
+          python scripts/expand_memory_startup_discovery.py \
+            --prior-raw outputs/memory_startup_probe_20260811/raw_posts.json.gz \
+            --output-dir outputs/memory_startup_expansion_20260811
+
+      - name: Validate expansion outputs
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d = json.loads(Path("outputs/memory_startup_expansion_20260811/expansion.json").read_text())
+          assert d["discovery_only"] is True
+          assert d["discovery_window"] == ["2025-03-01", "2025-10-31"]
+          assert d["stats"]["queries"] == 20
+          assert d["stats"]["prior_posts"] > 0
+          assert d["stats"]["unique_posts"] > d["stats"]["prior_posts"]
+          assert "excluded" in d["validation_rule"].lower()
+          print(d["stats"])
+          PY
+
+      - name: Commit reusable expansion results
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git config user.name "signalboard-bot"
+          git config user.email "signalboard-bot@users.noreply.github.com"
+          git add outputs/memory_startup_expansion_20260811/expansion.json
+          git add outputs/memory_startup_expansion_20260811/report.md
+          git add outputs/memory_startup_expansion_20260811/raw_posts.json.gz
+          git commit -m "Add time-sliced memory-startup expansion results"
+          git pull --rebase origin master
+          git push origin HEAD:master
