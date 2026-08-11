@@ -1,6 +1,15 @@
 from datetime import timezone
+import importlib.util
+from pathlib import Path
 
-import startup_probe as p
+
+SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "discover_memory_startup_kols.py"
+if not SCRIPT.exists():
+    SCRIPT = Path(__file__).with_name("startup_probe.py")
+spec = importlib.util.spec_from_file_location("memory_startup_probe", SCRIPT)
+p = importlib.util.module_from_spec(spec)
+assert spec and spec.loader
+spec.loader.exec_module(p)
 
 
 def test_parse_datetime_rfc_and_iso():
