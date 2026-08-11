@@ -28,7 +28,7 @@ from signalboard.extract.prompts_intel import (
 )
 
 DEEPSEEK_URL = "https://api.deepseek.com/v1/chat/completions"
-DEEPSEEK_MODEL = "deepseek-v4-pro"  # 跨项目硬规则
+DEEPSEEK_MODEL = "deepseek-v4-flash"  # 与生产抽取链保持一致
 
 
 def call_deepseek(system: str, user: str, max_retries: int = 2) -> dict:
@@ -115,7 +115,7 @@ def main():
             sys.exit(1)
         print(f"  ✓ {pid} ({r['source_id']})")
 
-    print(f"\n=== 抽 12 条样本 (deepseek-v4-pro, prompt {PROMPT_VERSION}) ===\n")
+    print(f"\n=== 抽 12 条样本 ({DEEPSEEK_MODEL}, prompt {PROMPT_VERSION}) ===\n")
 
     results = []
     for i, pid in enumerate(target_ids, 1):
