@@ -107,6 +107,18 @@ jobs:
           since=$(TZ=Asia/Shanghai date -d "7 days ago" +%Y-%m-%d)
           python scripts/intel_extract.py --since "$since"
 
+      - name: One-time low-cost historical call backfill
+        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[backfill-calls-1y]')
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          python scripts/intel_extract.py \
+            --since 2025-08-11 \
+            --until 2026-05-28 \
+            --sources tw_austinsemis,tw_jukan05,tw_zephyr_z9 \
+            --ticker-clues-only \
+            --max-targets 650
+
       - name: Database health check
         run: python scripts/intel_daily_health.py
 

@@ -89,6 +89,46 @@ def test_performance_price_targets_include_recent_calls(monkeypatch):
     assert mu["n_calls"] == 2
 
 
+def test_serenity_legacy_history_extends_only_v2_validated_tickers(monkeypatch):
+    import sys
+    sys.path.insert(0, str(DASH))
+    import common
+
+    con = sqlite3.connect(":memory:")
+    con.executescript("""
+        CREATE TABLE raw_posts (
+            post_id TEXT PRIMARY KEY, source_id TEXT, published_at TEXT,
+            raw_text TEXT, raw_url TEXT
+        );
+        CREATE TABLE extractions_intel (
+            post_id TEXT, source_id TEXT, direction TEXT, ticker TEXT,
+            bottleneck TEXT, is_retrospective INTEGER, is_disclosure INTEGER
+        );
+        CREATE TABLE predictions (
+            post_id TEXT, source_id TEXT, direction TEXT, ticker TEXT,
+            published_at TEXT
+        );
+        INSERT INTO raw_posts VALUES
+            ('new','tw_aleabitoreddit',datetime('now','-20 days'),'new','new-url'),
+            ('old','tw_aleabitoreddit',datetime('now','-200 days'),'old','old-url'),
+            ('noise','tw_aleabitoreddit',datetime('now','-250 days'),'noise','noise-url');
+        INSERT INTO extractions_intel VALUES
+            ('new','tw_aleabitoreddit','long','["AAOI"]',NULL,0,0);
+        INSERT INTO predictions VALUES
+            ('old','tw_aleabitoreddit','short','AAOI',datetime('now','-200 days')),
+            ('noise','tw_aleabitoreddit','long','UNVALIDATED',datetime('now','-250 days'));
+    """)
+    events = common.query_call_performance_events(con)
+    assert [(row["ticker"], row["history_source"]) for row in events] == [
+        ("AAOI", "predictions_legacy"),
+        ("AAOI", "extractions_intel"),
+    ]
+    target = common.select_call_performance_targets(con)[0]
+    assert target["ticker"] == "AAOI"
+    assert target["direction"] == "short"
+    assert target["n_calls"] == 2
+
+
 def test_merge_price_targets_deduplicates_ticker_and_date():
     import sys
     sys.path.insert(0, str(DASH))

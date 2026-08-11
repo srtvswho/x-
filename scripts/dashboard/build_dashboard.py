@@ -22,6 +22,7 @@ from common import (  # noqa: E402
     build_metadata, query_today_stats, query_today_records, cn_recent_24h_window_utc,
     KOL_TICKERS, KOLS, SRC2KOL, is_in_field, parse_json_arr,
     select_dashboard_ticker_targets, DASHBOARD_TICKER_LIMIT, DASHBOARD_MIN_DAYS,
+    query_call_performance_events,
 )
 
 DB = "/workspace/data/signalboard_full.db"
@@ -413,34 +414,31 @@ def query_call_performance(conn):
     long 方向收益 = 标的涨跌幅，short 方向收益 = -标的涨跌幅。
     只读 ticker_prices 缓存，不在 build 阶段发起额外行情请求。
     """
-    rows = conn.execute("""
-        SELECT e.post_id, e.source_id, e.direction, e.ticker, e.bottleneck,
-               r.published_at, r.raw_text, r.raw_url
-        FROM extractions_intel e
-        JOIN raw_posts r ON r.post_id = e.post_id
-        WHERE e.direction IN ('long', 'short')
-          AND e.is_retrospective = 0 AND e.is_disclosure = 0
-          AND e.ticker IS NOT NULL
-          AND r.published_at >= datetime('now', '-370 days')
-        ORDER BY r.published_at ASC
-    """).fetchall()
+    events = query_call_performance_events(conn, days=370)
     grouped = {}
-    for post_id, src, direction, ticker_json, bottleneck, published_at, raw_text, raw_url in rows:
+    for event in events:
+        post_id = event["post_id"]
+        src = event["source_id"]
+        direction = event["direction"]
+        ticker = event["ticker"]
+        bottleneck = event["bottleneck"]
+        published_at = event["published_at"]
+        raw_text = event["raw_text"]
+        raw_url = event["raw_url"]
         kol = SRC2KOL.get(src, src.replace("tw_", ""))
-        for ticker in parse_json_arr(ticker_json):
-            key = (kol, ticker)
-            if key not in grouped:
-                grouped[key] = {
-                    "post_id": post_id, "kol": kol, "ticker": ticker,
-                    "direction": direction, "published_at": published_at,
-                    "latest_published_at": published_at, "bottleneck": bottleneck,
-                    "n_mentions": 1,
-                    "raw_text": raw_text or "",
-                    "raw_url": raw_url or f"https://x.com/{src.replace('tw_', '')}/status/{post_id}",
-                }
-            else:
-                grouped[key]["latest_published_at"] = published_at
-                grouped[key]["n_mentions"] += 1
+        key = (kol, ticker)
+        if key not in grouped:
+            grouped[key] = {
+                "post_id": post_id, "kol": kol, "ticker": ticker,
+                "direction": direction, "published_at": published_at,
+                "latest_published_at": published_at, "bottleneck": bottleneck,
+                "n_mentions": 1,
+                "raw_text": raw_text or "",
+                "raw_url": raw_url or f"https://x.com/{src.replace('tw_', '')}/status/{post_id}",
+            }
+        else:
+            grouped[key]["latest_published_at"] = published_at
+            grouped[key]["n_mentions"] += 1
     out = []
     for row in grouped.values():
             ticker = row["ticker"]

@@ -516,40 +516,113 @@ def select_call_performance_targets(conn, days: int = 370) -> list[dict]:
     同一人物重复提及同一标的不重复计分；以窗口内第一次明确方向与日期
     作为追踪起点。相同股票同一天的不同人物共享一条价格缓存记录。
     """
-    rows = conn.execute("""
-        SELECT e.source_id, e.ticker, e.direction, r.published_at
-        FROM extractions_intel e
-        JOIN raw_posts r ON r.post_id = e.post_id
-        WHERE e.direction IN ('long', 'short')
-          AND e.is_retrospective = 0 AND e.is_disclosure = 0
-          AND e.ticker IS NOT NULL
-          AND r.published_at >= datetime('now', ?)
-        ORDER BY r.published_at ASC
-    """, (f"-{int(days)} days",)).fetchall()
+    events = query_call_performance_events(conn, days=days)
 
     targets = {}
     today = datetime.now(timezone.utc).date()
-    for src, ticker_json, direction, published_at in rows:
+    for event in events:
+        src = event["source_id"]
+        ticker = event["ticker"]
+        direction = event["direction"]
+        published_at = event["published_at"]
         call_date = published_at[:10]
         try:
             days_since = (today - datetime.fromisoformat(call_date).date()).days
         except Exception:
             days_since = 0
         kol = SRC2KOL.get(src, src.replace("tw_", ""))
-        for ticker in parse_json_arr(ticker_json):
-            key = (kol, ticker)
-            if key not in targets:
-                targets[key] = {
-                    "ticker": ticker, "kol": kol, "source_id": src,
-                    "direction": direction, "call_date": call_date,
-                    "latest_pub": published_at, "earliest_pub": published_at,
-                    "days_since": days_since, "n_calls": 1,
-                    "in_field": is_in_field(kol, ticker, None),
-                }
-            else:
-                targets[key]["latest_pub"] = published_at
-                targets[key]["n_calls"] += 1
+        key = (kol, ticker)
+        if key not in targets:
+            targets[key] = {
+                "ticker": ticker, "kol": kol, "source_id": src,
+                "direction": direction, "call_date": call_date,
+                "latest_pub": published_at, "earliest_pub": published_at,
+                "days_since": days_since, "n_calls": 1,
+                "in_field": is_in_field(kol, ticker, None),
+            }
+        else:
+            targets[key]["latest_pub"] = published_at
+            targets[key]["n_calls"] += 1
     return list(targets.values())
+
+
+def _table_exists(conn, name: str) -> bool:
+    return conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (name,)
+    ).fetchone() is not None
+
+
+def query_call_performance_events(conn, days: int = 370) -> list[dict]:
+    """返回人物表现的逐标的方向事件，并复用 Serenity 的旧结构化历史。
+
+    v2 ``extractions_intel`` 是主数据源。Serenity 在旧 ``predictions`` 表中已有
+    更早的逐标的结构化结果；只为 v2 已经验证过的 Serenity ticker 补回更早
+    日期，既恢复一年窗口，也不把旧表 500+ 个一次性标的重新灌入页面或价格链。
+    """
+    cutoff = (datetime.now(timezone.utc) - timedelta(days=int(days))).isoformat()
+    raw_cols = {row[1] for row in conn.execute("PRAGMA table_info(raw_posts)").fetchall()}
+    raw_text_sql = "r.raw_text" if "raw_text" in raw_cols else "''"
+    raw_url_sql = "r.raw_url" if "raw_url" in raw_cols else "''"
+    rows = conn.execute(f"""
+        SELECT e.post_id, e.source_id, e.direction, e.ticker, e.bottleneck,
+               r.published_at, {raw_text_sql}, {raw_url_sql}
+        FROM extractions_intel e
+        JOIN raw_posts r ON r.post_id = e.post_id
+        WHERE e.direction IN ('long', 'short')
+          AND e.is_retrospective = 0 AND e.is_disclosure = 0
+          AND e.ticker IS NOT NULL
+          AND r.published_at >= ?
+        ORDER BY r.published_at ASC
+    """, (cutoff,)).fetchall()
+
+    events = []
+    seen = set()
+    validated_pairs = set()
+    for post_id, src, direction, ticker_json, bottleneck, published_at, raw_text, raw_url in rows:
+        for ticker in parse_json_arr(ticker_json):
+            key = (src, post_id, ticker, direction)
+            if key in seen:
+                continue
+            seen.add(key)
+            validated_pairs.add((src, ticker))
+            events.append({
+                "post_id": post_id, "source_id": src, "direction": direction,
+                "ticker": ticker, "bottleneck": bottleneck,
+                "published_at": published_at, "raw_text": raw_text or "",
+                "raw_url": raw_url or f"https://x.com/{src.replace('tw_', '')}/status/{post_id}",
+                "history_source": "extractions_intel",
+            })
+
+    if _table_exists(conn, "predictions"):
+        legacy = conn.execute(f"""
+            SELECT p.post_id, p.source_id, p.direction, p.ticker, p.published_at,
+                   {raw_text_sql}, {raw_url_sql}
+            FROM predictions p
+            LEFT JOIN raw_posts r ON r.post_id = p.post_id
+            WHERE p.source_id = 'tw_aleabitoreddit'
+              AND p.direction IN ('long', 'short')
+              AND p.ticker IS NOT NULL
+              AND p.published_at >= ?
+            ORDER BY p.published_at ASC
+        """, (cutoff,)).fetchall()
+        for post_id, src, direction, ticker, published_at, raw_text, raw_url in legacy:
+            # 旧表只用于把 v2 已确认过的标的向前延长，不扩张 ticker 宇宙。
+            if (src, ticker) not in validated_pairs:
+                continue
+            key = (src, post_id, ticker, direction)
+            if key in seen:
+                continue
+            seen.add(key)
+            events.append({
+                "post_id": post_id, "source_id": src, "direction": direction,
+                "ticker": ticker, "bottleneck": None,
+                "published_at": published_at, "raw_text": raw_text or "",
+                "raw_url": raw_url or f"https://x.com/{src.replace('tw_', '')}/status/{post_id}",
+                "history_source": "predictions_legacy",
+            })
+
+    events.sort(key=lambda row: row["published_at"])
+    return events
 
 
 def merge_price_targets(*target_lists: list[dict]) -> list[dict]:

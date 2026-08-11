@@ -22,6 +22,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sqlite3
 import sys
 import time
@@ -42,6 +43,23 @@ DEEPSEEK_URL = "https://api.deepseek.com/v1/chat/completions"
 DEEPSEEK_MODEL = "deepseek-v4-flash"  # 生产链统一使用 Flash，避免意外产生 Pro 调用
 MAX_WORKERS = 5  # 受 deepseek RPM 限制
 MAX_RETRIES = 2
+
+# 历史回填的低成本预筛。显式 cashtag 始终算标的线索；未带 ``$`` 的文本
+# 只匹配 Dashboard 已知的股票代码，避免把一整年的普通产业讨论都送给模型。
+KNOWN_TICKER_CLUES = {
+    "AAOI", "AEHR", "AEVA", "AMD", "AMZN", "AOSL", "ASTS", "AVGO",
+    "AXTI", "COHR", "DRAM", "GFS", "GOOGL", "INTC", "IQE", "JBL",
+    "LITE", "META", "MRVL", "MSFT", "MU", "NBIS", "NOK", "NVDA",
+    "NVTS", "POET", "POWI", "RKLB", "SIVE", "SNDK", "SOI", "TSEM",
+    "TSM", "VPG", "WOLF", "XFAB",
+}
+CASHTAG_RE = re.compile(r"(?<![A-Za-z0-9])\$[A-Za-z][A-Za-z0-9.\-]{0,9}\b")
+KNOWN_TICKER_RE = re.compile(
+    r"(?<![A-Za-z0-9$])(?:"
+    + "|".join(sorted(map(re.escape, KNOWN_TICKER_CLUES), key=len, reverse=True))
+    + r")(?![A-Za-z0-9])",
+    re.IGNORECASE,
+)
 
 # DDL
 DDL = """
@@ -108,21 +126,45 @@ def init_extractions_table(con: sqlite3.Connection) -> None:
     con.commit()
 
 
-def get_target_posts(con: sqlite3.Connection, since_iso: str) -> list[dict]:
-    """拿 since 之后的所有推文, 排除已抽取的 (post_id, prompt_version)."""
-    rows = con.execute("""
+def has_ticker_clue(raw_text: str | None) -> bool:
+    """是否含显式 cashtag 或 Dashboard 已知 ticker。"""
+    text = raw_text or ""
+    return bool(CASHTAG_RE.search(text) or KNOWN_TICKER_RE.search(text))
+
+
+def get_target_posts(
+    con: sqlite3.Connection,
+    since_iso: str,
+    *,
+    until_iso: str | None = None,
+    source_ids: list[str] | None = None,
+    ticker_clues_only: bool = False,
+) -> list[dict]:
+    """按窗口取未抽取推文；可按人物和标的线索限制历史回填范围。"""
+    where = ["rp.published_at >= ?", "ei.post_id IS NULL"]
+    params: list[object] = [PROMPT_VERSION, since_iso]
+    if until_iso:
+        where.append("rp.published_at < ?")
+        params.append(until_iso)
+    if source_ids:
+        placeholders = ",".join("?" for _ in source_ids)
+        where.append(f"rp.source_id IN ({placeholders})")
+        params.extend(source_ids)
+    rows = con.execute(f"""
         SELECT rp.post_id, rp.source_id, rp.raw_text, rp.published_at
         FROM raw_posts rp
         LEFT JOIN extractions_intel ei
           ON rp.post_id = ei.post_id AND ei.prompt_version = ?
-        WHERE rp.published_at >= ?
-          AND ei.post_id IS NULL
-        ORDER BY rp.published_at DESC
-    """, (PROMPT_VERSION, since_iso)).fetchall()
-    return [
+        WHERE {' AND '.join(where)}
+        ORDER BY rp.published_at ASC
+    """, params).fetchall()
+    posts = [
         {"post_id": r[0], "source_id": r[1], "raw_text": r[2], "published_at": r[3]}
         for r in rows
     ]
+    if ticker_clues_only:
+        posts = [post for post in posts if has_ticker_clue(post["raw_text"])]
+    return posts
 
 
 def call_deepseek(post_id: str, raw_text: str) -> dict:
@@ -219,20 +261,43 @@ def extract_one(post: dict) -> dict:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--since", required=True, help="ISO date (e.g. 2026-06-19)")
+    ap.add_argument("--until", help="ISO 结束日期（不含），用于限定历史回填窗口")
+    ap.add_argument("--sources", help="逗号分隔 source_id，只抽指定人物")
+    ap.add_argument("--ticker-clues-only", action="store_true",
+                    help="只抽含 cashtag 或已知 ticker 的推文（历史低成本回填）")
+    ap.add_argument("--max-targets", type=int, default=0,
+                    help="候选数超过该值就中止，防止意外产生过量 API 调用")
     ap.add_argument("--dry-run", action="store_true", help="不落库, 只抽 + 打印")
     ap.add_argument("--limit", type=int, default=0, help="最多抽几条 (0=全抽)")
     args = ap.parse_args()
 
     since_iso = args.since if "T" in args.since else f"{args.since}T00:00:00+00:00"
+    until_iso = None
+    if args.until:
+        until_iso = args.until if "T" in args.until else f"{args.until}T00:00:00+00:00"
+    source_ids = [s.strip() for s in (args.sources or "").split(",") if s.strip()]
 
     con = sqlite3.connect(DB_PATH, timeout=120)
     init_extractions_table(con)
 
-    targets = get_target_posts(con, since_iso)
+    targets = get_target_posts(
+        con,
+        since_iso,
+        until_iso=until_iso,
+        source_ids=source_ids or None,
+        ticker_clues_only=args.ticker_clues_only,
+    )
+    if args.max_targets > 0 and len(targets) > args.max_targets:
+        raise SystemExit(
+            f"候选 {len(targets)} 条，超过安全上限 {args.max_targets}；已中止，未调用 API"
+        )
     if args.limit > 0:
         targets = targets[:args.limit]
     print(f"=== 大V情报模块2: 增量抽取 ({PROMPT_VERSION}, dry_run={args.dry_run}) ===")
     print(f"  since: {since_iso}")
+    print(f"  until: {until_iso or '-'}")
+    print(f"  sources: {','.join(source_ids) if source_ids else 'ALL'}")
+    print(f"  ticker_clues_only: {args.ticker_clues_only}")
     print(f"  targets: {len(targets)} 条 (排除已抽取)")
     print(f"  workers: {MAX_WORKERS}")
     print()
