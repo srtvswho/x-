@@ -143,6 +143,19 @@ def test_summary_generator_uses_flash_and_structured_prompts():
     assert "核心方向｜" in src
 
 
+def test_daily_deepseek_calls_all_use_flash():
+    workflow = (ROOT / ".github" / "workflows" / "signalboard-daily.yml").read_text(encoding="utf-8")
+    extractor = (ROOT / "scripts" / "intel_extract.py").read_text(encoding="utf-8")
+    summaries = (DASH / "intel_gen_summaries.py").read_text(encoding="utf-8")
+
+    assert "python scripts/intel_extract.py" in workflow
+    assert "python scripts/dashboard/intel_gen_summaries.py" in workflow
+    assert 'DEEPSEEK_MODEL = "deepseek-v4-flash"' in extractor
+    assert 'DEEPSEEK_MODEL = "deepseek-v4-flash"' in summaries
+    assert 'DEEPSEEK_MODEL = "deepseek-v4-pro"' not in extractor
+    assert 'DEEPSEEK_MODEL = "deepseek-v4-pro"' not in summaries
+
+
 def test_zero_performance_price_coverage_blocks_publish(monkeypatch):
     import sys
     import types
