@@ -446,20 +446,40 @@ function recordStances(r){
   });
   return out;
 }
+function resolveWindowStances(records){
+  const sorted=records.slice().sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
+  const resolved=[],seen=new Set();
+  sorted.forEach(r=>{
+    recordStances(r).forEach(s=>{
+      const key=r.kol+'|'+s.topic;
+      if(!seen.has(key)){
+        seen.add(key);
+        resolved.push({r,...s});
+      }
+    });
+  });
+  return resolved;
+}
 function selectStanceEvidence(records,limit){
   const sorted=records.slice().sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
-  const chosen=[],usedPosts=new Set(),covered=new Set();
-  sorted.forEach(r=>{
-    const keys=recordStances(r).map(s=>s.topic+'|'+s.direction);
-    if(keys.some(key=>!covered.has(key))&&!usedPosts.has(r.post_id)){
-      chosen.push(r);usedPosts.add(r.post_id);keys.forEach(key=>covered.add(key));
+  const chosen=[],usedPosts=new Set();
+  resolveWindowStances(sorted).forEach(({r})=>{
+    if(!usedPosts.has(r.post_id)){
+      chosen.push(r);
+      usedPosts.add(r.post_id);
     }
   });
-  sorted.forEach(r=>{if(chosen.length<limit&&!usedPosts.has(r.post_id)){chosen.push(r);usedPosts.add(r.post_id);}});
-  return chosen.slice(0,limit).sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
+  const target=Math.max(limit,chosen.length);
+  sorted.forEach(r=>{
+    if(chosen.length<target&&!usedPosts.has(r.post_id)){
+      chosen.push(r);
+      usedPosts.add(r.post_id);
+    }
+  });
+  return chosen.sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
 }
 function liveConsensus(records){
-  const directional=records.flatMap(r=>recordStances(r).map(s=>({r,...s})));
+  const directional=resolveWindowStances(records);
   if(!directional.length) return '共识方向｜本窗口无明确方向证据\n核心标的｜无明确标的\n分歧/风险｜暂无可由本窗口证据验证的分歧';
   const groups=new Map();
   directional.forEach(({r,topic,direction})=>{
@@ -481,14 +501,14 @@ function liveConsensus(records){
   return `共识方向｜${line1}\n单人方向｜${singleLine}\n核心标的｜${tickers.length?tickers.join('、'):'无明确标的'}\n分歧/风险｜${conflicts.length?conflicts.join('；'):'本窗口可见证据中暂无直接多空分歧'}`;
 }
 function livePersonSummary(records){
-  const directional=records.flatMap(r=>recordStances(r).map(s=>({r,...s})));
+  const directional=resolveWindowStances(records);
   if(!directional.length)return '本窗口无明确方向证据';
   const groups=new Map();
   directional.forEach(({r,topic,direction})=>{const key=topic+'|'+direction;if(!groups.has(key))groups.set(key,{topic,direction,tickers:new Set()});(r.ticker||[]).forEach(t=>groups.get(key).tickers.add(t));});
   const all=[...groups.values()];
   const directions=all.map(g=>`${g.topic}${g.direction==='long'?'看多':'看空'}`).join('；');
   const tickers=[...new Set(all.flatMap(g=>[...g.tickers]))];
-  return `核心方向｜${directions}\n明确标的｜${tickers.length?tickers.join('、'):'无明确标的'}\n证据口径｜扫描本窗口全部 ${records.length} 条有效推文；下方优先展示方向证据`;
+  return `核心方向｜${directions}\n明确标的｜${tickers.length?tickers.join('、'):'无明确标的'}\n证据口径｜扫描本窗口全部 ${records.length} 条记录；下方展示每个当前方向的对应证据`;
 }
 function renderStance(){
   const weekly=win===0.25;
@@ -507,7 +527,7 @@ function renderStance(){
     recs=recs.slice().sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
     if(win!==0)recs=recs.filter(r=>(recordStances(r).length||r.bottleneck));
     allByKol[key]=recs;
-    visibleByKol[key]=(win===0)?recs.slice(0,4):selectStanceEvidence(recs,4);
+    visibleByKol[key]=selectStanceEvidence(recs,4);
   });
   const windowEvidence=ORDER.flatMap(key=>allByKol[key]);
   document.getElementById('consensus').innerHTML=`
@@ -534,7 +554,7 @@ function renderStance(){
     const psum=livePersonSummary(allByKol[key]);
     return `<div class="stance">
       <div class="sh"><div class="av" style="background:${c}">${initials(k.name)}</div>
-        <div class="nm">${k.name}</div><div class="tp ${k.type}">${k.type}</div><div class="ct">${recs.length} 条</div></div>
+        <div class="nm">${k.name}</div><div class="tp ${k.type}">${k.type}</div><div class="ct">窗口 ${allByKol[key].length} 条 · 展示 ${recs.length} 条</div></div>
       <div class="psum"><span class="lead">${winLabel(win)} · 核心立场</span>${formatStructuredSummary(psum)}</div>
       ${rows}</div>`;
   }).join('');
