@@ -46,7 +46,7 @@ jobs:
           done
 
       - name: Run regression tests
-        run: pytest -q tests/test_memory_startup_expansion_validation.py tests/test_startup_light_validation.py
+        run: pytest -q tests/test_memory_startup_expansion_validation.py tests/test_memory_startup_light_validation.py
 
       - name: Run capped out-of-sample light validation
         run: |
