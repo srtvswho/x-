@@ -169,6 +169,15 @@ def normalize_post(item: dict[str, Any], query: str) -> dict[str, Any] | None:
     }
 
 
+def dataset_id_from_run(run: Any) -> str:
+    dataset_id = getattr(run, "default_dataset_id", None)
+    if not dataset_id and isinstance(run, dict):
+        dataset_id = run.get("defaultDatasetId") or run.get("default_dataset_id")
+    if not dataset_id:
+        raise RuntimeError(f"Apify run has no default dataset id: {type(run).__name__}")
+    return str(dataset_id)
+
+
 def run_search(apify_token: str, query: str) -> list[dict[str, Any]]:
     from apify_client import ApifyClient
 
@@ -186,7 +195,7 @@ def run_search(apify_token: str, query: str) -> list[dict[str, Any]]:
                                       memory_mbytes=2048)
     if not run:
         raise RuntimeError(f"Apify returned no run for query: {query}")
-    return list(client.dataset(run["defaultDatasetId"]).iterate_items())
+    return list(client.dataset(dataset_id_from_run(run)).iterate_items())
 
 
 CLASSIFY_PROMPT = """你是投资证据审计员。下面帖子来自一次候选发现搜索，目标是发现谁在2026年存储股顶部形成期实时识别了风险。逐条分类，禁止用后来走势替作者补充观点。
