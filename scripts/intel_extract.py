@@ -39,7 +39,7 @@ from signalboard.extract.prompts_intel import (
 
 DB_PATH = "/workspace/data/signalboard_full.db"
 DEEPSEEK_URL = "https://api.deepseek.com/v1/chat/completions"
-DEEPSEEK_MODEL = "deepseek-v4-pro"  # 跨项目硬规则
+DEEPSEEK_MODEL = "deepseek-v4-flash"  # 生产链统一使用 Flash，避免意外产生 Pro 调用
 MAX_WORKERS = 5  # 受 deepseek RPM 限制
 MAX_RETRIES = 2
 
