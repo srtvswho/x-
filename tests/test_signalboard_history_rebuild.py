@@ -63,7 +63,7 @@ def test_daily_workflow_checkpoints_ingest_before_bounded_price_refresh():
     checkpoint = daily.index("Save ingest checkpoint")
     price_refresh = daily.index("Refresh prices")
     assert checkpoint < price_refresh
-    assert 'POLYGON_MAX_API_REQUESTS: "240"' in daily
+    assert 'POLYGON_MAX_API_REQUESTS: "60"' in daily
     assert 'git add data/signalboard.db.gz' in daily
 
 
