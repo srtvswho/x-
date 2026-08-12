@@ -1,0 +1,63 @@
+{
+  "generated_at": "2026-08-12T07:50:58.541042+00:00",
+  "window_days": 370,
+  "sources": [
+    {
+      "source_id": "tw_jukan05",
+      "raw_posts": 1835,
+      "first_post": "2024-12-22T04:02:46+00:00",
+      "last_post": "2026-08-12T05:46:24+00:00",
+      "extracted_posts": 1326
+    },
+    {
+      "source_id": "tw_aleabitoreddit",
+      "raw_posts": 6976,
+      "first_post": "2025-07-02T10:48:09+00:00",
+      "last_post": "2026-08-12T06:29:39+00:00",
+      "extracted_posts": 1002
+    },
+    {
+      "source_id": "tw_zephyr_z9",
+      "raw_posts": 6053,
+      "first_post": "2024-12-26T11:42:47+00:00",
+      "last_post": "2026-08-12T07:06:35+00:00",
+      "extracted_posts": 1695
+    },
+    {
+      "source_id": "tw_austinsemis",
+      "raw_posts": 1371,
+      "first_post": "2023-06-26T03:08:04+00:00",
+      "last_post": "2026-08-11T20:30:43+00:00",
+      "extracted_posts": 608
+    },
+    {
+      "source_id": "tw_DGretta_Author",
+      "raw_posts": 2940,
+      "first_post": "2026-04-27T23:30:24+00:00",
+      "last_post": "2026-08-11T19:43:18+00:00",
+      "extracted_posts": 1231
+    },
+    {
+      "source_id": "tw_FeroceResearch",
+      "raw_posts": 3323,
+      "first_post": "2025-08-07T00:26:33+00:00",
+      "last_post": "2026-08-12T02:26:30+00:00",
+      "extracted_posts": 1743
+    },
+    {
+      "source_id": "tw_TradexWhisperer",
+      "raw_posts": 5000,
+      "first_post": "2026-05-15T22:23:33+00:00",
+      "last_post": "2026-08-12T05:53:35+00:00",
+      "extracted_posts": 1145
+    },
+    {
+      "source_id": "tw_gsmferrari",
+      "raw_posts": 4620,
+      "first_post": "2026-01-13T15:29:21+00:00",
+      "last_post": "2026-08-12T01:41:13+00:00",
+      "extracted_posts": 1863
+    }
+  ],
+  "missing_sources": []
+}
