@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-12T07:50:58.541042+00:00",
+  "generated_at": "2026-08-12T09:52:12.007013+00:00",
   "window_days": 370,
   "sources": [
     {
@@ -46,10 +46,10 @@
     },
     {
       "source_id": "tw_TradexWhisperer",
-      "raw_posts": 5000,
-      "first_post": "2026-05-15T22:23:33+00:00",
+      "raw_posts": 10350,
+      "first_post": "2025-08-07T00:11:00+00:00",
       "last_post": "2026-08-12T05:53:35+00:00",
-      "extracted_posts": 1145
+      "extracted_posts": 2958
     },
     {
       "source_id": "tw_gsmferrari",
