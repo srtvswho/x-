@@ -32,6 +32,25 @@ sys.path.insert(0, str(DASH_DIR))
 import refresh_prices_polygon  # noqa: E402
 
 
+def test_prioritize_price_targets_bounds_daily_work_and_keeps_dashboard_first(tmp_path):
+    db = sqlite3.connect(tmp_path / "priority.db")
+    db.execute("""CREATE TABLE ticker_prices (
+        ticker TEXT NOT NULL, pub_date TEXT NOT NULL, call_price REAL,
+        now_price REAL, now_date TEXT, sector_pct REAL, fetched_at TEXT,
+        PRIMARY KEY (ticker, pub_date))""")
+    db.execute("INSERT INTO ticker_prices VALUES ('OLD','2026-01-01',1,2,'2026-08-01',NULL,'2026-08-01T00:00:00Z')")
+    db.commit()
+    by_ticker = {
+        "OLD": [{"ticker": "OLD", "call_date": "2026-01-01"}],
+        "MISS": [{"ticker": "MISS", "call_date": "2026-01-02"}],
+        "HOME": [{"ticker": "HOME", "call_date": "2026-01-03"}],
+    }
+    selected = refresh_prices_polygon.prioritize_price_targets(
+        db, by_ticker, [{"ticker": "HOME"}], max_api_requests=2)
+    assert list(selected) == ["HOME", "MISS"]
+    db.close()
+
+
 # ============================================================
 # Fixtures
 # ============================================================

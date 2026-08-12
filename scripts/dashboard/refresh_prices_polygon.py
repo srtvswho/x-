@@ -254,6 +254,33 @@ def print_target_summary(targets: list[dict], n_unique_tickers: int, n_unique_ca
     print(f"  预计 API 请求: {expected_requests}", flush=True)
 
 
+def prioritize_price_targets(conn, by_ticker: dict[str, list[dict]],
+                             dashboard_targets: list[dict],
+                             max_api_requests: int = 0) -> dict[str, list[dict]]:
+    """首页优先，再按价格缓存缺口排序，并限制单次 API 请求量。"""
+    dashboard_tickers = {target["ticker"] for target in dashboard_targets}
+    ranked = []
+    for ticker, items in by_ticker.items():
+        missing = 0
+        fetched = []
+        for item in items:
+            row = conn.execute(
+                "SELECT fetched_at FROM ticker_prices WHERE ticker=? AND pub_date=?",
+                (ticker, item["call_date"]),
+            ).fetchone()
+            if row is None:
+                missing += 1
+            elif row[0]:
+                fetched.append(row[0])
+        oldest = min(fetched) if fetched else ""
+        ranked.append((0 if ticker in dashboard_tickers else 1,
+                       0 if missing else 1, -missing, oldest, ticker, items))
+    ranked.sort(key=lambda row: row[:5])
+    if max_api_requests > 0:
+        ranked = ranked[:max_api_requests]
+    return {ticker: items for *_, ticker, items in ranked}
+
+
 def list_targets(args):
     """Dry-run: 输出目标 / unique ticker / 预计请求. 不调网络, 不写 DB."""
     db_path = Path(args.db)
@@ -295,6 +322,11 @@ def main():
                         help="只建表, 不调 Polygon (用于测试 / 离线恢复)")
     parser.add_argument("--list-targets", action="store_true",
                         help="Dry-run: 输出目标, 不调网络, 不写 DB")
+    parser.add_argument(
+        "--max-api-requests", type=int,
+        default=int(os.environ.get("POLYGON_MAX_API_REQUESTS", "0")),
+        help="本次最多刷新多少个 unique ticker；0=全量",
+    )
     args = parser.parse_args()
 
     if args.list_targets:
@@ -339,8 +371,13 @@ def main():
             if not is_us_ticker(tk):
                 print(f"  · skip 非美股: {tk}", flush=True)
                 del by_ticker[tk]
+        n_eligible = len(by_ticker)
+        by_ticker = prioritize_price_targets(
+            conn, by_ticker, dashboard_targets, args.max_api_requests)
         n_after_filter = len(by_ticker)
-        print(f"  非美股过滤后 unique ticker: {n_after_filter}", flush=True)
+        print(f"  非美股过滤后 unique ticker: {n_eligible}; "
+              f"本次刷新: {n_after_filter}; 上限: {args.max_api_requests or '全量'}",
+              flush=True)
 
         if n_after_filter == 0:
             print(f"  (无美股目标, 跳过 fetch)", flush=True)
