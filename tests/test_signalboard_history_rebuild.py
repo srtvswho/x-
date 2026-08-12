@@ -11,6 +11,8 @@ def test_backfill_registry_covers_all_production_kols_and_includes_today():
     assert "end=today + timedelta(days=1)" in source
     assert 'client.run(run_id).get()' in source
     assert 'client.dataset(dataset_id).iterate_items()' in source
+    assert 'getattr(run, "default_dataset_id", None)' in source
+    assert "个账号回填失败" in source
 
 
 def test_one_year_rebuild_is_bounded_and_recomputes_all_derived_views():
@@ -20,10 +22,12 @@ def test_one_year_rebuild_is_bounded_and_recomputes_all_derived_views():
     for handle in ("DGretta_Author", "FeroceResearch", "TradexWhisperer", "gsmferrari"):
         assert handle in workflow
     assert "--since-days 370" in workflow
-    assert "--since-days 30" in workflow
+    assert "datetime('now', '-30 days')" in workflow
     assert "--max-targets 6000" in workflow
     assert "--ticker-clues-only" in workflow
     assert "Save raw backfill checkpoint" in workflow
+    assert "Verify saved overlap for existing four" in workflow
+    assert "Safety overlap for existing four" not in workflow
     for run_id in (
         "eHzAhTk5bZiBrDzDD",
         "PeeVsMuLX75q2gUph",
@@ -44,3 +48,8 @@ def test_daily_and_rebuild_workflows_share_database_concurrency_lock():
     ).read_text()
     assert "group: signalboard-data-write" in daily
     assert "group: signalboard-data-write" in rebuild
+
+
+def test_health_check_creates_log_directory():
+    source = (ROOT / "scripts" / "intel_daily_health.py").read_text(encoding="utf-8")
+    assert "os.makedirs(LOG_DIR, exist_ok=True)" in source

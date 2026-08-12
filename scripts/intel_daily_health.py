@@ -44,6 +44,7 @@ def health_check():
     issues = []
     today_str = TODAY.strftime("%Y%m%d")
     log_file = os.path.join(LOG_DIR, f"intel_health_{today_str}.log")
+    os.makedirs(LOG_DIR, exist_ok=True)
     log_lines = []
 
     def log(msg):

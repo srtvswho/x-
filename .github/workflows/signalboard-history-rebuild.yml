@@ -58,13 +58,28 @@ jobs:
           gzip -cd data/signalboard.db.gz > data/signalboard_full.db
           sudo ln -sfn "$GITHUB_WORKSPACE" /workspace
 
-      - name: Safety overlap for existing four
+      - name: Verify saved overlap for existing four
         shell: bash
         run: |
           set -Eeuo pipefail
-          for kol in jukan05 aleabitoreddit zephyr_z9 austinsemis; do
-            python scripts/intel_backfill_90d.py --kol "$kol" --since-days 30 --max-per-window 5000
-          done
+          python - <<'PY'
+          import sqlite3
+          con = sqlite3.connect("data/signalboard_full.db", timeout=30)
+          sources = ("tw_jukan05", "tw_aleabitoreddit", "tw_zephyr_z9", "tw_austinsemis")
+          missing = []
+          for source in sources:
+              count = con.execute(
+                  "SELECT COUNT(*) FROM raw_posts WHERE source_id=? "
+                  "AND datetime(published_at) >= datetime('now', '-30 days')",
+                  (source,),
+              ).fetchone()[0]
+              print(source, count)
+              if count == 0:
+                  missing.append(source)
+          con.close()
+          if missing:
+              raise SystemExit(f"30-day overlap missing: {missing}")
+          PY
 
       - name: Backfill one year for new four
         shell: bash

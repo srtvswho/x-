@@ -140,7 +140,10 @@ def backfill_one_kol(
 
             client = ApifyClient(apify_token)
             run = client.run(run_id).get()
-            dataset_id = run.get("defaultDatasetId") or run.get("default_dataset_id")
+            if isinstance(run, dict):
+                dataset_id = run.get("defaultDatasetId") or run.get("default_dataset_id")
+            else:
+                dataset_id = getattr(run, "default_dataset_id", None)
             if not dataset_id:
                 raise RuntimeError(f"Apify run {run_id} 没有 defaultDatasetId")
             items = list(client.dataset(dataset_id).iterate_items())
@@ -313,6 +316,9 @@ def main():
     results.sort(key=lambda r: r["handle"])
     print("\n=== 回填结果 ===")
     print(json.dumps(results, indent=2, ensure_ascii=False))
+    failures = [r for r in results if r.get("error")]
+    if failures:
+        raise SystemExit(f"{len(failures)} 个账号回填失败: {[r['handle'] for r in failures]}")
 
 
 if __name__ == "__main__":
