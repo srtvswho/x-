@@ -102,6 +102,7 @@ def backfill_one_kol(
     since_days: int,
     apify_token: str,
     max_per_window: int,
+    run_id: Optional[str] = None,
 ) -> Dict[str, Any]:
     """对单 KOL 做 90 天回填, 复用模块1 增量逻辑, 但 since = today - 90d (强制覆盖)。"""
     handle = kol["handle"]
@@ -132,9 +133,20 @@ def backfill_one_kol(
     captured_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     field_map = default_field_map()
 
-    # 调 Apify
+    # 调 Apify，或复用已完成 run 的 dataset（失败续跑不重复计费）。
     try:
-        items = _call_actor(run_input, apify_token)
+        if run_id:
+            from apify_client import ApifyClient
+
+            client = ApifyClient(apify_token)
+            run = client.run(run_id).get()
+            dataset_id = run.get("defaultDatasetId") or run.get("default_dataset_id")
+            if not dataset_id:
+                raise RuntimeError(f"Apify run {run_id} 没有 defaultDatasetId")
+            items = list(client.dataset(dataset_id).iterate_items())
+            log.info("[%s] 复用 Apify run %s 的 dataset", handle, run_id)
+        else:
+            items = _call_actor(run_input, apify_token)
     except Exception as e:
         log.error("[%s] Apify 调用失败: %s", handle, e)
         return {"handle": handle, "fetched": 0, "new_persisted": 0, "error": str(e)}
@@ -231,6 +243,11 @@ def main():
         help="单 KOL handle（必须在生产8人名单中），默认 all",
     )
     parser.add_argument("--max-per-window", type=int, default=5000, help="Apify maxItems per window")
+    parser.add_argument(
+        "--run-id",
+        default="",
+        help="复用已完成的 Apify actor run dataset，避免失败续跑时再次抓取计费",
+    )
     parser.add_argument("--apify-token", default=os.environ.get("APIFY_TOKEN", ""))
     parser.add_argument("--dry-run", action="store_true", help="只跑输入构建, 不真调 Apify")
     args = parser.parse_args()
@@ -268,7 +285,17 @@ def main():
     # 并发跑生产 KOL (最多4并发, 各自独立, 失败不阻塞)
     results: List[Dict[str, Any]] = []
     with ThreadPoolExecutor(max_workers=4) as pool:
-        futures = {pool.submit(backfill_one_kol, kol, args.since_days, args.apify_token, args.max_per_window): kol for kol in kol_list}
+        futures = {
+            pool.submit(
+                backfill_one_kol,
+                kol,
+                args.since_days,
+                args.apify_token,
+                args.max_per_window,
+                args.run_id or None,
+            ): kol
+            for kol in kol_list
+        }
         for fut in as_completed(futures):
             kol = futures[fut]
             try:

@@ -70,9 +70,30 @@ jobs:
         shell: bash
         run: |
           set -Eeuo pipefail
-          for kol in DGretta_Author FeroceResearch TradexWhisperer gsmferrari; do
-            python scripts/intel_backfill_90d.py --kol "$kol" --since-days 370 --max-per-window 5000
-          done
+          # 复用首次成功抓取的 actor datasets；只重新导入，不再产生抓取费用。
+          python scripts/intel_backfill_90d.py --kol DGretta_Author --since-days 370 \
+            --run-id eHzAhTk5bZiBrDzDD
+          python scripts/intel_backfill_90d.py --kol FeroceResearch --since-days 370 \
+            --run-id PeeVsMuLX75q2gUph
+          python scripts/intel_backfill_90d.py --kol TradexWhisperer --since-days 370 \
+            --run-id KLHVvrYw16h9c7iUV
+          python scripts/intel_backfill_90d.py --kol gsmferrari --since-days 370 \
+            --run-id aIleM6JgGwMNmKhc8
+
+      - name: Save raw backfill checkpoint
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          gzip -c data/signalboard_full.db > data/signalboard.db.gz.new
+          gzip -t data/signalboard.db.gz.new
+          mv data/signalboard.db.gz.new data/signalboard.db.gz
+          git config user.name "signalboard-bot"
+          git config user.email "signalboard-bot@users.noreply.github.com"
+          git add data/signalboard.db.gz
+          if ! git diff --cached --quiet; then
+            git commit -m "Checkpoint Signalboard 1Y raw history"
+            git push origin HEAD:master
+          fi
 
       - name: Extract missing historical views
         shell: bash
@@ -83,6 +104,7 @@ jobs:
           python scripts/intel_extract.py \
             --since "$since_370" \
             --sources tw_DGretta_Author,tw_FeroceResearch,tw_TradexWhisperer,tw_gsmferrari \
+            --ticker-clues-only \
             --max-targets 6000
           python scripts/intel_extract.py \
             --since "$since_30" \
