@@ -1,7 +1,7 @@
 """大V情报 — 每日健康速查 (4 项一眼看, 替代人工 cron log 翻查)
 
 4 项检查:
-1. cron 跑了没? 4 大V last_fetched_at 距今天数
+1. cron 跑了没? 生产账号 last_fetched_at 距今天数
 2. 数据增长? raw_posts / extractions_intel 最近 24h 增量
 3. 自检过了没? 4 项 (重复/cron/KOL 活跃/ISO)
 4. GitHub push 成功? 远端最新 commit 时间 + 是否是 daily DB 备份
@@ -33,6 +33,10 @@ KOLS = [
     ("aleabitoreddit", "tw_aleabitoreddit"),
     ("zephyr_z9", "tw_zephyr_z9"),
     ("austinsemis", "tw_austinsemis"),
+    ("DGretta_Author", "tw_DGretta_Author"),
+    ("FeroceResearch", "tw_FeroceResearch"),
+    ("TradexWhisperer", "tw_TradexWhisperer"),
+    ("gsmferrari", "tw_gsmferrari"),
 ]
 
 
@@ -41,7 +45,7 @@ def section_header(title: str) -> str:
 
 
 def check_cron_last_run(con: sqlite3.Connection) -> tuple[list, list]:
-    """检查 1: cron 跑了没 (4 大V last_fetched_at).
+    """检查 1: cron 跑了没 (生产账号 last_fetched_at).
 
     Returns: (status_lines, issues)
     """
@@ -119,7 +123,7 @@ def check_data_growth(con: sqlite3.Connection) -> tuple[list, list]:
 
     # by source_id 增量
     status.append(f"  by source_id (24h new):")
-    for sid in ['tw_jukan05', 'tw_aleabitoreddit', 'tw_zephyr_z9', 'tw_austinsemis']:
+    for _, sid in KOLS:
         n = con.execute("""
             SELECT COUNT(*) FROM raw_posts
             WHERE source_id=? AND (captured_at >= ? OR published_at >= ?)
@@ -139,7 +143,7 @@ def check_health(con: sqlite3.Connection) -> tuple[list, list]:
 
     # 重复
     dup_total = 0
-    for sid in ['tw_jukan05', 'tw_aleabitoreddit', 'tw_zephyr_z9', 'tw_austinsemis']:
+    for _, sid in KOLS:
         r = con.execute("""
             SELECT COUNT(*), COUNT(DISTINCT post_id) FROM raw_posts WHERE source_id=?
         """, (sid,)).fetchone()
@@ -149,7 +153,7 @@ def check_health(con: sqlite3.Connection) -> tuple[list, list]:
             issues.append(("DUP", sid, dup))
             dup_total += dup
     if dup_total == 0:
-        status.append(f"  ✅ 4 大V 内部 0 重复")
+        status.append(f"  ✅ {len(KOLS)} 个生产账号内部 0 重复")
 
     # KOL 活跃
     today = datetime.now(timezone.utc).date()
@@ -292,7 +296,7 @@ def main():
 
     # 检查 1: cron
     s, i = check_cron_last_run(con)
-    all_status["1️⃣ Cron 跑没跑 (4 大V last_fetched_at)"] = s
+    all_status["1️⃣ Cron 跑没跑 (生产账号 last_fetched_at)"] = s
     all_issues.extend(i)
 
     # 检查 2: 数据增长
@@ -329,7 +333,7 @@ def main():
             for typ, sid, n in all_issues:
                 print(f"     - {typ} {sid} ({n})")
         else:
-            print(f"\n  ✅ 全绿 (4 大V 健康, 数据在增长, push 成功)")
+            print(f"\n  ✅ 全绿 ({len(KOLS)} 个生产账号健康, 数据在增长, push 成功)")
 
     # 总结
     print(f"\n{'='*70}")

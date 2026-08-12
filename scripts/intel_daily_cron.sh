@@ -111,15 +111,15 @@ echo "大V情报 — daily cron (UTC $(date -u +%Y-%m-%dT%H:%M:%S))"
 echo "北京: $(TZ='Asia/Shanghai' date +%Y-%m-%dT%H:%M:%S)"
 echo "=========================================="
 
-# ===== 阶段 1: 模块 1 - 4 大V 增量抓取 (并发) =====
+# ===== 阶段 1: 模块 1 - 8个生产账号增量抓取 (并发) =====
 echo ""
-echo "=== 阶段 1: 模块 1 — 4 大V 增量抓取 (并发) ==="
+echo "=== 阶段 1: 模块 1 — 8个生产账号增量抓取 (并发) ==="
 if [ "$INTEL_SKIP_SCRAPE" = "1" ]; then
     echo "  ⏭ skipped (漂移补偿: 4h 内已抓取)"
-    # 不伪造 SCRAPE_OK: skip 不是 4/4 成功
+    # 不伪造 SCRAPE_OK: skip 不是 8/8 成功
 else
     PIDS=""
-    for kol in jukan05 aleabitoreddit zephyr_z9 austinsemis; do
+    for kol in jukan05 aleabitoreddit zephyr_z9 austinsemis DGretta_Author FeroceResearch TradexWhisperer gsmferrari; do
       LOG_FILE=$LOG_DIR/intel_cron_${kol}_${DATE}.log
       echo "  启动: $kol (log: $LOG_FILE)"
       nohup python /workspace/scripts/intel_incremental_scrape.py --kol $kol > $LOG_FILE 2>&1 &
@@ -140,7 +140,7 @@ else
     done
     set -e
     SCRAPE_EXIT=0  # 即使部分失败也记 0, 让 cron 继续
-    echo "  ✓ 4 大V 抓取完成: $SCRAPE_OK/4 成功"
+    echo "  ✓ 8个生产账号抓取完成: $SCRAPE_OK/8 成功"
 fi
 
 # ===== 阶段 2: 模块 2 - 增量抽取 (D: 受 INTEL_SKIP_SCRAPE 控制) =====
@@ -245,7 +245,7 @@ if [ "$INTEL_SKIP_SCRAPE" = "1" ]; then
     echo "  阶段 1 抓取: skipped"
     echo "  阶段 2 抽取: skipped"
 else
-    echo "  阶段 1 抓取: $SCRAPE_OK/4 (exit=$SCRAPE_EXIT)"
+    echo "  阶段 1 抓取: $SCRAPE_OK/8 (exit=$SCRAPE_EXIT)"
     echo "  阶段 2 抽取: 成功 $NEW_N (exit=$EXTRACT_EXIT)"
 fi
 echo "  阶段 3 自检: exit=$HEALTH_EXIT"

@@ -428,10 +428,15 @@ def _ensure_schema(conn: sqlite3.Connection) -> None:
 
 @contextmanager
 def get_conn(db_path: DbPath) -> Iterator[sqlite3.Connection]:
-    """带 row_factory + 外键的连接上下文,异常自动 rollback。"""
-    conn = sqlite3.connect(db_path)
+    """带 row_factory + 外键的连接上下文,异常自动 rollback。
+
+    每日抓取会并发写入多个账号；设置 busy timeout，避免短暂写锁直接把某个
+    账号整批判失败。SQLite 仍保持单写者语义，只是在锁释放前安全等待。
+    """
+    conn = sqlite3.connect(db_path, timeout=30)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
+    conn.execute("PRAGMA busy_timeout = 30000")
     _register_extensions(conn)
     try:
         yield conn

@@ -49,7 +49,8 @@ log = logging.getLogger("intel_scrape")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(message)s")
 
 # ---------------------------------------------------------------------------
-# 大V 列表 (模块1 测试: 只 Austin)
+# 生产跟踪名单：正式评级 B 及以上 + 已通过专项能力验证的角色型账号。
+# 评级/能力圈/权重的展示口径在 scripts/dashboard/common.py 中维护。
 # ---------------------------------------------------------------------------
 # 完整 4 人列表等用户 GitHub 配好 + 增量验证后再加
 KOL_TEST = [
@@ -71,6 +72,26 @@ KOL_TEST = [
     {
         "handle": "austinsemis",
         "source_id": "tw_austinsemis",
+        "platform": Platform.TWITTER.value,
+    },
+    {
+        "handle": "DGretta_Author",
+        "source_id": "tw_DGretta_Author",
+        "platform": Platform.TWITTER.value,
+    },
+    {
+        "handle": "FeroceResearch",
+        "source_id": "tw_FeroceResearch",
+        "platform": Platform.TWITTER.value,
+    },
+    {
+        "handle": "TradexWhisperer",
+        "source_id": "tw_TradexWhisperer",
+        "platform": Platform.TWITTER.value,
+    },
+    {
+        "handle": "gsmferrari",
+        "source_id": "tw_gsmferrari",
         "platform": Platform.TWITTER.value,
     },
 ]
@@ -209,7 +230,9 @@ def scrape_one_kol(kol: Dict[str, str], apify_token: str, dry_run: bool = False)
         since_iso = None
         log.info("[%s] 首次 since=%s (无 last_tweet_published_at)", handle, since_date)
 
-    until_date = today
+    # X/Twitter 高级搜索的 ``until:YYYY-MM-DD`` 是排他上界。
+    # 传 today 会系统性漏掉今天发布的所有帖子，让看板链路延迟一天。
+    until_date = today + timedelta(days=1)
 
     # 用现有 build_run_input — searchTerms 嵌 since/until 在单字符串
     run_input = build_run_input(

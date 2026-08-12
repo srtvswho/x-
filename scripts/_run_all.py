@@ -1,5 +1,8 @@
 import subprocess
-handles = ['jukan05', 'aleabitoreddit', 'zephyr_z9', 'austinsemis']
+handles = [
+    'jukan05', 'aleabitoreddit', 'zephyr_z9', 'austinsemis',
+    'DGretta_Author', 'FeroceResearch', 'TradexWhisperer', 'gsmferrari',
+]
 for h in handles:
     print(f"\n=== 抓 {h} ===", flush=True)
     try:

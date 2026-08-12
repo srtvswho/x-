@@ -1,9 +1,9 @@
-"""大V情报 — Dashboard Summaries 生成 (LLM 预生成 26 段)
+"""大V情报 — Dashboard Summaries 生成（按当前生产人物动态生成）
 
 26 段结构:
 - today (1) — 今日综合
-- consensus (5 窗: 0/1/3/6/12 月) — 四人共识
-- person (4 人 × 5 窗 = 20) — 每人各窗总结
+- consensus (5 窗: 0/1/3/6/12 月) — 加权共识
+- person (当前人物 × 5 窗) — 每人各窗总结
 
 关键: prompt 必须带能力圈 (KOLS 强项/弱项), LLM 才知道:
 - 谁的哪些方向可信 (强项)
@@ -14,7 +14,7 @@
 - prompt 注入 KOLS 强项/弱项
 - LLM 输出 ≤100 字 中文
 
-DeepSeek 便宜, 26 段 ≈ $0.05.
+段数随生产人物数量动态变化。
 
 输出: summaries.json (build_dashboard.py 读它)
 """
@@ -35,28 +35,14 @@ import requests
 # today/0M 用 24h 滚动 (不是北京自然日, 因为生产顺序 06:00 抓取 → 06:20 Dashboard,
 # 北京自然日只覆盖 6h, 跟用户视角 "今日" 不符; 24h 滚动跟 cron 节奏对齐)
 sys.path.insert(0, str(Path(__file__).parent))
-from common import CN_TZ, cn_recent_24h_window_utc, cn_window_long_utc  # noqa: E402
+from common import (  # noqa: E402
+    CN_TZ, KOLS, SRC2KOL, cn_recent_24h_window_utc, cn_window_long_utc,
+)
 
 DB_PATH = "/workspace/data/signalboard_full.db"
 OUT_PATH = "/workspace/scripts/dashboard/summaries.json"
 DEEPSEEK_URL = "https://api.deepseek.com/v1/chat/completions"
 DEEPSEEK_MODEL = "deepseek-v4-flash"
-
-# 能力圈 (跟 build_dashboard.py 的 KOLS 一致 — 这是 LLM prompt 的"知识")
-KOLS = {
-    "jukan": {"name": "Jukan", "type": "signal",
-              "strong": ["存储", "HBM", "代工", "卡点"],
-              "weak": ["看多 AI 龙头(跑输板块)"]},
-    "serenity": {"name": "Serenity", "type": "cognition",
-              "strong": ["光通信", "CPO", "InP", "化合物半导体"],
-              "weak": ["整体追高", "tier_B 清单=板块β"]},
-    "zephyr": {"name": "zephyr", "type": "cognition",
-              "strong": ["存储", "光通信", "HBM", "电力", "卡点"],
-              "weak": ["看空全错(0/22)", "AI 泡沫论盲区"]},
-    "austin": {"name": "Austin", "type": "cognition",
-              "strong": ["商业格局", "AMD/CUDA 护城河", "Foundry 模式"],
-              "weak": ["看多龙头(跑输板块)", "看空全错(1/8)"]},
-}
 
 # 时间窗 (单位: 天) — "0" 跟 "1" 实际都是 1 (北京今日),
 # 但 "1M/3M/6M/12M" 是相对滑动窗口 (今天往前推 N 天)
@@ -89,13 +75,8 @@ def get_data_for_window(con: sqlite3.Connection, days: int) -> list[dict]:
         WHERE r.published_at >= ? AND r.published_at < ?
           AND (e.ticker IS NOT NULL OR e.bottleneck IS NOT NULL OR e.direction != 'neutral')
         ORDER BY r.published_at DESC
-        LIMIT 200
     """, (start_iso, end_iso)).fetchall()
     out = []
-    SRC2KOL = {  # source_id → 短名 (跟 build_dashboard.py 一致)
-        "tw_jukan05": "jukan", "tw_aleabitoreddit": "serenity",
-        "tw_zephyr_z9": "zephyr", "tw_austinsemis": "austin",
-    }
     for x in rows:
         out.append({
             "post_id": x[0],
@@ -116,7 +97,11 @@ def build_kols_prompt() -> str:
     for kol, info in KOLS.items():
         strong = ", ".join(info["strong"])
         weak = ", ".join(info["weak"])
-        lines.append(f"- {info['name']} ({kol}): 强项={strong}; 弱项/盲区={weak}")
+        lines.append(
+            f"- {info['name']} ({kol}): 评级={info['rating']}({info['ratingStatus']}); "
+            f"方向权重={info['consensusWeight']}; 认知权重={info['researchWeight']}; "
+            f"强项={strong}; 弱项/盲区={weak}"
+        )
     lines.append("")
     lines.append("【关键规则】")
     lines.append("1. 有人在【强项】领域发言 → 高可信 (✅)")
@@ -125,6 +110,19 @@ def build_kols_prompt() -> str:
     lines.append("4. 共识 = 多人都提到同一卡点/方向")
     lines.append("5. 客观、结论先行；禁止写成散文或按人物流水账")
     return "\n".join(lines)
+
+
+def balanced_consensus_sample(data: list[dict], per_kol: int = 12) -> list[dict]:
+    """按人物限额抽样，避免高频账号淹没低频账号的共识证据。"""
+    counts: dict[str, int] = {}
+    out = []
+    for row in data:
+        kol = row["kol"]
+        if kol not in KOLS or counts.get(kol, 0) >= per_kol:
+            continue
+        counts[kol] = counts.get(kol, 0) + 1
+        out.append(row)
+    return out
 
 
 def call_llm(system: str, user: str, max_retries: int = 2) -> str:
@@ -163,12 +161,13 @@ def gen_today_summary(con: sqlite3.Connection) -> str:
     """今日总结 (1 段)."""
     data = get_data_for_window(con, days=1)
     if not data:
-        return "今日四人无新推文或无新有效判断。"
+        return "今日生产跟踪账号无新推文或无新有效判断。"
 
     kols_prompt = build_kols_prompt()
-    data_str = json.dumps(data[:50], ensure_ascii=False, indent=None, default=str)
+    sampled = balanced_consensus_sample(data, per_kol=8)
+    data_str = json.dumps(sampled, ensure_ascii=False, indent=None, default=str)
 
-    system = f"""你是大V情报分析师。从4个大V今天的推文抽取综合总结。
+    system = f"""你是大V情报分析师。从当前生产跟踪账号今天的推文抽取综合总结。
 {kols_prompt}
 
 【输出要求】严格输出以下4行，每行只写一个结论；没有则写“无”。总计≤180字：
@@ -178,7 +177,7 @@ def gen_today_summary(con: sqlite3.Connection) -> str:
 风险/分歧｜最重要的反方、盲区或待验证点
 标注能力圈 (✅强项 / ⚠️打折)，不写 R12 过滤项。
 """
-    user = f"今日 4 大V 有效判断数据 ({len(data)} 条):\n{data_str}\n\n输出今日综合总结 (≤100 字):"
+    user = f"今日 {len(KOLS)} 个跟踪账号有效判断数据 ({len(data)} 条；已按人物均衡抽样 {len(sampled)} 条):\n{data_str}\n\n输出今日综合总结 (≤100 字):"
 
     return call_llm(system, user)
 
@@ -190,19 +189,22 @@ def gen_consensus_summary(con: sqlite3.Connection, window: str, days: int) -> st
         return f"近 {window} 月无有效判断数据。"
 
     kols_prompt = build_kols_prompt()
-    data_str = json.dumps(data[:80], ensure_ascii=False, default=str)
+    sampled = balanced_consensus_sample(data)
+    data_str = json.dumps(sampled, ensure_ascii=False, default=str)
 
     window_label = {"0": "今日", "1": "近 1 月", "3": "近 3 月", "6": "近 6 月", "12": "近 1 年"}.get(window, f"近 {window}")
 
-    system = f"""你是大V情报分析师。提炼 {window_label} 4 大V 共识 (多人共同提的方向/卡点)。
+    system = f"""你是大V情报分析师。提炼 {window_label} 加权共识 (多人共同提的方向/卡点)。
 {kols_prompt}
 
 【输出要求】严格输出以下3行，总计≤160字：
 共识方向｜模块/主题 + 看多/看空/中性 + 参与者
 核心标的｜按方向列出明确 ticker；没有则写“无明确标的”
 分歧/风险｜相左观点、盲区或待验证点；没有则写“暂无明显分歧”
+- 共识必须至少2人同向，且方向权重合计≥0.80
+- Zephyr看空权重为0；Austin主要是认知验证，不得与Jukan等权计票
 """
-    user = f"{window_label} 4 大V 有效判断 ({len(data)} 条):\n{data_str}\n\n输出共识总结 (≤100 字):"
+    user = f"{window_label} {len(KOLS)} 个跟踪账号有效判断 ({len(data)} 条；已按人物均衡抽样 {len(sampled)} 条):\n{data_str}\n\n输出共识总结 (≤100 字):"
 
     return call_llm(system, user)
 
@@ -284,7 +286,8 @@ def main():
         print("  (如要明确降级, 加 --graceful-degrade)", flush=True)
         sys.exit(2)
 
-    print("===== Dashboard Summaries 生成 (LLM 预生成 26 段) =====\n")
+    total_segments = 1 + len(WINDOWS) + len(KOLS) * len(WINDOWS)
+    print(f"===== Dashboard Summaries 生成 (LLM 预生成 {total_segments} 段) =====\n")
     con = sqlite3.connect(DB_PATH, timeout=60)
 
     data_until = get_data_until(con)
@@ -305,7 +308,7 @@ def main():
         summaries["person"][kol] = {}
 
     # === 1. today ===
-    print("[1/26] 今日综合...")
+    print(f"[1/{total_segments}] 今日综合...")
     summaries["today"] = gen_today_summary(con)
     archive_date = datetime.now(timezone.utc).astimezone(CN_TZ).strftime("%Y-%m-%d")
     summaries["daily_history"][archive_date] = {
@@ -317,15 +320,15 @@ def main():
 
     # === 2. consensus × 5 ===
     for i, (win, days) in enumerate(WINDOWS.items(), 2):
-        print(f"[{i}/26] 共识 {win}M ({days}d)...")
+        print(f"[{i}/{total_segments}] 共识 {win}M ({days}d)...")
         summaries["consensus"][win] = gen_consensus_summary(con, win, days)
         print(f"  ✓ {summaries['consensus'][win][:80]}...")
 
-    # === 3. person × 4 × 5 ===
+    # === 3. person × 当前人物 × 5 ===
     idx = 7
     for kol in KOLS:
         for win, days in WINDOWS.items():
-            print(f"[{idx}/26] {KOLS[kol]['name']} {win}M...")
+            print(f"[{idx}/{total_segments}] {KOLS[kol]['name']} {win}M...")
             summaries["person"][kol][win] = gen_person_summary(con, kol, win, days)
             print(f"  ✓ {summaries['person'][kol][win][:80]}...")
             idx += 1

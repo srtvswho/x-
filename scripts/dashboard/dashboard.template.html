@@ -197,7 +197,7 @@ a{color:inherit;text-decoration:none}
 .pending .q{color:var(--amber)}
 
 /* ===== KOL cards (now at bottom, compact reference) ===== */
-.kolgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kolgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
 .kol{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;position:relative;overflow:hidden;box-shadow:0 4px 14px rgba(23,32,51,.03)}
 .kol::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent,var(--amber))}
 .kol .khead{display:flex;align-items:center;gap:9px;margin-bottom:3px}
@@ -298,7 +298,7 @@ a{color:inherit;text-decoration:none}
   <div class="kolgrid" id="kolgrid"></div>
 
   <div class="foot"><span>SIGNAL DESK</span><span class="sep">/</span>
-    <span>4 sources</span><span class="sep">/</span><span id="foot-count"></span><span class="sep">/</span>
+    <span id="foot-sources"></span><span class="sep">/</span><span id="foot-count"></span><span class="sep">/</span>
     <span id="foot-build"></span><span class="sep">/</span>
     <span id="foot-datauntil"></span></div>
 </div></div>
@@ -322,8 +322,8 @@ const TODAY_RECORDS=JSON.parse(document.getElementById('TODAY_RECORDS').textCont
 const BUILD_META=JSON.parse(document.getElementById('BUILD_META').textContent);
 // 单一今日窗口函数 (24h 滚动) — 跟 build_dashboard.py / intel_gen_summaries.py / query_today_stats 共用
 function todayWindowUTC(){return [new Date(BUILD_META.window_start_utc), new Date(BUILD_META.window_end_utc)];}
-const COLORS={jukan:'#48c9d6',serenity:'#f0a73c',zephyr:'#9a8cff',austin:'#e0617a'};
-const ORDER=['jukan','serenity','zephyr','austin'];
+const COLORS={jukan:'#48c9d6',serenity:'#f0a73c',zephyr:'#9a8cff',austin:'#e0617a',dgretta:'#2e9d69',feroce:'#d17c2f',tradex:'#5277d3',gsmferrari:'#8255b5'};
+const ORDER=['jukan','serenity','zephyr','austin','dgretta','feroce','tradex','gsmferrari'];
 function initials(n){return n.slice(0,1).toUpperCase()}
 // 北京时间格式化 (统一时区, 不依赖浏览器本地时区)
 const CST_FMT = new Intl.DateTimeFormat('zh-CN', { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
@@ -355,7 +355,11 @@ const SIGNAL_POLICY={
   jukan:{focus:'存储/HBM能力圈内的明确方向与实际操作',caution:'模糊、无行动证据的短线风险评论',review:'每月更新表现 · 每季度复核能力圈'},
   zephyr:{focus:'产业卡点与能力圈内做多',caution:'做空信号：历史多空表现不对称',review:'每月更新多空分项 · 每季度复核'},
   austin:{focus:'公司竞争格局与技术路线',caution:'短线买卖点与圈外标的',review:'每月更新表现 · 每季度复核'},
-  serenity:{focus:'光通信/CPO/InP产业趋势与标的发现',caution:'高频重复喊多与具体买点',review:'每月更新时点表现 · 每季度复核'}
+  serenity:{focus:'光通信/CPO/InP产业趋势与标的发现',caution:'高频重复喊多与具体买点',review:'每月更新时点表现 · 每季度复核'},
+  dgretta:{focus:'明确原创的成长股启动和连续决策链',caution:'小盘高Beta仓位与大回撤',review:'轻测权重运行 · 完成长周期深测后再升级'},
+  feroce:{focus:'成长主题的二次确认与仓位结构',caution:'不能单独触发重仓',review:'轻测权重运行 · 每月滚动复核'},
+  tradex:{focus:'MU/SNDK及60–120日存储主题',caution:'20日短线择时、目标价与营销式回顾',review:'按中期主题使用 · 短线自动降权'},
+  gsmferrari:{focus:'技术形态、多空择时与顶部风险',caution:'产业基本面和单条信号波动',review:'必须结合止损 · 每月更新双向表现'}
 };
 function inferHorizon(r){
   const s=((r.summary||'')+' '+(r.raw_text||'')).toLowerCase();
@@ -364,6 +368,12 @@ function inferHorizon(r){
   if(/季度|周期|库存|供给|dram|nand|hbm/.test(s)) return {name:'周期',days:120};
   if(/长期|未来.?年|多年|long.?term/.test(s)) return {name:'长期',days:365};
   return {name:'波段',days:60};
+}
+function signalWeight(r){
+  const k=KOLS[r.kol]||{};
+  if(r.direction==='short'&&k.shortWeight!==undefined)return Number(k.shortWeight)||0;
+  if(r.kol==='tradex'&&['短线','事件'].includes(inferHorizon(r).name))return Number(k.shortTermWeight)||0;
+  return Number(k.consensusWeight)||0;
 }
 function signalStrength(r){
   const h=inferHorizon(r),age=Math.max(0,Math.floor((Date.now()-new Date(r.published_at).getTime())/86400000));
@@ -387,7 +397,9 @@ function signalStrength(r){
 }
 function signalBadges(r){
   const s=signalStrength(r),left=Math.max(0,s.days-s.age);
-  return '<span class="sig '+s.level+'">'+s.label+'</span><span class="cycle">'+s.horizon+' · '+(left?'约余 '+left+' 天':'已到期')+'</span><span class="sigwhy">'+s.why+'</span>';
+  const explicit=r.direction==='long'||r.direction==='short',k=KOLS[r.kol]||{};
+  const weight=explicit?signalWeight(r):(Number(k.researchWeight)||0),weightLabel=explicit?'方向权重':'认知权重';
+  return '<span class="sig '+s.level+'">'+s.label+'</span><span class="cycle">'+weightLabel+' '+weight.toFixed(2)+'</span><span class="cycle">'+s.horizon+' · '+(left?'约余 '+left+' 天':'已到期')+'</span><span class="sigwhy">'+s.why+'</span>';
 }
 function closeEvidence(el){
   const details=el&&el.closest?el.closest('details.evidence'):null;
@@ -484,15 +496,17 @@ function liveConsensus(records){
   const groups=new Map();
   directional.forEach(({r,topic,direction})=>{
     const key=topic+'|'+direction;
-    if(!groups.has(key))groups.set(key,{topic,direction,kols:new Set(),tickers:new Set()});
-    const g=groups.get(key);g.kols.add(r.kol);(r.ticker||[]).forEach(t=>g.tickers.add(t));
+    if(!groups.has(key))groups.set(key,{topic,direction,kols:new Set(),tickers:new Set(),weight:0});
+    const g=groups.get(key),w=signalWeight({...r,direction});
+    if(!g.kols.has(r.kol)){g.kols.add(r.kol);g.weight+=w;}
+    (r.ticker||[]).forEach(t=>g.tickers.add(t));
   });
-  const all=[...groups.values()].sort((a,b)=>b.kols.size-a.kols.size);
-  const shared=all.filter(g=>g.kols.size>=2);
-  const singles=all.filter(g=>g.kols.size===1);
+  const all=[...groups.values()].filter(g=>g.weight>0).sort((a,b)=>b.weight-a.weight||b.kols.size-a.kols.size);
+  const shared=all.filter(g=>g.kols.size>=2&&g.weight>=0.8);
+  const singles=all.filter(g=>!shared.includes(g));
   const name=k=>KOLS[k]?KOLS[k].name:k;
-  const describe=g=>`${g.topic}${g.direction==='long'?'看多':'看空'}（${[...g.kols].map(name).join('、')}）`;
-  const line1=shared.length?shared.map(describe).join('；'):'本窗口未形成至少两人同向的共识';
+  const describe=g=>`${g.topic}${g.direction==='long'?'看多':'看空'}（权重 ${g.weight.toFixed(2)}；${[...g.kols].map(name).join('、')}）`;
+  const line1=shared.length?shared.map(describe).join('；'):'本窗口未形成“至少两人且合计权重≥0.80”的共识';
   const singleLine=singles.length?singles.slice(0,4).map(describe).join('；'):'无';
   const tickers=[...new Set(all.flatMap(g=>[...g.tickers]))];
   const conflicts=[];
@@ -525,7 +539,7 @@ function renderStance(){
   ORDER.forEach(key=>{
     let recs=dataSrc.filter(r=>r.kol===key&&new Date(r.published_at)>=cut);
     recs=recs.slice().sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
-    if(win!==0)recs=recs.filter(r=>(recordStances(r).length||r.bottleneck));
+    if(win!==0)recs=recs.filter(r=>r.direction!=='neutral'||r.bottleneck);
     allByKol[key]=recs;
     visibleByKol[key]=selectStanceEvidence(recs,4);
   });
@@ -554,7 +568,7 @@ function renderStance(){
     const psum=livePersonSummary(allByKol[key]);
     return `<div class="stance">
       <div class="sh"><div class="av" style="background:${c}">${initials(k.name)}</div>
-        <div class="nm">${k.name}</div><div class="tp ${k.type}">${k.type}</div><div class="ct">窗口 ${allByKol[key].length} 条 · 展示 ${recs.length} 条</div></div>
+        <div class="nm">${k.name}</div><div class="tp ${k.type}">${k.rating}</div><div class="ct">基础方向权重 ${Number(k.consensusWeight||0).toFixed(2)} · 窗口 ${allByKol[key].length} 条 · 展示 ${recs.length} 条</div></div>
       <div class="psum"><span class="lead">${winLabel(win)} · 核心立场</span>${formatStructuredSummary(psum)}</div>
       ${rows}</div>`;
   }).join('');
@@ -630,7 +644,7 @@ function renderFeed(){
     const topDate=new Date(top.published_at);
     if(topDate < todayStart){
       const days=Math.floor((now - topDate)/86400000);
-      banner=`<div class="banner-silent">⚠ 4 大V 静默 ${days} 天, 以下为最近动态</div>`;
+      banner=`<div class="banner-silent">⚠ 生产跟踪账号静默 ${days} 天, 以下为最近动态</div>`;
     }
   }
   document.getElementById('feed').innerHTML=banner + show.map(r=>{
@@ -721,6 +735,7 @@ function renderKols(){
       <div class="khead"><div class="avatar" style="background:${c}">${initials(k.name)}</div>
         <div><div class="kname">${k.name}</div><div class="khandle">${k.handle}</div></div></div>
       <div class="ktype">${k.typeLabel}</div>
+      <div class="review-note"><b>评级：</b>${k.rating} · ${k.ratingStatus}<br><b>方向共识权重：</b>${Number(k.consensusWeight||0).toFixed(2)} · <b>认知验证权重：</b>${Number(k.researchWeight||0).toFixed(2)}${k.shortWeight===0?'<br><b>特别规则：</b>看空权重 0，不进入方向共识':''}${k.shortTermWeight?'<br><b>特别规则：</b>短线/事件权重 '+Number(k.shortTermWeight).toFixed(2):''}</div>
       <div class="kdesc">${k.desc}</div><div class="review-note"><b>重点参考：</b>${SIGNAL_POLICY[key].focus}<br><b>谨慎：</b>${SIGNAL_POLICY[key].caution}<br>${SIGNAL_POLICY[key].review}</div>
       <div class="kgroup strong"><div class="glab">▸ 信他</div><div class="chips">${st}</div></div>
       <div class="kgroup weak"><div class="glab">▸ 略过</div><div class="chips">${wk}</div></div></div>`;
@@ -743,6 +758,7 @@ document.addEventListener('click',e=>{
     if(!d.contains(e.target))d.open=false;
   });
 });
+document.getElementById('foot-sources').textContent=`${ORDER.length} sources`;
 renderLiveMeta();renderStance();renderFeed();renderTickers();renderKols();
 </script>
 </body>

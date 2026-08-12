@@ -6,7 +6,10 @@ on:
     branches: [master]
     paths:
       - "scripts/dashboard/**"
+      - "scripts/intel_incremental_scrape.py"
+      - "scripts/intel_daily_health.py"
       - "scripts/intel_extract.py"
+      - "signalboard/db.py"
       - ".github/workflows/signalboard-daily.yml"
   schedule:
     - cron: "17 6 * * *"
@@ -82,7 +85,7 @@ jobs:
           mkdir -p logs/intel_cron
           pids=()
           names=()
-          for kol in jukan05 aleabitoreddit zephyr_z9 austinsemis; do
+          for kol in jukan05 aleabitoreddit zephyr_z9 austinsemis DGretta_Author FeroceResearch TradexWhisperer gsmferrari; do
             python scripts/intel_incremental_scrape.py --kol "$kol"               > "logs/intel_cron/${kol}.log" 2>&1 &
             pids+=("$!")
             names+=("$kol")
@@ -95,8 +98,8 @@ jobs:
               failures=$((failures + 1))
             fi
           done
-          if [ "$failures" -eq 4 ]; then
-            echo "::error::All four scrapers failed"
+          if [ "$failures" -eq 8 ]; then
+            echo "::error::All eight scrapers failed"
             exit 1
           fi
 

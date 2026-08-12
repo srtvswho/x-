@@ -138,14 +138,9 @@ def query_today_stats(conn) -> dict:
 
     n_posts = len(posts_seen)
 
-    SRC2KOL = {
-        "tw_jukan05": "jukan", "tw_aleabitoreddit": "serenity",
-        "tw_zephyr_z9": "zephyr", "tw_austinsemis": "austin",
-    }
-
     directional = 0
     neutral_with_signal = 0
-    by_kol = {"jukan": 0, "serenity": 0, "zephyr": 0, "austin": 0}
+    by_kol = {key: 0 for key in KOLS}
     bk_count: dict[str, int] = {}
 
     for pid, p in posts_seen.items():
@@ -213,11 +208,6 @@ def query_today_records(conn) -> list[dict]:
         WHERE r.published_at >= ? AND r.published_at < ?
         ORDER BY r.published_at DESC
     """, (start, end)).fetchall()
-
-    SRC2KOL = {
-        "tw_jukan05": "jukan", "tw_aleabitoreddit": "serenity",
-        "tw_zephyr_z9": "zephyr", "tw_austinsemis": "austin",
-    }
 
     # 按 post_id 合并 (同一 post 可能多条 extraction, 例如同一推文被不同 LLM prompt 提取多次)
     by_post: dict = {}
@@ -313,30 +303,61 @@ def query_today_records(conn) -> list[dict]:
 SRC2KOL = {
     "tw_jukan05": "jukan", "tw_aleabitoreddit": "serenity",
     "tw_zephyr_z9": "zephyr", "tw_austinsemis": "austin",
+    "tw_DGretta_Author": "dgretta", "tw_FeroceResearch": "feroce",
+    "tw_TradexWhisperer": "tradex", "tw_gsmferrari": "gsmferrari",
 }
 
-# 4 大V 能力圈画像 (跟 build_dashboard.py KOLS 同步)
+# 人物画像。ratingStatus 区分正式字母评级与专项能力验证，禁止混写。
+# consensusWeight 是交易方向共识的基础权重；researchWeight 是认知验证权重。
 KOLS = {
     "jukan": {"key": "jukan", "name": "Jukan", "handle": "@jukan05", "type": "signal",
-              "typeLabel": "信号源 · signal",
+              "rating": "A+", "ratingStatus": "正式深测", "consensusWeight": 1.0, "researchWeight": 0.9,
+              "typeLabel": "核心交易信号 · signal",
               "desc": "100% 推文带 ticker，会明确喊方向。胜率高，几乎不做空。",
               "strong": ["存储", "HBM", "代工", "卡点"],
               "weak": ["看多 AI 龙头(跑输板块)"]},
     "serenity": {"key": "serenity", "name": "Serenity", "handle": "@aleabitoreddit", "type": "cognition",
+              "rating": "B", "ratingStatus": "正式深测", "consensusWeight": 0.55, "researchWeight": 0.8,
               "typeLabel": "瓶颈专家 · cognition",
               "desc": "光通信/CPO 瓶颈专家，会喊标的，但顺势押龙头、易追高。",
               "strong": ["光通信", "CPO", "InP", "化合物半导体"],
               "weak": ["整体追高", "tier_B 清单=板块β"]},
     "zephyr": {"key": "zephyr", "name": "zephyr", "handle": "@zephyr_z9", "type": "cognition",
+              "rating": "专项通过", "ratingStatus": "无统一字母总评", "consensusWeight": 0.65, "shortWeight": 0.0, "researchWeight": 0.85,
               "typeLabel": "卡点雷达 · cognition",
               "desc": "产业卡点雷达，看多卡点极准(94.8%)，但看空系统性错。",
               "strong": ["存储", "光通信", "HBM", "电力", "卡点"],
               "weak": ["看空全错(0/22)", "AI 泡沫论盲区"]},
     "austin": {"key": "austin", "name": "Austin", "handle": "@austinsemis", "type": "cognition",
+              "rating": "专项通过", "ratingStatus": "无统一字母总评", "consensusWeight": 0.2, "researchWeight": 0.75,
               "typeLabel": "商业格局 · cognition",
               "desc": "AI 芯片商业格局分析，AMD/CUDA 护城河有洞察。认知源非信号源。",
               "strong": ["商业格局", "AMD/CUDA 护城河", "Foundry 模式"],
               "weak": ["看多龙头(跑输板块)", "看空全错(1/8)"]},
+    "dgretta": {"key": "dgretta", "name": "DGretta", "handle": "@DGretta_Author", "type": "signal",
+              "rating": "B+", "ratingStatus": "20日轻测", "consensusWeight": 0.55, "researchWeight": 0.35,
+              "typeLabel": "成长股启动信号 · signal",
+              "desc": "擅长发现正在启动的成长股；轻测59个事件，20日命中64.4%，但小盘高Beta回撤大。",
+              "strong": ["成长股启动", "小盘成长", "首次前瞻", "加仓链"],
+              "weak": ["小盘高Beta", "仓位不可照抄", "尚未完成长周期深测"]},
+    "feroce": {"key": "feroce", "name": "Feroce Research", "handle": "@FeroceResearch", "type": "signal",
+              "rating": "B", "ratingStatus": "20日轻测", "consensusWeight": 0.35, "researchWeight": 0.35,
+              "typeLabel": "成长主题确认 · signal",
+              "desc": "技术面、宏观、基本面与仓位结构结合；轻测68个事件，适合作主题确认。",
+              "strong": ["成长主题", "技术面确认", "仓位结构", "主题轮动"],
+              "weak": ["高Beta", "轻测证据", "不单独触发重仓"]},
+    "tradex": {"key": "tradex", "name": "TradexWhisperer", "handle": "@TradexWhisperer", "type": "signal",
+              "rating": "B", "ratingStatus": "完整深测", "consensusWeight": 0.45, "shortTermWeight": 0.15, "researchWeight": 0.6,
+              "typeLabel": "中期主题信号 · signal",
+              "desc": "存储工程与数据背景；60–120日主题判断强，20日择时弱，目标价和风控披露一般。",
+              "strong": ["MU", "SNDK", "存储周期", "60–120日主题"],
+              "weak": ["20日择时", "精确目标价", "胜利回顾与营销"]},
+    "gsmferrari": {"key": "gsmferrari", "name": "gsmferrari", "handle": "@gsmferrari", "type": "signal",
+              "rating": "B", "ratingStatus": "统一20日盲测", "consensusWeight": 0.45, "researchWeight": 0.25,
+              "typeLabel": "双向择时观察 · signal",
+              "desc": "技术形态和多空择时账号；133个样本，20日命中57.1%，中位超额SOXX +2.2个百分点。",
+              "strong": ["技术择时", "多空双向", "顶部风险", "支撑反弹"],
+              "weak": ["产业基本面较弱", "单条信号波动大", "需止损约束"]},
 }
 
 # 4 大V 真正强项领域的 ticker 白名单 (LLM bottleneck 误抽太多, 改用 ticker 黑/白名单二次过滤)
@@ -366,6 +387,10 @@ KOL_TICKERS = {
                          "ASTS", "AXTI", "AEVA", "AEHR", "COHR", "LITE", "POET", "AAOI", "093370", "6324",
                          "2454", "688017", "AIXA", "LPK", "SPCX", "NBIS", "SNDK", "DRAM", "VPG"],
     },
+    "dgretta": {"all_tickers": True},
+    "feroce": {"all_tickers": True},
+    "tradex": {"in_field": ["MU", "SNDK", "DRAM", "NAND", "PLTR", "RKLB"]},
+    "gsmferrari": {"all_tickers": True},
 }
 
 # Dashboard 标的展示参数 (跟区块04 一致)
@@ -398,6 +423,8 @@ def is_in_field(kol: str, ticker: str, bottleneck: str | None) -> bool:
     if kol not in KOL_TICKERS:
         return False
     spec = KOL_TICKERS[kol]
+    if spec.get("all_tickers"):
+        return True
     if ticker in spec.get("in_field", []):
         return True
     if ticker in spec.get("out_of_field", []):

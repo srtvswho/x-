@@ -27,12 +27,16 @@ LOG_DIR = "/workspace/logs"
 TODAY = datetime.now(timezone.utc).date()
 TODAY_ISO = TODAY.isoformat()
 
-# 4 大V
+# 正式评级 B 及以上 + 已通过专项能力验证的角色型账号
 KOLS = [
     ("jukan05", "tw_jukan05"),
     ("aleabitoreddit", "tw_aleabitoreddit"),
     ("zephyr_z9", "tw_zephyr_z9"),
     ("austinsemis", "tw_austinsemis"),
+    ("DGretta_Author", "tw_DGretta_Author"),
+    ("FeroceResearch", "tw_FeroceResearch"),
+    ("TradexWhisperer", "tw_TradexWhisperer"),
+    ("gsmferrari", "tw_gsmferrari"),
 ]
 
 
@@ -54,7 +58,7 @@ def health_check():
     con = sqlite3.connect(DB_PATH, timeout=30)
     cur = con.cursor()
 
-    # ===== 检查 1: 重复 (4 大V 内部 + 之间) =====
+    # ===== 检查 1: 重复 (生产名单内部 + 之间) =====
     log("\n[1/4] 🔍 重复检查 (raw_posts post_id 重复)")
     log("-" * 70)
 
@@ -78,16 +82,18 @@ def health_check():
             for pid, c in dup_ids:
                 log(f"      dup id={pid} x{c}")
 
-    cross = cur.execute("""
+    source_ids = [sid for _, sid in KOLS]
+    placeholders = ",".join("?" for _ in source_ids)
+    cross = cur.execute(f"""
         SELECT post_id, COUNT(*) c, GROUP_CONCAT(source_id) sources
         FROM raw_posts
-        WHERE source_id IN ('tw_jukan05', 'tw_aleabitoreddit', 'tw_zephyr_z9', 'tw_austinsemis')
+        WHERE source_id IN ({placeholders})
         GROUP BY post_id HAVING c > 1 LIMIT 3
-    """).fetchall()
+    """, source_ids).fetchall()
     if not cross:
-        log(f"  ✅ 4 大V 之间 0 冲突")
+        log(f"  ✅ {len(KOLS)} 个生产账号之间 0 冲突")
     else:
-        msg = f"❌ 4 大V 之间 {len(cross)} 个 post_id 冲突"
+        msg = f"❌ 生产账号之间 {len(cross)} 个 post_id 冲突"
         log(msg)
         issues.append(("CROSS", "", len(cross)))
 
@@ -150,6 +156,19 @@ def health_check():
             log(msg)
             issues.append(("INACTIVE", sid, days_ago))
 
+    # 全员零新增是系统性抓取故障的高风险形态，不能只凭 last_fetched_at 判健康。
+    recent_capture_counts = []
+    for _, sid in KOLS:
+        n = cur.execute("""
+            SELECT COUNT(*) FROM raw_posts
+            WHERE source_id=? AND datetime(captured_at) >= datetime('now', '-6 hours')
+        """, (sid,)).fetchone()[0]
+        recent_capture_counts.append(n)
+    if not any(recent_capture_counts):
+        msg = "❌ 全部生产账号最近6小时新增均为0；禁止仅凭 last_fetched_at 判定抓取健康"
+        log(msg)
+        issues.append(("ALL_ZERO_NEW", "all", 0))
+
     # ===== 检查 4: 日期格式 (全 DB 随机抽 5 条 published_at ISO) =====
     log("\n[4/4] 📅 日期格式检查 (raw_posts published_at 必须 ISO)")
     log("-" * 70)
@@ -192,7 +211,7 @@ def health_check():
         log("   - NO_STATE: 初始化失败, 跑 init_db + 手动 trigger")
         exit_code = 1
     else:
-        log(f"✅ 自检通过 — 4 大V 健康")
+        log(f"✅ 自检通过 — {len(KOLS)} 个生产账号健康")
         exit_code = 0
 
     con.close()
