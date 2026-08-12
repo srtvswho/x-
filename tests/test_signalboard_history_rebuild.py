@@ -32,6 +32,7 @@ def test_one_year_rebuild_is_bounded_and_recomputes_all_derived_views():
     assert "Verify saved overlap for existing four" in workflow
     assert "Safety overlap for existing four" not in workflow
     assert "Complete capped Tradex history by month" in workflow
+    assert "skip paid monthly scrape" in workflow
     assert "2025-08-07 2025-09-01" in workflow
     assert "2026-04-01 2026-05-16" in workflow
     assert "tw_TradexWhisperer:incomplete_1y" in workflow

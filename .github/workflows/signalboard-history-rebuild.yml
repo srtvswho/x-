@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: signalboard-data-write
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   rebuild:
@@ -99,6 +99,19 @@ jobs:
         shell: bash
         run: |
           set -Eeuo pipefail
+          earliest=$(python - <<'PY'
+          import sqlite3
+          con = sqlite3.connect("data/signalboard_full.db", timeout=30)
+          print(con.execute(
+              "SELECT MIN(published_at) FROM raw_posts WHERE source_id='tw_TradexWhisperer'"
+          ).fetchone()[0] or "")
+          con.close()
+          PY
+          )
+          if [ -n "$earliest" ] && [ "${earliest:0:10}" \< "2025-08-16" ]; then
+            echo "Tradex 1Y raw coverage already complete from $earliest; skip paid monthly scrape."
+            exit 0
+          fi
           while read -r since until; do
             python scripts/intel_backfill_90d.py \
               --kol TradexWhisperer \
