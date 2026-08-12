@@ -2,17 +2,13 @@ name: Signalboard 1Y History Rebuild
 
 on:
   workflow_dispatch:
-  push:
-    branches: [master]
-    paths:
-      - ".github/workflows/signalboard-history-rebuild.yml"
 
 permissions:
   contents: write
 
 concurrency:
   group: signalboard-data-write
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   rebuild:

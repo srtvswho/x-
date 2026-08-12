@@ -19,13 +19,13 @@ permissions:
   contents: write
 
 concurrency:
-  group: signalboard-daily-update
+  group: signalboard-data-write
   cancel-in-progress: false
 
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 180
     env:
       APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
       DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
