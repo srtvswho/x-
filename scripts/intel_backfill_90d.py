@@ -103,6 +103,8 @@ def backfill_one_kol(
     apify_token: str,
     max_per_window: int,
     run_id: Optional[str] = None,
+    since_date_override: Optional[date] = None,
+    until_date_override: Optional[date] = None,
 ) -> Dict[str, Any]:
     """对单 KOL 做 90 天回填, 复用模块1 增量逻辑, 但 since = today - 90d (强制覆盖)。"""
     handle = kol["handle"]
@@ -111,9 +113,9 @@ def backfill_one_kol(
 
     state = get_incremental_state(handle)
     today = date.today()
-    since_date = today - timedelta(days=since_days)
+    since_date = since_date_override or (today - timedelta(days=since_days))
     # X 的 until 是排他边界；必须传明天才能覆盖今天。
-    until_date = today + timedelta(days=1)
+    until_date = until_date_override or (today + timedelta(days=1))
 
     log.info("[%s] 回填 %d 天 since=%s until=%s (DB 已 last_tweet_published_at=%s)",
              handle, since_days, since_date, until_date, state.get("last_tweet_published_at"))
@@ -251,9 +253,17 @@ def main():
         default="",
         help="复用已完成的 Apify actor run dataset，避免失败续跑时再次抓取计费",
     )
+    parser.add_argument("--since-date", help="精确回填起始日 YYYY-MM-DD（覆盖 --since-days）")
+    parser.add_argument("--until-date", help="精确排他结束日 YYYY-MM-DD")
     parser.add_argument("--apify-token", default=os.environ.get("APIFY_TOKEN", ""))
     parser.add_argument("--dry-run", action="store_true", help="只跑输入构建, 不真调 Apify")
     args = parser.parse_args()
+    since_override = date.fromisoformat(args.since_date) if args.since_date else None
+    until_override = date.fromisoformat(args.until_date) if args.until_date else None
+    if (since_override is None) != (until_override is None):
+        parser.error("--since-date 与 --until-date 必须同时提供")
+    if since_override and since_override >= until_override:
+        parser.error("--since-date 必须早于 --until-date")
 
     if not args.apify_token and not args.dry_run:
         log.error("需要 APIFY_TOKEN (env 或 --apify-token)")
@@ -296,6 +306,8 @@ def main():
                 args.apify_token,
                 args.max_per_window,
                 args.run_id or None,
+                since_override,
+                until_override,
             ): kol
             for kol in kol_list
         }

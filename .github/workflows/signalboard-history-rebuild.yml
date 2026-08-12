@@ -95,6 +95,28 @@ jobs:
           python scripts/intel_backfill_90d.py --kol gsmferrari --since-days 370 \
             --run-id aIleM6JgGwMNmKhc8
 
+      - name: Complete capped Tradex history by month
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          while read -r since until; do
+            python scripts/intel_backfill_90d.py \
+              --kol TradexWhisperer \
+              --since-date "$since" \
+              --until-date "$until" \
+              --max-per-window 5000
+          done <<'WINDOWS'
+          2025-08-07 2025-09-01
+          2025-09-01 2025-10-01
+          2025-10-01 2025-11-01
+          2025-11-01 2025-12-01
+          2025-12-01 2026-01-01
+          2026-01-01 2026-02-01
+          2026-02-01 2026-03-01
+          2026-03-01 2026-04-01
+          2026-04-01 2026-05-16
+          WINDOWS
+
       - name: Save raw backfill checkpoint
         shell: bash
         run: |
@@ -162,6 +184,9 @@ jobs:
               })
           con.close()
           missing = [r["source_id"] for r in rows if r["raw_posts"] == 0 or r["extracted_posts"] == 0]
+          tradex = next(r for r in rows if r["source_id"] == "tw_TradexWhisperer")
+          if not tradex["first_post"] or tradex["first_post"][:10] > "2025-08-15":
+              missing.append("tw_TradexWhisperer:incomplete_1y")
           report = {
               "generated_at": datetime.now(timezone.utc).isoformat(),
               "window_days": 370,

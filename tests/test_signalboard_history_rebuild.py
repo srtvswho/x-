@@ -7,7 +7,7 @@ ROOT = Path(__file__).parent.parent
 def test_backfill_registry_covers_all_production_kols_and_includes_today():
     source = (ROOT / "scripts" / "intel_backfill_90d.py").read_text(encoding="utf-8")
     assert "KOL_LIST = KOL_TEST" in source
-    assert "until_date = today + timedelta(days=1)" in source
+    assert "until_date_override or (today + timedelta(days=1))" in source
     assert "end=today + timedelta(days=1)" in source
     assert 'client.run(run_id).get()' in source
     assert 'client.dataset(dataset_id).iterate_items()' in source
@@ -28,6 +28,10 @@ def test_one_year_rebuild_is_bounded_and_recomputes_all_derived_views():
     assert "Save raw backfill checkpoint" in workflow
     assert "Verify saved overlap for existing four" in workflow
     assert "Safety overlap for existing four" not in workflow
+    assert "Complete capped Tradex history by month" in workflow
+    assert "2025-08-07 2025-09-01" in workflow
+    assert "2026-04-01 2026-05-16" in workflow
+    assert "tw_TradexWhisperer:incomplete_1y" in workflow
     for run_id in (
         "eHzAhTk5bZiBrDzDD",
         "PeeVsMuLX75q2gUph",
