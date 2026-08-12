@@ -1,0 +1,168 @@
+name: Signalboard 1Y History Rebuild
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - ".github/workflows/signalboard-history-rebuild.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: signalboard-data-write
+  cancel-in-progress: false
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    env:
+      APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+      POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
+      POLYGON_REQUEST_INTERVAL: "13"
+
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v6
+        with:
+          ref: master
+          fetch-depth: 1
+
+      - name: Verify required secrets
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          for key in APIFY_TOKEN DEEPSEEK_API_KEY POLYGON_API_KEY; do
+            if [ -z "${!key:-}" ]; then
+              echo "::error::Required repository secret is missing: $key"
+              exit 1
+            fi
+          done
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check requests apify-client
+
+      - name: Restore database
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          gzip -t data/signalboard.db.gz
+          gzip -cd data/signalboard.db.gz > data/signalboard_full.db
+          sudo ln -sfn "$GITHUB_WORKSPACE" /workspace
+
+      - name: Safety overlap for existing four
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          for kol in jukan05 aleabitoreddit zephyr_z9 austinsemis; do
+            python scripts/intel_backfill_90d.py --kol "$kol" --since-days 30 --max-per-window 5000
+          done
+
+      - name: Backfill one year for new four
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          for kol in DGretta_Author FeroceResearch TradexWhisperer gsmferrari; do
+            python scripts/intel_backfill_90d.py --kol "$kol" --since-days 370 --max-per-window 5000
+          done
+
+      - name: Extract missing historical views
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          since_370=$(TZ=UTC date -d "370 days ago" +%Y-%m-%d)
+          since_30=$(TZ=UTC date -d "30 days ago" +%Y-%m-%d)
+          python scripts/intel_extract.py \
+            --since "$since_370" \
+            --sources tw_DGretta_Author,tw_FeroceResearch,tw_TradexWhisperer,tw_gsmferrari \
+            --max-targets 6000
+          python scripts/intel_extract.py \
+            --since "$since_30" \
+            --sources tw_jukan05,tw_aleabitoreddit,tw_zephyr_z9,tw_austinsemis \
+            --max-targets 3000
+
+      - name: Validate rebuilt coverage
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir -p outputs
+          python - <<'PY'
+          import json
+          import sqlite3
+          from datetime import datetime, timezone
+
+          db = "data/signalboard_full.db"
+          con = sqlite3.connect(db, timeout=30)
+          sources = [
+              "tw_jukan05", "tw_aleabitoreddit", "tw_zephyr_z9", "tw_austinsemis",
+              "tw_DGretta_Author", "tw_FeroceResearch", "tw_TradexWhisperer", "tw_gsmferrari",
+          ]
+          rows = []
+          for source in sources:
+              raw = con.execute(
+                  "SELECT COUNT(*), MIN(published_at), MAX(published_at) FROM raw_posts WHERE source_id=?",
+                  (source,),
+              ).fetchone()
+              extracted = con.execute(
+                  "SELECT COUNT(DISTINCT e.post_id) FROM extractions_intel e "
+                  "JOIN raw_posts r ON r.post_id=e.post_id WHERE r.source_id=?",
+                  (source,),
+              ).fetchone()[0]
+              rows.append({
+                  "source_id": source,
+                  "raw_posts": raw[0],
+                  "first_post": raw[1],
+                  "last_post": raw[2],
+                  "extracted_posts": extracted,
+              })
+          con.close()
+          missing = [r["source_id"] for r in rows if r["raw_posts"] == 0 or r["extracted_posts"] == 0]
+          report = {
+              "generated_at": datetime.now(timezone.utc).isoformat(),
+              "window_days": 370,
+              "sources": rows,
+              "missing_sources": missing,
+          }
+          with open("outputs/signalboard_history_rebuild_latest.json", "w", encoding="utf-8") as f:
+              json.dump(report, f, ensure_ascii=False, indent=2)
+          print(json.dumps(report, ensure_ascii=False, indent=2))
+          if missing:
+              raise SystemExit(f"History rebuild incomplete: {missing}")
+          PY
+
+      - name: Recompute health, prices, summaries and dashboard
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          python scripts/intel_daily_health.py
+          python scripts/dashboard/refresh_prices_polygon.py
+          python scripts/dashboard/intel_gen_summaries.py
+          python scripts/dashboard/build_dashboard.py
+          test -s scripts/dashboard/dashboard.html
+          test "$(stat -c%s scripts/dashboard/dashboard.html)" -ge 10000
+          mkdir -p dashboard_deploy_dist
+          cp scripts/dashboard/dashboard.html dashboard_deploy_dist/index.html
+          cp scripts/dashboard/dashboard.html dashboard.html
+
+      - name: Save and publish rebuilt database
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          gzip -c data/signalboard_full.db > data/signalboard.db.gz.new
+          gzip -t data/signalboard.db.gz.new
+          mv data/signalboard.db.gz.new data/signalboard.db.gz
+          git config user.name "signalboard-bot"
+          git config user.email "signalboard-bot@users.noreply.github.com"
+          git add data/signalboard.db.gz outputs/signalboard_history_rebuild_latest.json
+          git add scripts/dashboard/summaries.json scripts/dashboard/dashboard.html dashboard.html
+          git add -f dashboard_deploy_dist/index.html
+          git commit -m "Rebuild Signalboard 1Y history for 8 KOLs"
+          git push origin HEAD:master

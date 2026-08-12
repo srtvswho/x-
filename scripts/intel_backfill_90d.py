@@ -1,4 +1,4 @@
-"""大V情报系统 — 回填 90 天历史 (模块1 准备: 基线建立)
+"""大V情报系统 — 回填指定天数历史 (生产基线/缺口修复)
 
 用户硬规则:
 - 复用现有 signalboard 管道 (scraper._call_actor / repository.upsert_raw_post)
@@ -11,7 +11,7 @@
 - since = today - 90 days
 - until = today
 - maxItems: 跟 Serenity 全量 14 月用 3000/月, 90 天 ≈ 3 个月, 拿 5000/大V 应该够
-- 4 大V 并发 (ThreadPoolExecutor), 每个 try/except 独立
+- 生产 KOL 并发 (ThreadPoolExecutor), 每个 try/except 独立
 """
 from __future__ import annotations
 
@@ -28,13 +28,13 @@ from typing import Any, Dict, List, Optional
 sys.path.insert(0, "/workspace")
 from signalboard.db import get_conn, init_db
 from signalboard.repository import upsert_raw_post
-from signalboard.models import Platform
 from signalboard.scraper import (
     _call_actor,
     build_run_input,
     default_field_map,
     _item_to_raw_post,
 )
+from intel_incremental_scrape import KOL_TEST
 from email.utils import parsedate_to_datetime
 
 DB_PATH = "/workspace/data/signalboard_full.db"
@@ -42,29 +42,8 @@ DB_PATH = "/workspace/data/signalboard_full.db"
 log = logging.getLogger("intel_backfill")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(message)s")
 
-# 4 大V (正式回填)
-KOL_LIST = [
-    {
-        "handle": "jukan05",
-        "source_id": "tw_jukan05",
-        "platform": Platform.TWITTER.value,
-    },
-    {
-        "handle": "aleabitoreddit",
-        "source_id": "tw_aleabitoreddit",
-        "platform": Platform.TWITTER.value,
-    },
-    {
-        "handle": "zephyr_z9",
-        "source_id": "tw_zephyr_z9",
-        "platform": Platform.TWITTER.value,
-    },
-    {
-        "handle": "austinsemis",
-        "source_id": "tw_austinsemis",
-        "platform": Platform.TWITTER.value,
-    },
-]
+# 与每日增量抓取共用同一份 8 人生产名单，避免新增人物只进看板、不进回填。
+KOL_LIST = KOL_TEST
 
 
 def get_incremental_state(handle: str) -> Dict[str, Any]:
@@ -132,7 +111,8 @@ def backfill_one_kol(
     state = get_incremental_state(handle)
     today = date.today()
     since_date = today - timedelta(days=since_days)
-    until_date = today
+    # X 的 until 是排他边界；必须传明天才能覆盖今天。
+    until_date = today + timedelta(days=1)
 
     log.info("[%s] 回填 %d 天 since=%s until=%s (DB 已 last_tweet_published_at=%s)",
              handle, since_days, since_date, until_date, state.get("last_tweet_published_at"))
@@ -212,21 +192,17 @@ def backfill_one_kol(
     if latest_pub:
         upsert_incremental_state(handle, latest_id or "", latest_pub, new_persisted)
 
-    # 算实际回填覆盖天数
-    if new_persisted > 0:
-        with get_conn(DB_PATH) as conn:
-            dates = conn.execute(
-                "SELECT DISTINCT substr(published_at, 1, 10) FROM raw_posts "
-                "WHERE source_id = ? ORDER BY published_at DESC LIMIT 90",
-                (source_id,),
-            ).fetchall()
-            actual_days = len(dates)
-            earliest = dates[-1][0] if dates else None
-            latest = dates[0][0] if dates else None
-    else:
-        actual_days = 0
-        earliest = None
-        latest = None
+    # 算请求窗口内的实际覆盖；即使本轮全是幂等命中，也必须报告现有覆盖。
+    with get_conn(DB_PATH) as conn:
+        dates = conn.execute(
+            "SELECT DISTINCT substr(published_at, 1, 10) FROM raw_posts "
+            "WHERE source_id = ? AND published_at >= ? "
+            "ORDER BY published_at DESC",
+            (source_id, f"{since_date.isoformat()}T00:00:00+00:00"),
+        ).fetchall()
+        actual_days = len(dates)
+        earliest = dates[-1][0] if dates else None
+        latest = dates[0][0] if dates else None
 
     return {
         "handle": handle,
@@ -248,11 +224,11 @@ def backfill_one_kol(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="大V情报 — 4 KOL × 90 天回填")
+    parser = argparse.ArgumentParser(description="大V情报 — 8 KOL 历史回填")
     parser.add_argument("--since-days", type=int, default=90, help="回填天数 (默认 90)")
     parser.add_argument(
         "--kol", default="all",
-        help="单 KOL handle (jukan05 / aleabitoreddit / zephyr_z9 / austinsemis), 默认 all",
+        help="单 KOL handle（必须在生产8人名单中），默认 all",
     )
     parser.add_argument("--max-per-window", type=int, default=5000, help="Apify maxItems per window")
     parser.add_argument("--apify-token", default=os.environ.get("APIFY_TOKEN", ""))
@@ -281,7 +257,7 @@ def main():
             run_input = build_run_input(
                 handle=kol["handle"],
                 start=since_date,
-                end=today,
+                end=today + timedelta(days=1),
                 max_per_month=args.max_per_window,
                 sort="Latest",
                 disable_maximization=True,
@@ -289,7 +265,7 @@ def main():
             print(f"\n[{kol['handle']}] dry-run searchTerms: {run_input['searchTerms']}")
         return
 
-    # 并发跑 4 大V (max_workers=4, 各自独立, 失败不阻塞)
+    # 并发跑生产 KOL (最多4并发, 各自独立, 失败不阻塞)
     results: List[Dict[str, Any]] = []
     with ThreadPoolExecutor(max_workers=4) as pool:
         futures = {pool.submit(backfill_one_kol, kol, args.since_days, args.apify_token, args.max_per_window): kol for kol in kol_list}
