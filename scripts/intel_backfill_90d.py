@@ -71,7 +71,8 @@ def upsert_incremental_state(
     now_iso = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     with get_conn(DB_PATH) as conn:
         existing = conn.execute(
-            "SELECT total_scraped FROM scrape_state WHERE handle = ?", (handle,)
+            "SELECT total_scraped, last_tweet_id, last_tweet_published_at "
+            "FROM scrape_state WHERE handle = ?", (handle,)
         ).fetchone()
         if existing is None:
             conn.execute(
@@ -85,6 +86,12 @@ def upsert_incremental_state(
             )
         else:
             new_total = (existing[0] or 0) + new_count
+            # 历史回填窗口可能早于当前增量状态；状态水位只能向前，不能回退。
+            current_id = existing[1] or ""
+            current_pub = existing[2] or ""
+            if current_pub and current_pub >= last_tweet_published_at:
+                last_tweet_id = current_id
+                last_tweet_published_at = current_pub
             conn.execute(
                 """
                 UPDATE scrape_state
@@ -194,10 +201,11 @@ def backfill_one_kol(
                     new_persisted += 1
                 else:
                     existing_skipped += 1
-            if is_new:
-                if latest_pub is None or post.published_at > latest_pub:
-                    latest_pub = post.published_at
-                    latest_id = post.post_id
+            # 即使是幂等命中，也用本次数据修复状态水位；但 upsert_incremental_state
+            # 会再与现有状态取较新者，历史窗口不会把水位回退。
+            if latest_pub is None or post.published_at > latest_pub:
+                latest_pub = post.published_at
+                latest_id = post.post_id
         except Exception as e:
             log.error("[%s] upsert 失败 post_id=%s: %s", handle, post.post_id, e)
             continue

@@ -148,6 +148,21 @@ jobs:
             --sources tw_jukan05,tw_aleabitoreddit,tw_zephyr_z9,tw_austinsemis \
             --max-targets 3000
 
+      - name: Save extraction checkpoint
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          gzip -c data/signalboard_full.db > data/signalboard.db.gz.new
+          gzip -t data/signalboard.db.gz.new
+          mv data/signalboard.db.gz.new data/signalboard.db.gz
+          git config user.name "signalboard-bot"
+          git config user.email "signalboard-bot@users.noreply.github.com"
+          git add data/signalboard.db.gz
+          if ! git diff --cached --quiet; then
+            git commit -m "Checkpoint Signalboard historical extractions"
+            git push origin HEAD:master
+          fi
+
       - name: Validate rebuilt coverage
         shell: bash
         run: |
