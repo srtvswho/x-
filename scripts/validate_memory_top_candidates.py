@@ -124,8 +124,9 @@ def extract_batch(posts: list[dict[str, Any]], api_key: str) -> list[dict[str, A
 
 
 def extract_signals(posts: list[dict[str, Any]], api_key: str) -> tuple[list[dict[str, Any]], int]:
-    # Cashtag-only prefilter is deterministic and multilingual; full history is still counted in coverage.
-    targets = [p for p in posts if CASHTAG.search(p["text"])]
+    # Ad-hoc analyst accounts often use hashtags or company names instead of cashtags.
+    # The strict LLM prompt still rejects relays, retrospectives and non-directional posts.
+    targets = posts
     batches = [(i, targets[i:i + 12]) for i in range(0, len(targets), 12)]
     output: dict[int, list[dict[str, Any]]] = {}
     failed = 0
