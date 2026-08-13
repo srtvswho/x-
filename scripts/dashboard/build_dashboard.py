@@ -21,6 +21,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from common import (  # noqa: E402
     build_metadata, query_today_stats, query_today_records, cn_recent_24h_window_utc,
     KOL_TICKERS, KOLS, SRC2KOL, is_in_field, parse_json_arr,
+    normalize_ticker,
     select_dashboard_ticker_targets, DASHBOARD_TICKER_LIMIT, DASHBOARD_MIN_DAYS,
     query_call_performance_events,
 )
@@ -345,10 +346,12 @@ def query_extractions(conn):
         (post_id,src,direction,ticker,company,bk,attr,rebuts,summ,
          retro,disc,selfret,pub,raw_text)=x
         handle = src.replace("tw_","")
+        ticker_context = f"{company or ''} {raw_text or ''}"
         out.append({
             "post_id":post_id,"kol":SRC2KOL.get(src,handle),"source_id":src,
             "published_at":pub,"direction":direction,
-            "ticker":parse_json_arr(ticker),"company":parse_json_arr(company),
+            "ticker":[normalize_ticker(t, ticker_context) for t in parse_json_arr(ticker)],
+            "company":parse_json_arr(company),
             "bottleneck":bk,"attribution":attr,"rebuts":rebuts,"summary":summ,
             "is_retro":retro or 0,"is_disc":disc or 0,"is_selfret":selfret or 0,
             "raw_text":raw_text,

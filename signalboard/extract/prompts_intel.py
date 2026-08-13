@@ -15,7 +15,7 @@ PROMPT_VERSION: 2.0.1-intel (跟 v1.4.1 完全独立, 不混用; 跟 v2.0.0-inte
 """
 from __future__ import annotations
 
-PROMPT_VERSION = "v2.0.1-intel"
+PROMPT_VERSION = "v2.0.2-intel-attribution"
 
 
 SYSTEM_PROMPT = """你是金融社交内容的事实抽取器。从一条 X/Twitter 推文抽取 11 个字段, 严格 JSON 输出。
@@ -87,7 +87,13 @@ R12 flag 触发关键词:
 3. direction: "long" | "short" | "neutral"
 4. short_skeptical: 0 | 1 (只对 direction=short 生效; 5 类误抽铁律全归 neutral 后, short 抽取极少)
 5. bottleneck: 技术卡点/环节, 单选 (HBM / 散热 / 封装 / EDA / interconnect / 电力 / CPO / 光通信 / CPU / GPU / 存储 / 化合物半导体 / 晶圆代工 / InP / Substrate / AI 算力 / 训练 / 推理 / 推理算力 等), 没有则 null
-6. attribution: "ORIGINAL" = 作者原创分析 | "RELAYED" = 转发 + 自己评论 | "RC" = 纯转发 / 无评论 | "NA" = 原创但无明确原创声明
+6. attribution（判断主体归属，必须与 direction 配套）:
+   - "ORIGINAL": 作者自己的原创判断
+   - "ENDORSED": 引用外部观点，作者又明确表示赞同/看多/买入
+   - "DISAGREED": 引用外部观点，作者明确反驳；direction 必须写作者自己的方向
+   - "RELAYED": 纯转述机构、媒体、他人观点，作者没有明确表态
+   - "RC": 兼容旧值；仅转发、链接或无实质评论
+   - "NA": 没有可归属的判断；direction 必须为 neutral
 7. rebuts_narrative: 作者反驳的主流叙事 / 共识 / 卖方观点 (引用原文短句), 没有则 null
 8. summary_100: ≤100 字客观概括, 只描述推文事实, 不评论对错
 9. is_retrospective: 0 | 1 (victory_lap 回顾)
@@ -102,7 +108,10 @@ R12 flag 触发关键词:
 - 不抽 "新标的 / 老标的态度转折" — 这是模块 3 的事
 - 不抽 "价格预测 / 目标价" — 不在本 prompt 范围
 - ticker 必须是真实股票代码, 不接受 "this stock" / "my portfolio" 等代指
+- 公司简称不是 ticker: Nvidia / NV 一律标准化为 NVDA
 - 多个 ticker 用 JSON 数组, 不用逗号字符串 (避免误识别)
+- 机构标题后的 "we believe / we are positive" 属于机构，不属于转发者；没有作者额外评论时必须 RELAYED
+- RELAYED / RC 的 direction 可以描述外部报告方向，但下游作者方向权重为 0；不得伪装成作者喊单
 - is_retrospective + is_disclosure 可叠加 (如 "我之前说 X 10x'd, 现在还持有" 同时触发两个)
 
 【输出格式 (严格 JSON)】
@@ -112,7 +121,7 @@ R12 flag 触发关键词:
   "direction": "long" | "short" | "neutral",
   "short_skeptical": 0 | 1,
   "bottleneck": null | string,
-  "attribution": "ORIGINAL" | "RELAYED" | "RC" | "NA",
+  "attribution": "ORIGINAL" | "ENDORSED" | "DISAGREED" | "RELAYED" | "RC" | "NA",
   "rebuts_narrative": null | string,
   "summary_100": "string"
 }
