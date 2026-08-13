@@ -31,6 +31,7 @@ CANDIDATES = (
     "oilstocktrader", "mampillyguru", "reasonus4", "ulkser",
     "stuckonstocks", "alshfaw", "lucybuilding", "itsmichaelluu",
 )
+REUSE_APIFY_RUN_IDS = {"sssjeffpu": "cd3e9bBIaKydLSDCi"}
 CASHTAG = re.compile(r"\$([A-Za-z][A-Za-z0-9.]{0,7})\b")
 
 
@@ -74,10 +75,14 @@ def normalize_post(item: dict[str, Any], handle: str) -> dict[str, Any] | None:
 def fetch_history(handle: str, token: str) -> list[dict[str, Any]]:
     from apify_client import ApifyClient
     client = ApifyClient(token)
-    query = f"from:{handle} since:{HISTORY_FROM.isoformat()} until:{(HISTORY_TO + timedelta(days=1)).isoformat()}"
-    run = client.actor(ACTOR_ID).call(run_input={"searchTerms": [query], "maxItems": 2500,
-                                                 "sort": "Latest", "includeSearchTerms": False},
-                                      timeout=timedelta(minutes=20), memory_mbytes=2048)
+    reuse_run_id = REUSE_APIFY_RUN_IDS.get(handle)
+    if reuse_run_id:
+        run = client.run(reuse_run_id).get()
+    else:
+        query = f"from:{handle} since:{HISTORY_FROM.isoformat()} until:{(HISTORY_TO + timedelta(days=1)).isoformat()}"
+        run = client.actor(ACTOR_ID).call(run_input={"searchTerms": [query], "maxItems": 2500,
+                                                     "sort": "Latest", "includeSearchTerms": False},
+                                          timeout=timedelta(minutes=20), memory_mbytes=2048)
     dataset_id = getattr(run, "default_dataset_id", None)
     if not dataset_id and isinstance(run, dict):
         dataset_id = run.get("defaultDatasetId")
@@ -312,7 +317,8 @@ def main() -> None:
               "stats": {"raw_posts": len(all_posts), "dedup_signals": len(signals),
                         "verified_signals": len(verified), "flash_failed_posts": failed,
                         "price_tickers": len(tickers)},
-              "ranking": ranking}
+              "ranking": ranking,
+              "verified": verified}
     (out / "validation.json").write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
     (out / "report.md").write_text(render(result), encoding="utf-8")
     print(json.dumps(result["stats"]), flush=True)
