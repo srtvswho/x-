@@ -369,20 +369,33 @@ function inferHorizon(r){
   if(/长期|未来.?年|多年|long.?term/.test(s)) return {name:'长期',days:365};
   return {name:'波段',days:60};
 }
+function attributionMultiplier(r){
+  const a=String((r&&r.attribution)||'').toUpperCase();
+  if(!a)return 1;
+  if(a==='ENDORSED'||a==='RELAYED+COMMENT')return .5;
+  if(['ORIGINAL','NA','DISAGREED'].includes(a))return 1;
+  return 0;
+}
+function effectiveDirection(r){
+  return attributionMultiplier(r)>0&&(r.direction==='long'||r.direction==='short')?r.direction:'neutral';
+}
 function signalWeight(r){
   const k=KOLS[r.kol]||{};
-  if(r.direction==='short'&&k.shortWeight!==undefined)return Number(k.shortWeight)||0;
-  if(r.kol==='tradex'&&['短线','事件'].includes(inferHorizon(r).name))return Number(k.shortTermWeight)||0;
-  return Number(k.consensusWeight)||0;
+  const direction=effectiveDirection(r),multiplier=attributionMultiplier(r);
+  if(direction==='neutral')return 0;
+  if(direction==='short'&&k.shortWeight!==undefined)return (Number(k.shortWeight)||0)*multiplier;
+  if(r.kol==='tradex'&&['短线','事件'].includes(inferHorizon(r).name))return (Number(k.shortTermWeight)||0)*multiplier;
+  return (Number(k.consensusWeight)||0)*multiplier;
 }
 function signalStrength(r){
   const h=inferHorizon(r),age=Math.max(0,Math.floor((Date.now()-new Date(r.published_at).getTime())/86400000));
   const text=((r.summary||'')+' '+(r.raw_text||'')).toLowerCase();
   const action=!!r.is_disc||/买入|加仓|减仓|卖出|持有|仓位|bought|added|sold|position/.test(text);
-  const explicit=r.direction==='long'||r.direction==='short';
+  const explicit=effectiveDirection(r)!=='neutral';
   const k=KOLS[r.kol]||{}, strong=(k.strong||[]).some(s=>text.includes(String(s).toLowerCase())||(r.bottleneck&&String(r.bottleneck).includes(s)));
   const inField=r.in_field===true||strong;
   let level='general',why='普通信息或未形成方向';
+  if(attributionMultiplier(r)===0&&['long','short'].includes(r.direction)){why='转述外部观点，不计作者方向与绩效';}
   if(explicit&&inField&&(action||r.is_disc)){level='focus';why='能力圈内 + 方向明确 + 有行动证据';}
   else if(explicit&&inField){level='reference';why='能力圈内且方向明确，但未披露行动';}
   else if(r.bottleneck&&inField){level='reference';why='能力圈内产业判断，不等于交易信号';}
@@ -393,12 +406,15 @@ function signalStrength(r){
   if(r.kol==='serenity'&&explicit&&!action){level='reference';why='产业判断有价值；具体买点需价格过滤';}
   if(r.kol==='austin'&&explicit&&!action){level='reference';why='更适合作格局研究，不机械跟短线';}
   if(age>h.days){level='general';why='已超过默认有效期，保留作历史记录';}
+  if(attributionMultiplier(r)===0&&['long','short'].includes(r.direction)){
+    level='general';why='转述外部观点，不计作者方向与绩效';
+  }
   return {level,label:{focus:'重点',reference:'参考',general:'一般'}[level],why,horizon:h.name,days:h.days,age};
 }
 function signalBadges(r){
   const s=signalStrength(r),left=Math.max(0,s.days-s.age);
-  const explicit=r.direction==='long'||r.direction==='short',k=KOLS[r.kol]||{};
-  const weight=explicit?signalWeight(r):(Number(k.researchWeight)||0),weightLabel=explicit?'方向权重':'认知权重';
+  const authorExplicit=effectiveDirection(r)!=='neutral',relayed=attributionMultiplier(r)===0&&['long','short'].includes(r.direction),k=KOLS[r.kol]||{};
+  const weight=authorExplicit?signalWeight(r):(relayed?0:(Number(k.researchWeight)||0)),weightLabel=authorExplicit?'方向权重':(relayed?'作者方向权重':'认知权重');
   return '<span class="sig '+s.level+'">'+s.label+'</span><span class="cycle">'+weightLabel+' '+weight.toFixed(2)+'</span><span class="cycle">'+s.horizon+' · '+(left?'约余 '+left+' 天':'已到期')+'</span><span class="sigwhy">'+s.why+'</span>';
 }
 function closeEvidence(el){
@@ -436,6 +452,7 @@ function stanceTopic(r){
   return '其他方向';
 }
 function recordStances(r){
+  if(attributionMultiplier(r)===0)return [];
   const text=((r.summary||'')+' '+(r.raw_text||'')).toLowerCase();
   const topicDefs=[
     {topic:'存储/HBM',terms:'(?:hbm|dram|nand|memory|存储|内存|海力士|三星)'},
@@ -445,7 +462,8 @@ function recordStances(r){
   ];
   const out=[],seen=new Set();
   const add=(topic,direction)=>{const key=topic+'|'+direction;if(!seen.has(key)){seen.add(key);out.push({topic,direction});}};
-  const baseDirection=(r.direction==='long'||r.direction==='short')?r.direction:null;
+  const effective=effectiveDirection(r);
+  const baseDirection=(effective==='long'||effective==='short')?effective:null;
   const baseTopic=stanceTopic(r);
   if(baseDirection)add(baseTopic,baseDirection);
   topicDefs.forEach(def=>{
@@ -551,24 +569,26 @@ function renderStance(){
     const k=KOLS[key];const c=COLORS[key];
     const recs=visibleByKol[key];
     const rows=recs.length?recs.map(r=>{
-      const ic=r.direction==='long'?'▲':r.direction==='short'?'▼':'•';
-      const isOrdinary = (r.direction==='neutral' && !r.bottleneck);
+      const displayDirection=effectiveDirection(r);
+      const ic=displayDirection==='long'?'▲':displayDirection==='short'?'▼':'•';
+      const isOrdinary = (displayDirection==='neutral' && !r.bottleneck);
       const bkStrong=r.bottleneck&&(k.strong||[]).some(s=>r.bottleneck.includes(s)||s.includes(r.bottleneck));
       const flags=[];if(r.is_disc)flags.push('<span class="flag">持仓披露</span>');if(r.is_retro)flags.push('<span class="flag">回顾</span>');
       const tk=(r.ticker||[]).map(t=>`<span class="tag">${t}</span>`).join('');
       const bk=r.bottleneck?`<span class="tag bk">${r.bottleneck}</span>`:'';
       const ft=r.bottleneck?(bkStrong?'<span class="tag strong">强项</span>':'<span class="tag weak">盲区</span>'):'';
       const ordinaryTag = isOrdinary ? '<span class="tag ordinary">普通动态</span>' : '';
-      return `<div class="stmt"><div class="dir ${r.direction}">${ic}</div><div class="body">
+      const relayTag=attributionMultiplier(r)===0&&['long','short'].includes(r.direction)?'<span class="tag ordinary">外部观点·不计作者方向</span>':'';
+      return `<div class="stmt"><div class="dir ${displayDirection}">${ic}</div><div class="body">
         <div class="txt">${r.summary||r.raw_text||''}</div>
-        <div class="meta">${tk}${bk}${ft}${ordinaryTag}${flags.join('')}<span class="tag date">${fmtFull(r.published_at)}</span></div><div class="meta">${signalBadges(r)}</div>${evidenceDetails(r,'查看这条原文')}</div></div>`;
+        <div class="meta">${tk}${bk}${ft}${ordinaryTag}${relayTag}${flags.join('')}<span class="tag date">${fmtFull(r.published_at)}</span></div><div class="meta">${signalBadges(r)}</div>${evidenceDetails(r,'查看这条原文')}</div></div>`;
     }).join(''):(win===0
       ? `<div class="stmt"><div class="dir neutral">·</div><div class="body"><div class="txt" style="color:var(--ink-faint)">${winLabel(0)} 无新推文</div></div></div>`
       : `<div class="stmt"><div class="dir neutral">·</div><div class="body"><div class="txt" style="color:var(--ink-faint)">该窗口内无强项方向性表态</div></div></div>`);
     const psum=livePersonSummary(allByKol[key]);
     return `<div class="stance">
       <div class="sh"><div class="av" style="background:${c}">${initials(k.name)}</div>
-        <div class="nm">${k.name}</div><div class="tp ${k.type}">${k.rating}</div><div class="ct">基础方向权重 ${Number(k.consensusWeight||0).toFixed(2)} · 窗口 ${allByKol[key].length} 条 · 展示 ${recs.length} 条</div></div>
+        <div class="nm">${k.name}</div><div class="tp ${k.type}">${k.rating}</div><div class="ct">原创基础方向权重 ${Number(k.consensusWeight||0).toFixed(2)} · 窗口 ${allByKol[key].length} 条 · 展示 ${recs.length} 条</div></div>
       <div class="psum"><span class="lead">${winLabel(win)} · 核心立场</span>${formatStructuredSummary(psum)}</div>
       ${rows}</div>`;
   }).join('');
@@ -651,7 +671,8 @@ function renderFeed(){
     const c=COLORS[r.kol];const k=KOLS[r.kol];
     const tk=(r.ticker||[]).map(t=>`<span class="tag">${t}</span>`).join('');
     const bk=r.bottleneck?`<span class="tag bk">${r.bottleneck}</span>`:'';
-    const dp=r.direction!=='neutral'?`<span class="dirpill ${r.direction}">${r.direction}</span>`:'';
+    const authorDirection=effectiveDirection(r),isRelayedDirection=authorDirection==='neutral'&&['long','short'].includes(r.direction);
+    const dp=authorDirection!=='neutral'?`<span class="dirpill ${authorDirection}">${authorDirection}</span>`:(isRelayedDirection?`<span class="tag ordinary">外部观点·${r.direction}</span>`:'');
     const flags=[];if(r.is_disc)flags.push('<span class="flag">持仓披露</span>');if(r.is_retro)flags.push('<span class="flag">回顾</span>');if(r.is_selfret)flags.push('<span class="flag">自报收益</span>');
     const rb=r.rebuts?`<div class="frebut">反驳叙事 · ${r.rebuts}</div>`:'';
     // 每条标 N 天前

@@ -31,6 +31,39 @@ except ImportError:  # pragma: no cover
     CN_TZ = timezone(timedelta(hours=8))
 
 
+# 观点归属口径。纯转述可以保留在信息流，但不能冒充作者自己的方向。
+# RELAYED+COMMENT 是旧数据的兼容值；新抽取使用 ENDORSED / DISAGREED。
+AUTHOR_SIGNAL_ATTRIBUTIONS = frozenset({
+    "ORIGINAL", "NA", "ENDORSED", "DISAGREED", "RELAYED+COMMENT",
+})
+PURE_RELAY_ATTRIBUTIONS = frozenset({"RELAYED", "RC"})
+
+
+def attribution_signal_multiplier(attribution: str | None) -> float:
+    """返回作者方向权重乘数；纯转述永远为 0。"""
+    value = (attribution or "").strip().upper()
+    if not value:
+        return 1.0  # 兼容尚未写入 attribution 的旧原创结构化记录
+    if value in {"ENDORSED", "RELAYED+COMMENT"}:
+        return 0.5
+    if value in {"ORIGINAL", "NA", "DISAGREED"}:
+        return 1.0
+    return 0.0
+
+
+def is_author_signal(attribution: str | None) -> bool:
+    return attribution_signal_multiplier(attribution) > 0
+
+
+def normalize_ticker(ticker: str, context: str = "") -> str:
+    """修正常见公司简称误抽；仅在上下文明确指向 Nvidia 时改 NV。"""
+    value = str(ticker or "").strip().upper().lstrip("$")
+    context_upper = str(context or "").upper()
+    if value == "NV" and "NVIDIA" in context_upper:
+        return "NVDA"
+    return value
+
+
 def cn_now() -> datetime:
     """当前 UTC datetime (带 tzinfo)."""
     return datetime.now(timezone.utc)
@@ -120,9 +153,12 @@ def query_today_stats(conn) -> dict:
     - None: 有 posts 也有 directional
     """
     start, end = cn_recent_24h_window_utc()
-    rows = conn.execute("""
+    extraction_cols = {row[1] for row in conn.execute("PRAGMA table_info(extractions_intel)").fetchall()}
+    attr_sql = "e.attribution" if "attribution" in extraction_cols else "'ORIGINAL'"
+    rows = conn.execute(f"""
         SELECT r.post_id, r.source_id, r.published_at,
-               e.direction, e.bottleneck, e.ticker, e.is_retrospective, e.is_disclosure
+               e.direction, e.bottleneck, e.ticker, e.is_retrospective, e.is_disclosure,
+               {attr_sql}
         FROM raw_posts r
         LEFT JOIN extractions_intel e ON r.post_id = e.post_id
         WHERE r.published_at >= ? AND r.published_at < ?
@@ -130,11 +166,12 @@ def query_today_stats(conn) -> dict:
 
     posts_seen: dict = {}
     for r in rows:
-        pid, src, pub, direction, bk, ticker, retro, disc = r
+        pid, src, pub, direction, bk, ticker, retro, disc, attribution = r
         if pid not in posts_seen:
             posts_seen[pid] = {"src": src, "pub": pub,
                                 "direction": direction, "bk": bk, "ticker": ticker,
-                                "retro": retro or 0, "disc": disc or 0}
+                                "retro": retro or 0, "disc": disc or 0,
+                                "attribution": attribution}
 
     n_posts = len(posts_seen)
 
@@ -147,7 +184,9 @@ def query_today_stats(conn) -> dict:
         kol = SRC2KOL.get(p["src"], p["src"].replace("tw_", ""))
         if kol in by_kol:
             by_kol[kol] += 1
-        if p["direction"] and p["direction"] in ("long", "short") and not p["retro"] and not p["disc"]:
+        if (p["direction"] and p["direction"] in ("long", "short")
+                and is_author_signal(p["attribution"])
+                and not p["retro"] and not p["disc"]):
             directional += 1
         elif p["direction"] == "neutral" and (p["bk"] or p["ticker"]):
             neutral_with_signal += 1
@@ -266,7 +305,10 @@ def query_today_records(conn) -> list[dict]:
         else:
             direction = "neutral"
         # ticker / company / bottleneck / attribution / rebuts / summary 去重
-        tickers = list(dict.fromkeys(rec["_tickers"]))  # 保序去重
+        ticker_context = " ".join(rec["_companies"]) + " " + rec["raw_text"]
+        tickers = list(dict.fromkeys(
+            normalize_ticker(ticker, ticker_context) for ticker in rec["_tickers"]
+        ))  # 保序去重 + 公司简称标准化
         companies = list(dict.fromkeys(rec["_companies"]))
         bottleneck = rec["_bottlenecks"][0] if rec["_bottlenecks"] else None
         attribution = rec["_attrs"][0] if rec["_attrs"] else None
@@ -458,8 +500,14 @@ def select_dashboard_ticker_targets(conn, limit: int = DASHBOARD_TICKER_LIMIT) -
     }
     """
     print("  select_dashboard_ticker_targets: 开始", flush=True)
-    rows = conn.execute("""
-        SELECT e.source_id, e.ticker, e.direction, e.bottleneck, r.published_at
+    extraction_cols = {row[1] for row in conn.execute("PRAGMA table_info(extractions_intel)").fetchall()}
+    attr_sql = "e.attribution" if "attribution" in extraction_cols else "'ORIGINAL'"
+    company_sql = "e.company" if "company" in extraction_cols else "''"
+    raw_cols = {row[1] for row in conn.execute("PRAGMA table_info(raw_posts)").fetchall()}
+    raw_text_sql = "r.raw_text" if "raw_text" in raw_cols else "''"
+    rows = conn.execute(f"""
+        SELECT e.source_id, e.ticker, e.direction, e.bottleneck, r.published_at,
+               {attr_sql}, {company_sql}, {raw_text_sql}
         FROM extractions_intel e
         JOIN raw_posts r ON r.post_id = e.post_id
         WHERE e.direction IN ('long', 'short')
@@ -470,9 +518,13 @@ def select_dashboard_ticker_targets(conn, limit: int = DASHBOARD_TICKER_LIMIT) -
 
     # (kol, ticker) 维度聚合
     by_kol_tk: dict = {}
-    for src, ticker_json, direction, bk, pub in rows:
+    for src, ticker_json, direction, bk, pub, attribution, company, raw_text in rows:
+        if not is_author_signal(attribution):
+            continue
         kol = SRC2KOL.get(src, src.replace("tw_", ""))
-        for tk in parse_json_arr(ticker_json):
+        context = f"{company or ''} {raw_text or ''}"
+        for raw_ticker in parse_json_arr(ticker_json):
+            tk = normalize_ticker(raw_ticker, context)
             key = (kol, tk)
             if key not in by_kol_tk:
                 by_kol_tk[key] = {
@@ -590,9 +642,12 @@ def query_call_performance_events(conn, days: int = 370) -> list[dict]:
     raw_cols = {row[1] for row in conn.execute("PRAGMA table_info(raw_posts)").fetchall()}
     raw_text_sql = "r.raw_text" if "raw_text" in raw_cols else "''"
     raw_url_sql = "r.raw_url" if "raw_url" in raw_cols else "''"
+    extraction_cols = {row[1] for row in conn.execute("PRAGMA table_info(extractions_intel)").fetchall()}
+    attr_sql = "e.attribution" if "attribution" in extraction_cols else "'ORIGINAL'"
+    company_sql = "e.company" if "company" in extraction_cols else "''"
     rows = conn.execute(f"""
         SELECT e.post_id, e.source_id, e.direction, e.ticker, e.bottleneck,
-               r.published_at, {raw_text_sql}, {raw_url_sql}
+               r.published_at, {raw_text_sql}, {raw_url_sql}, {attr_sql}, {company_sql}
         FROM extractions_intel e
         JOIN raw_posts r ON r.post_id = e.post_id
         WHERE e.direction IN ('long', 'short')
@@ -605,8 +660,13 @@ def query_call_performance_events(conn, days: int = 370) -> list[dict]:
     events = []
     seen = set()
     validated_pairs = set()
-    for post_id, src, direction, ticker_json, bottleneck, published_at, raw_text, raw_url in rows:
-        for ticker in parse_json_arr(ticker_json):
+    for (post_id, src, direction, ticker_json, bottleneck, published_at,
+         raw_text, raw_url, attribution, company) in rows:
+        if not is_author_signal(attribution):
+            continue
+        context = f"{company or ''} {raw_text or ''}"
+        for raw_ticker in parse_json_arr(ticker_json):
+            ticker = normalize_ticker(raw_ticker, context)
             key = (src, post_id, ticker, direction)
             if key in seen:
                 continue

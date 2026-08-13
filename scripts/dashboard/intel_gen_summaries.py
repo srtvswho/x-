@@ -37,6 +37,7 @@ import requests
 sys.path.insert(0, str(Path(__file__).parent))
 from common import (  # noqa: E402
     CN_TZ, KOLS, SRC2KOL, cn_recent_24h_window_utc, cn_window_long_utc,
+    is_author_signal, normalize_ticker, parse_json_arr,
 )
 
 DB_PATH = "/workspace/data/signalboard_full.db"
@@ -78,11 +79,16 @@ def get_data_for_window(con: sqlite3.Connection, days: int) -> list[dict]:
     """, (start_iso, end_iso)).fetchall()
     out = []
     for x in rows:
+        # 纯转述保留在明细信息流，但不进入人物立场、共识或能力评价。
+        if not is_author_signal(x[6]):
+            continue
+        context = f"{x[4] or ''} {x[13] or ''}"
+        tickers = [normalize_ticker(t, context) for t in parse_json_arr(x[3])]
         out.append({
             "post_id": x[0],
             "kol": SRC2KOL.get(x[1], x[1].replace("tw_", "")),
             "source_id": x[1], "published_at": x[12],
-            "direction": x[2], "ticker": x[3], "company": x[4],
+            "direction": x[2], "ticker": tickers, "company": x[4],
             "bottleneck": x[5], "attribution": x[6],
             "rebuts_narrative": x[7], "summary_100": x[8],
             "is_retro": x[9], "is_disc": x[10], "is_selfret": x[11],
@@ -107,8 +113,9 @@ def build_kols_prompt() -> str:
     lines.append("1. 有人在【强项】领域发言 → 高可信 (✅)")
     lines.append("2. 有人在【弱项/盲区】领域发言 → 标注'打折'或'仅参考' (⚠️)")
     lines.append("3. R12 flag (is_retrospective/is_disclosure) 不算'当下新表态'")
-    lines.append("4. 共识 = 多人都提到同一卡点/方向")
-    lines.append("5. 客观、结论先行；禁止写成散文或按人物流水账")
+    lines.append("4. RELAYED/RC 是外部观点，不归属转发者，不进入方向或共识")
+    lines.append("5. 共识 = 多人都提到同一卡点/方向")
+    lines.append("6. 客观、结论先行；禁止写成散文或按人物流水账")
     return "\n".join(lines)
 
 
