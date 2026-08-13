@@ -1,0 +1,88 @@
+{
+  "generated_at": "2026-08-13T13:11:21.218376+00:00",
+  "validation_window": [
+    "2025-04-01",
+    "2026-07-15"
+  ],
+  "discovery_window_excluded": [
+    "2026-05-15",
+    "2026-07-25"
+  ],
+  "stats": {
+    "raw_posts": 111,
+    "dedup_signals": 1,
+    "verified_signals": 1,
+    "flash_failed_posts": 0,
+    "price_tickers": 2
+  },
+  "ranking": [
+    {
+      "handle": "sssjeffpu",
+      "grade": "INSUFFICIENT",
+      "n": 1,
+      "wins": 0,
+      "hit_rate": 0.0,
+      "wilson_lower": 0.0,
+      "median_raw_return": -0.05559602950550957,
+      "median_excess_soxx": -0.2761575489109598,
+      "median_mfe": 0.021582733812949728,
+      "median_mae": -0.08742373190055563,
+      "short_share": 0.0,
+      "raw_posts": 111,
+      "cashtag_posts": 1,
+      "extracted_signals": 1,
+      "worst": [
+        {
+          "ticker": "NVDA",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.8,
+          "reason": "目标价上调，营收和EPS预期上调，产品管线积极，可能的新资本回报计划",
+          "post": {
+            "post_id": "2056175297469538652",
+            "handle": "sssjeffpu",
+            "published_at": "2026-05-18T00:49:27+00:00",
+            "date": "2026-05-18",
+            "text": "$NVDA Preview Note Abstract \n\n• TP: $308 (from $292) \n* FY27/28E EPS $8.8 / $13.2\n• F1Q Rev: $80.6B vs Street $80B\n• F2Q Guid: $91B vs buy-side $90B\n• Potentially new capital return program? \n\nProduct Pipeline:\n• Reit Rubin MP push out by 1 mo to Sept\n* Rubin’s N3 wafer was partly shifted to Vera\n* Rubin 2300W unchanged\n• Momentum to be fueled by Blackwell, Vera CPU, and rapid LPX ramp.\n• Market needs inferencing-optimized GPUs, likely Feynman\n\n#NVDA #AI",
+            "url": "https://x.com/sssjeffpu/status/2056175297469538652"
+          },
+          "entry_date": "2026-05-19",
+          "entry_price": 219.62,
+          "exit_date": "2026-06-16",
+          "exit_price": 207.41,
+          "raw_return": -0.05559602950550957,
+          "excess_soxx": -0.2761575489109598,
+          "mfe": 0.021582733812949728,
+          "mae": -0.08742373190055563,
+          "hit": false
+        }
+      ],
+      "best": [
+        {
+          "ticker": "NVDA",
+          "direction": "long",
+          "action": "open",
+          "confidence": 0.8,
+          "reason": "目标价上调，营收和EPS预期上调，产品管线积极，可能的新资本回报计划",
+          "post": {
+            "post_id": "2056175297469538652",
+            "handle": "sssjeffpu",
+            "published_at": "2026-05-18T00:49:27+00:00",
+            "date": "2026-05-18",
+            "text": "$NVDA Preview Note Abstract \n\n• TP: $308 (from $292) \n* FY27/28E EPS $8.8 / $13.2\n• F1Q Rev: $80.6B vs Street $80B\n• F2Q Guid: $91B vs buy-side $90B\n• Potentially new capital return program? \n\nProduct Pipeline:\n• Reit Rubin MP push out by 1 mo to Sept\n* Rubin’s N3 wafer was partly shifted to Vera\n* Rubin 2300W unchanged\n• Momentum to be fueled by Blackwell, Vera CPU, and rapid LPX ramp.\n• Market needs inferencing-optimized GPUs, likely Feynman\n\n#NVDA #AI",
+            "url": "https://x.com/sssjeffpu/status/2056175297469538652"
+          },
+          "entry_date": "2026-05-19",
+          "entry_price": 219.62,
+          "exit_date": "2026-06-16",
+          "exit_price": 207.41,
+          "raw_return": -0.05559602950550957,
+          "excess_soxx": -0.2761575489109598,
+          "mfe": 0.021582733812949728,
+          "mae": -0.08742373190055563,
+          "hit": false
+        }
+      ]
+    }
+  ]
+}
