@@ -255,20 +255,32 @@ def render(result: dict[str, Any]) -> str:
 
 
 def main() -> None:
+    global HISTORY_FROM, HISTORY_TO, AS_OF
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-dir", default="outputs/memory_top_validation_20260811")
+    parser.add_argument("--candidates", nargs="+", default=list(CANDIDATES),
+                        help="X handles to validate (without @)")
+    parser.add_argument("--history-from", default=HISTORY_FROM.isoformat())
+    parser.add_argument("--history-to", default=HISTORY_TO.isoformat())
+    parser.add_argument("--as-of", default=AS_OF.isoformat())
     args = parser.parse_args()
+    HISTORY_FROM = date.fromisoformat(args.history_from)
+    HISTORY_TO = date.fromisoformat(args.history_to)
+    AS_OF = date.fromisoformat(args.as_of)
+    candidates = tuple(h.lstrip("@").strip() for h in args.candidates if h.strip())
+    if not candidates:
+        parser.error("at least one candidate is required")
     apify, deepseek, polygon = (os.environ[x] for x in
                                 ("APIFY_TOKEN", "DEEPSEEK_API_KEY", "POLYGON_API_KEY"))
     out = Path(args.output_dir); out.mkdir(parents=True, exist_ok=True)
 
     histories = {}
     with ThreadPoolExecutor(max_workers=6) as pool:
-        futures = {pool.submit(fetch_history, h, apify): h for h in CANDIDATES}
+        futures = {pool.submit(fetch_history, h, apify): h for h in candidates}
         for fut in as_completed(futures):
             h = futures[fut]; histories[h] = fut.result()
             print(f"@{h}: {len(histories[h])} history posts", flush=True)
-    all_posts = [p for h in CANDIDATES for p in histories[h]]
+    all_posts = [p for h in candidates for p in histories[h]]
     signals, failed = extract_signals(all_posts, deepseek)
     signals = dedup_signals(signals)
 
@@ -289,8 +301,8 @@ def main() -> None:
     coverage = {h: {"raw_posts": len(histories[h]),
                     "cashtag_posts": sum(bool(CASHTAG.search(p["text"])) for p in histories[h]),
                     "extracted_signals": sum(s["post"]["handle"] == h for s in signals)}
-                for h in CANDIDATES}
-    ranking = [summarize(h, verified, coverage[h]) for h in CANDIDATES]
+                for h in candidates}
+    ranking = [summarize(h, verified, coverage[h]) for h in candidates]
     ranking.sort(key=lambda c: (c["grade"] == "INSUFFICIENT", -c["hit_rate"],
                                 -c["median_raw_return"], -c["n"]))
     result = {"generated_at": datetime.now(timezone.utc).isoformat(),
