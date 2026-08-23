@@ -1,72 +1,72 @@
 {
-  "today": "市场主线｜存储/HBM供需紧张成共识主线，AI内存需求年增200%逻辑强化\n模块/标的｜存储；MU、SKHY、SNDK、NVDA（无明确新标的）\n方向/共识｜看多存储；tradex、zephyr、feroce形成共识（✅强项）\n风险/分歧｜AAOI被指动量非基本面（feroce看空）；gsmferrari警示散户情绪见顶风险（⚠️打折）",
+  "today": "市场主线｜存储/HBM结构性紧缺，AI驱动内存价格高位至2027年，HBM与GPU同等重要\n模块/标的｜存储；MU、SKHY、无明确标的\n方向/共识｜看多存储周期；Tradex、zephyr、Feroce形成共识\n风险/分歧｜zephyr反驳Nvidia Rubin 10x基准，电力供应成瓶颈；DGretta提示WULF高Beta风险",
   "consensus": {
-    "0": "共识方向｜存储/HBM 看多（供应紧张+需求200%年增）｜tradex、zephyr、feroce\n核心标的｜MU、SKHY、SNDK、NVDA\n分歧/风险｜AAOI 多空分歧（serenity 持有 vs feroce 看空）；gsmferrari 警示散户情绪见顶；存储定价逻辑待验证",
-    "1": "共识方向｜存储/HBM 看多：Jukan、Tradex、Feroce、Zephyr 多人同向，权重≥0.80；光通信/CPO 看多：Serenity、Austin 提及\n核心标的｜MU、SKHY、SNDK、NVDA；光通信：SIVE、AAOI、POET\n分歧/风险｜AAOI 遭 Serenity/Feroce 看空（融资稀释、动量驱动）；Jukan 弱项看多 AI 龙头需打折",
-    "3": "共识方向｜存储/HBM 看多：Jukan、Tradex、Feroce、Zephyr（权重合计>0.80）｜光通信/CPO 看多：Serenity、Austin（权重0.75，未达0.80门槛）\n核心标的｜MU、SKHY、SNDK、NVDA；光通信：SIVE、AAOI（分歧）\n分歧/风险｜AAOI 遭 Serenity/Feroce 看空（融资稀释、动量驱动）；Zephyr 看空权重为0，不参与共识",
-    "6": "共识方向｜存储/HBM 看多（多人强项领域）｜tradex、feroce、zephyr、jukan\n核心标的｜MU、SKHY、SNDK、NVDA\n分歧/风险｜zephyr 看空权重为0；AAOI 遭 serenity/feroce 看空，jukan 贬义；存储定价逻辑待验证",
-    "12": "共识方向｜存储/HBM 看多：Jukan、Tradex、Feroce、Zephyr（方向权重≥0.80）；光通信/CPO 看多：Serenity、Austin\n核心标的｜存储：MU、SKHY、SNDK；光通信：SIVE、AAOI、POET\n分歧/风险｜AAOI 遭 Serenity 看空（融资稀释）、Feroce 看空（动量驱动）；Jukan 弱项看多 AI 龙头需打折"
+    "0": "共识方向｜存储/HBM结构性看多（内存价格2027年前高位、HBM与GPU同等重要）+ AI算力基础设施看多（反驳capex疲劳）；参与者 Tradex、Zephyr、Feroce\n核心标的｜MU、SKHY（存储）；无明确AI基础设施标的\n分歧/风险｜Zephyr反驳Nvidia Rubin 10x说法（仅高交互性下成立）；Tradex称Apple内存议价能力结构性削弱；DGretta对WULF高Beta谨慎",
+    "1": "共识方向｜存储/内存看多（结构性短缺至2027）+ 光通信/CPO看多（上游瓶颈）；参与者 tradex、feroce、serenity、zephyr、jukan\n核心标的｜MU、SKHY、SNDK、AAOI、SIVE、POET\n分歧/风险｜AAOI 遭 serenity/feroce/jukan 看空（融资/动量）；zephyr 反驳 NVDA Rubin 10x 说法；gsmferrari 提示市场顶部风险",
+    "3": "共识方向｜存储/HBM 看多（结构性短缺至2027）+ 光通信/CPO 看多（供应瓶颈）；参与者 tradex、feroce、serenity、zephyr、jukan\n核心标的｜MU、SKHY、SNDK、AAOI、SIVE、POET\n分歧/风险｜AAOI 遭 serenity/feroce/jukan 看空（融资稀释）；zephyr 看空权重不计，Austin 仅认知验证",
+    "6": "共识方向｜存储/HBM 看多 + 光通信看多 + 电力卡点；参与者 tradex、feroce、zephyr、serenity\n核心标的｜MU、SKHY、SNDK、AAOI、SIVE、POET\n分歧/风险｜zephyr 看空权重为0；AAOI 遭 serenity/feroce/jukan 看空；META 遭 feroce 看空",
+    "12": "共识方向｜存储/HBM 看多：tradex(0.45)+feroce(0.35)+zephyr(0.65)+jukan(1.0)，权重合计2.45；光通信/CPO 看多：serenity(0.55)+austin(0.2)\n核心标的｜存储：MU、SKHY、SNDK；光通信：AAOI、SIVE、POET\n分歧/风险｜AAOI 遭 serenity/feroce/jukan 看空（融资/动量）；zephyr 反驳 NVDA Rubin 10x 说法；gsmferrari 提示 BTC/SPX 顶部风险"
   },
   "person": {
     "jukan": {
       "0": "Jukan 在该时间窗无有效判断。",
-      "1": "核心方向｜存储/HBM看多，代工卡点关注；AI龙头看多（弱项打折）\n明确标的｜NVDA、SMTC、MRVL看多；MU中性偏多\n依据/风险｜HBM 2028更紧缺、DDR5涨价15-23%、ABF基板成第二瓶颈；NVDA看多属弱项仅参考",
-      "3": "核心方向｜存储/HBM/代工 看多；光通信看多\n明确标的｜NVDA、SMTC、MRVL 看多；MU 中性偏多\n依据/风险｜HBM 2028 更紧缺、DDR5 涨价、ABF 基板成第二瓶颈；NVDA 内容从存储转向光学。✅强项可信；看多 NVDA 属弱项，仅参考",
-      "6": "核心方向｜存储/HBM看多；代工卡点关注；光通信看多\n明确标的｜NVDA、SMTC、MRVL看多；MU中性偏多\n依据/风险｜HBM 2028更紧缺、DDR5涨价15-23%、ABF基板成第二瓶颈；NVDA内容从存储转向光学。✅强项可信；AI龙头看多打折",
-      "12": "核心方向｜存储/HBM 看多；代工中性偏多\n明确标的｜无明确标的\n依据/风险｜HBM 2028 供应更紧、DDR5 涨价、NAND 行情困惑；ABF 基板成第二瓶颈。强项领域表态可信，弱项 NVDA 看多仅参考。"
+      "1": "核心方向｜存储/HBM看多，代工卡点关注；AI龙头看多（弱项打折）\n明确标的｜NVDA、SMTC、MRVL 看多；无明确看空标的\n依据/风险｜HBM 2028更紧、DDR5涨价15-23%、ABF基板成第二瓶颈；NVDA内容转向光学利好SMTC/MRVL。存储/代工✅高可信；AI龙头⚠️弱项仅参考",
+      "3": "核心方向｜存储/HBM看多，代工卡点关注；中性\n明确标的｜无明确标的\n依据/风险｜HBM 2028更紧缺、DDR5涨价15-23%、ABF基板成第二瓶颈；反驳小米供应缓解论。强项领域✅可信；NVDA看多属弱项⚠️仅参考",
+      "6": "核心方向｜存储/HBM/代工 看多；光通信中性偏多\n明确标的｜NVDA+SMTC+MRVL 看多；无明确存储标的\n依据/风险｜HBM 2028 更紧缺、DDR5 涨价、ABF 基板成第二瓶颈；NVDA 内容从存储转向光学。✅强项高可信；看多 NVDA 属弱项仅参考",
+      "12": "核心方向｜存储/HBM 看多；代工中性偏多\n明确标的｜无明确标的\n依据/风险｜HBM 2028 供应更紧、DDR5 涨价、NAND 反弹，均属强项✅；NVDA 看多属弱项⚠️仅参考"
     },
     "serenity": {
-      "0": "核心方向｜光通信/太空运输；中性（AAOI持仓但不满融资，SPCX/RKLB政策利好）\n明确标的｜AAOI（中性）、RKLB（中性偏多）\n依据/风险｜强项光通信领域表态可信；太空运输属弱项，仅参考。融资时机/金额疑虑为具体风险点。",
-      "1": "核心方向｜光通信/CPO 看多；AAOI 短期看空（融资）\n明确标的｜SIVE 看多；AAOI 看空\n依据/风险｜强项领域高可信：光通信需求可见性极强，CW/EML 短缺至2027-28；SIVE 为最佳高beta光学多头。AAOI 因频繁ATM增发转空。弱项追高倾向，注意仓位。",
-      "3": "核心方向｜光通信/CPO 看多；AAOI 短期看空（融资稀释）\n明确标的｜SIVE 看多；AAOI 看空；无其他明确标的\n依据/风险｜强项领域高可信：光通信需求可见性极强，CW/EML 短缺至 2027-2028；AAOI 因 ATM 增发看空。弱项追高倾向需打折。",
-      "6": "核心方向｜光通信/CPO 看多；存储/MLCC 中性偏多\n明确标的｜SIVE、AAOI、LITE、MTSI 看多；POET 中性\n依据/风险｜强项领域高可信：光通信需求可见性极强，CW/EML短缺至2027-28；AAOI融资方式受质疑。弱项追高倾向需打折。",
-      "12": "核心方向｜光通信/CPO/存储 看多；AAOI 融资看空\n明确标的｜SIVE、AAOI、LITE、MTSI、SNDK、MU 看多\n依据/风险｜光通信需求可见性极高，CW/EML 短缺至2027；✅强项高可信。AAOI 频繁 ATM 融资为弱项打折。"
+      "0": "核心方向｜中性；无明确看多/看空表态\n明确标的｜无明确标的（GOOGL仅感叹性评论，非方向判断）\n依据/风险｜两条均为非强项领域发言：GOOGL为情绪化感叹，AXTI/NBIS/AMD为R12回顾（不计入）。无光通信/CPO/InP强项表态，无新增有效方向。",
+      "1": "核心方向｜光通信/CPO 看多；存储看多\n明确标的｜SIVE、AAOI、LITE、MTSI 看多；SNDK、SKHY 看多；POET 中性\n依据/风险｜强项领域高可信：光通信需求可见性极强、CW/EML 短缺至2027-28；AAOI 融资行为负面但运营正面。弱项追高倾向，注意高beta回撤风险。",
+      "3": "核心方向｜光通信/CPO 看多；AAOI 短期看空（融资稀释）\n明确标的｜SIVE、AAOI、LITE、MTSI 看多；AAOI 融资行为负面\n依据/风险｜强项领域✅：光通信需求可见性极高，CW/EML 短缺至2027-2028，SIVE 为最佳高beta光学多头；AAOI 因频繁ATM增发看空（⚠️弱项追高，仅参考）",
+      "6": "核心方向｜光通信/CPO 看多；存储看多；人形机器人看多\n明确标的｜SIVE、AAOI、LITE、MTSI、POET、SNDK、SKHY、CCXI 看多\n依据/风险｜光通信需求可见性极高，CW/EML短缺至2027-2028，CPO为商业重点；存储涨价周期延续。✅强项领域高可信；⚠️人形机器人非强项，仅参考。",
+      "12": "核心方向｜光通信/CPO 看多；存储看多；人形机器人看多\n明确标的｜SIVE、AAOI、LITE、MTSI、POET、SNDK、SKHY、CCXI\n依据/风险｜强项光通信/CPO多次看多，需求可见性高、CW/EML短缺；存储引用Phison看多NAND；人形机器人经CCXI布局。弱项追高倾向，注意高beta回撤风险。✅可信"
     },
     "zephyr": {
-      "0": "核心方向｜存储｜中性\n明确标的｜无明确标的\n依据/风险｜CXMT良率超90%，测算中国iPhone存储需求约600M GB，供应40-50%仅需3%产能；苹果DRAM供应不足非价格问题。属强项领域，可信✅",
-      "1": "核心方向｜存储/HBM 看多；电力/推理算力中性偏多\n明确标的｜SNDK 看多；无其他明确标的\n依据/风险｜HBM需求2028年近翻倍、DRAM 2027年单年营收达万亿、NAND受agent memory驱动；✅强项可信。⚠️看空历史0/22，AI泡沫论仅参考",
-      "3": "核心方向｜存储/HBM 看多；AI算力中性\n明确标的｜SNDK 看多；无其他明确标的\n依据/风险｜HBM需求2028年近翻倍至12.5EB，NAND受agent memory驱动；存储为强项✅。看空为盲区，未涉足。",
-      "6": "核心方向｜存储/HBM 看多；电力/推理算力中性偏多\n明确标的｜SNDK 看多；NVDA 中性\n依据/风险｜HBM 需求翻倍、DRAM 2027 单年营收达万亿、agent memory 驱动 NAND；强项领域✅可信，无看空表态",
-      "12": "核心方向｜存储/HBM 看多；AI 算力中性\n明确标的｜SNDK 看多；无其他明确标的\n依据/风险｜HBM 需求翻倍、DRAM 营收爆发、NAND 受 agent memory 驱动；✅强项可信。⚠️看空历史全错，AI 泡沫论仅参考。"
+      "0": "核心方向｜存储/HBM/电力/算力，中性偏谨慎\n明确标的｜NVDA（反驳10x说法）；无明确做多标的\n依据/风险｜HBM5带宽、电力瓶颈、Rubin TDP等强项分析可信✅；但看空AI为弱项盲区，NVDA反驳仅参考⚠️",
+      "1": "核心方向｜存储/HBM/电力 看多；AI算力中性\n明确标的｜SNDK 看多；NVDA 中性（反驳10x宣称）\n依据/风险｜HBM需求2028翻倍至12.5EB、NAND agent memory驱动500-600EB、电力瓶颈；✅强项高可信，⚠️看空盲区未涉",
+      "3": "核心方向｜存储/HBM/电力 看多；AI算力中性\n明确标的｜SNDK 看多；NVDA 中性（反驳10x说法）\n依据/风险｜HBM需求2028翻倍至12.5EB、NAND agent memory驱动500-600EB、电力瓶颈；✅强项高可信，⚠️看空历史全错需打折",
+      "6": "核心方向｜存储/HBM/电力 看多；AI算力中性\n明确标的｜SNDK 看多；NVDA 中性\n依据/风险｜HBM需求2028翻倍、NAND agent memory驱动、电力瓶颈；✅强项高可信。⚠️看空历史0/22，AI泡沫论打折。",
+      "12": "核心方向｜存储/HBM/电力 看多；AI算力中性\n明确标的｜SNDK 看多；NVDA 中性\n依据/风险｜HBM需求2028年近翻倍至12.5EB，NAND受agent memory驱动；电力供应成瓶颈。✅强项高可信；⚠️看空历史全错，AI泡沫论仅参考"
     },
     "austin": {
       "0": "Austin 在该时间窗无有效判断。",
-      "1": "核心方向｜半导体产业链中性偏多，聚焦Foundry/推理架构\n明确标的｜AMD 看多；TSM/ASML 中性（定价讨论）\n依据/风险｜强项Foundry模式：TSMC应扩N2资本开支、ASML定价偏低；AMD收购Taalas构成半定制推理集群。✅可信；看多龙头属弱项，AMD观点打折。",
-      "3": "核心方向｜Foundry/商业格局 中性偏多；AMD 看多（弱项打折）\n明确标的｜AMD 看多；TSM/ASML 中性\n依据/风险｜强项：TSMC 应加 CapEx、ASML 定价偏低、EDA/Foundry 模式分析✅；AMD 看多属弱项⚠️仅参考",
-      "6": "核心方向｜AMD/Foundry 看多；CPO/EDA/存储中性\n明确标的｜AMD 看多\n依据/风险｜强项领域：AMD CPU TAM上调、MI450 2H26拐点、Pensando DPU价值，均✅可信；弱项看多龙头需打折。其余多为技术讨论，无明确方向。",
-      "12": "核心方向｜商业格局/Foundry模式 看多；AMD/CUDA护城河 看多\n明确标的｜AMD 看多\n依据/风险｜AMD 2H26转折点、CPU TAM上调至$220B、Pensando被低估；✅强项领域。⚠️看多龙头为弱项，跑输板块风险。"
+      "1": "核心方向｜半导体产业链｜中性偏多（AMD长期看多，其余多为技术探讨）\n明确标的｜AMD（看多）；TSM、ASML、GFS、ARM（中性提及）\n依据/风险｜强项在Foundry/商业格局，AMD CapEx担忧过度判断✅可信；弱项看多龙头跑输板块⚠️打折；多数表态为技术讨论无方向性",
+      "3": "核心方向｜AMD/Foundry 看多；CPO/EDA/存储中性\n明确标的｜AMD 看多\n依据/风险｜强项领域：AMD CPU TAM上调、MI450 2H26转折点、Pensando DPU价值（✅可信）；看多龙头为弱项，方向权重仅0.2，需打折",
+      "6": "核心方向｜AMD/Foundry 看多；CPO/EDA/推理中性\n明确标的｜AMD 看多\n依据/风险｜强项领域：AMD CPU TAM上调、MI450 2H26转折点、Pensando DPU价值；✅可信。弱项看多龙头跑输板块，⚠️打折。",
+      "12": "核心方向｜AMD/Foundry 看多；CPO/EDA/存储中性\n明确标的｜AMD 看多；TSM/ASML/GFS 中性\n依据/风险｜强项领域：AMD 2H26 转折点、CPU TAM 扩张、Pensando 价值（✅可信）；看多龙头属弱项，方向权重仅0.2，需打折"
     },
     "dgretta": {
-      "0": "核心方向｜小盘成长股 + 看多\n明确标的｜INBX（看多）、AEHR（回调看多）、MRNA（中性偏弱）\n依据/风险｜INBX低市值+高空头比，属强项首次前瞻✅；AEHR为择时买入⚠️轻测；MRNA仅评论无人持仓，非明确表态。小盘高Beta，仓位不可照抄。",
-      "1": "核心方向｜小盘成长/生物科技+看多；防御股中性\n明确标的｜INBX、OUST、FLEX、DAVE 看多；MRNA 中性\n依据/风险｜强项领域（小盘成长、首次前瞻）表态可信；INBX 空头30%+Merck合作、OUST 二次买入、FLEX 分拆为2027首选。弱项高Beta，仓位不可照抄。",
-      "3": "核心方向｜小盘成长/事件驱动 + 看多\n明确标的｜INBX、OUST、FLEX分拆 看多；MRNA 中性\n依据/风险｜强项=成长股启动/首次前瞻，✅可信；INBX 30%空头+Merck合作，OUST 二次买入。弱项=小盘高Beta，仓位不可照抄⚠️",
-      "6": "核心方向｜小盘成长股看多；防御股中性\n明确标的｜INBX、OUST、DAVE 看多；FLEX 中性偏多\n依据/风险｜强项=成长股启动/首次前瞻，✅可信；INBX 30%空头+Merck合作，OUST 二次买入。弱项=小盘高Beta，仓位不可照抄⚠️；FLEX 属技术面判断，仅参考。",
-      "12": "核心方向｜小盘成长/事件驱动 + 看多\n明确标的｜INBX、OUST、FLEX 看多；MRNA 中性\n依据/风险｜强项领域（小盘成长、首次前瞻）表态可信；INBX 低市值+高空头、OUST 二次买入、FLEX 分拆为2027首选。弱项为高Beta，仓位不可照抄。"
+      "0": "核心方向｜成长股/小盘成长；看多TOST，其余中性\n明确标的｜TOST（看多）；EOSE/WULF/GLXY/TXG（中性）\n依据/风险｜TOST人均创收百万，强项领域✅；EOSE亏损、WULF高Beta、GLXY负面均仅参考⚠️；仓位不可照抄",
+      "1": "核心方向｜小盘成长/事件驱动 看多\n明确标的｜INBX、OUST、FLEX分拆 看多；WULF 中性谨慎\n依据/风险｜强项领域：成长股启动+首次前瞻，INBX 30%空头+Merck合作、OUST二次买入、FLEX分拆2027最佳；⚠️小盘高Beta仓位不可照抄，WULF Beta 4.29 仅观察",
+      "3": "核心方向｜小盘成长/事件驱动 + 看多\n明确标的｜INBX、OUST、FLEX、DAVE 看多；WULF 谨慎中性\n依据/风险｜强项领域（成长股启动、首次前瞻）表态可信；弱项为小盘高Beta、仓位不可照抄，⚠️仅参考",
+      "6": "核心方向｜小盘成长/首次前瞻，看多为主\n明确标的｜INBX、OUST、FLEX分拆、AEHR 看多；无看空标的\n依据/风险｜强项领域表态可信；WULF高Beta仅观察，FLEX回撤为中性提示；仓位不可照抄⚠️",
+      "12": "核心方向｜小盘成长/事件驱动 + 看多\n明确标的｜INBX、OUST、DAVE、AEHR 看多；FLEX 中性偏多\n依据/风险｜强项=成长股启动/首次前瞻，✅可信；弱项=小盘高Beta，仓位不可照抄⚠️"
     },
     "feroce": {
-      "0": "核心方向｜存储/服务器链中性；AAOI看空\n明确标的｜NVDA、MU（中性）；AAOI（看空）\n依据/风险｜NVDA服务器涨价15%+因内存成本，属客观陈述；AAOI动量驱动非基本面。存储为强项领域✅，但无明确方向；AAOI属技术面判断，可信度中等。",
-      "1": "核心方向｜存储/连接看多，META看空\n明确标的｜MU、CRDO、ALAB 看多；META 看空\n依据/风险｜存储超级周期+连接/CXL代际机会，MU目标1830；技术面确认强项✅，高Beta轻测证据⚠️",
-      "3": "核心方向｜存储/连接看多；META看空\n明确标的｜MU、CRDO、ALAB 看多；META 看空\n依据/风险｜存储超级周期+CXL/连接代际机会，MU目标1830；技术面确认强项✅。META看空属弱项领域⚠️仅参考。",
-      "6": "核心方向｜存储/连接看多；META看空\n明确标的｜MU+、CRDO+、ALAB+；META-\n依据/风险｜强项领域：MU为存储龙头受益国产替代，CRDO/ALAB连接新高；弱项高Beta，轻测证据，仅参考",
-      "12": "核心方向｜存储/连接看多；META看空\n明确标的｜MU/CRDO/ALAB 看多；META 看空\n依据/风险｜存储超级周期+CXL/连接代际机会，MU目标1830；技术面确认强项✅；高Beta仓位仅参考⚠️"
+      "0": "核心方向｜AI算力基础设施｜看多\n明确标的｜无明确标的\n依据/风险｜开源模型催化AI基础设施需求，反驳capex疲劳论，属强项成长主题✅可信；但无具体标的，轻测证据，不单独触发重仓。",
+      "1": "核心方向｜存储/连接(CXL)+AI算力 看多；META 看空\n明确标的｜MU/CRDO/ALAB 看多；META 看空；AAOI 看空\n依据/风险｜强项领域(存储/连接/主题轮动)表态密集且一致，✅可信；META/AAOI 属弱项领域，⚠️打折；高Beta标的仅参考",
+      "3": "核心方向｜存储/连接看多；AI算力中性偏多；META看空\n明确标的｜MU/CRDO/ALAB 看多；META 看空；AAOI 看空\n依据/风险｜强项领域（存储/连接/主题轮动）表态密集且一致，✅可信；META/AAOI 看空属弱项领域，⚠️仅参考",
+      "6": "核心方向｜存储/连接看多，AI算力中性偏多，META看空\n明确标的｜MU/CRDO/ALAB 看多；META 看空；AAOI 看空\n依据/风险｜强项领域（存储/连接/主题轮动）表态密集且一致，✅可信；META/AAOI 属弱项领域，⚠️仅参考",
+      "12": "核心方向｜存储/连接看多，AI算力中性偏多，META看空\n明确标的｜MU/CRDO/ALAB 看多；META 看空；AAOI 看空\n依据/风险｜存储+CXL代际机会，MU目标1830；技术面确认强项✅；高Beta、轻测证据⚠️仅参考"
     },
     "tradex": {
-      "0": "核心方向｜存储 看多（60–120日主题）\n明确标的｜MU、SKHY、SNDK 看多\n依据/风险｜5年长协锁定供应、马斯克称内存需求年增200%，反驳中国CSP减少购买论；但20日择时与目标价为弱项，仅参考。",
-      "1": "核心方向｜存储/HBM 看多\n明确标的｜MU、SNDK、SKHY 看多\n依据/风险｜2027年HBM需求+60%、价格+40%，长协锁定供应，市场仍按2019定价是机会；✅强项可信，⚠️20日择时仅参考",
-      "3": "核心方向｜存储/HBM 看多\n明确标的｜MU、SNDK、SKHY 看多\n依据/风险｜存储周期结构性转变，2027年HBM需求+60%、价格+40%，长协锁定供应，市场仍按2019年定价是机会。✅强项可信；⚠️技术图表与营销内容仅参考。",
-      "6": "核心方向｜存储/HBM 看多\n明确标的｜MU、SNDK、SKHY 看多\n依据/风险｜2027 HBM 需求+60%、价格+40%，长协锁定产能，市场仍按2019定价=机会；✅强项可信。⚠️20日择时、目标价及营销内容打折。",
-      "12": "核心方向｜存储/HBM 看多\n明确标的｜MU、SNDK、SKHY 看多\n依据/风险｜2027年HBM需求+60%、价格+40%，长协锁定供应，市场仍按2019年定价存认知差机会；✅强项可信，20日择时仅参考"
+      "0": "核心方向｜存储/HBM 看多\n明确标的｜MU、SKHY 看多（间接）\n依据/风险｜内存价格2027年前维持高位，HBM与GPU同等重要；SOCAMM2削弱Apple议价能力利好存储厂。属强项领域✅可信，但未给精确目标价。",
+      "1": "核心方向｜存储/HBM 看多；60–120日主题\n明确标的｜MU、SNDK、SKHY 看多\n依据/风险｜2027年HBM需求+60%、价格+40%，存储短缺至2028，长协锁定产能；✅强项可信。⚠️20日择时、目标价仅参考",
+      "3": "核心方向｜存储/HBM 看多；60–120日主题明确\n明确标的｜MU、SNDK、SKHY 看多\n依据/风险｜2027年HBM需求+60%、价格+40%，长协锁定供应，结构性短缺至2028；✅强项可信。⚠️20日择时、目标价及营销内容仅参考。",
+      "6": "核心方向｜存储/HBM 看多；60–120日主题\n明确标的｜MU、SNDK、SKHY 看多\n依据/风险｜2027年HBM需求+60%、价格+40%，存储短缺至2028，长协锁定供应；✅强项可信。⚠️技术面择时及营销内容仅参考。",
+      "12": "核心方向｜存储/HBM 看多；60–120日主题明确\n明确标的｜MU、SNDK、SKHY 看多\n依据/风险｜2027年HBM需求+60%、价格+40%，内存短缺至2028，股东回报信号强；✅强项可信。20日择时及目标价仅参考。"
     },
     "gsmferrari": {
-      "0": "核心方向｜BTC + 中性（散户情绪警示）\n明确标的｜BTC；无明确方向\n依据/风险｜散户重新看涨傲慢，暗示顶部风险，属技术择时强项✅；未建仓，单条信号波动大，需止损约束⚠️",
-      "1": "核心方向｜技术择时+多空双向；看空BTC/ETH/DAX，看多NIO/EOS/UUUU等\n明确标的｜BTC/ETH/DAX看空；NIO/EOS/UUUU/BTDR看多\n依据/风险｜强项为技术形态（bear flag、斐波那契、Wyckoff），可信✅；产业基本面弱，单条信号波动大需止损⚠️",
-      "3": "核心方向｜技术择时+多空双向；BTC/ETH/DAX偏空，EOS/UUUU/NIO偏多，整体中性偏谨慎\n明确标的｜BTC/ETH/DAX看空；EOS/UUUU/NIO看多\n依据/风险｜强项技术形态（bear flag/斐波那契/楔形顶部）✅可信；产业基本面弱，单条信号波动大，需止损约束⚠️",
-      "6": "核心方向｜技术择时+多空双向；看空BTC/ETH/DAX，看多NIO/EOS/UUUU等\n明确标的｜BTC/ETH/DAX看空；NIO/EOS/UUUU/BTDR看多\n依据/风险｜强项为技术形态（bear flag/斐波那契/死猫反弹），✅可信；产业基本面弱，单条信号波动大需止损",
-      "12": "核心方向｜技术择时+多空双向；BTC/ETH/DAX偏空，NIO/EOS/UUUU偏多\n明确标的｜BTC/ETH/DAX看空；NIO/EOS/UUUU看多\n依据/风险｜强项为技术形态（bear flag/斐波那契/死猫反弹），可信；产业基本面弱，单信号波动大，需止损约束"
+      "0": "gsmferrari 在该时间窗无有效判断。",
+      "1": "核心方向｜技术择时+多空双向；BTC/ETH/DAX偏空，NIO/UUUU/EOS偏多\n明确标的｜BTC/ETH/DAX看空；NIO/UUUU/EOS看多\n依据/风险｜强项技术形态（bear flag/斐波那契），✅可信；产业基本面弱，单条信号波动大需止损",
+      "3": "核心方向｜技术择时+多空双向；BTC/ETH/DAX偏空，NIO/UUUU/EOS偏多，整体中性偏谨慎\n明确标的｜BTC/ETH/DAX看空；NIO/UUUU/EOS看多\n依据/风险｜强项技术形态（bear flag/斐波那契/楔形顶部）✅可信；产业基本面弱，单条信号波动大需止损⚠️",
+      "6": "核心方向｜技术择时为主，多空双向；BTC/ETH/DAX看空（死猫反弹/熊旗），SPX顶部风险，NIO/EOS/UUUU看多\n明确标的｜BTC/ETH/DAX看空；NIO/EOS/UUUU看多\n依据/风险｜技术形态（斐波那契/熊旗/楔形）判断顶部与反弹，属强项✅；产业基本面弱，单条信号波动大需止损⚠️",
+      "12": "核心方向｜技术择时为主，多空双向；BTC/ETH/DAX看空（死猫反弹/熊旗），SPX顶部风险，NIO/EOS/UUUU看多\n明确标的｜BTC/ETH/DAX空；NIO/EOS/UUUU多\n依据/风险｜强项技术形态（斐波那契/熊旗/通道）；产业基本面弱，单信号波动大，需止损约束"
     }
   },
-  "generated_at": "2026-08-22T22:52:34.850550Z",
-  "data_until": "2026-08-22T22:26:53+00:00",
+  "generated_at": "2026-08-23T22:52:53.429051Z",
+  "data_until": "2026-08-23T22:10:30+00:00",
   "stale": false,
   "daily_history": {
     "2026-08-09": {
@@ -143,6 +143,11 @@
       "summary": "市场主线｜存储/HBM供需紧张成共识主线，AI内存需求年增200%逻辑强化\n模块/标的｜存储；MU、SKHY、SNDK、NVDA（无明确新标的）\n方向/共识｜看多存储；tradex、zephyr、feroce形成共识（✅强项）\n风险/分歧｜AAOI被指动量非基本面（feroce看空）；gsmferrari警示散户情绪见顶风险（⚠️打折）",
       "generated_at": "2026-08-22T22:52:34.850550Z",
       "data_until": "2026-08-22T22:26:53+00:00"
+    },
+    "2026-08-24": {
+      "summary": "市场主线｜存储/HBM结构性紧缺，AI驱动内存价格高位至2027年，HBM与GPU同等重要\n模块/标的｜存储；MU、SKHY、无明确标的\n方向/共识｜看多存储周期；Tradex、zephyr、Feroce形成共识\n风险/分歧｜zephyr反驳Nvidia Rubin 10x基准，电力供应成瓶颈；DGretta提示WULF高Beta风险",
+      "generated_at": "2026-08-23T22:52:53.429051Z",
+      "data_until": "2026-08-23T22:10:30+00:00"
     }
   }
 }
