@@ -223,6 +223,10 @@ a{color:inherit;text-decoration:none}
 .evidence{margin-top:8px;border-top:1px dashed var(--line);padding-top:7px;position:relative}
 .evidence summary{cursor:pointer;list-style:none;color:var(--blue);font-family:var(--mono);font-size:10.5px;font-weight:700}
 .evidence summary::-webkit-details-marker{display:none}.evidence summary:before{content:'＋';margin-right:5px}.evidence[open] summary:before{content:'－'}
+.thesis-change-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:14px 0 22px}
+.thesis-change-card{border:1px solid var(--line);border-radius:14px;background:#fff;padding:17px;box-shadow:0 8px 28px rgba(31,47,78,.04)}
+.thesis-change-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}.thesis-theme{font-size:17px;font-weight:750}.change-pill,.action-pill{font-family:var(--mono);font-size:9.5px;border-radius:999px;padding:4px 7px;background:var(--blue-soft);color:var(--blue)}
+.action-pill{background:#f2f4f8;color:var(--ink-faint)}.thesis-row{display:grid;grid-template-columns:105px 1fr;gap:10px;padding:7px 0;border-top:1px solid var(--line-soft);font-size:12.5px;line-height:1.5}.thesis-row b{color:var(--ink-faint);font-size:10px;letter-spacing:.04em}.exposure{display:inline-block;margin:2px 5px 2px 0;padding:2px 6px;border-radius:5px;background:#f4f7fb}.thesis-actions{display:flex;gap:8px;margin-top:11px}.thesis-actions button,.thesis-actions a{border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--blue);font-size:10.5px;padding:6px 8px;cursor:pointer}
 .evidence-pop{position:fixed;z-index:90;left:50%;top:50%;transform:translate(-50%,-50%);width:min(560px,calc(100vw - 32px));max-height:min(70vh,620px);overflow:auto;padding:18px;border:1px solid #d7def1;border-radius:18px;background:#fff;box-shadow:0 24px 80px rgba(23,32,51,.24)}
 .evidence-pop:before{content:'原文';display:block;margin-bottom:10px;padding-right:42px;font-size:11px;font-weight:800;color:var(--blue);letter-spacing:.08em}.evidence-close{position:absolute;z-index:2;right:12px;top:12px;width:36px;height:36px;display:grid;place-items:center;border:1px solid var(--line);border-radius:50%;background:#fff;color:var(--ink-dim);font-size:22px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(23,32,51,.08)}.evidence-close:hover{background:var(--blue-soft);color:var(--blue);border-color:#cfd8ff}.evidence-close:focus-visible{outline:3px solid rgba(49,94,251,.25);outline-offset:2px}.evidence-text{padding:12px 13px;border-radius:11px;background:var(--panel-2);color:var(--ink-dim);font-size:13px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}.evidence-link{margin-top:10px}.evidence-link a{color:var(--blue);font-size:11px;font-weight:650}.filter-note{font-size:11px;color:var(--ink-faint);margin:-5px 0 14px}
 /* ===== explainable signal strength ===== */
@@ -238,7 +242,7 @@ a{color:inherit;text-decoration:none}
 .return-bar.in{left:50%;background:#25a36f}.return-bar.out{right:50%;background:#d45467}.return-value{min-width:50px;font-family:var(--mono);font-size:11px;font-weight:800}
 .return-value.in{color:#16845a}.return-value.out{color:#c13e55}
 
-@media(max-width:1080px){.layout{display:block}.side-nav{display:none}.kolgrid{grid-template-columns:repeat(2,1fr)}.stance-grid{grid-template-columns:1fr}}
+@media(max-width:1080px){.layout{display:block}.side-nav{display:none}.kolgrid{grid-template-columns:repeat(2,1fr)}.stance-grid,.thesis-change-grid{grid-template-columns:1fr}}
 @media(max-width:680px){
   .topbar{padding:0 14px;height:58px}.brand .sub,.clock{display:none}
   .kolgrid{grid-template-columns:1fr}.wrap{padding:12px 14px 60px}.shead{margin-top:30px}.shead:first-child{margin-top:14px}.shead .hint,.shead .rule{display:none}
@@ -261,10 +265,14 @@ a{color:inherit;text-decoration:none}
   <span class="live" id="live-meta"><span class="dot"></span><span id="live-text">loading...</span></span>
 </div>
 
-<div class="layout"><nav class="side-nav"><div class="nav-title">页面导航</div><a href="#market">01 市场态度</a><a href="#tracking">02 标的追踪</a><a href="#feed-section">03 近期明细</a><a href="#people">04 追踪对象</a></nav><div class="wrap">
+<div class="layout"><nav class="side-nav"><div class="nav-title">页面导航</div><a href="#thesis-changes">01 Thesis变化</a><a href="#market">02 市场态度</a><a href="#tracking">03 标的追踪</a><a href="#feed-section">04 近期明细</a><a href="#people">05 追踪对象</a></nav><div class="wrap">
+
+  <div class="shead section-anchor" id="thesis-changes"><span class="num">01</span><h2>TODAY'S THESIS CHANGES</h2>
+    <span class="hint">新证据改变了什么 · 独立 AI 评估 · 非买卖建议</span><span class="rule"></span></div>
+  <div class="thesis-change-grid" id="thesis-change-grid"></div>
 
   <!-- ===== 市场态度：今日总结与近期态度合并 ===== -->
-  <div class="shead section-anchor" id="market"><span class="num">01</span><h2>市场态度</h2>
+  <div class="shead section-anchor" id="market"><span class="num">02</span><h2>市场态度</h2>
     <span class="hint">共识结论 · 个人立场 · 每条判断可查看原文</span><span class="rule"></span></div>
   <div class="period-control"><label for="stance-window">时间范围</label><select id="stance-window">
     <option value="0" selected>今日</option><option value="0.25">近 1 周</option><option value="1">近 1 个月</option><option value="3">近 3 个月</option>
@@ -274,7 +282,7 @@ a{color:inherit;text-decoration:none}
   <div class="stance-grid" id="stancegrid"></div>
 
   <!-- ===== 标的追踪：优先于明细 ===== -->
-  <div class="shead section-anchor" id="tracking"><span class="num">02</span><h2>标的追踪</h2>
+  <div class="shead section-anchor" id="tracking"><span class="num">03</span><h2>标的追踪</h2>
     <span class="hint">首次明确方向计分 · 最近发言优先 · 点击查看首条原文</span><span class="rule"></span></div>
   <div class="filters"><label for="perf-kol">人物</label><select id="perf-kol"></select>
     <label for="perf-window">首次喊单</label><select id="perf-window"><option value="7">近 1 周</option><option value="30" selected>近 1 个月</option><option value="90">近 3 个月</option><option value="365">近 1 年</option></select><label for="perf-sort">排序</label><select id="perf-sort"><option value="return_desc">方向收益高 → 低</option><option value="return_asc">方向收益低 → 高</option><option value="latest">最近提及优先</option><option value="first">首次喊单最新</option></select></div>
@@ -286,14 +294,14 @@ a{color:inherit;text-decoration:none}
     <tbody id="tbody"></tbody></table></div>
 
   <!-- ===== 近期明细 ===== -->
-  <div class="shead section-anchor" id="feed-section"><span class="num">03</span><h2>近期明细</h2>
+  <div class="shead section-anchor" id="feed-section"><span class="num">04</span><h2>近期明细</h2>
     <span class="hint" id="feed-date"></span><span class="rule"></span></div>
   <div class="filters"><label for="feed-kol">人物</label><select id="feed-kol"></select><label for="feed-level">信号等级</label><select id="feed-level"><option value="all">全部</option><option value="focus">重点</option><option value="reference">参考</option><option value="general">一般</option></select>
     <label for="feed-size">每页</label><select id="feed-size"><option>20</option><option selected>30</option><option>50</option></select></div>
   <div class="feed-empty" id="feed-empty"></div><div class="feed" id="feed"></div><div class="pager" id="feed-pager"></div>
 
   <!-- ===== 追踪对象 (ref, bottom) ===== -->
-  <div class="shead section-anchor" id="people"><span class="num">04</span><h2>追踪对象</h2>
+  <div class="shead section-anchor" id="people"><span class="num">05</span><h2>追踪对象</h2>
     <span class="hint">能力圈备忘 · 信什么 / 略过什么</span><span class="rule"></span></div>
   <div class="kolgrid" id="kolgrid"></div>
 
@@ -311,6 +319,7 @@ a{color:inherit;text-decoration:none}
 <script id="TODAY_STATS" type="application/json">__TODAY_STATS__</script>
 <script id="TODAY_RECORDS" type="application/json">__TODAY_RECORDS__</script>
 <script id="BUILD_META" type="application/json">__BUILD_META__</script>
+<script id="THESIS_CHANGES" type="application/json">__THESIS_CHANGES__</script>
 <script>
 const RECORDS=JSON.parse(document.getElementById('DATA').textContent);
 const KOLS=JSON.parse(document.getElementById('KOLS').textContent);
@@ -320,6 +329,7 @@ const SUM=JSON.parse(document.getElementById('SUMMARIES').textContent);
 const TODAY_STATS=JSON.parse(document.getElementById('TODAY_STATS').textContent);
 const TODAY_RECORDS=JSON.parse(document.getElementById('TODAY_RECORDS').textContent);
 const BUILD_META=JSON.parse(document.getElementById('BUILD_META').textContent);
+const THESIS_CHANGES=JSON.parse(document.getElementById('THESIS_CHANGES').textContent);
 // 单一今日窗口函数 (24h 滚动) — 跟 build_dashboard.py / intel_gen_summaries.py / query_today_stats 共用
 function todayWindowUTC(){return [new Date(BUILD_META.window_start_utc), new Date(BUILD_META.window_end_utc)];}
 const COLORS={jukan:'#48c9d6',serenity:'#f0a73c',zephyr:'#9a8cff',austin:'#e0617a',dgretta:'#2e9d69',feroce:'#d17c2f',tradex:'#5277d3',gsmferrari:'#8255b5'};
@@ -351,6 +361,24 @@ function formatStructuredSummary(text){
 }
 
 function escHtml(value){return String(value||'').replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});}
+function renderThesisChanges(){
+  const root=document.getElementById('thesis-change-grid');
+  if(!THESIS_CHANGES.length){root.innerHTML='<div class="feed-empty">尚无达到质量门槛的 Thesis Change；旧 Post Feed 仍保留在下方。</div>';return;}
+  root.innerHTML=THESIS_CHANGES.map(x=>{
+    const evidence=(x.new_evidence||[]).map(e=>`<li>${e.source_url?`<a href="${escHtml(e.source_url)}" target="_blank" rel="noopener">${escHtml(e.text)}</a>`:escHtml(e.text)} <span class="change-pill">${escHtml(e.status)}</span></li>`).join('');
+    const tags=a=>(a||[]).map(v=>`<span class="exposure">${escHtml(v)}</span>`).join('')||'—';
+    return `<article class="thesis-change-card"><div class="thesis-change-head"><span class="thesis-theme">${escHtml(x.theme)}</span><span class="change-pill">${escHtml(x.change_type)}</span><span class="action-pill">${escHtml(x.actionability)}</span></div>
+      <div class="meta">${escHtml((x.authors||[]).join(' · '))} · Confidence ${x.confidence==null?'—':Math.round(x.confidence*100)} · Social ${x.social_mentions||0} / Independent ${x.independent_evidence||0}</div>
+      <div class="thesis-row"><b>PREVIOUS VIEW</b><span>${escHtml(x.previous_view)}</span></div>
+      <div class="thesis-row"><b>NEW EVIDENCE</b><span><ul>${evidence||'<li>—</li>'}</ul></span></div>
+      <div class="thesis-row"><b>NEW VIEW</b><span>${escHtml(x.new_view)}</span></div>
+      <div class="thesis-row"><b>AI ASSESSMENT</b><span>${escHtml(x.ai_assessment)}</span></div>
+      ${(x.consensus||[]).length?`<div class="thesis-row"><b>CONSENSUS</b><span>${tags(x.consensus)}</span></div>`:''}
+      ${(x.disagreement||[]).length?`<div class="thesis-row"><b>DISAGREEMENT</b><span>${tags(x.disagreement)}</span></div>`:''}
+      <div class="thesis-row"><b>EXPOSURE</b><span>＋ ${tags(x.positive_exposure)}<br>－ ${tags(x.negative_exposure)}</span></div>
+      <div class="thesis-actions"><button type="button" onclick="this.closest('article').querySelector('.thesis-row:nth-of-type(2)').scrollIntoView({behavior:'smooth'})">View Thesis</button><button type="button" onclick="this.closest('article').querySelector('ul').scrollIntoView({behavior:'smooth'})">View Evidence</button><button type="button" title="仅用户主动触发，Daily 不调用 Sol" onclick="alert('Deep Analysis 仅在你主动触发后运行，不会由 Daily Feed 自动调用。')">Deep Analysis</button></div></article>`;
+  }).join('');
+}
 const SIGNAL_POLICY={
   jukan:{focus:'存储/HBM能力圈内的明确方向与实际操作',caution:'模糊、无行动证据的短线风险评论',review:'每月更新表现 · 每季度复核能力圈'},
   zephyr:{focus:'产业卡点与能力圈内做多',caution:'做空信号：历史多空表现不对称',review:'每月更新多空分项 · 每季度复核'},
@@ -780,7 +808,7 @@ document.addEventListener('click',e=>{
   });
 });
 document.getElementById('foot-sources').textContent=`${ORDER.length} sources`;
-renderLiveMeta();renderStance();renderFeed();renderTickers();renderKols();
+renderLiveMeta();renderThesisChanges();renderStance();renderFeed();renderTickers();renderKols();
 </script>
 </body>
 </html>

@@ -16,6 +16,7 @@ from typing import Any
 import requests
 
 OPENAI_RESPONSES_URL = "https://api.openai.com/v1/responses"
+OPENAI_EMBEDDINGS_URL = "https://api.openai.com/v1/embeddings"
 DEEPSEEK_CHAT_URL = "https://api.deepseek.com/v1/chat/completions"
 
 DEFAULT_ROUTES: dict[str, tuple[str, str, str]] = {
@@ -24,15 +25,20 @@ DEFAULT_ROUTES: dict[str, tuple[str, str, str]] = {
     "media_understanding": ("openai", "gpt-5.6-terra", "low"),
     "thesis_update": ("openai", "gpt-5.6-terra", "medium"),
     "cross_author_analysis": ("openai", "gpt-5.6-terra", "medium"),
+    "theme_canonicalization": ("openai", "gpt-5.6-terra", "medium"),
+    "claim_verification": ("openai", "gpt-5.6-terra", "medium"),
+    "ai_analyst": ("openai", "gpt-5.6-terra", "medium"),
+    "golden_evaluation": ("openai", "gpt-5.6-terra", "medium"),
     "deep_investment_analysis": ("openai", "gpt-5.6-sol", "high"),
 }
 
 # Standard, short-context list prices per 1M tokens. Environment overrides are
 # supported so a pricing change never requires a code release.
 DEFAULT_PRICING_USD_PER_MILLION: dict[str, tuple[float, float, float]] = {
-    "gpt-5.6-terra": (1.0, 0.10, 6.0),
-    "gpt-5.6-sol": (2.0, 0.20, 10.0),
-    "gpt-5.6-luna": (0.10, 0.01, 0.60),
+    "gpt-5.6-terra": (2.0, 0.20, 12.0),
+    "gpt-5.6-sol": (4.0, 0.40, 20.0),
+    "gpt-5.6-luna": (0.20, 0.02, 1.20),
+    "text-embedding-3-small": (0.02, 0.0, 0.0),
     # Conservative DeepSeek peak-hour rates; actual off-peak cost can be 50% lower.
     "deepseek-v4-flash": (0.44, 0.014, 1.32),
     "deepseek-v4-pro": (1.32, 0.044, 3.96),
@@ -60,6 +66,17 @@ class AIResult:
     output_tokens: int = 0
     estimated_cost_usd: float = 0.0
     latency_ms: int = 0
+    request_id: str | None = None
+    sources: list[dict[str, Any]] | None = None
+
+
+@dataclass
+class EmbeddingResult:
+    vectors: list[list[float]]
+    model: str
+    input_tokens: int
+    estimated_cost_usd: float
+    latency_ms: int
     request_id: str | None = None
 
 
@@ -129,6 +146,7 @@ def _request_openai(
     image_urls: list[str] | None,
     max_output_tokens: int,
     timeout: int,
+    web_search: bool = False,
 ) -> tuple[str, dict[str, Any], str | None]:
     user_content: list[dict[str, Any]] = [{"type": "input_text", "text": user}]
     for url in image_urls or []:
@@ -152,6 +170,9 @@ def _request_openai(
             "strict": True,
             "schema": schema,
         }
+    if web_search:
+        body["tools"] = [{"type": "web_search"}]
+        body["include"] = ["web_search_call.action.sources"]
     response = requests.post(
         OPENAI_RESPONSES_URL,
         headers={"Authorization": f"Bearer {_api_key('openai')}", "Content-Type": "application/json"},
@@ -229,6 +250,7 @@ def _call(
     max_output_tokens: int = 1800,
     timeout: int = 90,
     max_retries: int = 2,
+    web_search: bool = False,
 ) -> AIResult:
     route = resolve_route(workload)
     if image_urls and route.provider != "openai":
@@ -241,6 +263,7 @@ def _call(
                 text, payload, request_id = _request_openai(
                     route, system, user, schema=schema, schema_name=schema_name,
                     image_urls=image_urls, max_output_tokens=max_output_tokens, timeout=timeout,
+                    web_search=web_search,
                 )
             else:
                 text, payload, request_id = _request_deepseek(
@@ -260,6 +283,7 @@ def _call(
                 estimated_cost_usd=cost,
                 latency_ms=int((time.monotonic() - started) * 1000),
                 request_id=request_id,
+                sources=_openai_web_sources(payload),
             )
         except Exception as exc:
             last_error = exc
@@ -300,6 +324,78 @@ def call_text(
     return _call(
         workload, system, user, max_output_tokens=max_output_tokens,
         timeout=timeout, max_retries=max_retries,
+    )
+
+
+def _openai_web_sources(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    """Collect the full source list returned by Responses web search."""
+    sources: dict[str, dict[str, Any]] = {}
+    for item in payload.get("output") or []:
+        action = item.get("action") or {}
+        for source in action.get("sources") or []:
+            url = str(source.get("url") or "").strip()
+            if url:
+                sources[url] = dict(source)
+        if item.get("type") != "message":
+            continue
+        for content in item.get("content") or []:
+            for annotation in content.get("annotations") or []:
+                url = str(annotation.get("url") or "").strip()
+                if url:
+                    sources.setdefault(url, dict(annotation))
+    return list(sources.values())
+
+
+def call_json_web(
+    workload: str,
+    system: str,
+    user: str,
+    schema: dict[str, Any],
+    *,
+    schema_name: str = "signalboard_web_output",
+    max_output_tokens: int = 2400,
+    timeout: int = 180,
+    max_retries: int = 2,
+) -> AIResult:
+    """Structured Responses call with the built-in web_search tool and source capture."""
+    route = resolve_route(workload)
+    if route.provider != "openai":
+        raise ValueError(f"Web search requires OpenAI, got {route.provider}")
+    return _call(
+        workload, system, user, schema=schema, schema_name=schema_name,
+        max_output_tokens=max_output_tokens, timeout=timeout,
+        max_retries=max_retries, web_search=True,
+    )
+
+
+def embed_texts(
+    texts: list[str], *, model: str = "text-embedding-3-small",
+    dimensions: int = 256, timeout: int = 90,
+) -> EmbeddingResult:
+    """Batch embeddings for semantic candidate generation; merge decisions remain LLM-judged."""
+    if not texts:
+        return EmbeddingResult([], model, 0, 0.0, 0)
+    started = time.monotonic()
+    body: dict[str, Any] = {"model": model, "input": texts, "encoding_format": "float"}
+    if dimensions:
+        body["dimensions"] = dimensions
+    response = requests.post(
+        OPENAI_EMBEDDINGS_URL,
+        headers={"Authorization": f"Bearer {_api_key('openai')}", "Content-Type": "application/json"},
+        json=body,
+        timeout=timeout,
+    )
+    request_id = response.headers.get("x-request-id")
+    response.raise_for_status()
+    payload = response.json()
+    vectors = [row["embedding"] for row in sorted(payload.get("data") or [], key=lambda x: x["index"])]
+    if len(vectors) != len(texts):
+        raise RuntimeError(f"Embedding count mismatch: expected {len(texts)}, got {len(vectors)}")
+    input_tokens = int((payload.get("usage") or {}).get("prompt_tokens") or 0)
+    return EmbeddingResult(
+        vectors=vectors, model=model, input_tokens=input_tokens,
+        estimated_cost_usd=_estimate_cost(model, input_tokens, 0, 0),
+        latency_ms=int((time.monotonic() - started) * 1000), request_id=request_id,
     )
 
 

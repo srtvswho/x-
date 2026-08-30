@@ -1,0 +1,52 @@
+{
+  "case_a_ymtc_nand_china_wfe": {
+    "title": "YMTC → NAND → China WFE",
+    "seed_post_ids": [
+      "2090779070523162841", "2092457458341937311", "2092457470765531481",
+      "2092474407679922609", "2092482318665650559", "2092492304976351332",
+      "2092503684810998119", "2092550362691760189"
+    ],
+    "required_reference_edges": [
+      ["2092457470765531481", "2092457458341937311"],
+      ["2092482318665650559", "2092457458341937311"],
+      ["2092492304976351332", "2092482318665650559"],
+      ["2092503684810998119", "2092474407679922609"]
+    ],
+    "required_media_ids": ["3_2092457347855613952"],
+    "expected_facts": [
+      ["2027", "largest|最大", "NAND"],
+      ["IPO|上市", "production|生产", "R&D|研发"],
+      ["300", "wafer|晶圆"]
+    ],
+    "expected_logic": [
+      ["YMTC", "profit|利润", "CapEx|资本开支"],
+      ["CapEx", "WFE"],
+      ["WFE", "NAURA", "AMEC"]
+    ],
+    "expected_corrections": [["5", "total|总共|总计", "fab|晶圆厂"]],
+    "expected_risks": [["oversupply|过剩", "NAND"], ["oversupply|过剩", "SNDK"]],
+    "expected_beneficiaries": [["NAURA"], ["AMEC"]],
+    "expected_losers": [["SNDK"]],
+    "expected_unknowns": [["fab|晶圆厂", "schedule|进度|时点"], ["capacity|产能", "ramp|爬坡"]]
+  },
+  "case_b_abf_copos_cowop_pcb": {
+    "title": "ABF → CoPoS / CoWoP → PCB",
+    "seed_post_ids": [
+      "1997151412309078335", "2092785771979960560", "2092786981977915481",
+      "2025470786073755771", "2087139633109115036", "2070266870557704335",
+      "2066651558784463190", "2074774120324276615"
+    ],
+    "required_reference_edges": [
+      ["2092785771979960560", "1997151412309078335"],
+      ["2092786981977915481", "2092785771979960560"]
+    ],
+    "required_media_ids": ["3_1997150826352316416"],
+    "expected_facts": [["2026", "2027", "ABF"], ["Feynman", "CoPoS"]],
+    "expected_logic": [["short|短期", "ABF", "bull|看多|利好"], ["long|长期", "architecture|架构", "uncertain|不确定"]],
+    "expected_corrections": [["Feynman", "not|不能|不确定", "certain|确定", "ABF"]],
+    "expected_risks": [["CoWoP", "reduce|减少|消除", "ABF"], ["CoPoS", "ABF"]],
+    "expected_beneficiaries": [["PCB"], ["CCL"]],
+    "expected_losers": [["ABF", "CoWoP"]],
+    "expected_unknowns": [["Feynman", "architecture|架构"], ["CoPoS", "CoWoP", "adoption|采用|路线"]]
+  }
+}
