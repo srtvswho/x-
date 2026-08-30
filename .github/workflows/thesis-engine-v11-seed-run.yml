@@ -1,0 +1,89 @@
+name: Thesis Engine v1.1 Production Seed
+
+on:
+  push:
+    branches: [agent/thesis-v11-prod-seed-run-2]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: signalboard-data-write
+  cancel-in-progress: false
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      AI_ROUTE_BULK_POST_PROCESSING_PROVIDER: deepseek
+      AI_ROUTE_BULK_POST_PROCESSING_MODEL: deepseek-v4-flash
+      AI_ROUTE_MEDIA_UNDERSTANDING_MODEL: gpt-5.6-terra
+      AI_ROUTE_THEME_CANONICALIZATION_MODEL: gpt-5.6-terra
+      AI_ROUTE_CLAIM_VERIFICATION_MODEL: gpt-5.6-terra
+      AI_ROUTE_THESIS_UPDATE_MODEL: gpt-5.6-terra
+      AI_ROUTE_AI_ANALYST_MODEL: gpt-5.6-terra
+      AI_ROUTE_CROSS_AUTHOR_ANALYSIS_MODEL: gpt-5.6-terra
+      AI_ROUTE_RESEARCH_CASE_SYNTHESIS_MODEL: gpt-5.6-terra
+      GOLDEN_IDS: 2090779070523162841,2092457458341937311,2092457470765531481,2092474407679922609,2092482318665650559,2092492304976351332,2092503684810998119,2092550362691760189,1997151412309078335,2092785771979960560,2092786981977915481,2025470786073755771,2087139633109115036,2070266870557704335,2066651558784463190,2074774120324276615
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: master
+          fetch-depth: 1
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests pytest
+      - name: Restore production database
+        run: |
+          set -Eeuo pipefail
+          gzip -t data/signalboard.db.gz
+          gzip -cd data/signalboard.db.gz > data/signalboard_full.db
+          sudo ln -sfn "$GITHUB_WORKSPACE" /workspace
+      - name: Rebuild bounded Golden evidence
+        run: |
+          set -Eeuo pipefail
+          python scripts/intel_graph_ingest.py --db data/signalboard_full.db --post-ids "$GOLDEN_IDS" --refresh --include-context
+          python scripts/intel_extract.py --db data/signalboard_full.db --post-ids "$GOLDEN_IDS" --include-context --include-graph-context --claims-missing --max-targets 30
+          python scripts/intel_media_analyze.py --db data/signalboard_full.db --post-ids "$GOLDEN_IDS" --limit 6
+          python scripts/intel_source_dedup.py --db data/signalboard_full.db --post-ids "$GOLDEN_IDS" --resolve-redirects
+          python scripts/intel_theme_canonicalize.py --db data/signalboard_full.db --apply --max-pairs 240
+          python scripts/intel_claim_verify.py --db data/signalboard_full.db --post-ids "$GOLDEN_IDS" --limit 40
+          python scripts/intel_thesis_update.py --db data/signalboard_full.db --post-ids "$GOLDEN_IDS" --limit 30
+          python scripts/intel_ai_analyst.py --db data/signalboard_full.db --post-ids "$GOLDEN_IDS" --limit 30
+          python scripts/intel_case_synthesis.py --db data/signalboard_full.db
+      - name: Require both Golden Cases to pass
+        run: |
+          python scripts/intel_golden_tests.py --db data/signalboard_full.db --require-pass
+          python scripts/intel_v11_report.py --db data/signalboard_full.db
+      - name: Build production Thesis Change Feed
+        run: |
+          python scripts/dashboard/build_dashboard.py
+          test -s scripts/dashboard/dashboard.html
+          test "$(stat -c%s scripts/dashboard/dashboard.html)" -ge 10000
+          cp scripts/dashboard/dashboard.html dashboard.html
+          mkdir -p dashboard_deploy_dist
+          cp scripts/dashboard/dashboard.html dashboard_deploy_dist/index.html
+      - name: Persist audited production seed
+        run: |
+          set -Eeuo pipefail
+          gzip -c data/signalboard_full.db > data/signalboard.db.gz.new
+          gzip -t data/signalboard.db.gz.new
+          mv data/signalboard.db.gz.new data/signalboard.db.gz
+          git config user.name signalboard-bot
+          git config user.email signalboard-bot@users.noreply.github.com
+          git add data/signalboard.db.gz scripts/dashboard/dashboard.html dashboard.html
+          git add -f dashboard_deploy_dist/index.html outputs/thesis_engine_v11/*.json
+          git commit -m "Seed Thesis Engine v1.1 Golden evidence [skip daily]"
+          git stash push --include-untracked --message "seed runner temporaries before rebase" || true
+          git pull --rebase origin master
+          git push origin HEAD:master
+      - name: Upload final production audit
+        uses: actions/upload-artifact@v6
+        with:
+          name: thesis-engine-v11-production-audit
+          path: outputs/thesis_engine_v11/*.json
+          if-no-files-found: error
