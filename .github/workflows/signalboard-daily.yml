@@ -78,7 +78,8 @@ jobs:
             exit 0
           fi
           today=$(TZ=Asia/Shanghai date +%Y-%m-%d)
-          if [ "$(git log -1 --format=%s)" = "Daily Signalboard update $today" ]; then
+          latest_subject=$(git log -1 --format=%s)
+          if [[ "$latest_subject" == "Daily Signalboard update $today"* ]]; then
             echo "Scheduled update for $today already completed; skipping fallback."
             echo "should_run=false" >> "$GITHUB_OUTPUT"
           else
