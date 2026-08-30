@@ -273,6 +273,21 @@ def test_theme_merge_requires_semantic_judgment_and_preserves_alias(tmp_path):
     con.close()
 
 
+def test_theme_constraint_is_not_merged_into_product(tmp_path):
+    db = tmp_path / "theme-guard.db"
+    init_db(db)
+    con = sqlite3.connect(db)
+    con.execute("INSERT INTO themes(theme_id,name) VALUES ('memory','内存'),('memory_limit','内存瓶颈')")
+    merged = _apply_merges(con, [{
+        "decision": "MERGE_ALIAS", "confidence": 0.95, "canonical_name": "内存",
+        "left_theme_id": "memory", "left_name": "内存",
+        "right_theme_id": "memory_limit", "right_name": "内存瓶颈",
+    }])
+    assert merged == 0
+    assert con.execute("SELECT parent_theme_id FROM themes WHERE theme_id='memory_limit'").fetchone()[0] is None
+    con.close()
+
+
 def test_underlying_source_counts_mentions_not_reposts_as_evidence(tmp_path):
     db = tmp_path / "sources.db"
     init_db(db)
@@ -317,8 +332,8 @@ def test_research_case_synthesis_is_incremental_and_bounded(tmp_path, monkeypatc
         "valuation_questions": ["WFE order conversion"], "catalysts": ["IPO filing"],
         "invalidation_conditions": ["CapEx is delayed"], "unknowns": ["fab count wording"],
         "actionability": "RESEARCH", "scores": {
-            "thesis_quality": 70, "evidence_quality": 50, "novelty": 60,
-            "mispricing_potential": 55, "actionability": 45,
+            "thesis_quality": 7, "evidence_quality": 5, "novelty": 6,
+            "mispricing_potential": 5, "actionability": 4,
         },
     }
     calls = {"n": 0}
@@ -335,4 +350,5 @@ def test_research_case_synthesis_is_incremental_and_bounded(tmp_path, monkeypatc
     assert calls["n"] == 1
     saved = json.loads(con.execute("SELECT analysis_json FROM research_case_analyses WHERE case_id='A'").fetchone()[0])
     assert saved["actionability"] == "RESEARCH"
+    assert saved["scores"]["thesis_quality"] == 70
     con.close()

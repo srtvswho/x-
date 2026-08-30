@@ -48,6 +48,8 @@ MERGE_ALIAS 仅用于同一经济/技术主题的不同语言、缩写或同义�
 尤其不能因为共同出现就把 Agent Memory、AI demand、NAND、China WFE、CoPoS、CoWoP、ABF、PCB 合并。
 canonical_name 必须逐字选择该 pair 的 left_name 或 right_name。宁可不合并，不可误合并。"""
 
+CONSTRAINT_MARKERS = ("bottleneck", "shortage", "constraint", "瓶颈", "短缺", "约束")
+
 
 def _cosine(a: list[float], b: list[float]) -> float:
     dot = sum(x * y for x, y in zip(a, b))
@@ -212,6 +214,22 @@ def _apply_merges(con: sqlite3.Connection, judgments: list[dict]) -> int:
         canonical_id = item["left_theme_id"] if item["canonical_name"] == item["left_name"] else item["right_theme_id"]
         alias_id = item["right_theme_id"] if canonical_id == item["left_theme_id"] else item["left_theme_id"]
         alias_name = item["right_name"] if canonical_id == item["left_theme_id"] else item["left_name"]
+        left_constraint = any(x in item["left_name"].casefold() for x in CONSTRAINT_MARKERS)
+        right_constraint = any(x in item["right_name"].casefold() for x in CONSTRAINT_MARKERS)
+        if left_constraint != right_constraint:
+            # A demand/supply constraint is a causal driver, not an alias of the product itself.
+            item["decision"] = "RELATED_DISTINCT"
+            item["canonical_name"] = ""
+            item["rationale"] = "Deterministic guard: constraint/bottleneck theme must remain distinct from product theme."
+            con.execute(
+                """UPDATE theme_canonicalization_audit
+                   SET decision='RELATED_DISTINCT',canonical_theme_id=NULL,
+                       rationale=?
+                   WHERE (left_theme_id=? AND right_theme_id=?) OR (left_theme_id=? AND right_theme_id=?)""",
+                (item["rationale"], item["left_theme_id"], item["right_theme_id"],
+                 item["right_theme_id"], item["left_theme_id"]),
+            )
+            continue
         if con.execute("SELECT parent_theme_id FROM themes WHERE theme_id=?", (canonical_id,)).fetchone()[0] == alias_id:
             continue
         collision = con.execute(

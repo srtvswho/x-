@@ -58,7 +58,18 @@ SYSTEM = """你是独立的跨 Theme 半导体研究 Analyst。输入是一个�
 必须把社交原话、图片内容、经核验事实、作者推论和 AI 推论分开；同一 underlying_source_id 的转发只算一份证据。
 逐条回答 audit_questions，但答案必须由输入证据支持；若证据不足，明确放进 unknowns，不可迎合问题暗示。
 检查数字口径、总量/增量、时间范围、架构条件和因果链跳步。主动生成 counter case、contradiction 与 second-order effects。
+五个 scores 必须使用 0–100 整数刻度，50 表示中等；禁止使用 0–10 刻度。
 actionability 只能是 NOT_ACTIONABLE/WATCH/RESEARCH/BUY_CANDIDATE/HEDGE_CANDIDATE/AVOID；绝不输出 BUY/SELL。"""
+
+
+def _normalize_scores(data: dict) -> dict:
+    """Correct the common 0–10 formatting slip without changing score ordering."""
+    scores = data.get("scores") or {}
+    values = [v for v in scores.values() if isinstance(v, (int, float))]
+    if values and max(values) <= 10:
+        data["scores"] = {key: min(100, int(round(float(value) * 10)))
+                          for key, value in scores.items()}
+    return data
 
 
 def _context_ids(con: sqlite3.Connection, seeds: list[str]) -> list[str]:
@@ -129,11 +140,12 @@ def synthesize(con: sqlite3.Connection, cases: dict, selected: list[str] | None 
                 "research_case_synthesis", SYSTEM, json.dumps(payload, ensure_ascii=False), SCHEMA,
                 schema_name="signalboard_research_case", max_output_tokens=5200, timeout=240,
             )
+            data = _normalize_scores(result.data)
             con.execute(
                 """INSERT OR REPLACE INTO research_case_analyses
                    (case_id,title,analysis_json,source_digest,model,updated_at)
                    VALUES (?,?,?,?,?,strftime('%Y-%m-%dT%H:%M:%fZ','now'))""",
-                (case_id, spec["title"], json.dumps(result.data, ensure_ascii=False), digest, result.model),
+                (case_id, spec["title"], json.dumps(data, ensure_ascii=False), digest, result.model),
             )
             record_usage(con, result, workload="research_case_synthesis", object_type="research_case", object_id=case_id)
             con.commit()

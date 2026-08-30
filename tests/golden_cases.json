@@ -24,7 +24,7 @@
     ],
     "expected_logic": [
       ["YMTC", "profit|利润", "CapEx|资本开支"],
-      ["CapEx", "WFE"],
+      ["CapEx|资本开支", "WFE"],
       ["WFE", "NAURA", "AMEC"]
     ],
     "expected_corrections": [["5", "total|总共|总计", "fab|晶圆厂"]],
