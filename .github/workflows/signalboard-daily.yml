@@ -2,6 +2,12 @@ name: Signalboard Daily Update
 
 on:
   workflow_dispatch:
+    inputs:
+      run_openai:
+        description: "Run bounded OpenAI research enrichment in this update"
+        required: true
+        type: boolean
+        default: false
   push:
     branches: [master]
     paths:
@@ -84,6 +90,7 @@ jobs:
       APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
       DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      RUN_OPENAI_ENRICHMENT: ${{ github.event_name == 'workflow_dispatch' && inputs.run_openai }}
       POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
       POLYGON_REQUEST_INTERVAL: "13"
       POLYGON_MAX_API_REQUESTS: "60"
@@ -120,12 +127,16 @@ jobs:
         shell: bash
         run: |
           set -Eeuo pipefail
-          for key in APIFY_TOKEN DEEPSEEK_API_KEY OPENAI_API_KEY POLYGON_API_KEY; do
+          for key in APIFY_TOKEN DEEPSEEK_API_KEY POLYGON_API_KEY; do
             if [ -z "${!key:-}" ]; then
               echo "::error::Required repository secret is missing: $key"
               exit 1
             fi
           done
+          if [ "$RUN_OPENAI_ENRICHMENT" = "true" ] && [ -z "${OPENAI_API_KEY:-}" ]; then
+            echo "::error::OPENAI_API_KEY is required when run_openai is enabled"
+            exit 1
+          fi
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -224,6 +235,7 @@ jobs:
         run: python scripts/intel_openai_smoke.py
 
       - name: Analyze new Post media
+        if: env.RUN_OPENAI_ENRICHMENT == 'true'
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -235,6 +247,7 @@ jobs:
         run: python scripts/intel_source_dedup.py
 
       - name: Audit and canonicalize Themes
+        if: env.RUN_OPENAI_ENRICHMENT == 'true'
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -243,6 +256,7 @@ jobs:
           fi
 
       - name: Verify high-importance claims
+        if: env.RUN_OPENAI_ENRICHMENT == 'true'
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -251,6 +265,7 @@ jobs:
           fi
 
       - name: Update Author by Theme theses
+        if: env.RUN_OPENAI_ENRICHMENT == 'true'
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -259,6 +274,7 @@ jobs:
           fi
 
       - name: Run independent Terra analyst
+        if: env.RUN_OPENAI_ENRICHMENT == 'true'
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -267,6 +283,7 @@ jobs:
           fi
 
       - name: Refresh bounded cross-theme research cases
+        if: env.RUN_OPENAI_ENRICHMENT == 'true'
         shell: bash
         run: |
           set -Eeuo pipefail
