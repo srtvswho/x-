@@ -226,7 +226,8 @@ jobs:
           if git diff --cached --quiet; then
             echo "No ingest changes to checkpoint."
           else
-            git commit -m "Checkpoint Signalboard ingest $(TZ=Asia/Shanghai date +%Y-%m-%d)"
+            git commit -m "Checkpoint Signalboard ingest $(TZ=Asia/Shanghai date +%Y-%m-%d) [skip daily]"
+            git pull --rebase --autostash origin master
             git push origin HEAD:master
           fi
 
@@ -355,5 +356,5 @@ jobs:
           fi
           git commit -m "Daily Signalboard update $(TZ=Asia/Shanghai date +%Y-%m-%d) [skip daily]"
           git stash push --include-untracked --message "workflow generated files before rebase" || true
-          git pull --rebase origin master
+          git pull --rebase --autostash origin master
           git push origin HEAD:master
