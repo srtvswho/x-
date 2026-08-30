@@ -7,6 +7,9 @@ Schema 版本:
                       + 4 个新表:post_flags / aliases / human_review_queue / extraction_cache
     v4 (2026-08-30): Research Thesis Engine 基础表(Post Graph / Media /
                       External Source / Claim / Theme / Thesis / AI usage)
+    v5 (2026-08-30): 可审计的 Theme canonicalization / Underlying Source /
+                      Claim Verification / AI Analyst 增量层
+    v6 (2026-08-30): 跨 Theme Research Case 综合分析
 
 init_db() 幂等且自适配:
 - 全新库 → 直接建 v3
@@ -24,7 +27,7 @@ from typing import Iterator, Union
 
 DbPath = Union[str, Path]
 
-CURRENT_SCHEMA_VERSION = 4
+CURRENT_SCHEMA_VERSION = 6
 
 
 # ---------------------------------------------------------------------------
@@ -390,6 +393,121 @@ def _migrate_to_v4(conn: sqlite3.Connection) -> None:
     conn.executescript(V4_RESEARCH_ENGINE_SQL)
 
 
+# v5 只增加审计/派生表，不改动 v4 的事实表和主键。这样已有 Post、Claim、
+# Theme、Thesis 都能原位升级，也符合“不要重新设计数据库”的约束。
+V5_THESIS_QUALITY_SQL = """
+CREATE TABLE IF NOT EXISTS theme_embeddings (
+    theme_id           TEXT    NOT NULL,
+    model              TEXT    NOT NULL,
+    dimensions         INTEGER NOT NULL,
+    input_hash         TEXT    NOT NULL,
+    embedding_json     TEXT    NOT NULL,
+    embedded_at        TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    PRIMARY KEY (theme_id, model),
+    FOREIGN KEY (theme_id) REFERENCES themes(theme_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS theme_canonicalization_audit (
+    audit_id           TEXT PRIMARY KEY,
+    left_theme_id      TEXT    NOT NULL,
+    right_theme_id     TEXT    NOT NULL,
+    embedding_similarity REAL NOT NULL,
+    decision           TEXT    NOT NULL CHECK (decision IN ('MERGE_ALIAS','RELATED_DISTINCT','DISTINCT')),
+    canonical_theme_id TEXT,
+    confidence         REAL    NOT NULL,
+    rationale          TEXT    NOT NULL,
+    model              TEXT    NOT NULL,
+    judged_at          TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    UNIQUE(left_theme_id, right_theme_id)
+);
+
+CREATE TABLE IF NOT EXISTS underlying_sources (
+    underlying_source_id TEXT PRIMARY KEY,
+    canonical_url      TEXT,
+    publisher          TEXT,
+    title              TEXT,
+    source_class       TEXT NOT NULL CHECK (source_class IN ('PRIMARY','SECONDARY','INDUSTRY','SOCIAL','MEDIA','UNKNOWN')),
+    content_hash       TEXT,
+    created_at         TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_at         TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+CREATE INDEX IF NOT EXISTS idx_underlying_content_hash ON underlying_sources(content_hash);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_underlying_canonical_url
+    ON underlying_sources(canonical_url) WHERE canonical_url IS NOT NULL;
+
+CREATE TABLE IF NOT EXISTS source_memberships (
+    underlying_source_id TEXT NOT NULL,
+    evidence_type      TEXT NOT NULL CHECK (evidence_type IN ('external','media','post')),
+    evidence_id        TEXT NOT NULL,
+    mention_post_id    TEXT,
+    relation_type      TEXT NOT NULL DEFAULT 'mentions',
+    created_at         TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    PRIMARY KEY (underlying_source_id, evidence_type, evidence_id, mention_post_id),
+    FOREIGN KEY (underlying_source_id) REFERENCES underlying_sources(underlying_source_id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_source_memberships_evidence ON source_memberships(evidence_type, evidence_id);
+CREATE INDEX IF NOT EXISTS idx_source_memberships_post ON source_memberships(mention_post_id);
+
+CREATE TABLE IF NOT EXISTS claim_verifications (
+    claim_id           TEXT    NOT NULL,
+    verification_version INTEGER NOT NULL,
+    importance_score   REAL    NOT NULL,
+    status             TEXT    NOT NULL CHECK (status IN (
+        'UNVERIFIED','SUPPORTED_BY_PRIMARY','SUPPORTED_BY_SECONDARY',
+        'PARTIALLY_SUPPORTED','CONTRADICTED','UNVERIFIABLE'
+    )),
+    rationale          TEXT    NOT NULL,
+    corrected_claim    TEXT,
+    sources_json       TEXT    NOT NULL DEFAULT '[]',
+    model              TEXT    NOT NULL,
+    verified_at        TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    PRIMARY KEY (claim_id, verification_version),
+    FOREIGN KEY (claim_id) REFERENCES claims(claim_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS thesis_analyses (
+    thesis_id          TEXT    NOT NULL,
+    thesis_version     INTEGER NOT NULL,
+    analysis_json      TEXT    NOT NULL,
+    model              TEXT    NOT NULL,
+    analysis_mode      TEXT    NOT NULL DEFAULT 'TERRA',
+    created_at         TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    PRIMARY KEY (thesis_id, thesis_version),
+    FOREIGN KEY (thesis_id) REFERENCES theses(thesis_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS cross_author_theses (
+    theme_id           TEXT PRIMARY KEY,
+    analysis_json      TEXT    NOT NULL,
+    model              TEXT    NOT NULL,
+    source_digest      TEXT    NOT NULL,
+    updated_at         TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    FOREIGN KEY (theme_id) REFERENCES themes(theme_id) ON DELETE CASCADE
+);
+"""
+
+
+def _migrate_to_v5(conn: sqlite3.Connection) -> None:
+    """增加研究质量审计层；全量 IF NOT EXISTS，重复执行安全。"""
+    conn.executescript(V5_THESIS_QUALITY_SQL)
+
+
+V6_RESEARCH_CASE_SQL = """
+CREATE TABLE IF NOT EXISTS research_case_analyses (
+    case_id            TEXT PRIMARY KEY,
+    title              TEXT NOT NULL,
+    analysis_json      TEXT NOT NULL,
+    source_digest      TEXT NOT NULL,
+    model              TEXT NOT NULL,
+    updated_at         TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+"""
+
+
+def _migrate_to_v6(conn: sqlite3.Connection) -> None:
+    conn.executescript(V6_RESEARCH_CASE_SQL)
+
+
 def _migrate_v2_to_v3(conn: sqlite3.Connection) -> None:
     """对已有 v2 库:加 6 列(predictions)+ 建 4 个新表(都 IF NOT EXISTS)。
 
@@ -634,6 +752,8 @@ def _ensure_schema(conn: sqlite3.Connection) -> None:
         _migrate_v2_to_v3(conn)
 
     _migrate_to_v4(conn)
+    _migrate_to_v5(conn)
+    _migrate_to_v6(conn)
     conn.execute(f"PRAGMA user_version = {CURRENT_SCHEMA_VERSION}")
 
 

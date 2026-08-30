@@ -19,25 +19,36 @@ DB_PATH = "/workspace/data/signalboard_full.db"
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--db", default=DB_PATH)
-    parser.add_argument("--since", required=True)
+    parser.add_argument("--since", help="ISO 起始日期；与 --post-ids 至少提供一个")
+    parser.add_argument("--post-ids", help="逗号分隔的精确 post_id，用于 Golden/历史重放")
+    parser.add_argument("--refresh", action="store_true", help="即使根节点已处理也重放其 raw_json")
+    parser.add_argument("--include-context", action="store_true", help="允许 ctx_* 记录作为精确/历史根节点")
     parser.add_argument("--limit", type=int, default=0)
     args = parser.parse_args()
 
     init_db(args.db)
     con = sqlite3.connect(args.db, timeout=120)
-    sql = """
+    post_ids = [x.strip() for x in (args.post_ids or "").split(",") if x.strip()]
+    if not args.since and not post_ids:
+        parser.error("--since and/or --post-ids is required")
+    where: list[str] = ["rp.raw_json IS NOT NULL"]
+    params: list[object] = []
+    if args.since:
+        where.append("rp.published_at >= ?")
+        params.append(args.since if "T" in args.since else f"{args.since}T00:00:00+00:00")
+    if post_ids:
+        where.append(f"rp.post_id IN ({','.join('?' for _ in post_ids)})")
+        params.extend(post_ids)
+    if not args.include_context:
+        where.append("rp.source_id NOT LIKE 'ctx_%'")
+    if not args.refresh:
+        where.append("NOT EXISTS (SELECT 1 FROM post_graph_memberships pg WHERE pg.root_post_id=rp.post_id AND pg.post_id=rp.post_id)")
+    sql = f"""
         SELECT rp.post_id, rp.raw_json
         FROM raw_posts rp
-        WHERE rp.published_at >= ?
-          AND rp.raw_json IS NOT NULL
-          AND rp.source_id NOT LIKE 'ctx_%'
-          AND NOT EXISTS (
-              SELECT 1 FROM post_graph_memberships pg
-              WHERE pg.root_post_id=rp.post_id AND pg.post_id=rp.post_id
-          )
+        WHERE {' AND '.join(where)}
         ORDER BY rp.published_at ASC
     """
-    params: list[object] = [args.since if "T" in args.since else f"{args.since}T00:00:00+00:00"]
     if args.limit:
         sql += " LIMIT ?"
         params.append(args.limit)

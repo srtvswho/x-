@@ -13,6 +13,11 @@ on:
       - "scripts/intel_media_analyze.py"
       - "scripts/intel_openai_smoke.py"
       - "scripts/intel_thesis_update.py"
+      - "scripts/intel_theme_canonicalize.py"
+      - "scripts/intel_source_dedup.py"
+      - "scripts/intel_claim_verify.py"
+      - "scripts/intel_ai_analyst.py"
+      - "scripts/intel_case_synthesis.py"
       - "signalboard/ai/**"
       - "signalboard/research_graph.py"
       - "signalboard/db.py"
@@ -84,6 +89,8 @@ jobs:
       POLYGON_MAX_API_REQUESTS: "60"
       MEDIA_AI_MAX_ITEMS: "6"
       THESIS_AI_MAX_UPDATES: "4"
+      CLAIM_VERIFY_MAX_ITEMS: "2"
+      ANALYST_MAX_ITEMS: "2"
       AI_ROUTE_BULK_POST_PROCESSING_PROVIDER: "deepseek"
       AI_ROUTE_BULK_POST_PROCESSING_MODEL: "deepseek-v4-flash"
       AI_ROUTE_DAILY_SUMMARY_PROVIDER: "deepseek"
@@ -95,6 +102,10 @@ jobs:
       AI_ROUTE_THESIS_UPDATE_MODEL: "gpt-5.6-terra"
       AI_ROUTE_CROSS_AUTHOR_ANALYSIS_PROVIDER: "openai"
       AI_ROUTE_CROSS_AUTHOR_ANALYSIS_MODEL: "gpt-5.6-terra"
+      AI_ROUTE_THEME_CANONICALIZATION_MODEL: "gpt-5.6-terra"
+      AI_ROUTE_CLAIM_VERIFICATION_MODEL: "gpt-5.6-terra"
+      AI_ROUTE_AI_ANALYST_MODEL: "gpt-5.6-terra"
+      AI_ROUTE_RESEARCH_CASE_SYNTHESIS_MODEL: "gpt-5.6-terra"
       AI_ROUTE_DEEP_INVESTMENT_ANALYSIS_PROVIDER: "openai"
       AI_ROUTE_DEEP_INVESTMENT_ANALYSIS_MODEL: "gpt-5.6-sol"
 
@@ -220,12 +231,47 @@ jobs:
             echo "::warning::Media analysis failed; ingest checkpoint is preserved and pending media will retry next run."
           fi
 
+      - name: Deduplicate underlying sources
+        run: python scripts/intel_source_dedup.py
+
+      - name: Audit and canonicalize Themes
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          if ! python scripts/intel_theme_canonicalize.py --apply --max-pairs 80; then
+            echo "::warning::Theme audit failed; existing canonical Themes remain intact and will retry."
+          fi
+
+      - name: Verify high-importance claims
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          if ! python scripts/intel_claim_verify.py --limit "$CLAIM_VERIFY_MAX_ITEMS"; then
+            echo "::warning::Claim verification failed; Claims remain UNVERIFIED and will retry."
+          fi
+
       - name: Update Author by Theme theses
         shell: bash
         run: |
           set -Eeuo pipefail
           if ! python scripts/intel_thesis_update.py --limit "$THESIS_AI_MAX_UPDATES"; then
             echo "::warning::Thesis update failed; claims remain stored and will retry next run."
+          fi
+
+      - name: Run independent Terra analyst
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          if ! python scripts/intel_ai_analyst.py --limit "$ANALYST_MAX_ITEMS"; then
+            echo "::warning::AI Analyst failed; Thesis versions remain stored and will retry."
+          fi
+
+      - name: Refresh bounded cross-theme research cases
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          if ! python scripts/intel_case_synthesis.py; then
+            echo "::warning::Research Case synthesis failed; prior analysis remains available and will retry."
           fi
 
       - name: One-time low-cost historical call backfill
@@ -256,6 +302,16 @@ jobs:
           python scripts/dashboard/build_dashboard.py
           test -s scripts/dashboard/dashboard.html
           test "$(stat -c%s scripts/dashboard/dashboard.html)" -ge 10000
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("scripts/dashboard/dashboard.html")
+          data = path.read_bytes()
+          if not data.startswith(b"<!doctype html>"):
+              raise SystemExit("dashboard artifact is not HTML")
+          text = data.decode("utf-8")
+          if "<html" not in text or "</html>" not in text:
+              raise SystemExit("dashboard artifact is incomplete")
+          PY
           mkdir -p dashboard_deploy_dist
           cp scripts/dashboard/dashboard.html dashboard_deploy_dist/index.html
           cp scripts/dashboard/dashboard.html dashboard.html

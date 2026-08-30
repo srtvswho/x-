@@ -11,6 +11,9 @@ from signalboard.repository import upsert_raw_post
 from signalboard.research_graph import ingest_post_graph
 from scripts.intel_extract import get_target_posts, init_extractions_table, persist_extraction
 from scripts import intel_thesis_update
+from scripts import intel_case_synthesis
+from scripts.intel_source_dedup import build_source_map
+from scripts.intel_theme_canonicalize import _apply_merges
 
 
 def _root_payload():
@@ -45,7 +48,10 @@ def test_v4_schema_and_recursive_graph_are_idempotent(tmp_path):
     db = tmp_path / "graph.db"
     init_db(db)
     con = sqlite3.connect(db)
-    assert con.execute("PRAGMA user_version").fetchone()[0] == CURRENT_SCHEMA_VERSION == 4
+    assert con.execute("PRAGMA user_version").fetchone()[0] == CURRENT_SCHEMA_VERSION == 6
+    for table in ("theme_embeddings", "underlying_sources", "source_memberships",
+                  "claim_verifications", "thesis_analyses", "cross_author_theses", "research_case_analyses"):
+        assert con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (table,)).fetchone()
     payload = _root_payload()
     root = RawPost(
         post_id="root", source_id="tw_zephyr_z9", platform=Platform.TWITTER.value,
@@ -116,6 +122,38 @@ def test_router_openai_responses_structured_output(monkeypatch):
     assert captured["body"]["text"]["format"]["strict"] is True
     assert captured["body"]["input"][1]["content"][1]["type"] == "input_image"
     assert result.estimated_cost_usd > 0
+
+
+def test_router_web_search_captures_sources(monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "test-only")
+    captured = {}
+
+    class Response:
+        headers = {"x-request-id": "req_web"}
+        def raise_for_status(self): return None
+        def json(self):
+            return {
+                "status": "completed",
+                "output": [
+                    {"type": "web_search_call", "action": {"sources": [
+                        {"type": "url", "url": "https://www.sec.gov/test", "title": "SEC"}
+                    ]}},
+                    {"type": "message", "content": [{"type": "output_text", "text": '{"ok":true}'}]},
+                ],
+                "usage": {"input_tokens": 50, "output_tokens": 5},
+            }
+
+    def fake_post(url, *, headers, json, timeout):
+        captured["body"] = json
+        return Response()
+
+    monkeypatch.setattr(router.requests, "post", fake_post)
+    schema = {"type": "object", "additionalProperties": False,
+              "properties": {"ok": {"type": "boolean"}}, "required": ["ok"]}
+    result = router.call_json_web("claim_verification", "system", "user", schema, max_retries=0)
+    assert captured["body"]["tools"] == [{"type": "web_search"}]
+    assert captured["body"]["include"] == ["web_search_call.action.sources"]
+    assert result.sources[0]["url"] == "https://www.sec.gov/test"
 
 
 def test_claim_backfill_upgrades_existing_extraction_in_place(tmp_path):
@@ -205,10 +243,117 @@ def test_thesis_versions_only_on_material_change(tmp_path, monkeypatch):
     assert first["versioned"] == 1
     assert con.execute("SELECT COUNT(*) FROM thesis_versions").fetchone()[0] == 1
 
-    con.execute("UPDATE claims SET point_in_time='2026-08-30T00:00:00Z'")
+    con.execute("UPDATE claims SET point_in_time='2099-08-30T00:00:00Z'")
     con.commit()
     change_type["value"] = "NO_CHANGE"
     second = intel_thesis_update.update_pending_theses(con, 4)
     assert second["no_change"] == 1
     assert con.execute("SELECT COUNT(*) FROM thesis_versions").fetchone()[0] == 1
+    con.close()
+
+
+def test_theme_merge_requires_semantic_judgment_and_preserves_alias(tmp_path):
+    db = tmp_path / "themes.db"
+    init_db(db)
+    con = sqlite3.connect(db)
+    con.execute("INSERT INTO themes(theme_id,name) VALUES ('nand','NAND'),('flash','Flash Memory'),('agent','Agent Memory')")
+    con.execute("""INSERT INTO claims
+        (claim_id,claim_text,claim_type,themes_json,evidence_ids_json,confidence,content_hash)
+        VALUES ('c1','NAND supply','FACT','[\"Flash Memory\"]','[]',0.8,'h1')""")
+    con.execute("INSERT INTO claim_themes(claim_id,theme_id,confidence) VALUES ('c1','flash',0.8)")
+    merged = _apply_merges(con, [{
+        "decision": "MERGE_ALIAS", "confidence": 0.95, "canonical_name": "NAND",
+        "left_theme_id": "nand", "left_name": "NAND", "right_theme_id": "flash", "right_name": "Flash Memory",
+    }])
+    assert merged == 1
+    assert con.execute("SELECT parent_theme_id FROM themes WHERE theme_id='flash'").fetchone()[0] == "nand"
+    assert json.loads(con.execute("SELECT aliases_json FROM themes WHERE theme_id='nand'").fetchone()[0]) == ["Flash Memory"]
+    assert con.execute("SELECT theme_id FROM claim_themes WHERE claim_id='c1'").fetchone()[0] == "nand"
+    assert con.execute("SELECT parent_theme_id FROM themes WHERE theme_id='agent'").fetchone()[0] is None
+    assert _apply_merges(con, [{
+        "decision": "MERGE_ALIAS", "confidence": 0.95, "canonical_name": "NAND",
+        "left_theme_id": "nand", "left_name": "NAND", "right_theme_id": "flash", "right_name": "Flash Memory",
+    }]) == 0
+    assert con.execute("SELECT parent_theme_id FROM themes WHERE theme_id='flash'").fetchone()[0] == "nand"
+    con.close()
+
+
+def test_theme_constraint_is_not_merged_into_product(tmp_path):
+    db = tmp_path / "theme-guard.db"
+    init_db(db)
+    con = sqlite3.connect(db)
+    con.execute("INSERT INTO themes(theme_id,name) VALUES ('memory','内存'),('memory_limit','内存瓶颈')")
+    merged = _apply_merges(con, [{
+        "decision": "MERGE_ALIAS", "confidence": 0.95, "canonical_name": "内存",
+        "left_theme_id": "memory", "left_name": "内存",
+        "right_theme_id": "memory_limit", "right_name": "内存瓶颈",
+    }])
+    assert merged == 0
+    assert con.execute("SELECT parent_theme_id FROM themes WHERE theme_id='memory_limit'").fetchone()[0] is None
+    con.close()
+
+
+def test_underlying_source_counts_mentions_not_reposts_as_evidence(tmp_path):
+    db = tmp_path / "sources.db"
+    init_db(db)
+    for pid, source in (("p1", "tw_ft"), ("p2", "tw_jukan"), ("p3", "tw_zephyr")):
+        upsert_raw_post(RawPost(
+            post_id=pid, source_id=source, platform=Platform.TWITTER.value,
+            published_at="2026-08-29T00:00:00Z", captured_at="2026-08-29T00:01:00Z",
+            raw_text="same FT story", raw_url=f"https://x.com/x/status/{pid}",
+        ), db)
+    con = sqlite3.connect(db)
+    con.execute("INSERT INTO external_sources(source_id,url,publisher) VALUES ('ext1','https://www.ft.com/content/story?utm_source=x','FT')")
+    con.execute("INSERT INTO post_external_sources(post_id,source_id) VALUES ('p1','ext1')")
+    con.execute("INSERT INTO post_references(source_post_id,target_post_id,reference_type,fetch_status) VALUES ('p2','p1','quote','complete')")
+    con.execute("INSERT INTO post_references(source_post_id,target_post_id,reference_type,fetch_status) VALUES ('p3','p2','quote','complete')")
+    stats = build_source_map(con, post_ids=["p1", "p2", "p3"])
+    assert stats["external_sources"] == 1
+    assert con.execute("SELECT COUNT(*) FROM underlying_sources").fetchone()[0] == 1
+    assert con.execute("SELECT COUNT(DISTINCT mention_post_id) FROM source_memberships").fetchone()[0] == 3
+    con.close()
+
+
+def test_research_case_synthesis_is_incremental_and_bounded(tmp_path, monkeypatch):
+    db = tmp_path / "case.db"
+    init_db(db)
+    upsert_raw_post(RawPost(
+        post_id="p1", source_id="tw_zephyr", platform=Platform.TWITTER.value,
+        published_at="2026-08-29T00:00:00Z", captured_at="2026-08-29T00:01:00Z",
+        raw_text="YMTC capacity can support China WFE but raises NAND supply risk",
+        raw_url="https://x.com/zephyr/status/p1",
+    ), db)
+    con = sqlite3.connect(db)
+    con.execute("INSERT INTO post_graph_memberships(root_post_id,post_id,depth,crawl_status) VALUES ('p1','p1',0,'complete')")
+    con.commit()
+
+    payload = {
+        "author_views": [{"author": "Zephyr", "view": "China WFE upside"}],
+        "facts": ["YMTC expansion is planned"], "verified_evidence": [],
+        "logic_chain": ["profit -> CapEx -> WFE"], "corrections": [], "contradictions": [],
+        "ai_assessment": "Research further", "counter_case": ["NAND oversupply"],
+        "second_order_effects": ["SNDK pricing risk"], "beneficiaries": ["NAURA"],
+        "negative_exposure": ["SNDK"], "risks": ["oversupply"],
+        "valuation_questions": ["WFE order conversion"], "catalysts": ["IPO filing"],
+        "invalidation_conditions": ["CapEx is delayed"], "unknowns": ["fab count wording"],
+        "actionability": "RESEARCH", "scores": {
+            "thesis_quality": 7, "evidence_quality": 5, "novelty": 6,
+            "mispricing_potential": 5, "actionability": 4,
+        },
+    }
+    calls = {"n": 0}
+    def fake_call(*args, **kwargs):
+        calls["n"] += 1
+        return AIResult(text=json.dumps(payload), data=payload, workload="research_case_synthesis",
+                        provider="openai", model="gpt-5.6-terra", input_tokens=100,
+                        output_tokens=50, estimated_cost_usd=0.0008, latency_ms=10)
+    monkeypatch.setattr(intel_case_synthesis, "call_json", fake_call)
+    cases = {"A": {"title": "YMTC / NAND / China WFE", "seed_post_ids": ["p1"],
+                   "audit_questions": ["five total or five additional?"]}}
+    assert intel_case_synthesis.synthesize(con, cases)["synthesized"] == 1
+    assert intel_case_synthesis.synthesize(con, cases)["synthesized"] == 0
+    assert calls["n"] == 1
+    saved = json.loads(con.execute("SELECT analysis_json FROM research_case_analyses WHERE case_id='A'").fetchone()[0])
+    assert saved["actionability"] == "RESEARCH"
+    assert saved["scores"]["thesis_quality"] == 70
     con.close()

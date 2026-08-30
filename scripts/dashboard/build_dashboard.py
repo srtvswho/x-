@@ -26,9 +26,10 @@ from common import (  # noqa: E402
     query_call_performance_events,
 )
 
-DB = "/workspace/data/signalboard_full.db"
+DB = os.environ.get("SIGNALBOARD_DB", "/workspace/data/signalboard_full.db")
 TEMPLATE = pathlib.Path(__file__).with_name("dashboard.template.html")
 OUT = pathlib.Path(__file__).with_name("dashboard.html")
+GOLDEN_CASES = Path(__file__).resolve().parents[2] / "tests" / "golden_cases.json"
 
 # SRC2KOL / KOLS / KOL_TICKERS / is_in_field / parse_json_arr 全部 from common import (顶部 import)
 # 保持单一来源, 跟 refresh_prices_polygon 共用同个实现, 跟区块04 展示口径一致
@@ -360,6 +361,129 @@ def query_extractions(conn):
     return out
 
 
+def query_thesis_changes(conn, limit=12):
+    """首页第一屏：增量 Thesis Change + Terra Analyst，绝不输出 BUY/SELL。"""
+    table = conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='thesis_analyses'"
+    ).fetchone()
+    if not table:
+        return []
+    out=[]
+    allowed={"NOT_ACTIONABLE","WATCH","RESEARCH","BUY_CANDIDATE","HEDGE_CANDIDATE","AVOID"}
+
+    case_table = conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='research_case_analyses'"
+    ).fetchone()
+    case_specs = json.loads(GOLDEN_CASES.read_text(encoding="utf-8")) if GOLDEN_CASES.exists() else {}
+    if case_table:
+        for case_id,title,analysis_raw,updated_at in conn.execute(
+            "SELECT case_id,title,analysis_json,updated_at FROM research_case_analyses ORDER BY updated_at DESC LIMIT 4"
+        ).fetchall():
+            analysis=json.loads(analysis_raw)
+            spec=case_specs.get(case_id,{})
+            post_ids=spec.get("seed_post_ids",[])
+            social_count=independent_count=0
+            links=[]
+            if post_ids:
+                ph=",".join("?" for _ in post_ids)
+                social_count,independent_count=conn.execute(
+                    f"""SELECT COUNT(DISTINCT mention_post_id),COUNT(DISTINCT underlying_source_id)
+                         FROM source_memberships WHERE mention_post_id IN ({ph})""", post_ids
+                ).fetchone()
+                links=[{"title":r[0] or r[1],"url":r[1],"source_class":r[2]}
+                       for r in conn.execute(
+                    f"""SELECT DISTINCT us.title,us.canonical_url,us.source_class
+                         FROM source_memberships sm JOIN underlying_sources us USING(underlying_source_id)
+                         WHERE sm.mention_post_id IN ({ph}) AND us.canonical_url IS NOT NULL
+                         ORDER BY CASE us.source_class WHEN 'PRIMARY' THEN 0 WHEN 'SECONDARY' THEN 1 ELSE 2 END
+                         LIMIT 8""", post_ids).fetchall()]
+            action=analysis.get("actionability","NOT_ACTIONABLE")
+            if action not in allowed:
+                action="NOT_ACTIONABLE"
+            authors=[x.get("author","").replace("tw_","") for x in analysis.get("author_views",[]) if x.get("author")]
+            scores=analysis.get("scores",{})
+            out.append({
+                "change_id":case_id,"thesis_id":case_id,"theme":title,"authors":authors,
+                "change_type":"RESEARCH_CASE","change_score":scores.get("thesis_quality",0),
+                "detected_at":updated_at,"previous_view":"跨主题研究案例首次建立",
+                "new_view":analysis.get("ai_assessment") or "待独立分析",
+                "new_evidence":[{"text":x,"status":"VERIFIED_EVIDENCE","post_id":None,"source_url":None}
+                                for x in analysis.get("verified_evidence",[])[:6]],
+                "ai_assessment":analysis.get("ai_assessment") or "待独立分析",
+                "consensus":[],"disagreement":analysis.get("contradictions") or [],
+                "positive_exposure":analysis.get("beneficiaries") or [],
+                "negative_exposure":analysis.get("negative_exposure") or [],
+                "confidence":scores.get("evidence_quality",0)/100,"actionability":action,
+                "social_mentions":social_count or 0,"independent_evidence":independent_count or 0,
+                "is_research_case":True,"author_views":analysis.get("author_views") or [],
+                "facts":analysis.get("facts") or [],"logic_chain":analysis.get("logic_chain") or [],
+                "corrections":analysis.get("corrections") or [],"counter_case":analysis.get("counter_case") or [],
+                "second_order_effects":analysis.get("second_order_effects") or [],
+                "risks":analysis.get("risks") or [],"unknowns":analysis.get("unknowns") or [],
+                "catalysts":analysis.get("catalysts") or [],
+                "invalidation_conditions":analysis.get("invalidation_conditions") or [],
+                "supporting_sources":links,"scores":scores,
+            })
+
+    rows = conn.execute("""
+        SELECT tc.change_id, tc.change_type, tc.change_score, tc.summary, tc.detected_at,
+               th.thesis_id, th.author_id, t.name, tc.from_version, tc.to_version,
+               prev.snapshot_json, curr.snapshot_json, ta.analysis_json, cat.analysis_json
+        FROM thesis_changes tc
+        JOIN theses th ON th.thesis_id=tc.thesis_id
+        JOIN themes t ON t.theme_id=th.theme_id
+        JOIN thesis_versions curr ON curr.thesis_id=tc.thesis_id AND curr.version_number=tc.to_version
+        LEFT JOIN thesis_versions prev ON prev.thesis_id=tc.thesis_id AND prev.version_number=tc.from_version
+        JOIN thesis_analyses ta ON ta.thesis_id=tc.thesis_id AND ta.thesis_version=tc.to_version
+        LEFT JOIN cross_author_theses cat ON cat.theme_id=t.theme_id
+        WHERE t.parent_theme_id IS NULL
+          AND tc.change_score >= 10
+        ORDER BY tc.detected_at DESC, tc.change_score DESC LIMIT ?
+    """, (max(0,limit-len(out)),)).fetchall()
+    for row in rows:
+        (change_id,ctype,score,summary,detected,thesis_id,author,theme,from_v,to_v,prev_raw,curr_raw,analysis_raw,cross_raw)=row
+        prev=json.loads(prev_raw) if prev_raw else {}
+        curr=json.loads(curr_raw) if curr_raw else {}
+        analysis=json.loads(analysis_raw) if analysis_raw else {}
+        cross=json.loads(cross_raw) if cross_raw else {}
+        author_rows=conn.execute("""SELECT th.author_id FROM theses th JOIN themes t ON t.theme_id=th.theme_id
+                                    WHERE t.name=? AND th.current_version>0 ORDER BY th.author_id""",(theme,)).fetchall()
+        action=analysis.get("actionability","NOT_ACTIONABLE")
+        if action not in allowed:
+            action="NOT_ACTIONABLE"
+        evidence=conn.execute("""
+            SELECT c.claim_text,c.verification_status,c.source_post_id,
+                   (SELECT us.canonical_url FROM source_memberships sm
+                    JOIN underlying_sources us USING(underlying_source_id)
+                    WHERE sm.mention_post_id=c.source_post_id AND us.canonical_url IS NOT NULL
+                    ORDER BY CASE us.source_class WHEN 'PRIMARY' THEN 0 WHEN 'SECONDARY' THEN 1 ELSE 2 END
+                    LIMIT 1)
+            FROM thesis_evidence te JOIN claims c ON c.claim_id=te.claim_id
+            WHERE te.thesis_id=? AND te.version_number=?
+            ORDER BY c.point_in_time DESC LIMIT 6
+        """,(thesis_id,to_v)).fetchall()
+        source_counts=conn.execute("""
+            SELECT COUNT(DISTINCT c.source_post_id),COUNT(DISTINCT sm.underlying_source_id)
+            FROM thesis_evidence te JOIN claims c ON c.claim_id=te.claim_id
+            LEFT JOIN source_memberships sm ON sm.mention_post_id=c.source_post_id
+            WHERE te.thesis_id=? AND te.version_number=?
+        """,(thesis_id,to_v)).fetchone()
+        out.append({
+            "change_id":change_id,"thesis_id":thesis_id,"theme":theme,
+            "authors":[x[0].replace("tw_","") for x in author_rows] or [author.replace("tw_","")],"change_type":ctype,"change_score":score,
+            "detected_at":detected,"previous_view":prev.get("thesis_summary") or "首次建立",
+            "new_view":curr.get("thesis_summary") or curr.get("current_thesis") or summary,
+            "new_evidence":[{"text":x[0],"status":x[1],"post_id":x[2],"source_url":x[3]} for x in evidence],
+            "ai_assessment":cross.get("ai_synthesis") or analysis.get("ai_assessment") or "待独立分析",
+            "consensus":cross.get("consensus") or [],"disagreement":cross.get("disagreement") or [],
+            "positive_exposure":analysis.get("beneficiaries") or curr.get("companies_positive") or [],
+            "negative_exposure":analysis.get("negative_exposure") or curr.get("companies_negative") or [],
+            "confidence":curr.get("confidence"),"actionability":action,
+            "social_mentions":source_counts[0] or 0,"independent_evidence":source_counts[1] or 0,
+        })
+    return out
+
+
 def query_tickers(conn):
     """区块3 用. 包装 select_dashboard_ticker_targets (共享函数) + 查价格 + 排序.
 
@@ -577,6 +701,7 @@ def main():
         today_stats = query_today_stats(conn)
         today_records = query_today_records(conn)
         build_meta = build_metadata(conn)
+        thesis_changes = query_thesis_changes(conn)
         print(f"  24h window: {build_meta['window_label']} "
               f"posts={today_stats['n_posts_24h']} "
               f"directional={today_stats['n_directional_24h']} "
@@ -595,6 +720,7 @@ def main():
         html = html.replace("__TODAY_STATS__",   json.dumps(today_stats, ensure_ascii=False))
         html = html.replace("__TODAY_RECORDS__", json.dumps(today_records, ensure_ascii=False))
         html = html.replace("__BUILD_META__",    json.dumps(build_meta, ensure_ascii=False))
+        html = html.replace("__THESIS_CHANGES__", json.dumps(thesis_changes, ensure_ascii=False))
         OUT.write_text(html, encoding="utf-8")
         # 检查 null 字样没渲染到 HTML (兜底, 即使前端处理对了)
         with open(OUT, 'r', encoding='utf-8') as f:

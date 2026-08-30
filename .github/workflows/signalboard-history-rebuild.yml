@@ -234,6 +234,16 @@ jobs:
           python scripts/dashboard/build_dashboard.py
           test -s scripts/dashboard/dashboard.html
           test "$(stat -c%s scripts/dashboard/dashboard.html)" -ge 10000
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("scripts/dashboard/dashboard.html")
+          data = path.read_bytes()
+          if not data.startswith(b"<!doctype html>"):
+              raise SystemExit("dashboard artifact is not HTML")
+          text = data.decode("utf-8")
+          if "<html" not in text or "</html>" not in text:
+              raise SystemExit("dashboard artifact is incomplete")
+          PY
           mkdir -p dashboard_deploy_dist
           cp scripts/dashboard/dashboard.html dashboard_deploy_dist/index.html
           cp scripts/dashboard/dashboard.html dashboard.html

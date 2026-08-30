@@ -248,6 +248,9 @@ def get_target_posts(
     source_ids: list[str] | None = None,
     ticker_clues_only: bool = False,
     claims_missing: bool = False,
+    post_ids: list[str] | None = None,
+    include_context: bool = False,
+    include_graph_context: bool = False,
 ) -> list[dict]:
     """按窗口取未抽取推文；可按人物和标的线索限制历史回填范围。"""
     missing_clause = (
@@ -263,13 +266,26 @@ def get_target_posts(
         placeholders = ",".join("?" for _ in source_ids)
         where.append(f"rp.source_id IN ({placeholders})")
         params.extend(source_ids)
+    if post_ids:
+        placeholders = ",".join("?" for _ in post_ids)
+        if include_graph_context:
+            where.append(
+                f"(rp.post_id IN ({placeholders}) OR EXISTS (SELECT 1 FROM post_graph_memberships pg "
+                f"WHERE pg.post_id=rp.post_id AND pg.root_post_id IN ({placeholders})))"
+            )
+            params.extend(post_ids)
+            params.extend(post_ids)
+        else:
+            where.append(f"rp.post_id IN ({placeholders})")
+            params.extend(post_ids)
+    context_clause = "" if include_context else "AND rp.source_id NOT LIKE 'ctx_%'"
     rows = con.execute(f"""
         SELECT rp.post_id, rp.source_id, rp.raw_text, rp.published_at
         FROM raw_posts rp
         LEFT JOIN extractions_intel ei
           ON rp.post_id = ei.post_id AND ei.prompt_version = ?
         WHERE {' AND '.join(where)}
-          AND rp.source_id NOT LIKE 'ctx_%'
+          {context_clause}
         ORDER BY rp.published_at ASC
     """, params).fetchall()
     posts = [
@@ -378,7 +394,11 @@ def extract_one(post: dict) -> dict:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--since", required=True, help="ISO date (e.g. 2026-06-19)")
+    ap.add_argument("--since", help="ISO date (e.g. 2026-06-19)")
+    ap.add_argument("--db", default=DB_PATH)
+    ap.add_argument("--post-ids", help="逗号分隔精确 post_id；Golden/历史重放使用")
+    ap.add_argument("--include-context", action="store_true", help="允许抽取 ctx_* 引用作者")
+    ap.add_argument("--include-graph-context", action="store_true", help="同时抽取这些根节点已恢复的引用上下文")
     ap.add_argument("--until", help="ISO 结束日期（不含），用于限定历史回填窗口")
     ap.add_argument("--sources", help="逗号分隔 source_id，只抽指定人物")
     ap.add_argument("--ticker-clues-only", action="store_true",
@@ -391,14 +411,18 @@ def main():
     ap.add_argument("--limit", type=int, default=0, help="最多抽几条 (0=全抽)")
     args = ap.parse_args()
 
-    since_iso = args.since if "T" in args.since else f"{args.since}T00:00:00+00:00"
+    post_ids = [s.strip() for s in (args.post_ids or "").split(",") if s.strip()]
+    if not args.since and not post_ids:
+        ap.error("--since and/or --post-ids is required")
+    since_arg = args.since or "1970-01-01"
+    since_iso = since_arg if "T" in since_arg else f"{since_arg}T00:00:00+00:00"
     until_iso = None
     if args.until:
         until_iso = args.until if "T" in args.until else f"{args.until}T00:00:00+00:00"
     source_ids = [s.strip() for s in (args.sources or "").split(",") if s.strip()]
 
-    init_db(DB_PATH)
-    con = sqlite3.connect(DB_PATH, timeout=120)
+    init_db(args.db)
+    con = sqlite3.connect(args.db, timeout=120)
     init_extractions_table(con)
 
     targets = get_target_posts(
@@ -408,6 +432,9 @@ def main():
         source_ids=source_ids or None,
         ticker_clues_only=args.ticker_clues_only,
         claims_missing=args.claims_missing,
+        post_ids=post_ids or None,
+        include_context=args.include_context,
+        include_graph_context=args.include_graph_context,
     )
     if args.max_targets > 0 and len(targets) > args.max_targets:
         raise SystemExit(
