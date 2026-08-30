@@ -28,7 +28,7 @@ def _status(hits: int, total: int) -> str:
     return "FAIL"
 
 
-def _text_corpora(con: sqlite3.Connection, post_ids: list[str]) -> dict[str, str]:
+def _text_corpora(con: sqlite3.Connection, post_ids: list[str], case_id: str) -> dict[str, str]:
     placeholders = ",".join("?" for _ in post_ids)
     sqls = {
         "raw": f"SELECT raw_text FROM raw_posts WHERE post_id IN ({placeholders})",
@@ -41,6 +41,8 @@ def _text_corpora(con: sqlite3.Connection, post_ids: list[str]) -> dict[str, str
     corpora["thesis"] = _norm("\n".join(str(r[0] or "") for r in con.execute("SELECT snapshot_json FROM thesis_versions").fetchall()))
     corpora["analyst"] = _norm("\n".join(str(r[0] or "") for r in con.execute("SELECT analysis_json FROM thesis_analyses").fetchall()))
     corpora["cross"] = _norm("\n".join(str(r[0] or "") for r in con.execute("SELECT analysis_json FROM cross_author_theses").fetchall()))
+    case_row = con.execute("SELECT analysis_json FROM research_case_analyses WHERE case_id=?", (case_id,)).fetchone()
+    corpora["case"] = _norm(case_row[0] if case_row else "")
     return corpora
 
 
@@ -69,16 +71,16 @@ def evaluate_case(con: sqlite3.Connection, case_id: str, spec: dict) -> dict:
         ).fetchone()
         media_results.append({"media_id": media_id, "pass": bool(row and row[0] == "complete" and row[1]),
                               "status": row[0] if row else "MISSING"})
-    corpora = _text_corpora(con, evidence_post_ids)
+    corpora = _text_corpora(con, evidence_post_ids, case_id)
     # Each category is only allowed to pass from the appropriate structured layer.
     category_sources = {
-        "expected_facts": ["claims", "media", "verification", "thesis", "analyst"],
-        "expected_logic": ["claims", "thesis", "analyst", "cross"],
-        "expected_corrections": ["verification", "analyst", "cross"],
-        "expected_risks": ["claims", "thesis", "analyst", "cross"],
-        "expected_beneficiaries": ["claims", "thesis", "analyst", "cross"],
-        "expected_losers": ["claims", "thesis", "analyst", "cross"],
-        "expected_unknowns": ["verification", "thesis", "analyst", "cross"],
+        "expected_facts": ["claims", "media", "verification", "thesis", "analyst", "case"],
+        "expected_logic": ["claims", "thesis", "analyst", "cross", "case"],
+        "expected_corrections": ["verification", "analyst", "cross", "case"],
+        "expected_risks": ["claims", "thesis", "analyst", "cross", "case"],
+        "expected_beneficiaries": ["claims", "thesis", "analyst", "cross", "case"],
+        "expected_losers": ["claims", "thesis", "analyst", "cross", "case"],
+        "expected_unknowns": ["verification", "thesis", "analyst", "cross", "case"],
     }
     semantic = {}
     for field in ["expected_facts", "expected_logic", "expected_corrections", "expected_risks",
@@ -86,12 +88,36 @@ def evaluate_case(con: sqlite3.Connection, case_id: str, spec: dict) -> dict:
         corpus = _norm("\n".join(corpora[x] for x in category_sources[field]))
         results = [{"concepts": concepts, "pass": _concept_hit(corpus, concepts)} for concepts in spec[field]]
         semantic[field] = {"status": _status(sum(x["pass"] for x in results), len(results)), "checks": results}
-    underlying = con.execute(
-        f"""SELECT COUNT(DISTINCT underlying_source_id),COUNT(DISTINCT mention_post_id)
-            FROM source_memberships WHERE mention_post_id IN ({','.join('?' for _ in evidence_post_ids)})""", evidence_post_ids,
-    ).fetchone()
-    source_dedup_pass = bool(underlying and underlying[0] > 0 and underlying[1] >= underlying[0])
+    source_groups = con.execute(
+        f"""SELECT underlying_source_id,COUNT(DISTINCT mention_post_id) mentions
+            FROM source_memberships WHERE mention_post_id IN ({','.join('?' for _ in evidence_post_ids)})
+              AND relation_type IN ('mentions','visual_representation')
+            GROUP BY underlying_source_id ORDER BY mentions DESC""", evidence_post_ids,
+    ).fetchall()
+    independent_count = con.execute(
+        f"SELECT COUNT(DISTINCT underlying_source_id) FROM source_memberships WHERE mention_post_id IN ({','.join('?' for _ in evidence_post_ids)})",
+        evidence_post_ids,
+    ).fetchone()[0]
+    social_count = con.execute(
+        f"SELECT COUNT(DISTINCT mention_post_id) FROM source_memberships WHERE mention_post_id IN ({','.join('?' for _ in evidence_post_ids)}) AND relation_type='mentions'",
+        evidence_post_ids,
+    ).fetchone()[0]
+    source_dedup_pass = bool(source_groups and max(x[1] for x in source_groups) >= 2)
+    claim_type_rows = con.execute(
+        f"SELECT claim_type,verification_status FROM claims WHERE source_post_id IN ({','.join('?' for _ in evidence_post_ids)})",
+        evidence_post_ids,
+    ).fetchall()
+    fact_count = sum(x[0] == "FACT" for x in claim_type_rows)
+    opinion_count = sum(x[0] in {"OPINION", "FORECAST", "INFERENCE", "RISK"} for x in claim_type_rows)
+    misverified_opinions = sum(
+        x[0] == "OPINION" and x[1] in {"SUPPORTED_BY_PRIMARY", "SUPPORTED_BY_SECONDARY"}
+        for x in claim_type_rows
+    )
+    separation_pass = fact_count > 0 and opinion_count > 0 and misverified_opinions == 0
     action_rows = [json.loads(r[0]) for r in con.execute("SELECT analysis_json FROM thesis_analyses").fetchall()]
+    case_analysis = con.execute("SELECT analysis_json FROM research_case_analyses WHERE case_id=?", (case_id,)).fetchone()
+    if case_analysis:
+        action_rows.append(json.loads(case_analysis[0]))
     allowed = {"NOT_ACTIONABLE", "WATCH", "RESEARCH", "BUY_CANDIDATE", "HEDGE_CANDIDATE", "AVOID"}
     actionability_pass = bool(action_rows) and all(x.get("actionability") in allowed for x in action_rows)
     categories = {
@@ -99,9 +125,13 @@ def evaluate_case(con: sqlite3.Connection, case_id: str, spec: dict) -> dict:
         "citation_chain": {"status": _status(sum(x["pass"] for x in edge_results), len(edge_results)), "checks": edge_results},
         "media_coverage": {"status": _status(sum(x["pass"] for x in media_results), len(media_results)), "checks": media_results},
         "source_deduplication": {"status": "PASS" if source_dedup_pass else "FAIL",
-                                 "independent_evidence": underlying[0] if underlying else 0,
-                                 "social_mentions": underlying[1] if underlying else 0},
+                                 "independent_evidence": independent_count,
+                                 "social_mentions": social_count,
+                                 "largest_same_source_group": max((x[1] for x in source_groups), default=0)},
         **semantic,
+        "fact_opinion_separation": {"status": "PASS" if separation_pass else "FAIL",
+                                    "facts": fact_count, "opinions_forecasts_inferences_risks": opinion_count,
+                                    "supported_opinions_error": misverified_opinions},
         "actionability": {"status": "PASS" if actionability_pass else "FAIL"},
     }
     statuses = [x["status"] for x in categories.values()]

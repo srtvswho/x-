@@ -17,6 +17,7 @@ on:
       - "scripts/intel_source_dedup.py"
       - "scripts/intel_claim_verify.py"
       - "scripts/intel_ai_analyst.py"
+      - "scripts/intel_case_synthesis.py"
       - "signalboard/ai/**"
       - "signalboard/research_graph.py"
       - "signalboard/db.py"
@@ -104,6 +105,7 @@ jobs:
       AI_ROUTE_THEME_CANONICALIZATION_MODEL: "gpt-5.6-terra"
       AI_ROUTE_CLAIM_VERIFICATION_MODEL: "gpt-5.6-terra"
       AI_ROUTE_AI_ANALYST_MODEL: "gpt-5.6-terra"
+      AI_ROUTE_RESEARCH_CASE_SYNTHESIS_MODEL: "gpt-5.6-terra"
       AI_ROUTE_DEEP_INVESTMENT_ANALYSIS_PROVIDER: "openai"
       AI_ROUTE_DEEP_INVESTMENT_ANALYSIS_MODEL: "gpt-5.6-sol"
 
@@ -232,6 +234,14 @@ jobs:
       - name: Deduplicate underlying sources
         run: python scripts/intel_source_dedup.py
 
+      - name: Audit and canonicalize Themes
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          if ! python scripts/intel_theme_canonicalize.py --apply --max-pairs 80; then
+            echo "::warning::Theme audit failed; existing canonical Themes remain intact and will retry."
+          fi
+
       - name: Verify high-importance claims
         shell: bash
         run: |
@@ -254,6 +264,14 @@ jobs:
           set -Eeuo pipefail
           if ! python scripts/intel_ai_analyst.py --limit "$ANALYST_MAX_ITEMS"; then
             echo "::warning::AI Analyst failed; Thesis versions remain stored and will retry."
+          fi
+
+      - name: Refresh bounded cross-theme research cases
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          if ! python scripts/intel_case_synthesis.py; then
+            echo "::warning::Research Case synthesis failed; prior analysis remains available and will retry."
           fi
 
       - name: One-time low-cost historical call backfill

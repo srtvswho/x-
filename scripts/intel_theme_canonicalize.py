@@ -129,22 +129,26 @@ def _load_embeddings(con: sqlite3.Connection, themes: list[dict]) -> tuple[dict[
 def _nearest(themes: list[dict], vectors: dict[str, list[float]]) -> tuple[list[dict], list[dict]]:
     candidates: dict[tuple[str, str], dict] = {}
     for left in themes:
-        best: tuple[float, dict] | None = None
+        ranked: list[tuple[float, dict]] = []
         for right in themes:
             if left["theme_id"] == right["theme_id"]:
                 continue
             sim = _cosine(vectors[left["theme_id"]], vectors[right["theme_id"]])
-            if best is None or sim > best[0]:
-                best = (sim, right)
-        if best:
-            left["nearest_theme"] = best[1]["name"]
-            left["nearest_theme_id"] = best[1]["theme_id"]
-            left["nearest_similarity"] = round(best[0], 6)
-            if best[0] >= 0.70:
-                ids = tuple(sorted((left["theme_id"], best[1]["theme_id"])))
+            ranked.append((sim, right))
+        ranked.sort(key=lambda x: x[0], reverse=True)
+        if ranked:
+            left["nearest_theme"] = ranked[0][1]["name"]
+            left["nearest_theme_id"] = ranked[0][1]["theme_id"]
+            left["nearest_similarity"] = round(ranked[0][0], 6)
+            for sim, right in ranked[:4]:
+                lexical_same = "".join(c for c in left["name"].casefold() if c.isalnum()) == \
+                               "".join(c for c in right["name"].casefold() if c.isalnum())
+                if sim < 0.65 and not lexical_same:
+                    continue
+                ids = tuple(sorted((left["theme_id"], right["theme_id"])))
                 candidates[ids] = {
                     "pair_id": hashlib.sha256("\n".join(ids).encode()).hexdigest()[:16],
-                    "left": left, "right": best[1], "similarity": round(best[0], 6),
+                    "left": left, "right": right, "similarity": round(sim, 6),
                 }
     return themes, sorted(candidates.values(), key=lambda x: x["similarity"], reverse=True)
 

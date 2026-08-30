@@ -129,6 +129,8 @@ def build_source_map(con: sqlite3.Connection, *, resolve_redirects: bool = False
                        (underlying_source_id,source_class,content_hash) VALUES (?,'MEDIA',?)""",
                     (uid, content_hash),
                 )
+                if uid not in component_underlying:
+                    component_underlying.append(uid)
             con.execute(
                 """INSERT OR IGNORE INTO source_memberships
                    (underlying_source_id,evidence_type,evidence_id,mention_post_id,relation_type)

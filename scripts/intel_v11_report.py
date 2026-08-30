@@ -7,11 +7,15 @@ import json
 import sqlite3
 from pathlib import Path
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from signalboard.db import init_db
+
 DB_PATH = "/workspace/data/signalboard_full.db"
 CASES = Path(__file__).resolve().parent.parent / "tests" / "golden_cases.json"
 
 
-def _case_graph(con: sqlite3.Connection, spec: dict) -> dict:
+def _case_graph(con: sqlite3.Connection, case_id: str, spec: dict) -> dict:
     ids = spec["seed_post_ids"]
     ph = ",".join("?" for _ in ids)
     posts = [{"post_id": r[0], "source_id": r[1], "published_at": r[2], "text": r[3]}
@@ -29,7 +33,19 @@ def _case_graph(con: sqlite3.Connection, spec: dict) -> dict:
                                           COUNT(DISTINCT sm.mention_post_id)
                                    FROM underlying_sources us JOIN source_memberships sm USING(underlying_source_id)
                                    WHERE sm.mention_post_id IN ({ph}) GROUP BY us.underlying_source_id""", ids)]
-    return {"posts": posts, "edges": edges, "media": media, "claims": claims, "underlying_sources": sources,
+    verification = [{"claim_id": r[0], "status": r[1], "rationale": r[2], "corrected_claim": r[3],
+                     "sources": json.loads(r[4] or "[]")}
+                    for r in con.execute(f"""SELECT cv.claim_id,cv.status,cv.rationale,cv.corrected_claim,cv.sources_json
+                                             FROM claim_verifications cv JOIN claims c ON c.claim_id=cv.claim_id
+                                             WHERE c.source_post_id IN ({ph}) ORDER BY cv.verified_at""", ids)]
+    case_row = con.execute(
+        "SELECT title,analysis_json,model,updated_at FROM research_case_analyses WHERE case_id=?", (case_id,)
+    ).fetchone()
+    case_analysis = ({"title": case_row[0], "analysis": json.loads(case_row[1]),
+                      "model": case_row[2], "updated_at": case_row[3]} if case_row else None)
+    return {"posts": posts, "edges": edges, "media": media, "claims": claims,
+            "claim_verifications": verification, "underlying_sources": sources,
+            "research_case_analysis": case_analysis,
             "missing_seed_posts": sorted(set(ids) - {x["post_id"] for x in posts})}
 
 
@@ -38,11 +54,13 @@ def main() -> None:
     ap.add_argument("--db", default=DB_PATH)
     ap.add_argument("--output", default="outputs/thesis_engine_v11/v11_audit.json")
     args = ap.parse_args()
+    init_db(args.db)
     cases = json.loads(CASES.read_text(encoding="utf-8"))
     con = sqlite3.connect(args.db, timeout=120)
     counts = {table: con.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0] for table in [
         "post_references", "media_assets", "media_analyses", "claims", "themes", "theses",
         "underlying_sources", "claim_verifications", "thesis_analyses", "cross_author_theses",
+        "research_case_analyses",
     ]}
     pending = con.execute("""SELECT COUNT(*) FROM media_assets m LEFT JOIN media_analyses a ON a.media_id=m.media_id
                              WHERE a.media_id IS NULL""").fetchone()[0]
@@ -74,7 +92,7 @@ def main() -> None:
             "estimated_runtime_minutes_sequential": round(upper_calls * avg_latency / 60000, 1),
             "batch_size": 30,
         },
-        "golden_evidence_graphs": {case_id: _case_graph(con, spec) for case_id, spec in cases.items()},
+        "golden_evidence_graphs": {case_id: _case_graph(con, case_id, spec) for case_id, spec in cases.items()},
         "openai_actual": {
             "calls": con.execute("SELECT COUNT(*) FROM ai_usage WHERE provider='openai'").fetchone()[0],
             "cost_usd_recorded": round(con.execute("SELECT COALESCE(SUM(estimated_cost_usd),0) FROM ai_usage WHERE provider='openai'").fetchone()[0], 6),

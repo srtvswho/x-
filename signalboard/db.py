@@ -9,6 +9,7 @@ Schema 版本:
                       External Source / Claim / Theme / Thesis / AI usage)
     v5 (2026-08-30): 可审计的 Theme canonicalization / Underlying Source /
                       Claim Verification / AI Analyst 增量层
+    v6 (2026-08-30): 跨 Theme Research Case 综合分析
 
 init_db() 幂等且自适配:
 - 全新库 → 直接建 v3
@@ -26,7 +27,7 @@ from typing import Iterator, Union
 
 DbPath = Union[str, Path]
 
-CURRENT_SCHEMA_VERSION = 5
+CURRENT_SCHEMA_VERSION = 6
 
 
 # ---------------------------------------------------------------------------
@@ -491,6 +492,22 @@ def _migrate_to_v5(conn: sqlite3.Connection) -> None:
     conn.executescript(V5_THESIS_QUALITY_SQL)
 
 
+V6_RESEARCH_CASE_SQL = """
+CREATE TABLE IF NOT EXISTS research_case_analyses (
+    case_id            TEXT PRIMARY KEY,
+    title              TEXT NOT NULL,
+    analysis_json      TEXT NOT NULL,
+    source_digest      TEXT NOT NULL,
+    model              TEXT NOT NULL,
+    updated_at         TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+"""
+
+
+def _migrate_to_v6(conn: sqlite3.Connection) -> None:
+    conn.executescript(V6_RESEARCH_CASE_SQL)
+
+
 def _migrate_v2_to_v3(conn: sqlite3.Connection) -> None:
     """对已有 v2 库:加 6 列(predictions)+ 建 4 个新表(都 IF NOT EXISTS)。
 
@@ -736,6 +753,7 @@ def _ensure_schema(conn: sqlite3.Connection) -> None:
 
     _migrate_to_v4(conn)
     _migrate_to_v5(conn)
+    _migrate_to_v6(conn)
     conn.execute(f"PRAGMA user_version = {CURRENT_SCHEMA_VERSION}")
 
 

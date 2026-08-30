@@ -29,6 +29,7 @@ DEFAULT_ROUTES: dict[str, tuple[str, str, str]] = {
     "claim_verification": ("openai", "gpt-5.6-terra", "medium"),
     "ai_analyst": ("openai", "gpt-5.6-terra", "medium"),
     "golden_evaluation": ("openai", "gpt-5.6-terra", "medium"),
+    "research_case_synthesis": ("openai", "gpt-5.6-terra", "high"),
     "deep_investment_analysis": ("openai", "gpt-5.6-sol", "high"),
 }
 

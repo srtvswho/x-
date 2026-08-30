@@ -34,6 +34,8 @@ jobs:
       AI_ROUTE_THESIS_UPDATE_MODEL: gpt-5.6-terra
       AI_ROUTE_AI_ANALYST_MODEL: gpt-5.6-terra
       AI_ROUTE_CROSS_AUTHOR_ANALYSIS_MODEL: gpt-5.6-terra
+      AI_ROUTE_RESEARCH_CASE_SYNTHESIS_MODEL: gpt-5.6-terra
+      GOLDEN_IDS: 2090779070523162841,2092457458341937311,2092457470765531481,2092474407679922609,2092482318665650559,2092492304976351332,2092503684810998119,2092550362691760189,1997151412309078335,2092785771979960560,2092786981977915481,2025470786073755771,2087139633109115036,2070266870557704335,2066651558784463190,2074774120324276615
     steps:
       - uses: actions/checkout@v6
         with:
@@ -54,20 +56,28 @@ jobs:
         run: |
           test -n "$OPENAI_API_KEY"
           test -n "$DEEPSEEK_API_KEY"
-      - name: Replay Golden evidence graph
-        env:
-          GOLDEN_IDS: 2090779070523162841,2092457458341937311,2092457470765531481,2092474407679922609,2092482318665650559,2092492304976351332,2092503684810998119,2092550362691760189,1997151412309078335,2092785771979960560,2092786981977915481,2025470786073755771,2087139633109115036,2070266870557704335,2066651558784463190,2074774120324276615
-        run: |
-          python scripts/intel_graph_ingest.py --db data/signalboard_full.db --post-ids "$GOLDEN_IDS" --refresh --include-context
-          python scripts/intel_extract.py --db data/signalboard_full.db --post-ids "$GOLDEN_IDS" --include-context --include-graph-context --claims-missing --max-targets 30
-          python scripts/intel_media_analyze.py --db data/signalboard_full.db --post-ids "$GOLDEN_IDS" --limit 6
-          python scripts/intel_source_dedup.py --db data/signalboard_full.db --post-ids "$GOLDEN_IDS" --resolve-redirects
-          python scripts/intel_theme_canonicalize.py --db data/signalboard_full.db --apply --max-pairs 120
-          python scripts/intel_claim_verify.py --db data/signalboard_full.db --post-ids "$GOLDEN_IDS" --limit 40
-          python scripts/intel_thesis_update.py --db data/signalboard_full.db --post-ids "$GOLDEN_IDS" --limit 30
-          python scripts/intel_ai_analyst.py --db data/signalboard_full.db --post-ids "$GOLDEN_IDS" --limit 30
-          python scripts/intel_golden_tests.py --db data/signalboard_full.db
-          python scripts/intel_v11_report.py --db data/signalboard_full.db
+      - name: Replay recursive Golden evidence graph
+        run: python scripts/intel_graph_ingest.py --db data/signalboard_full.db --post-ids "$GOLDEN_IDS" --refresh --include-context
+      - name: Extract Golden Claims and Themes
+        run: python scripts/intel_extract.py --db data/signalboard_full.db --post-ids "$GOLDEN_IDS" --include-context --include-graph-context --claims-missing --max-targets 30
+      - name: Analyze required Golden media
+        run: python scripts/intel_media_analyze.py --db data/signalboard_full.db --post-ids "$GOLDEN_IDS" --limit 6
+      - name: Deduplicate underlying sources
+        run: python scripts/intel_source_dedup.py --db data/signalboard_full.db --post-ids "$GOLDEN_IDS" --resolve-redirects
+      - name: Audit and canonicalize Themes
+        run: python scripts/intel_theme_canonicalize.py --db data/signalboard_full.db --apply --max-pairs 240
+      - name: Verify high-importance Golden Claims
+        run: python scripts/intel_claim_verify.py --db data/signalboard_full.db --post-ids "$GOLDEN_IDS" --limit 40
+      - name: Incrementally update Author by Theme theses
+        run: python scripts/intel_thesis_update.py --db data/signalboard_full.db --post-ids "$GOLDEN_IDS" --limit 30
+      - name: Run independent Terra analyst
+        run: python scripts/intel_ai_analyst.py --db data/signalboard_full.db --post-ids "$GOLDEN_IDS" --limit 30
+      - name: Synthesize cross-theme Golden research cases
+        run: python scripts/intel_case_synthesis.py --db data/signalboard_full.db
+      - name: Evaluate deterministic Golden acceptance gates
+        run: python scripts/intel_golden_tests.py --db data/signalboard_full.db
+      - name: Build full evidence and cost audit
+        run: python scripts/intel_v11_report.py --db data/signalboard_full.db
       - name: Upload audit artifacts
         uses: actions/upload-artifact@v6
         with:

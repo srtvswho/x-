@@ -367,6 +367,15 @@ function renderThesisChanges(){
   root.innerHTML=THESIS_CHANGES.map(x=>{
     const evidence=(x.new_evidence||[]).map(e=>`<li>${e.source_url?`<a href="${escHtml(e.source_url)}" target="_blank" rel="noopener">${escHtml(e.text)}</a>`:escHtml(e.text)} <span class="change-pill">${escHtml(e.status)}</span></li>`).join('');
     const tags=a=>(a||[]).map(v=>`<span class="exposure">${escHtml(v)}</span>`).join('')||'—';
+    const lines=(label,items)=>(items||[]).length?`<div class="thesis-row"><b>${label}</b><span><ul>${items.map(v=>`<li>${escHtml(typeof v==='string'?v:(v.view||JSON.stringify(v)))}</li>`).join('')}</ul></span></div>`:'';
+    const authorViews=(x.author_views||[]).map(v=>`${v.author}: ${v.view}`);
+    const sources=(x.supporting_sources||[]).map(s=>`<li><a href="${escHtml(s.url)}" target="_blank" rel="noopener">${escHtml(s.title||s.url)}</a> <span class="change-pill">${escHtml(s.source_class)}</span></li>`).join('');
+    const researchDetail=x.is_research_case?`<details class="evidence research-detail"><summary>完整 Evidence Graph 与 AI 审计</summary>
+      ${lines('AUTHOR VIEW',authorViews)}${lines('FACTS',x.facts)}${lines('LOGIC CHAIN',x.logic_chain)}${lines('CORRECTIONS',x.corrections)}
+      ${lines('COUNTER CASE',x.counter_case)}${lines('SECOND ORDER',x.second_order_effects)}${lines('RISKS',x.risks)}${lines('UNKNOWNS',x.unknowns)}
+      ${lines('CATALYSTS',x.catalysts)}${lines('INVALIDATION',x.invalidation_conditions)}
+      ${sources?`<div class="thesis-row"><b>SOURCES</b><span><ul>${sources}</ul></span></div>`:''}
+      </details>`:'';
     return `<article class="thesis-change-card"><div class="thesis-change-head"><span class="thesis-theme">${escHtml(x.theme)}</span><span class="change-pill">${escHtml(x.change_type)}</span><span class="action-pill">${escHtml(x.actionability)}</span></div>
       <div class="meta">${escHtml((x.authors||[]).join(' · '))} · Confidence ${x.confidence==null?'—':Math.round(x.confidence*100)} · Social ${x.social_mentions||0} / Independent ${x.independent_evidence||0}</div>
       <div class="thesis-row"><b>PREVIOUS VIEW</b><span>${escHtml(x.previous_view)}</span></div>
@@ -376,7 +385,8 @@ function renderThesisChanges(){
       ${(x.consensus||[]).length?`<div class="thesis-row"><b>CONSENSUS</b><span>${tags(x.consensus)}</span></div>`:''}
       ${(x.disagreement||[]).length?`<div class="thesis-row"><b>DISAGREEMENT</b><span>${tags(x.disagreement)}</span></div>`:''}
       <div class="thesis-row"><b>EXPOSURE</b><span>＋ ${tags(x.positive_exposure)}<br>－ ${tags(x.negative_exposure)}</span></div>
-      <div class="thesis-actions"><button type="button" onclick="this.closest('article').querySelector('.thesis-row:nth-of-type(2)').scrollIntoView({behavior:'smooth'})">View Thesis</button><button type="button" onclick="this.closest('article').querySelector('ul').scrollIntoView({behavior:'smooth'})">View Evidence</button><button type="button" title="仅用户主动触发，Daily 不调用 Sol" onclick="alert('Deep Analysis 仅在你主动触发后运行，不会由 Daily Feed 自动调用。')">Deep Analysis</button></div></article>`;
+      ${researchDetail}
+      <div class="thesis-actions"><button type="button" onclick="const d=this.closest('article').querySelector('details');if(d){d.open=true;d.scrollIntoView({behavior:'smooth'})}">View Thesis</button><button type="button" onclick="const u=this.closest('article').querySelector('ul');if(u)u.scrollIntoView({behavior:'smooth'})">View Evidence</button><button type="button" title="仅用户主动触发，Daily 不调用 Sol" onclick="alert('Deep Analysis 仅在你主动触发后运行，不会由 Daily Feed 自动调用。')">Deep Analysis</button></div></article>`;
   }).join('');
 }
 const SIGNAL_POLICY={

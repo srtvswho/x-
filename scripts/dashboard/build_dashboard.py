@@ -29,6 +29,7 @@ from common import (  # noqa: E402
 DB = os.environ.get("SIGNALBOARD_DB", "/workspace/data/signalboard_full.db")
 TEMPLATE = pathlib.Path(__file__).with_name("dashboard.template.html")
 OUT = pathlib.Path(__file__).with_name("dashboard.html")
+GOLDEN_CASES = Path(__file__).resolve().parents[2] / "tests" / "golden_cases.json"
 
 # SRC2KOL / KOLS / KOL_TICKERS / is_in_field / parse_json_arr 全部 from common import (顶部 import)
 # 保持单一来源, 跟 refresh_prices_polygon 共用同个实现, 跟区块04 展示口径一致
@@ -367,6 +368,63 @@ def query_thesis_changes(conn, limit=12):
     ).fetchone()
     if not table:
         return []
+    out=[]
+    allowed={"NOT_ACTIONABLE","WATCH","RESEARCH","BUY_CANDIDATE","HEDGE_CANDIDATE","AVOID"}
+
+    case_table = conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='research_case_analyses'"
+    ).fetchone()
+    case_specs = json.loads(GOLDEN_CASES.read_text(encoding="utf-8")) if GOLDEN_CASES.exists() else {}
+    if case_table:
+        for case_id,title,analysis_raw,updated_at in conn.execute(
+            "SELECT case_id,title,analysis_json,updated_at FROM research_case_analyses ORDER BY updated_at DESC LIMIT 4"
+        ).fetchall():
+            analysis=json.loads(analysis_raw)
+            spec=case_specs.get(case_id,{})
+            post_ids=spec.get("seed_post_ids",[])
+            social_count=independent_count=0
+            links=[]
+            if post_ids:
+                ph=",".join("?" for _ in post_ids)
+                social_count,independent_count=conn.execute(
+                    f"""SELECT COUNT(DISTINCT mention_post_id),COUNT(DISTINCT underlying_source_id)
+                         FROM source_memberships WHERE mention_post_id IN ({ph})""", post_ids
+                ).fetchone()
+                links=[{"title":r[0] or r[1],"url":r[1],"source_class":r[2]}
+                       for r in conn.execute(
+                    f"""SELECT DISTINCT us.title,us.canonical_url,us.source_class
+                         FROM source_memberships sm JOIN underlying_sources us USING(underlying_source_id)
+                         WHERE sm.mention_post_id IN ({ph}) AND us.canonical_url IS NOT NULL
+                         ORDER BY CASE us.source_class WHEN 'PRIMARY' THEN 0 WHEN 'SECONDARY' THEN 1 ELSE 2 END
+                         LIMIT 8""", post_ids).fetchall()]
+            action=analysis.get("actionability","NOT_ACTIONABLE")
+            if action not in allowed:
+                action="NOT_ACTIONABLE"
+            authors=[x.get("author","").replace("tw_","") for x in analysis.get("author_views",[]) if x.get("author")]
+            scores=analysis.get("scores",{})
+            out.append({
+                "change_id":case_id,"thesis_id":case_id,"theme":title,"authors":authors,
+                "change_type":"RESEARCH_CASE","change_score":scores.get("thesis_quality",0),
+                "detected_at":updated_at,"previous_view":"跨主题研究案例首次建立",
+                "new_view":analysis.get("ai_assessment") or "待独立分析",
+                "new_evidence":[{"text":x,"status":"VERIFIED_EVIDENCE","post_id":None,"source_url":None}
+                                for x in analysis.get("verified_evidence",[])[:6]],
+                "ai_assessment":analysis.get("ai_assessment") or "待独立分析",
+                "consensus":[],"disagreement":analysis.get("contradictions") or [],
+                "positive_exposure":analysis.get("beneficiaries") or [],
+                "negative_exposure":analysis.get("negative_exposure") or [],
+                "confidence":scores.get("evidence_quality",0)/100,"actionability":action,
+                "social_mentions":social_count or 0,"independent_evidence":independent_count or 0,
+                "is_research_case":True,"author_views":analysis.get("author_views") or [],
+                "facts":analysis.get("facts") or [],"logic_chain":analysis.get("logic_chain") or [],
+                "corrections":analysis.get("corrections") or [],"counter_case":analysis.get("counter_case") or [],
+                "second_order_effects":analysis.get("second_order_effects") or [],
+                "risks":analysis.get("risks") or [],"unknowns":analysis.get("unknowns") or [],
+                "catalysts":analysis.get("catalysts") or [],
+                "invalidation_conditions":analysis.get("invalidation_conditions") or [],
+                "supporting_sources":links,"scores":scores,
+            })
+
     rows = conn.execute("""
         SELECT tc.change_id, tc.change_type, tc.change_score, tc.summary, tc.detected_at,
                th.thesis_id, th.author_id, t.name, tc.from_version, tc.to_version,
@@ -381,9 +439,7 @@ def query_thesis_changes(conn, limit=12):
         WHERE t.parent_theme_id IS NULL
           AND tc.change_score >= 10
         ORDER BY tc.detected_at DESC, tc.change_score DESC LIMIT ?
-    """, (limit,)).fetchall()
-    out=[]
-    allowed={"NOT_ACTIONABLE","WATCH","RESEARCH","BUY_CANDIDATE","HEDGE_CANDIDATE","AVOID"}
+    """, (max(0,limit-len(out)),)).fetchall()
     for row in rows:
         (change_id,ctype,score,summary,detected,thesis_id,author,theme,from_v,to_v,prev_raw,curr_raw,analysis_raw,cross_raw)=row
         prev=json.loads(prev_raw) if prev_raw else {}

@@ -11,6 +11,7 @@ from signalboard.repository import upsert_raw_post
 from signalboard.research_graph import ingest_post_graph
 from scripts.intel_extract import get_target_posts, init_extractions_table, persist_extraction
 from scripts import intel_thesis_update
+from scripts import intel_case_synthesis
 from scripts.intel_source_dedup import build_source_map
 from scripts.intel_theme_canonicalize import _apply_merges
 
@@ -47,9 +48,9 @@ def test_v4_schema_and_recursive_graph_are_idempotent(tmp_path):
     db = tmp_path / "graph.db"
     init_db(db)
     con = sqlite3.connect(db)
-    assert con.execute("PRAGMA user_version").fetchone()[0] == CURRENT_SCHEMA_VERSION == 5
+    assert con.execute("PRAGMA user_version").fetchone()[0] == CURRENT_SCHEMA_VERSION == 6
     for table in ("theme_embeddings", "underlying_sources", "source_memberships",
-                  "claim_verifications", "thesis_analyses", "cross_author_theses"):
+                  "claim_verifications", "thesis_analyses", "cross_author_theses", "research_case_analyses"):
         assert con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (table,)).fetchone()
     payload = _root_payload()
     root = RawPost(
@@ -290,4 +291,48 @@ def test_underlying_source_counts_mentions_not_reposts_as_evidence(tmp_path):
     assert stats["external_sources"] == 1
     assert con.execute("SELECT COUNT(*) FROM underlying_sources").fetchone()[0] == 1
     assert con.execute("SELECT COUNT(DISTINCT mention_post_id) FROM source_memberships").fetchone()[0] == 3
+    con.close()
+
+
+def test_research_case_synthesis_is_incremental_and_bounded(tmp_path, monkeypatch):
+    db = tmp_path / "case.db"
+    init_db(db)
+    upsert_raw_post(RawPost(
+        post_id="p1", source_id="tw_zephyr", platform=Platform.TWITTER.value,
+        published_at="2026-08-29T00:00:00Z", captured_at="2026-08-29T00:01:00Z",
+        raw_text="YMTC capacity can support China WFE but raises NAND supply risk",
+        raw_url="https://x.com/zephyr/status/p1",
+    ), db)
+    con = sqlite3.connect(db)
+    con.execute("INSERT INTO post_graph_memberships(root_post_id,post_id,depth,crawl_status) VALUES ('p1','p1',0,'complete')")
+    con.commit()
+
+    payload = {
+        "author_views": [{"author": "Zephyr", "view": "China WFE upside"}],
+        "facts": ["YMTC expansion is planned"], "verified_evidence": [],
+        "logic_chain": ["profit -> CapEx -> WFE"], "corrections": [], "contradictions": [],
+        "ai_assessment": "Research further", "counter_case": ["NAND oversupply"],
+        "second_order_effects": ["SNDK pricing risk"], "beneficiaries": ["NAURA"],
+        "negative_exposure": ["SNDK"], "risks": ["oversupply"],
+        "valuation_questions": ["WFE order conversion"], "catalysts": ["IPO filing"],
+        "invalidation_conditions": ["CapEx is delayed"], "unknowns": ["fab count wording"],
+        "actionability": "RESEARCH", "scores": {
+            "thesis_quality": 70, "evidence_quality": 50, "novelty": 60,
+            "mispricing_potential": 55, "actionability": 45,
+        },
+    }
+    calls = {"n": 0}
+    def fake_call(*args, **kwargs):
+        calls["n"] += 1
+        return AIResult(text=json.dumps(payload), data=payload, workload="research_case_synthesis",
+                        provider="openai", model="gpt-5.6-terra", input_tokens=100,
+                        output_tokens=50, estimated_cost_usd=0.0008, latency_ms=10)
+    monkeypatch.setattr(intel_case_synthesis, "call_json", fake_call)
+    cases = {"A": {"title": "YMTC / NAND / China WFE", "seed_post_ids": ["p1"],
+                   "audit_questions": ["five total or five additional?"]}}
+    assert intel_case_synthesis.synthesize(con, cases)["synthesized"] == 1
+    assert intel_case_synthesis.synthesize(con, cases)["synthesized"] == 0
+    assert calls["n"] == 1
+    saved = json.loads(con.execute("SELECT analysis_json FROM research_case_analyses WHERE case_id='A'").fetchone()[0])
+    assert saved["actionability"] == "RESEARCH"
     con.close()

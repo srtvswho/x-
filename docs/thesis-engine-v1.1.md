@@ -12,6 +12,7 @@ This release adds an auditable research-quality layer without replacing the exis
 6. Author × Theme Thesis updates consume the current Thesis plus only new Claims, new media, and new verification results.
 7. Terra produces the independent Analyst record and cross-author synthesis. Sol is never scheduled; it is only reachable through explicit `--deep-analysis` invocation.
 8. The home page only shows Analyst-reviewed Thesis Changes with change score at least 10. Allowed actionability labels are `NOT_ACTIONABLE`, `WATCH`, `RESEARCH`, `BUY_CANDIDATE`, `HEDGE_CANDIDATE`, and `AVOID`.
+9. Human-bounded Research Cases synthesize evidence across multiple Author × Theme records. They answer explicit audit questions, retain unknowns, and are refreshed only when their evidence digest changes.
 
 ## Golden validation
 
@@ -20,7 +21,7 @@ This release adds an auditable research-quality layer without replacing the exis
 - YMTC → NAND → China WFE
 - ABF → CoPoS / CoWoP → PCB
 
-`scripts/intel_golden_tests.py` checks the graph and structured outputs by category. Raw social text cannot satisfy a correction, Analyst assessment, or verified-evidence check by itself.
+`scripts/intel_golden_tests.py` checks the graph and structured outputs by category. Raw social text cannot satisfy a correction, Analyst assessment, or verified-evidence check by itself. Source deduplication passes only when at least two social/visual mentions resolve to the same Underlying Source; newly found verification sources remain separate independent evidence.
 
 ## Bounded media backfill
 

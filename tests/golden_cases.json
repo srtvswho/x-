@@ -13,6 +13,10 @@
       ["2092503684810998119", "2092474407679922609"]
     ],
     "required_media_ids": ["3_2092457347855613952"],
+    "audit_questions": [
+      "Does the evidence say five additional new fabs, or five fabs in the long-term total plan?",
+      "Does higher YMTC/CXMT profitability support CapEx, then China WFE demand and NAURA/AMEC, while increasing future NAND oversupply risk for SNDK?"
+    ],
     "expected_facts": [
       ["2027", "largest|最大", "NAND"],
       ["IPO|上市", "production|生产", "R&D|研发"],
@@ -41,6 +45,10 @@
       ["2092786981977915481", "2092785771979960560"]
     ],
     "required_media_ids": ["3_1997150826352316416"],
+    "audit_questions": [
+      "Does Feynman definitively benefit ABF, or does the result depend on CoPoS versus CoWoP adoption?",
+      "Which exposure is most route-neutral across ABF substrate, PCB and high-end CCL?"
+    ],
     "expected_facts": [["2026", "2027", "ABF"], ["Feynman", "CoPoS"]],
     "expected_logic": [["short|短期", "ABF", "bull|看多|利好"], ["long|长期", "architecture|架构", "uncertain|不确定"]],
     "expected_corrections": [["Feynman", "not|不能|不确定", "certain|确定", "ABF"]],
