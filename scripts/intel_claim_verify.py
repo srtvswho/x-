@@ -108,7 +108,7 @@ def verify_claims(con: sqlite3.Connection, limit: int, post_ids: list[str] | Non
                     continue
                 url = canonical_url(source["url"])
                 # Structured URLs must be grounded in the web_search call's full source list.
-                if returned_urls and url not in returned_urls:
+                if url not in returned_urls:
                     continue
                 source["url"] = url
                 accepted_sources.append(source)

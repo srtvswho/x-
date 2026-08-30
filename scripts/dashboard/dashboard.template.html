@@ -361,15 +361,16 @@ function formatStructuredSummary(text){
 }
 
 function escHtml(value){return String(value||'').replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});}
+function safeUrl(value){try{const url=new URL(String(value||''),window.location.href);return /^(https?):$/.test(url.protocol)?escHtml(url.href):'#';}catch(_){return '#';}}
 function renderThesisChanges(){
   const root=document.getElementById('thesis-change-grid');
   if(!THESIS_CHANGES.length){root.innerHTML='<div class="feed-empty">尚无达到质量门槛的 Thesis Change；旧 Post Feed 仍保留在下方。</div>';return;}
   root.innerHTML=THESIS_CHANGES.map(x=>{
-    const evidence=(x.new_evidence||[]).map(e=>`<li>${e.source_url?`<a href="${escHtml(e.source_url)}" target="_blank" rel="noopener">${escHtml(e.text)}</a>`:escHtml(e.text)} <span class="change-pill">${escHtml(e.status)}</span></li>`).join('');
+    const evidence=(x.new_evidence||[]).map(e=>`<li>${e.source_url?`<a href="${safeUrl(e.source_url)}" target="_blank" rel="noopener">${escHtml(e.text)}</a>`:escHtml(e.text)} <span class="change-pill">${escHtml(e.status)}</span></li>`).join('');
     const tags=a=>(a||[]).map(v=>`<span class="exposure">${escHtml(v)}</span>`).join('')||'—';
     const lines=(label,items)=>(items||[]).length?`<div class="thesis-row"><b>${label}</b><span><ul>${items.map(v=>`<li>${escHtml(typeof v==='string'?v:(v.view||JSON.stringify(v)))}</li>`).join('')}</ul></span></div>`:'';
     const authorViews=(x.author_views||[]).map(v=>`${v.author}: ${v.view}`);
-    const sources=(x.supporting_sources||[]).map(s=>`<li><a href="${escHtml(s.url)}" target="_blank" rel="noopener">${escHtml(s.title||s.url)}</a> <span class="change-pill">${escHtml(s.source_class)}</span></li>`).join('');
+    const sources=(x.supporting_sources||[]).map(s=>`<li><a href="${safeUrl(s.url)}" target="_blank" rel="noopener">${escHtml(s.title||s.url)}</a> <span class="change-pill">${escHtml(s.source_class)}</span></li>`).join('');
     const researchDetail=x.is_research_case?`<details class="evidence research-detail"><summary>完整 Evidence Graph 与 AI 审计</summary>
       ${lines('AUTHOR VIEW',authorViews)}${lines('FACTS',x.facts)}${lines('LOGIC CHAIN',x.logic_chain)}${lines('CORRECTIONS',x.corrections)}
       ${lines('COUNTER CASE',x.counter_case)}${lines('SECOND ORDER',x.second_order_effects)}${lines('RISKS',x.risks)}${lines('UNKNOWNS',x.unknowns)}

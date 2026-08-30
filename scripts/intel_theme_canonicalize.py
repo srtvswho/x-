@@ -66,6 +66,7 @@ def _themes(con: sqlite3.Connection) -> list[dict]:
         FROM themes t
         LEFT JOIN claim_themes ct ON ct.theme_id=t.theme_id
         LEFT JOIN claims c ON c.claim_id=ct.claim_id
+        WHERE t.parent_theme_id IS NULL
         GROUP BY t.theme_id, t.name, t.description, t.parent_theme_id
         ORDER BY t.name COLLATE NOCASE
         """
@@ -158,8 +159,12 @@ def _nearest(themes: list[dict], vectors: dict[str, list[float]]) -> tuple[list[
 def _judge(con: sqlite3.Connection, candidates: list[dict], max_pairs: int) -> tuple[list[dict], float]:
     judgments: list[dict] = []
     cost = 0.0
-    for start in range(0, min(len(candidates), max_pairs), 20):
-        batch = candidates[start:start + 20]
+    pending = [candidate for candidate in candidates if not con.execute(
+        "SELECT 1 FROM theme_canonicalization_audit WHERE audit_id=?",
+        ("themeaudit_" + candidate["pair_id"],),
+    ).fetchone()][:max_pairs]
+    for start in range(0, len(pending), 20):
+        batch = pending[start:start + 20]
         payload = [{
             "pair_id": x["pair_id"], "embedding_similarity": x["similarity"],
             "left_name": x["left"]["name"], "left_claims": x["left"]["examples"],
@@ -187,10 +192,11 @@ def _judge(con: sqlite3.Connection, candidates: list[dict], max_pairs: int) -> t
             })
             judgments.append(judgment)
             canonical_id = None
-            if canonical_name == left["name"]:
-                canonical_id = left["theme_id"]
-            elif canonical_name == right["name"]:
-                canonical_id = right["theme_id"]
+            if judgment["decision"] == "MERGE_ALIAS":
+                if canonical_name == left["name"]:
+                    canonical_id = left["theme_id"]
+                elif canonical_name == right["name"]:
+                    canonical_id = right["theme_id"]
             audit_id = "themeaudit_" + candidate["pair_id"]
             con.execute(
                 """INSERT OR REPLACE INTO theme_canonicalization_audit
@@ -214,6 +220,16 @@ def _apply_merges(con: sqlite3.Connection, judgments: list[dict]) -> int:
         canonical_id = item["left_theme_id"] if item["canonical_name"] == item["left_name"] else item["right_theme_id"]
         alias_id = item["right_theme_id"] if canonical_id == item["left_theme_id"] else item["left_theme_id"]
         alias_name = item["right_name"] if canonical_id == item["left_theme_id"] else item["left_name"]
+        parent_rows = con.execute(
+            "SELECT theme_id,parent_theme_id FROM themes WHERE theme_id IN (?,?)",
+            (canonical_id, alias_id),
+        ).fetchall()
+        parents = dict(parent_rows)
+        if parents.get(alias_id) == canonical_id:
+            continue
+        # Never reverse or re-parent an alias that has already been canonicalized.
+        if parents.get(canonical_id) is not None or parents.get(alias_id) is not None:
+            continue
         left_constraint = any(x in item["left_name"].casefold() for x in CONSTRAINT_MARKERS)
         right_constraint = any(x in item["right_name"].casefold() for x in CONSTRAINT_MARKERS)
         if left_constraint != right_constraint:
@@ -229,8 +245,6 @@ def _apply_merges(con: sqlite3.Connection, judgments: list[dict]) -> int:
                 (item["rationale"], item["left_theme_id"], item["right_theme_id"],
                  item["right_theme_id"], item["left_theme_id"]),
             )
-            continue
-        if con.execute("SELECT parent_theme_id FROM themes WHERE theme_id=?", (canonical_id,)).fetchone()[0] == alias_id:
             continue
         collision = con.execute(
             """SELECT 1 FROM theses a JOIN theses c ON c.author_id=a.author_id

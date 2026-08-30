@@ -270,6 +270,11 @@ def test_theme_merge_requires_semantic_judgment_and_preserves_alias(tmp_path):
     assert json.loads(con.execute("SELECT aliases_json FROM themes WHERE theme_id='nand'").fetchone()[0]) == ["Flash Memory"]
     assert con.execute("SELECT theme_id FROM claim_themes WHERE claim_id='c1'").fetchone()[0] == "nand"
     assert con.execute("SELECT parent_theme_id FROM themes WHERE theme_id='agent'").fetchone()[0] is None
+    assert _apply_merges(con, [{
+        "decision": "MERGE_ALIAS", "confidence": 0.95, "canonical_name": "NAND",
+        "left_theme_id": "nand", "left_name": "NAND", "right_theme_id": "flash", "right_name": "Flash Memory",
+    }]) == 0
+    assert con.execute("SELECT parent_theme_id FROM themes WHERE theme_id='flash'").fetchone()[0] == "nand"
     con.close()
 
 
