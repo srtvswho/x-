@@ -20,6 +20,7 @@ v2.0.0-intel 简化 prompt (8 字段):
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -29,9 +30,9 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 
-import requests
-
 sys.path.insert(0, "/workspace")
+from signalboard.ai.router import call_json, record_usage, resolve_route
+from signalboard.db import init_db
 from signalboard.extract.prompts_intel import (
     PROMPT_VERSION,
     build_user_prompt,
@@ -39,8 +40,7 @@ from signalboard.extract.prompts_intel import (
 )
 
 DB_PATH = "/workspace/data/signalboard_full.db"
-DEEPSEEK_URL = "https://api.deepseek.com/v1/chat/completions"
-DEEPSEEK_MODEL = "deepseek-v4-flash"  # 生产链统一使用 Flash，避免意外产生 Pro 调用
+DEEPSEEK_MODEL = resolve_route("bulk_post_processing").model
 MAX_WORKERS = 5  # 受 deepseek RPM 限制
 MAX_RETRIES = 2
 
@@ -92,6 +92,114 @@ CREATE INDEX IF NOT EXISTS idx_extractions_intel_retrospective ON extractions_in
 CREATE INDEX IF NOT EXISTS idx_extractions_intel_disclosure ON extractions_intel(is_disclosure);
 """
 
+EXTRACTION_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "properties": {
+        "ticker": {"anyOf": [{"type": "null"}, {"type": "string"}, {"type": "array", "items": {"type": "string"}}]},
+        "company": {"anyOf": [{"type": "null"}, {"type": "string"}, {"type": "array", "items": {"type": "string"}}]},
+        "direction": {"type": "string"},
+        "short_skeptical": {"type": "integer"},
+        "bottleneck": {"anyOf": [{"type": "null"}, {"type": "string"}]},
+        "attribution": {"type": "string"},
+        "rebuts_narrative": {"anyOf": [{"type": "null"}, {"type": "string"}]},
+        "summary_100": {"type": "string"},
+        "is_retrospective": {"type": "integer"},
+        "is_disclosure": {"type": "integer"},
+        "is_self_reported_returns": {"type": "integer"},
+        "claims": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": False,
+                "properties": {
+                    "claim_text": {"type": "string"},
+                    "claim_type": {"type": "string", "enum": [
+                        "FACT", "FORECAST", "OPINION", "INFERENCE", "VALUATION",
+                        "CATALYST", "RISK", "POSITION", "QUESTION",
+                    ]},
+                    "claim_author": {"type": "string"},
+                    "companies": {"type": "array", "items": {"type": "string"}},
+                    "themes": {"type": "array", "items": {"type": "string"}},
+                    "time_horizon": {"type": "string"},
+                    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+                },
+                "required": [
+                    "claim_text", "claim_type", "claim_author", "companies",
+                    "themes", "time_horizon", "confidence",
+                ],
+            },
+        },
+        "themes": {"type": "array", "items": {"type": "string"}},
+    },
+    "required": [
+        "ticker", "company", "direction", "short_skeptical", "bottleneck",
+        "attribution", "rebuts_narrative", "summary_100", "is_retrospective",
+        "is_disclosure", "is_self_reported_returns",
+        "claims", "themes",
+    ],
+}
+
+
+def _theme_id(name: str) -> str:
+    return "theme_" + hashlib.sha256(name.strip().casefold().encode()).hexdigest()[:20]
+
+
+def persist_claims_and_themes(
+    con: sqlite3.Connection,
+    post_id: str,
+    source_id: str,
+    extraction: dict,
+) -> None:
+    """Persist atomic claims/themes emitted by the same bulk call."""
+    published = con.execute("SELECT published_at FROM raw_posts WHERE post_id=?", (post_id,)).fetchone()
+    point_in_time = published[0] if published else None
+    top_themes = [str(x).strip() for x in extraction.get("themes") or [] if str(x).strip()]
+    attribution = str(extraction.get("attribution") or "NA").upper()
+    for index, claim in enumerate(extraction.get("claims") or []):
+        if not isinstance(claim, dict):
+            continue
+        claim_text = str(claim.get("claim_text") or "").strip()
+        claim_type = str(claim.get("claim_type") or "OPINION").upper()
+        if not claim_text or claim_type not in {
+            "FACT", "FORECAST", "OPINION", "INFERENCE", "VALUATION",
+            "CATALYST", "RISK", "POSITION", "QUESTION",
+        }:
+            continue
+        claim_themes = [str(x).strip() for x in claim.get("themes") or [] if str(x).strip()]
+        all_themes = list(dict.fromkeys(claim_themes or top_themes))
+        stated_author = str(claim.get("claim_author") or "").strip()
+        author = source_id if attribution in {"ORIGINAL", "ENDORSED", "DISAGREED"} else stated_author
+        content_hash = hashlib.sha256(claim_text.casefold().encode()).hexdigest()
+        claim_id = "claim_" + hashlib.sha256(f"{post_id}\n{index}\n{content_hash}".encode()).hexdigest()[:24]
+        confidence = min(1.0, max(0.0, float(claim.get("confidence") or 0.5)))
+        con.execute(
+            """
+            INSERT OR REPLACE INTO claims (
+                claim_id, claim_text, claim_type, author_id, companies_json,
+                themes_json, time_horizon, source_post_id, evidence_ids_json,
+                confidence, verification_status, point_in_time, content_hash
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, '[]', ?, 'UNVERIFIED', ?, ?)
+            """,
+            (
+                claim_id, claim_text, claim_type, author or None,
+                json.dumps(claim.get("companies") or [], ensure_ascii=False),
+                json.dumps(all_themes, ensure_ascii=False),
+                str(claim.get("time_horizon") or "").strip() or None,
+                post_id, confidence, point_in_time, content_hash,
+            ),
+        )
+        for theme_name in all_themes:
+            tid = _theme_id(theme_name)
+            con.execute(
+                "INSERT OR IGNORE INTO themes (theme_id, name) VALUES (?, ?)",
+                (tid, theme_name),
+            )
+            con.execute(
+                "INSERT OR REPLACE INTO claim_themes (claim_id, theme_id, confidence) VALUES (?, ?, ?)",
+                (claim_id, tid, confidence),
+            )
+
 # Migration: 加 3 个 R12 flag 列 (针对已存在的旧表)
 MIGRATION = """
 ALTER TABLE extractions_intel ADD COLUMN is_retrospective INTEGER NOT NULL DEFAULT 0;
@@ -139,9 +247,14 @@ def get_target_posts(
     until_iso: str | None = None,
     source_ids: list[str] | None = None,
     ticker_clues_only: bool = False,
+    claims_missing: bool = False,
 ) -> list[dict]:
     """按窗口取未抽取推文；可按人物和标的线索限制历史回填范围。"""
-    where = ["rp.published_at >= ?", "ei.post_id IS NULL"]
+    missing_clause = (
+        "(ei.post_id IS NULL OR NOT EXISTS (SELECT 1 FROM claims c WHERE c.source_post_id=rp.post_id))"
+        if claims_missing else "ei.post_id IS NULL"
+    )
+    where = ["rp.published_at >= ?", missing_clause]
     params: list[object] = [PROMPT_VERSION, since_iso]
     if until_iso:
         where.append("rp.published_at < ?")
@@ -156,6 +269,7 @@ def get_target_posts(
         LEFT JOIN extractions_intel ei
           ON rp.post_id = ei.post_id AND ei.prompt_version = ?
         WHERE {' AND '.join(where)}
+          AND rp.source_id NOT LIKE 'ctx_%'
         ORDER BY rp.published_at ASC
     """, params).fetchall()
     posts = [
@@ -168,40 +282,26 @@ def get_target_posts(
 
 
 def call_deepseek(post_id: str, raw_text: str) -> dict:
-    """调 LLM 抽 (单条). 含 retry."""
-    api_key = os.environ.get("DEEPSEEK_API_KEY")
-    if not api_key:
-        raise RuntimeError("DEEPSEEK_API_KEY not set")
+    """通过统一路由执行批量 Post 抽取。"""
     sys_p = get_system_prompt()
     usr_p = build_user_prompt(post_id, raw_text)
-    data = json.dumps({
-        "model": DEEPSEEK_MODEL,
-        "messages": [
-            {"role": "system", "content": sys_p},
-            {"role": "user", "content": usr_p},
-        ],
-        "temperature": 0.1,
-        "max_tokens": 1500,
-        "response_format": {"type": "json_object"},
-        "thinking": {"type": "disabled"},  # ★ 跨项目硬规则: 关闭思考模式
-    }).encode()
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json",
-    }
-    for attempt in range(MAX_RETRIES + 1):
-        try:
-            r = requests.post(DEEPSEEK_URL, data=data, headers=headers, timeout=30)
-            r.raise_for_status()
-            j = r.json()
-            content = j["choices"][0]["message"]["content"]
-            parsed = json.loads(content)
-            return {"ok": True, "extraction": parsed, "raw": content, "usage": j.get("usage", {})}
-        except Exception as e:
-            if attempt < MAX_RETRIES:
-                time.sleep(1 + attempt * 2)
-                continue
-            return {"ok": False, "error": str(e)}
+    try:
+        result = call_json(
+            "bulk_post_processing", sys_p, usr_p, EXTRACTION_SCHEMA,
+            schema_name="signalboard_post_extraction", max_output_tokens=1500,
+            timeout=30, max_retries=MAX_RETRIES,
+        )
+        return {
+            "ok": True, "extraction": result.data, "raw": result.text,
+            "usage": {
+                "input_tokens": result.input_tokens,
+                "output_tokens": result.output_tokens,
+                "estimated_cost_usd": result.estimated_cost_usd,
+            },
+            "ai_result": result,
+        }
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
 
 
 def persist_extraction(con: sqlite3.Connection, post_id: str, source_id: str,
@@ -222,12 +322,28 @@ def persist_extraction(con: sqlite3.Connection, post_id: str, source_id: str,
     is_self_reported_returns = extraction.get("is_self_reported_returns", 0)
     try:
         con.execute("""
-            INSERT OR IGNORE INTO extractions_intel
+            INSERT INTO extractions_intel
             (post_id, source_id, extracted_at, model_version, prompt_version,
              raw_response, ticker, company, direction, short_skeptical,
              bottleneck, attribution, rebuts_narrative, summary_100,
-             is_retrospective, is_disclosure, is_self_reported_returns)
+            is_retrospective, is_disclosure, is_self_reported_returns)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(post_id, prompt_version) DO UPDATE SET
+                source_id=excluded.source_id,
+                extracted_at=excluded.extracted_at,
+                model_version=excluded.model_version,
+                raw_response=excluded.raw_response,
+                ticker=excluded.ticker,
+                company=excluded.company,
+                direction=excluded.direction,
+                short_skeptical=excluded.short_skeptical,
+                bottleneck=excluded.bottleneck,
+                attribution=excluded.attribution,
+                rebuts_narrative=excluded.rebuts_narrative,
+                summary_100=excluded.summary_100,
+                is_retrospective=excluded.is_retrospective,
+                is_disclosure=excluded.is_disclosure,
+                is_self_reported_returns=excluded.is_self_reported_returns
         """, (
             post_id, source_id, now_iso, DEEPSEEK_MODEL, PROMPT_VERSION,
             raw_response, ticker, company, direction, short_skeptical,
@@ -235,6 +351,7 @@ def persist_extraction(con: sqlite3.Connection, post_id: str, source_id: str,
             extraction.get("rebuts_narrative"), extraction.get("summary_100"),
             is_retrospective, is_disclosure, is_self_reported_returns,
         ))
+        persist_claims_and_themes(con, post_id, source_id, extraction)
         con.commit()
         return True
     except Exception as e:
@@ -255,6 +372,7 @@ def extract_one(post: dict) -> dict:
         "extraction": result["extraction"],
         "raw_response": result["raw"],
         "usage": result["usage"],
+        "ai_result": result["ai_result"],
     }
 
 
@@ -265,6 +383,8 @@ def main():
     ap.add_argument("--sources", help="逗号分隔 source_id，只抽指定人物")
     ap.add_argument("--ticker-clues-only", action="store_true",
                     help="只抽含 cashtag 或已知 ticker 的推文（历史低成本回填）")
+    ap.add_argument("--claims-missing", action="store_true",
+                    help="包含已有方向抽取但尚无 Claim 的帖子，并原位升级该抽取")
     ap.add_argument("--max-targets", type=int, default=0,
                     help="候选数超过该值就中止，防止意外产生过量 API 调用")
     ap.add_argument("--dry-run", action="store_true", help="不落库, 只抽 + 打印")
@@ -277,6 +397,7 @@ def main():
         until_iso = args.until if "T" in args.until else f"{args.until}T00:00:00+00:00"
     source_ids = [s.strip() for s in (args.sources or "").split(",") if s.strip()]
 
+    init_db(DB_PATH)
     con = sqlite3.connect(DB_PATH, timeout=120)
     init_extractions_table(con)
 
@@ -286,6 +407,7 @@ def main():
         until_iso=until_iso,
         source_ids=source_ids or None,
         ticker_clues_only=args.ticker_clues_only,
+        claims_missing=args.claims_missing,
     )
     if args.max_targets > 0 and len(targets) > args.max_targets:
         raise SystemExit(
@@ -298,6 +420,7 @@ def main():
     print(f"  until: {until_iso or '-'}")
     print(f"  sources: {','.join(source_ids) if source_ids else 'ALL'}")
     print(f"  ticker_clues_only: {args.ticker_clues_only}")
+    print(f"  claims_missing: {args.claims_missing}")
     print(f"  targets: {len(targets)} 条 (排除已抽取)")
     print(f"  workers: {MAX_WORKERS}")
     print()
@@ -355,6 +478,11 @@ def main():
                 continue
             if persist_extraction(con, r["post_id"], r["source_id"], r["raw_response"], r["extraction"]):
                 persist_count += 1
+                record_usage(
+                    con, r["ai_result"], workload="bulk_post_processing",
+                    object_type="post", object_id=r["post_id"],
+                )
+                con.commit()
         print(f"  落库: {persist_count}/{len(results) - fail_count}")
 
     elapsed = time.time() - start_time

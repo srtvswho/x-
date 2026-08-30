@@ -177,7 +177,9 @@ def test_performance_uses_first_call_once_per_person_and_ticker(monkeypatch):
 
 def test_summary_generator_uses_flash_and_structured_prompts():
     src = (DASH / "intel_gen_summaries.py").read_text(encoding="utf-8")
-    assert 'DEEPSEEK_MODEL = "deepseek-v4-flash"' in src
+    router = (ROOT / "signalboard" / "ai" / "router.py").read_text(encoding="utf-8")
+    assert 'resolve_route("daily_summary").model' in src
+    assert '"daily_summary": ("deepseek", "deepseek-v4-flash", "none")' in router
     assert "市场主线｜" in src
     assert "共识方向｜" in src
     assert "核心方向｜" in src
@@ -187,12 +189,15 @@ def test_daily_deepseek_calls_all_use_flash():
     workflow = (ROOT / ".github" / "workflows" / "signalboard-daily.yml").read_text(encoding="utf-8")
     extractor = (ROOT / "scripts" / "intel_extract.py").read_text(encoding="utf-8")
     summaries = (DASH / "intel_gen_summaries.py").read_text(encoding="utf-8")
+    router = (ROOT / "signalboard" / "ai" / "router.py").read_text(encoding="utf-8")
 
     assert "python scripts/intel_extract.py" in workflow
     assert "python scripts/dashboard/intel_gen_summaries.py" in workflow
     assert '- "scripts/intel_extract.py"' in workflow
-    assert 'DEEPSEEK_MODEL = "deepseek-v4-flash"' in extractor
-    assert 'DEEPSEEK_MODEL = "deepseek-v4-flash"' in summaries
+    assert 'resolve_route("bulk_post_processing").model' in extractor
+    assert 'resolve_route("daily_summary").model' in summaries
+    assert '"bulk_post_processing": ("deepseek", "deepseek-v4-flash", "none")' in router
+    assert '"daily_summary": ("deepseek", "deepseek-v4-flash", "none")' in router
     assert 'DEEPSEEK_MODEL = "deepseek-v4-pro"' not in extractor
     assert 'DEEPSEEK_MODEL = "deepseek-v4-pro"' not in summaries
 

@@ -9,10 +9,20 @@ on:
       - "scripts/intel_incremental_scrape.py"
       - "scripts/intel_daily_health.py"
       - "scripts/intel_extract.py"
+      - "scripts/intel_graph_ingest.py"
+      - "scripts/intel_media_analyze.py"
+      - "scripts/intel_openai_smoke.py"
+      - "scripts/intel_thesis_update.py"
+      - "signalboard/ai/**"
+      - "signalboard/research_graph.py"
       - "signalboard/db.py"
       - ".github/workflows/signalboard-daily.yml"
   schedule:
     - cron: "17 6 * * *"
+      timezone: "Asia/Shanghai"
+    - cron: "47 8 * * *"
+      timezone: "Asia/Shanghai"
+    - cron: "17 11 * * *"
       timezone: "Asia/Shanghai"
 
 permissions:
@@ -23,15 +33,62 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  freshness:
+    runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ steps.check.outputs.should_run }}
+    steps:
+      - name: Checkout recent master history
+        uses: actions/checkout@v6
+        with:
+          ref: master
+          fetch-depth: 30
+
+      - name: Skip redundant scheduled fallback
+        id: check
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          if [ "${{ github.event_name }}" != "schedule" ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          today=$(TZ=Asia/Shanghai date +%Y-%m-%d)
+          if git log -30 --format=%s | grep -Fqx "Daily Signalboard update $today"; then
+            echo "Scheduled update for $today already completed; skipping fallback."
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "No completed update for $today; running this schedule slot."
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          fi
+
   update:
+    needs: freshness
+    if: needs.freshness.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 180
     env:
       APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
       DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
       POLYGON_REQUEST_INTERVAL: "13"
       POLYGON_MAX_API_REQUESTS: "60"
+      MEDIA_AI_MAX_ITEMS: "6"
+      THESIS_AI_MAX_UPDATES: "4"
+      AI_ROUTE_BULK_POST_PROCESSING_PROVIDER: "deepseek"
+      AI_ROUTE_BULK_POST_PROCESSING_MODEL: "deepseek-v4-flash"
+      AI_ROUTE_DAILY_SUMMARY_PROVIDER: "deepseek"
+      AI_ROUTE_DAILY_SUMMARY_MODEL: "deepseek-v4-flash"
+      AI_ROUTE_MEDIA_UNDERSTANDING_PROVIDER: "openai"
+      AI_ROUTE_MEDIA_UNDERSTANDING_MODEL: "gpt-5.6-terra"
+      AI_ROUTE_MEDIA_UNDERSTANDING_REASONING_EFFORT: "low"
+      AI_ROUTE_THESIS_UPDATE_PROVIDER: "openai"
+      AI_ROUTE_THESIS_UPDATE_MODEL: "gpt-5.6-terra"
+      AI_ROUTE_CROSS_AUTHOR_ANALYSIS_PROVIDER: "openai"
+      AI_ROUTE_CROSS_AUTHOR_ANALYSIS_MODEL: "gpt-5.6-terra"
+      AI_ROUTE_DEEP_INVESTMENT_ANALYSIS_PROVIDER: "openai"
+      AI_ROUTE_DEEP_INVESTMENT_ANALYSIS_MODEL: "gpt-5.6-sol"
 
     steps:
       - name: Checkout master
@@ -44,7 +101,7 @@ jobs:
         shell: bash
         run: |
           set -Eeuo pipefail
-          for key in APIFY_TOKEN DEEPSEEK_API_KEY POLYGON_API_KEY; do
+          for key in APIFY_TOKEN DEEPSEEK_API_KEY OPENAI_API_KEY POLYGON_API_KEY; do
             if [ -z "${!key:-}" ]; then
               echo "::error::Required repository secret is missing: $key"
               exit 1
@@ -111,6 +168,21 @@ jobs:
           since=$(TZ=Asia/Shanghai date -d "7 days ago" +%Y-%m-%d)
           python scripts/intel_extract.py --since "$since"
 
+      - name: Build recursive Post Graph
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          since=$(TZ=Asia/Shanghai date -d "7 days ago" +%Y-%m-%d)
+          python scripts/intel_graph_ingest.py --since "$since"
+
+      - name: One-time recent Claim and Theme backfill
+        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[p0-claims-backfill]')
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          since=$(TZ=Asia/Shanghai date -d "7 days ago" +%Y-%m-%d)
+          python scripts/intel_extract.py --since "$since" --claims-missing --limit 120
+
       - name: Save ingest checkpoint
         shell: bash
         run: |
@@ -126,6 +198,26 @@ jobs:
           else
             git commit -m "Checkpoint Signalboard ingest $(TZ=Asia/Shanghai date +%Y-%m-%d)"
             git push origin HEAD:master
+          fi
+
+      - name: Verify OpenAI Responses API and Terra access
+        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[openai-smoke]')
+        run: python scripts/intel_openai_smoke.py
+
+      - name: Analyze new Post media
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          if ! python scripts/intel_media_analyze.py --limit "$MEDIA_AI_MAX_ITEMS"; then
+            echo "::warning::Media analysis failed; ingest checkpoint is preserved and pending media will retry next run."
+          fi
+
+      - name: Update Author by Theme theses
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          if ! python scripts/intel_thesis_update.py --limit "$THESIS_AI_MAX_UPDATES"; then
+            echo "::warning::Thesis update failed; claims remain stored and will retry next run."
           fi
 
       - name: One-time low-cost historical call backfill

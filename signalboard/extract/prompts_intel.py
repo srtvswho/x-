@@ -1,4 +1,4 @@
-"""v2.0.1-intel — 简化抽取 prompt (大V情报模块 2, 含 R12 flag + 5 类 short 误抽防抽)
+"""v2.0.2-intel — 单次抽取同时生成方向、Claim 与 Theme。
 
 目标: 单条推文能确定的客观事实抽取. 不做"新标的/态度转折"判断 (那是模块 3).
 字段 (8 + 3 R12 flag):
@@ -18,7 +18,7 @@ from __future__ import annotations
 PROMPT_VERSION = "v2.0.2-intel-attribution"
 
 
-SYSTEM_PROMPT = """你是金融社交内容的事实抽取器。从一条 X/Twitter 推文抽取 11 个字段, 严格 JSON 输出。
+SYSTEM_PROMPT = """你是金融社交内容的事实抽取器。从一条 X/Twitter 推文抽取方向字段、Claims 和 Themes, 严格 JSON 输出。
 
 【铁律: directional 抽取严格度 (P5 教训, 8/8 short 误抽)】
 - direction=long: 原文必须出现 "看多/看涨/long/buy/建仓/建议买/看好/我会买/overvalued(反向)/undervalued/bullish" 等关键词
@@ -99,6 +99,15 @@ R12 flag 触发关键词:
 9. is_retrospective: 0 | 1 (victory_lap 回顾)
 10. is_disclosure: 0 | 1 (position_disclosure 持仓披露)
 11. is_self_reported_returns: 0 | 1 (自报收益数字)
+12. claims: 一条帖子可拆成多个原子 Claim；每条含 claim_text、claim_type、claim_author、companies、themes、time_horizon、confidence
+13. themes: 帖子涉及的投资主题数组。主题按产业逻辑而不是只按 ticker，例如 NAND、China WFE、Advanced Packaging、Optics。
+
+【Claim 铁律】
+- claim_type 只能是 FACT / FORECAST / OPINION / INFERENCE / VALUATION / CATALYST / RISK / POSITION / QUESTION
+- 机构、媒体或他人的说法必须在 claim_text 中写明“某来源声称/预计”，claim_author 写来源名；不得伪装成已验证事实
+- 作者自己的判断才把 claim_author 写当前作者；无法识别具体主体则写空字符串
+- X 帖子本身不是事实核验；verification 初始状态由系统统一记为 UNVERIFIED
+- 重复表述只保留一条原子 Claim，不因多人转发增加独立证据数
 
 【方向 short 短句支撑 (缺则改 neutral)】
 - 必须有具体短句: short, 看空, sell, 不建议买, bearish, 做空, 风险, 我会卖, "I'm shorting", "做空 X", "I'm selling"
@@ -123,7 +132,22 @@ R12 flag 触发关键词:
   "bottleneck": null | string,
   "attribution": "ORIGINAL" | "ENDORSED" | "DISAGREED" | "RELAYED" | "RC" | "NA",
   "rebuts_narrative": null | string,
-  "summary_100": "string"
+  "summary_100": "string",
+  "is_retrospective": 0 | 1,
+  "is_disclosure": 0 | 1,
+  "is_self_reported_returns": 0 | 1,
+  "claims": [
+    {
+      "claim_text": "string",
+      "claim_type": "FACT | FORECAST | OPINION | INFERENCE | VALUATION | CATALYST | RISK | POSITION | QUESTION",
+      "claim_author": "string",
+      "companies": ["string"],
+      "themes": ["string"],
+      "time_horizon": "string",
+      "confidence": 0.0
+    }
+  ],
+  "themes": ["string"]
 }
 
 【例 1 (jukan TSM 涨价)】
@@ -332,6 +356,12 @@ R12 flag 触发关键词:
   "rebuts_narrative": null,
   "summary_100": "模糊表态, 无具体 ticker / 公司, 不构成可抽取的预测 (太宽泛)."
 }
+
+【最终输出完整性】
+以上旧例为方向判定示例，省略了 Claim/Theme 展示。你的真实输出必须始终包含全部 13 个字段：
+ticker, company, direction, short_skeptical, bottleneck, attribution,
+rebuts_narrative, summary_100, is_retrospective, is_disclosure,
+is_self_reported_returns, claims, themes。没有 Claim 或 Theme 时分别输出 []，不得省略字段。
 """
 
 

@@ -5,6 +5,8 @@ Schema 版本:
     v2 (current)   : 拆出 raw_posts;predictions.post_id 外键 + UNIQUE(post_id, ticker, direction)
     v3 (2026-06-12): predictions 加 6 列(LLM 抽取层产出可追溯)
                       + 4 个新表:post_flags / aliases / human_review_queue / extraction_cache
+    v4 (2026-08-30): Research Thesis Engine 基础表(Post Graph / Media /
+                      External Source / Claim / Theme / Thesis / AI usage)
 
 init_db() 幂等且自适配:
 - 全新库 → 直接建 v3
@@ -22,7 +24,7 @@ from typing import Iterator, Union
 
 DbPath = Union[str, Path]
 
-CURRENT_SCHEMA_VERSION = 3
+CURRENT_SCHEMA_VERSION = 4
 
 
 # ---------------------------------------------------------------------------
@@ -178,6 +180,214 @@ CREATE TABLE IF NOT EXISTS extraction_cache (
 );
 CREATE INDEX IF NOT EXISTS idx_extraction_cache_post ON extraction_cache(post_id);
 """
+
+
+# ---------------------------------------------------------------------------
+# v4 Research Thesis Engine schema
+# ---------------------------------------------------------------------------
+# 这里同时预留 P1-P3 的版本表，避免 P0 上线后再次重构主键和证据关系。
+# 所有表均为 append/upsert 友好设计；raw_posts 继续是原始 Post 的唯一事实源。
+
+V4_RESEARCH_ENGINE_SQL = """
+CREATE TABLE IF NOT EXISTS post_references (
+    source_post_id     TEXT    NOT NULL,
+    target_post_id     TEXT    NOT NULL,
+    reference_type     TEXT    NOT NULL CHECK (reference_type IN ('quote','reply','repost','referenced')),
+    target_url         TEXT,
+    fetch_status       TEXT    NOT NULL DEFAULT 'pending',
+    discovered_at      TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    last_attempt_at    TEXT,
+    last_error         TEXT,
+    PRIMARY KEY (source_post_id, target_post_id, reference_type)
+);
+CREATE INDEX IF NOT EXISTS idx_post_references_target ON post_references(target_post_id);
+CREATE INDEX IF NOT EXISTS idx_post_references_status ON post_references(fetch_status);
+
+CREATE TABLE IF NOT EXISTS post_graph_memberships (
+    root_post_id       TEXT    NOT NULL,
+    post_id            TEXT    NOT NULL,
+    parent_post_id     TEXT,
+    depth              INTEGER NOT NULL CHECK (depth BETWEEN 0 AND 10),
+    reference_type     TEXT    NOT NULL DEFAULT 'original',
+    crawl_status       TEXT    NOT NULL DEFAULT 'complete',
+    crawled_at         TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    last_error         TEXT,
+    PRIMARY KEY (root_post_id, post_id)
+);
+CREATE INDEX IF NOT EXISTS idx_graph_membership_post ON post_graph_memberships(post_id);
+CREATE INDEX IF NOT EXISTS idx_graph_membership_status ON post_graph_memberships(crawl_status);
+
+CREATE TABLE IF NOT EXISTS media_assets (
+    media_id           TEXT PRIMARY KEY,
+    post_id            TEXT    NOT NULL,
+    source_url         TEXT    NOT NULL,
+    storage_url        TEXT,
+    media_type         TEXT    NOT NULL DEFAULT 'image',
+    mime_type          TEXT,
+    content_hash       TEXT,
+    width              INTEGER,
+    height             INTEGER,
+    raw_payload        TEXT,
+    download_status    TEXT    NOT NULL DEFAULT 'pending',
+    analysis_status    TEXT    NOT NULL DEFAULT 'pending',
+    created_at         TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_at         TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    UNIQUE(post_id, source_url)
+);
+CREATE INDEX IF NOT EXISTS idx_media_post ON media_assets(post_id);
+CREATE INDEX IF NOT EXISTS idx_media_analysis_status ON media_assets(analysis_status);
+CREATE INDEX IF NOT EXISTS idx_media_hash ON media_assets(content_hash);
+
+CREATE TABLE IF NOT EXISTS media_analyses (
+    media_id           TEXT PRIMARY KEY,
+    prompt_version     TEXT    NOT NULL,
+    provider           TEXT    NOT NULL,
+    model              TEXT    NOT NULL,
+    input_hash         TEXT    NOT NULL,
+    analysis_json      TEXT    NOT NULL,
+    created_at         TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    FOREIGN KEY (media_id) REFERENCES media_assets(media_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS external_sources (
+    source_id          TEXT PRIMARY KEY,
+    source_type        TEXT    NOT NULL DEFAULT 'unknown',
+    publisher          TEXT,
+    title              TEXT,
+    url                TEXT    NOT NULL UNIQUE,
+    published_at       TEXT,
+    content_summary    TEXT,
+    primary_or_secondary TEXT,
+    reliability_score REAL,
+    content_hash       TEXT,
+    crawl_status       TEXT    NOT NULL DEFAULT 'pending',
+    created_at         TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_at         TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+
+CREATE TABLE IF NOT EXISTS post_external_sources (
+    post_id            TEXT NOT NULL,
+    source_id          TEXT NOT NULL,
+    relation_type      TEXT NOT NULL DEFAULT 'linked',
+    PRIMARY KEY (post_id, source_id),
+    FOREIGN KEY (source_id) REFERENCES external_sources(source_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS claims (
+    claim_id           TEXT PRIMARY KEY,
+    claim_text         TEXT    NOT NULL,
+    claim_type         TEXT    NOT NULL CHECK (claim_type IN ('FACT','FORECAST','OPINION','INFERENCE','VALUATION','CATALYST','RISK','POSITION','QUESTION')),
+    author_id          TEXT,
+    companies_json     TEXT    NOT NULL DEFAULT '[]',
+    themes_json        TEXT    NOT NULL DEFAULT '[]',
+    time_horizon       TEXT,
+    source_post_id     TEXT,
+    source_media_id    TEXT,
+    source_external_id TEXT,
+    evidence_ids_json  TEXT    NOT NULL DEFAULT '[]',
+    confidence         REAL    NOT NULL DEFAULT 0.5 CHECK (confidence BETWEEN 0 AND 1),
+    verification_status TEXT  NOT NULL DEFAULT 'UNVERIFIED',
+    point_in_time      TEXT,
+    content_hash       TEXT    NOT NULL,
+    created_at         TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+CREATE INDEX IF NOT EXISTS idx_claims_post ON claims(source_post_id);
+CREATE INDEX IF NOT EXISTS idx_claims_author ON claims(author_id);
+CREATE INDEX IF NOT EXISTS idx_claims_verification ON claims(verification_status);
+
+CREATE TABLE IF NOT EXISTS themes (
+    theme_id           TEXT PRIMARY KEY,
+    name               TEXT    NOT NULL UNIQUE,
+    description        TEXT,
+    parent_theme_id    TEXT,
+    aliases_json       TEXT    NOT NULL DEFAULT '[]',
+    created_by         TEXT    NOT NULL DEFAULT 'llm',
+    created_at         TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_at         TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+
+CREATE TABLE IF NOT EXISTS claim_themes (
+    claim_id           TEXT NOT NULL,
+    theme_id           TEXT NOT NULL,
+    confidence         REAL NOT NULL DEFAULT 0.5,
+    PRIMARY KEY (claim_id, theme_id),
+    FOREIGN KEY (claim_id) REFERENCES claims(claim_id) ON DELETE CASCADE,
+    FOREIGN KEY (theme_id) REFERENCES themes(theme_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS theses (
+    thesis_id          TEXT PRIMARY KEY,
+    author_id          TEXT    NOT NULL,
+    theme_id           TEXT    NOT NULL,
+    current_version    INTEGER NOT NULL DEFAULT 0,
+    current_thesis     TEXT,
+    thesis_summary     TEXT,
+    confidence         REAL,
+    first_seen         TEXT,
+    last_updated       TEXT,
+    UNIQUE(author_id, theme_id),
+    FOREIGN KEY (theme_id) REFERENCES themes(theme_id) ON DELETE RESTRICT
+);
+
+CREATE TABLE IF NOT EXISTS thesis_versions (
+    thesis_id          TEXT    NOT NULL,
+    version_number     INTEGER NOT NULL,
+    snapshot_json      TEXT    NOT NULL,
+    change_type        TEXT    NOT NULL DEFAULT 'NO_CHANGE',
+    thesis_change_score REAL   NOT NULL DEFAULT 0,
+    evidence_digest    TEXT,
+    model              TEXT,
+    created_at         TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    PRIMARY KEY (thesis_id, version_number),
+    FOREIGN KEY (thesis_id) REFERENCES theses(thesis_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS thesis_evidence (
+    thesis_id          TEXT NOT NULL,
+    version_number     INTEGER NOT NULL,
+    claim_id           TEXT NOT NULL,
+    evidence_weight    REAL NOT NULL DEFAULT 1,
+    PRIMARY KEY (thesis_id, version_number, claim_id),
+    FOREIGN KEY (thesis_id, version_number) REFERENCES thesis_versions(thesis_id, version_number) ON DELETE CASCADE,
+    FOREIGN KEY (claim_id) REFERENCES claims(claim_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS thesis_changes (
+    change_id          TEXT PRIMARY KEY,
+    thesis_id          TEXT NOT NULL,
+    from_version       INTEGER,
+    to_version         INTEGER NOT NULL,
+    change_type        TEXT NOT NULL,
+    change_score       REAL NOT NULL,
+    summary            TEXT,
+    detected_at        TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    FOREIGN KEY (thesis_id) REFERENCES theses(thesis_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS ai_usage (
+    usage_id           TEXT PRIMARY KEY,
+    workload           TEXT    NOT NULL,
+    provider           TEXT    NOT NULL,
+    model              TEXT    NOT NULL,
+    object_type        TEXT,
+    object_id          TEXT,
+    input_tokens       INTEGER NOT NULL DEFAULT 0,
+    cached_input_tokens INTEGER NOT NULL DEFAULT 0,
+    output_tokens      INTEGER NOT NULL DEFAULT 0,
+    estimated_cost_usd REAL    NOT NULL DEFAULT 0,
+    latency_ms         INTEGER NOT NULL DEFAULT 0,
+    status             TEXT    NOT NULL,
+    error_type         TEXT,
+    created_at         TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+CREATE INDEX IF NOT EXISTS idx_ai_usage_created ON ai_usage(created_at);
+CREATE INDEX IF NOT EXISTS idx_ai_usage_workload ON ai_usage(workload);
+"""
+
+
+def _migrate_to_v4(conn: sqlite3.Connection) -> None:
+    """创建 Research Thesis Engine 基础表；全量 IF NOT EXISTS，重复执行安全。"""
+    conn.executescript(V4_RESEARCH_ENGINE_SQL)
 
 
 def _migrate_v2_to_v3(conn: sqlite3.Connection) -> None:
@@ -423,6 +633,7 @@ def _ensure_schema(conn: sqlite3.Connection) -> None:
         # 已是 v2 库也走 v2→v3(只 ADD 缺失列+建缺失表)
         _migrate_v2_to_v3(conn)
 
+    _migrate_to_v4(conn)
     conn.execute(f"PRAGMA user_version = {CURRENT_SCHEMA_VERSION}")
 
 
