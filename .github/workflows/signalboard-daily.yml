@@ -8,6 +8,11 @@ on:
         required: true
         type: boolean
         default: false
+      max_price_requests:
+        description: "Maximum Polygon ticker requests for this manual update"
+        required: true
+        type: string
+        default: "60"
   push:
     branches: [master]
     paths:
@@ -93,7 +98,7 @@ jobs:
       RUN_OPENAI_ENRICHMENT: ${{ github.event_name == 'workflow_dispatch' && inputs.run_openai }}
       POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
       POLYGON_REQUEST_INTERVAL: "13"
-      POLYGON_MAX_API_REQUESTS: "60"
+      POLYGON_MAX_API_REQUESTS: ${{ github.event_name == 'workflow_dispatch' && inputs.max_price_requests || '60' }}
       MEDIA_AI_MAX_ITEMS: "6"
       THESIS_AI_MAX_UPDATES: "4"
       CLAIM_VERIFY_MAX_ITEMS: "2"
