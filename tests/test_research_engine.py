@@ -1,0 +1,214 @@
+from __future__ import annotations
+
+import json
+import sqlite3
+
+from signalboard.ai import router
+from signalboard.ai.router import AIResult
+from signalboard.db import CURRENT_SCHEMA_VERSION, init_db
+from signalboard.models import Platform, RawPost
+from signalboard.repository import upsert_raw_post
+from signalboard.research_graph import ingest_post_graph
+from scripts.intel_extract import get_target_posts, init_extractions_table, persist_extraction
+from scripts import intel_thesis_update
+
+
+def _root_payload():
+    return {
+        "id": "root",
+        "text": "Root view https://t.co/a",
+        "createdAt": "Sat Aug 29 20:00:00 +0000 2026",
+        "author": {"userName": "zephyr_z9"},
+        "isQuote": True,
+        "quoteId": "q1",
+        "inReplyToId": "missing-parent",
+        "quote": {
+            "id": "q1",
+            "text": "Quoted evidence",
+            "createdAt": "Sat Aug 29 19:00:00 +0000 2026",
+            "author": {"userName": "jukan05"},
+            "extendedEntities": {
+                "media": [{
+                    "media_key": "3_img1",
+                    "media_url_https": "https://pbs.twimg.com/media/a.png",
+                    "type": "photo",
+                    "original_info": {"width": 1200, "height": 800},
+                }]
+            },
+            "entities": {"urls": [{"expanded_url": "https://www.ft.com/story/example"}]},
+        },
+        "entities": {"urls": [{"expanded_url": "https://x.com/jukan05/status/q1"}]},
+    }
+
+
+def test_v4_schema_and_recursive_graph_are_idempotent(tmp_path):
+    db = tmp_path / "graph.db"
+    init_db(db)
+    con = sqlite3.connect(db)
+    assert con.execute("PRAGMA user_version").fetchone()[0] == CURRENT_SCHEMA_VERSION == 4
+    payload = _root_payload()
+    root = RawPost(
+        post_id="root", source_id="tw_zephyr_z9", platform=Platform.TWITTER.value,
+        published_at="2026-08-29T20:00:00Z", captured_at="2026-08-30T00:00:00Z",
+        raw_text=payload["text"], raw_url="https://x.com/zephyr_z9/status/root",
+        raw_json=json.dumps(payload),
+    )
+    con.close()
+    upsert_raw_post(root, db)
+
+    con = sqlite3.connect(db)
+    first = ingest_post_graph(con, str(db), "root", payload)
+    con.commit()
+    second = ingest_post_graph(con, str(db), "root", payload)
+    con.commit()
+    assert first["edges"] == second["edges"] == 2
+    assert con.execute("SELECT COUNT(*) FROM raw_posts").fetchone()[0] == 2
+    assert con.execute("SELECT COUNT(*) FROM post_references").fetchone()[0] == 2
+    assert con.execute("SELECT COUNT(*) FROM media_assets").fetchone()[0] == 1
+    assert con.execute("SELECT COUNT(*) FROM external_sources").fetchone()[0] == 1
+    q = con.execute(
+        "SELECT depth, crawl_status FROM post_graph_memberships WHERE root_post_id='root' AND post_id='q1'"
+    ).fetchone()
+    assert q == (1, "complete")
+    pending = con.execute(
+        "SELECT crawl_status FROM post_graph_memberships WHERE root_post_id='root' AND post_id='missing-parent'"
+    ).fetchone()
+    assert pending == ("pending",)
+    con.close()
+
+
+def test_router_openai_responses_structured_output(monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "test-only")
+    monkeypatch.setenv("AI_ROUTE_MEDIA_UNDERSTANDING_PROVIDER", "openai")
+    monkeypatch.setenv("AI_ROUTE_MEDIA_UNDERSTANDING_MODEL", "gpt-5.6-terra")
+    captured = {}
+
+    class Response:
+        headers = {"x-request-id": "req_test"}
+
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return {
+                "status": "completed",
+                "output": [{"type": "message", "content": [{"type": "output_text", "text": '{"ok":true}'}]}],
+                "usage": {"input_tokens": 100, "output_tokens": 10, "input_tokens_details": {"cached_tokens": 20}},
+            }
+
+    def fake_post(url, *, headers, json, timeout):
+        captured.update({"url": url, "headers": headers, "body": json, "timeout": timeout})
+        return Response()
+
+    monkeypatch.setattr(router.requests, "post", fake_post)
+    schema = {
+        "type": "object", "additionalProperties": False,
+        "properties": {"ok": {"type": "boolean"}}, "required": ["ok"],
+    }
+    result = router.call_json(
+        "media_understanding", "system", "user", schema,
+        image_urls=["data:image/png;base64,AA=="], max_retries=0,
+    )
+    assert result.data == {"ok": True}
+    assert result.model == "gpt-5.6-terra"
+    assert result.request_id == "req_test"
+    assert captured["url"].endswith("/v1/responses")
+    assert captured["body"]["text"]["format"]["strict"] is True
+    assert captured["body"]["input"][1]["content"][1]["type"] == "input_image"
+    assert result.estimated_cost_usd > 0
+
+
+def test_claim_backfill_upgrades_existing_extraction_in_place(tmp_path):
+    db = tmp_path / "claims.db"
+    init_db(db)
+    post = RawPost(
+        post_id="p1", source_id="tw_jukan05", platform=Platform.TWITTER.value,
+        published_at="2026-08-29T00:00:00Z", captured_at="2026-08-29T00:01:00Z",
+        raw_text="NAND supply may tighten", raw_url="https://x.com/jukan05/status/p1",
+    )
+    upsert_raw_post(post, db)
+    con = sqlite3.connect(db)
+    init_extractions_table(con)
+    base = {
+        "ticker": ["SNDK"], "company": ["SanDisk"], "direction": "long",
+        "short_skeptical": 0, "bottleneck": "存储", "attribution": "ORIGINAL",
+        "rebuts_narrative": None, "summary_100": "old", "is_retrospective": 0,
+        "is_disclosure": 0, "is_self_reported_returns": 0,
+    }
+    assert persist_extraction(con, "p1", "tw_jukan05", json.dumps(base), base)
+    assert get_target_posts(con, "2026-08-28T00:00:00Z") == []
+    assert [x["post_id"] for x in get_target_posts(
+        con, "2026-08-28T00:00:00Z", claims_missing=True,
+    )] == ["p1"]
+
+    upgraded = dict(base)
+    upgraded.update({
+        "summary_100": "new", "themes": ["NAND"],
+        "claims": [{
+            "claim_text": "作者预计 NAND 供应趋紧", "claim_type": "FORECAST",
+            "claim_author": "Jukan", "companies": ["SanDisk"], "themes": ["NAND"],
+            "time_horizon": "2027", "confidence": 0.8,
+        }],
+    })
+    assert persist_extraction(con, "p1", "tw_jukan05", json.dumps(upgraded), upgraded)
+    assert con.execute("SELECT COUNT(*) FROM extractions_intel WHERE post_id='p1'").fetchone()[0] == 1
+    assert con.execute("SELECT summary_100 FROM extractions_intel WHERE post_id='p1'").fetchone()[0] == "new"
+    assert con.execute("SELECT verification_status FROM claims").fetchone()[0] == "UNVERIFIED"
+    assert get_target_posts(con, "2026-08-28T00:00:00Z", claims_missing=True) == []
+    con.close()
+
+
+def test_thesis_versions_only_on_material_change(tmp_path, monkeypatch):
+    db = tmp_path / "thesis.db"
+    init_db(db)
+    post = RawPost(
+        post_id="p1", source_id="tw_jukan05", platform=Platform.TWITTER.value,
+        published_at="2026-08-29T00:00:00Z", captured_at="2026-08-29T00:01:00Z",
+        raw_text="NAND", raw_url="https://x.com/jukan05/status/p1",
+    )
+    upsert_raw_post(post, db)
+    con = sqlite3.connect(db)
+    init_extractions_table(con)
+    extraction = {
+        "ticker": ["SNDK"], "company": ["SanDisk"], "direction": "long",
+        "short_skeptical": 0, "bottleneck": "存储", "attribution": "ORIGINAL",
+        "rebuts_narrative": None, "summary_100": "NAND", "is_retrospective": 0,
+        "is_disclosure": 0, "is_self_reported_returns": 0, "themes": ["NAND"],
+        "claims": [{
+            "claim_text": "NAND supply tightens", "claim_type": "FORECAST",
+            "claim_author": "Jukan", "companies": ["SanDisk"], "themes": ["NAND"],
+            "time_horizon": "2027", "confidence": 0.8,
+        }],
+    }
+    assert persist_extraction(con, "p1", "tw_jukan05", json.dumps(extraction), extraction)
+
+    change_type = {"value": "THESIS_EXPANSION"}
+
+    def fake_call(*args, **kwargs):
+        payload = {
+            "current_thesis": "NAND supply is tightening", "thesis_summary": "tight supply",
+            "bull_case": "pricing", "bear_case": "new capacity", "key_drivers": ["demand"],
+            "key_risks": ["supply"], "companies_positive": ["SNDK"], "companies_negative": [],
+            "time_horizon": "2027", "confidence": 0.8, "change_type": change_type["value"],
+            "thesis_change_score": 70 if change_type["value"] != "NO_CHANGE" else 0,
+            "change_summary": "expanded", "facts": [],
+            "author_opinions": ["supply tightens"], "ai_inferences": [], "missing_evidence": ["pricing"],
+        }
+        return AIResult(
+            text=json.dumps(payload), data=payload, workload="thesis_update",
+            provider="openai", model="gpt-5.6-terra", input_tokens=100,
+            output_tokens=20, estimated_cost_usd=0.0002, latency_ms=10,
+        )
+
+    monkeypatch.setattr(intel_thesis_update, "call_json", fake_call)
+    first = intel_thesis_update.update_pending_theses(con, 4)
+    assert first["versioned"] == 1
+    assert con.execute("SELECT COUNT(*) FROM thesis_versions").fetchone()[0] == 1
+
+    con.execute("UPDATE claims SET point_in_time='2026-08-30T00:00:00Z'")
+    con.commit()
+    change_type["value"] = "NO_CHANGE"
+    second = intel_thesis_update.update_pending_theses(con, 4)
+    assert second["no_change"] == 1
+    assert con.execute("SELECT COUNT(*) FROM thesis_versions").fetchone()[0] == 1
+    con.close()

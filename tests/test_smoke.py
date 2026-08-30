@@ -674,7 +674,7 @@ def test_migrate_v1_to_v2(tmp_dir: Path) -> None:
 
         # user_version 升级到 2
         ver = conn.execute("PRAGMA user_version").fetchone()[0]
-        assert ver == CURRENT_SCHEMA_VERSION == 3
+        assert ver == CURRENT_SCHEMA_VERSION == 4
 
         # predictions 表结构变了
         cols = {row[1] for row in conn.execute("PRAGMA table_info(predictions)").fetchall()}

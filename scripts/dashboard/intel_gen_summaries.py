@@ -29,12 +29,12 @@ from datetime import datetime, timezone, timedelta
 import sys
 from pathlib import Path
 
-import requests
-
 # 共享窗口函数 — 跟 build_dashboard.py / dashboard.template.html / query_today_stats 共用同一窗口
 # today/0M 用 24h 滚动 (不是北京自然日, 因为生产顺序 06:00 抓取 → 06:20 Dashboard,
 # 北京自然日只覆盖 6h, 跟用户视角 "今日" 不符; 24h 滚动跟 cron 节奏对齐)
 sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+from signalboard.ai.router import call_text, record_usage, resolve_route  # noqa: E402
 from common import (  # noqa: E402
     CN_TZ, KOLS, SRC2KOL, cn_recent_24h_window_utc, cn_window_long_utc,
     is_author_signal, normalize_ticker, parse_json_arr,
@@ -42,8 +42,7 @@ from common import (  # noqa: E402
 
 DB_PATH = "/workspace/data/signalboard_full.db"
 OUT_PATH = "/workspace/scripts/dashboard/summaries.json"
-DEEPSEEK_URL = "https://api.deepseek.com/v1/chat/completions"
-DEEPSEEK_MODEL = "deepseek-v4-flash"
+DEEPSEEK_MODEL = resolve_route("daily_summary").model
 
 # 时间窗 (单位: 天) — "0" 跟 "1" 实际都是 1 (北京今日),
 # 但 "1M/3M/6M/12M" 是相对滑动窗口 (今天往前推 N 天)
@@ -133,35 +132,25 @@ def balanced_consensus_sample(data: list[dict], per_kol: int = 12) -> list[dict]
 
 
 def call_llm(system: str, user: str, max_retries: int = 2) -> str:
-    api_key = os.environ.get("DEEPSEEK_API_KEY")
-    if not api_key:
-        # 明确报错而不是 fallback: 不可用空数据冒充今日总结
-        raise SystemExit(
-            "DEEPSEEK_API_KEY 未设置 — 不可生成今日总结. "
-            "请设置 DEEPSEEK_API_KEY 环境变量 (或 docker run -e DEEPSEEK_API_KEY=...) "
-            "或写降级 summaries.json (见 main() 中 GRACEFUL_DEGRADE 选项)."
+    try:
+        result = call_text(
+            "daily_summary", system, user,
+            max_output_tokens=400, timeout=30, max_retries=max_retries,
         )
-    data = json.dumps({
-        "model": DEEPSEEK_MODEL,
-        "messages": [
-            {"role": "system", "content": system},
-            {"role": "user", "content": user},
-        ],
-        "temperature": 0.2,
-        "max_tokens": 400,
-        "thinking": {"type": "disabled"},  # ★ 跨项目硬规则: 关闭思考模式
-    }).encode()
-    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
-    for attempt in range(max_retries + 1):
-        try:
-            r = requests.post(DEEPSEEK_URL, data=data, headers=headers, timeout=30)
-            r.raise_for_status()
-            return r.json()["choices"][0]["message"]["content"].strip()
-        except Exception as e:
-            if attempt < max_retries:
-                time.sleep(2 + attempt * 2)
-                continue
-            raise
+    except RuntimeError as exc:
+        if "DEEPSEEK_API_KEY not set" in str(exc):
+            raise SystemExit(
+                "DEEPSEEK_API_KEY 未设置 — 不可生成今日总结. "
+                "请设置 DEEPSEEK_API_KEY 环境变量，或使用 --graceful-degrade。"
+            ) from exc
+        raise
+    usage_con = sqlite3.connect(DB_PATH, timeout=30)
+    try:
+        record_usage(usage_con, result, workload="daily_summary", object_type="dashboard", object_id="summary_segment")
+        usage_con.commit()
+    finally:
+        usage_con.close()
+    return result.text
 
 
 def gen_today_summary(con: sqlite3.Connection) -> str:
