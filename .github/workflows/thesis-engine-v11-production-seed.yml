@@ -1,8 +1,7 @@
 name: Thesis Engine v1.1 Production Seed
 
 on:
-  push:
-    branches: [agent/thesis-engine-v11-production-seed-trigger]
+  workflow_dispatch:
 
 permissions:
   contents: write
