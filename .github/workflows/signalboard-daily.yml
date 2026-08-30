@@ -42,19 +42,27 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: master
-          fetch-depth: 30
+          fetch-depth: 1
 
       - name: Skip redundant scheduled fallback
         id: check
         shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          HEAD_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
           set -Eeuo pipefail
-          if [ "${{ github.event_name }}" != "schedule" ]; then
+          if [ "$EVENT_NAME" = "push" ] && [[ "$HEAD_MESSAGE" == *"[skip daily]"* ]]; then
+            echo "Push explicitly marked [skip daily]; no production refresh needed."
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "$EVENT_NAME" != "schedule" ]; then
             echo "should_run=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           today=$(TZ=Asia/Shanghai date +%Y-%m-%d)
-          if git log -30 --format=%s | grep -Fqx "Daily Signalboard update $today"; then
+          if [ "$(git log -1 --format=%s)" = "Daily Signalboard update $today" ]; then
             echo "Scheduled update for $today already completed; skipping fallback."
             echo "should_run=false" >> "$GITHUB_OUTPUT"
           else
