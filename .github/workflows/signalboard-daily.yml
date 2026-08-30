@@ -63,8 +63,8 @@ jobs:
           HEAD_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
           set -Eeuo pipefail
-          if [ "$EVENT_NAME" = "push" ] && [[ "$HEAD_MESSAGE" == *"[skip daily]"* ]]; then
-            echo "Push explicitly marked [skip daily]; no production refresh needed."
+          if [ "$EVENT_NAME" = "push" ] && { [[ "$HEAD_MESSAGE" == *"[skip daily]"* ]] || [[ "$HEAD_MESSAGE" == "Daily Signalboard update "* ]]; }; then
+            echo "Self-generated or explicitly skipped push; no production refresh needed."
             echo "should_run=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
@@ -353,6 +353,6 @@ jobs:
             echo "No changes to commit."
             exit 0
           fi
-          git commit -m "Daily Signalboard update $(TZ=Asia/Shanghai date +%Y-%m-%d)"
+          git commit -m "Daily Signalboard update $(TZ=Asia/Shanghai date +%Y-%m-%d) [skip daily]"
           git pull --rebase origin master
           git push origin HEAD:master
