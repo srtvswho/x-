@@ -1,4 +1,4 @@
-name: SignalBoard Opportunity Engine v1.2 Preview
+name: SignalBoard Opportunity Engine v1.2 Corrective Preview
 
 on:
   pull_request:
@@ -29,9 +29,9 @@ jobs:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       AI_ENABLED: "true"
       AI_DRY_RUN: "false"
-      AI_MAX_COST_PER_RUN_USD: "10.00"
+      AI_MAX_COST_PER_RUN_USD: "6.00"
       AI_MAX_DAILY_COST_USD: "20.00"
-      AI_MAX_CALLS_PER_RUN: "100"
+      AI_MAX_CALLS_PER_RUN: "21"
       ALLOW_EXPENSIVE_AI_JOB: "false"
       AI_JOB_KIND: "incremental_opportunity_discovery"
       AI_WORKFLOW: "opportunity_engine_v12_preview"
@@ -40,10 +40,10 @@ jobs:
       FORCE_REANALYZE: "false"
       MEDIA_AI_MAX_ITEMS: "10"
       CLAIM_VERIFY_MAX_ITEMS: "15"
-      THEME_MAX_COST_PER_RUN: "1.00"
+      THEME_MAX_COST_PER_RUN: "0"
       MEDIA_MAX_COST_PER_RUN: "2.50"
-      CLAIM_MAX_COST_PER_RUN: "3.50"
-      ANALYST_MAX_COST_PER_RUN: "6.00"
+      CLAIM_MAX_COST_PER_RUN: "0"
+      ANALYST_MAX_COST_PER_RUN: "3.50"
       GOLDEN_MAX_COST_PER_RUN: "0"
       AI_ROUTE_MEDIA_UNDERSTANDING_MODEL: "gpt-5.6-terra"
       AI_ROUTE_THEME_CANONICALIZATION_MODEL: "gpt-5.6-terra"
@@ -72,8 +72,8 @@ jobs:
           test "$AI_ENABLED" = "true"
           test "$AI_DRY_RUN" = "false"
           test "$ALLOW_EXPENSIVE_AI_JOB" = "false"
-          test "$AI_MAX_COST_PER_RUN_USD" = "10.00"
-          test "$AI_MAX_CALLS_PER_RUN" = "100"
+          test "$AI_MAX_COST_PER_RUN_USD" = "6.00"
+          test "$AI_MAX_CALLS_PER_RUN" = "21"
           if [ -z "${OPENAI_API_KEY:-}" ]; then
             echo "::error::OPENAI_API_KEY repository secret is unavailable"
             exit 1
@@ -105,28 +105,22 @@ jobs:
           con.close()
           PY
 
-      - name: Canonicalize Themes conservatively
-        continue-on-error: true
-        run: python scripts/intel_theme_canonicalize.py --apply --max-pairs 120 --output outputs/opportunity_engine_v12/theme_canonicalization.json
-
       - name: Analyze 10 high-value Media
         continue-on-error: true
         shell: bash
         run: |
           python scripts/intel_media_analyze.py --limit 10 --media-ids "3_2008639280902795266,3_2094076428841291776,3_2093052991620448256,3_2092404709323845632,3_2092782336635273216,3_2034136443397017600,3_2092500329921384448,3_2092710847550537728,3_2091953822445047808,3_2093252422579945472" | tee outputs/opportunity_engine_v12/media_run.log
 
-      - name: Verify 15 chain-critical Claims
-        continue-on-error: true
-        shell: bash
-        run: |
-          python scripts/intel_claim_verify.py --limit 15 --claim-ids "claim_9284983de2954fd11a4c3bd3,claim_062439d4b2895487e02937b6,claim_09dd726c51fdb508a6984cd7,claim_1854bf7262952de8005d0569,claim_19d31fcbb2e5dc475b12abf4,claim_89f485bcaa4da71b4f1e9389,claim_90c4a91adf57907d654720f1,claim_c9fbb96de104a7e30800eb25,claim_0dba5938397cea7965d5dc8d,claim_134a5af4d73768b672e1523d,claim_54d28989cd802c853962ae7b,claim_dbe7e2d1c2c1f6302555cbd0,claim_f786b9b75a8d71a51071a2ea,claim_f1f1fffa68a7e5fa8b462208,claim_da591b56a1e8bfad24a571ed" | tee outputs/opportunity_engine_v12/claim_run.log
-
       - name: Rebuild root-source deduplication
         continue-on-error: true
         run: python scripts/intel_source_dedup.py
 
       - name: Analyze chains and synthesize Opportunities
-        run: python scripts/intel_opportunity_engine_v12.py --max-new 5 --max-synthesis 5
+        run: >-
+          python scripts/intel_opportunity_engine_v12.py
+          --skip-discovery --max-new 0 --max-synthesis 5
+          --candidate-ids
+          candidate_hbm_dram_crowdout,candidate_socamm_lpddr,candidate_cpo_laser,candidate_datacenter_physical_bottlenecks,candidate_discovered_6d52ae3ca2765521c8d08cdf
 
       - name: Enforce actual run fuse
         if: always()
@@ -142,7 +136,7 @@ jobs:
                    AND status IN ('PENDING','SUCCESS','FAILED','CANCELLED','UNKNOWN_COST')""", (run_id,)
           ).fetchone()
           print(f"AI calls={calls} risk_cost_usd={cost:.6f}")
-          if calls > 100 or cost > 10.000001:
+          if calls > 21 or cost > 6.000001:
               raise SystemExit("Opportunity run exceeded hard fuse")
           con.close()
           PY
