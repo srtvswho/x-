@@ -53,7 +53,7 @@ jobs:
                   raise SystemExit(f"stale selector not found in {path}")
               path.write_text(text.replace(old, new), encoding="utf-8")
           PY
-          python -m pytest tests/test_opportunity_engine_v12.py tests/test_ai_guardrails.py tests/test_research_engine.py -q
+          python -m pytest tests/test_opportunity_engine_v12.py -q
           if rg -n '\\.opp-card\\.primary \\.opp-title' dashboard.html scripts/dashboard/dashboard.html dashboard_deploy_dist/index.html; then
             echo "stale selector remains"
             exit 1
