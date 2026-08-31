@@ -230,6 +230,12 @@ def main() -> None:
                 stats["hashed_only"] += 1
                 continue
 
+            # The AI guardrail writes a PENDING ledger row through a separate
+            # SQLite connection before sending the request.  Release this
+            # media metadata transaction first or the ledger pre-write can
+            # deadlock against our own connection.
+            con.commit()
+
             user = (
                 "分析这张帖子图片。帖子文字仅用于语境，不代表图片内容已经被证实。\n"
                 f"post_id: {post_id}\n帖子文字: {(post_text or '')[:1200]}"
