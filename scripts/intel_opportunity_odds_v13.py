@@ -625,7 +625,12 @@ def main() -> None:
         "buy_candidates": [x["ticker"] for x in rows if x["odds_status"] == "BUY_CANDIDATE"],
         "good_company_bad_odds": [x["ticker"] for x in rows if x["odds_status"] == "GOOD_COMPANY_BAD_ODDS"],
         "good_odds_weak_evidence": [x["ticker"] for x in rows if x["odds_status"] == "GOOD_ODDS_WEAK_EVIDENCE"],
-        "closest_to_buy": [x["ticker"] for x in sorted(rows, key=lambda x: x["odds_score"] or -1, reverse=True)[:3]],
+        "closest_to_buy": [
+            x["ticker"] for x in sorted(
+                (row for row in rows if row["odds_status"] in {"WATCH", "RESEARCH"}),
+                key=lambda row: (len(row["buy_gate_blockers"]), -(row["odds_score"] or -1)),
+            )[:3]
+        ],
     }
     con.execute(
         """INSERT OR REPLACE INTO opportunity_odds_runs
