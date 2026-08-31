@@ -11,6 +11,7 @@ Schema 版本:
                       Claim Verification / AI Analyst 增量层
     v6 (2026-08-30): 跨 Theme Research Case 综合分析
     v7 (2026-08-31): AI 请求前置费用账本 + Golden 确认状态
+    v8 (2026-08-31): Investment Opportunity / Candidate Logic Chain 独立层
 
 init_db() 幂等且自适配:
 - 全新库 → 直接建 v3
@@ -28,7 +29,7 @@ from typing import Iterator, Union
 
 DbPath = Union[str, Path]
 
-CURRENT_SCHEMA_VERSION = 7
+CURRENT_SCHEMA_VERSION = 8
 
 
 # ---------------------------------------------------------------------------
@@ -559,6 +560,99 @@ def _migrate_to_v7(conn: sqlite3.Connection) -> None:
     conn.executescript(V7_AI_GUARDRAIL_SQL)
 
 
+V8_OPPORTUNITY_ENGINE_SQL = """
+CREATE TABLE IF NOT EXISTS logic_chain_analyses (
+    candidate_id       TEXT PRIMARY KEY,
+    title              TEXT NOT NULL,
+    analysis_json      TEXT NOT NULL,
+    source_digest      TEXT NOT NULL,
+    model              TEXT NOT NULL,
+    discovery_type     TEXT NOT NULL CHECK (discovery_type IN ('SEEDED','DISCOVERED')),
+    status              TEXT NOT NULL DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE','THEME_ONLY','REJECTED')),
+    updated_at          TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+
+CREATE TABLE IF NOT EXISTS investment_opportunities (
+    opportunity_id     TEXT PRIMARY KEY,
+    title              TEXT NOT NULL,
+    theme_ids_json     TEXT NOT NULL DEFAULT '[]',
+    thesis_ids_json    TEXT NOT NULL DEFAULT '[]',
+    companies_json     TEXT NOT NULL DEFAULT '[]',
+    primary_company    TEXT,
+    direction          TEXT NOT NULL CHECK (direction IN ('LONG','SHORT','HEDGE','MIXED','UNRESOLVED')),
+    time_horizon       TEXT,
+    driver              TEXT NOT NULL,
+    industry_change     TEXT,
+    bottleneck          TEXT,
+    earnings_mechanism  TEXT,
+    valuation_question  TEXT,
+    market_expectations TEXT,
+    mispricing_hypothesis TEXT,
+    catalysts_json      TEXT NOT NULL DEFAULT '[]',
+    risks_json          TEXT NOT NULL DEFAULT '[]',
+    invalidation_conditions_json TEXT NOT NULL DEFAULT '[]',
+    missing_evidence_json TEXT NOT NULL DEFAULT '[]',
+    actionability       TEXT NOT NULL CHECK (actionability IN (
+        'NOT_ACTIONABLE','WATCH','RESEARCH','BUY_CANDIDATE','HEDGE_CANDIDATE','AVOID'
+    )),
+    chain_completeness  INTEGER NOT NULL CHECK (chain_completeness BETWEEN 0 AND 6),
+    opportunity_score   REAL NOT NULL CHECK (opportunity_score BETWEEN 0 AND 100),
+    thesis_quality_score REAL NOT NULL CHECK (thesis_quality_score BETWEEN 0 AND 100),
+    evidence_quality_score REAL NOT NULL CHECK (evidence_quality_score BETWEEN 0 AND 100),
+    earnings_impact_score REAL NOT NULL CHECK (earnings_impact_score BETWEEN 0 AND 100),
+    mispricing_score    REAL NOT NULL CHECK (mispricing_score BETWEEN 0 AND 100),
+    catalyst_score      REAL NOT NULL CHECK (catalyst_score BETWEEN 0 AND 100),
+    risk_reward_score   REAL NOT NULL CHECK (risk_reward_score BETWEEN 0 AND 100),
+    one_line_thesis     TEXT NOT NULL,
+    why_now             TEXT,
+    ai_verdict          TEXT NOT NULL,
+    next_trigger        TEXT,
+    positive_exposure_json TEXT NOT NULL DEFAULT '[]',
+    negative_exposure_json TEXT NOT NULL DEFAULT '[]',
+    authors_json        TEXT NOT NULL DEFAULT '[]',
+    source_roots_json   TEXT NOT NULL DEFAULT '[]',
+    social_mention_count INTEGER NOT NULL DEFAULT 0,
+    independent_evidence_count INTEGER NOT NULL DEFAULT 0,
+    valuation_json      TEXT NOT NULL DEFAULT '{}',
+    synthesis_json      TEXT NOT NULL DEFAULT '{}',
+    source_candidate_id TEXT NOT NULL,
+    created_at          TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_at          TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    FOREIGN KEY (source_candidate_id) REFERENCES logic_chain_analyses(candidate_id) ON DELETE RESTRICT
+);
+CREATE INDEX IF NOT EXISTS idx_opportunity_rank
+    ON investment_opportunities(actionability, opportunity_score DESC);
+CREATE INDEX IF NOT EXISTS idx_opportunity_updated
+    ON investment_opportunities(updated_at DESC);
+
+CREATE TABLE IF NOT EXISTS opportunity_evidence (
+    opportunity_id     TEXT NOT NULL,
+    evidence_type      TEXT NOT NULL CHECK (evidence_type IN ('claim','media','post','external','thesis')),
+    evidence_id        TEXT NOT NULL,
+    evidence_role      TEXT NOT NULL DEFAULT 'SUPPORT' CHECK (evidence_role IN ('SUPPORT','COUNTER','CONTEXT')),
+    source_root_id     TEXT,
+    evidence_weight    REAL NOT NULL DEFAULT 1,
+    PRIMARY KEY (opportunity_id, evidence_type, evidence_id),
+    FOREIGN KEY (opportunity_id) REFERENCES investment_opportunities(opportunity_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS opportunity_versions (
+    opportunity_id     TEXT NOT NULL,
+    version_number     INTEGER NOT NULL,
+    snapshot_json      TEXT NOT NULL,
+    source_digest      TEXT NOT NULL,
+    model              TEXT NOT NULL,
+    created_at          TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    PRIMARY KEY (opportunity_id, version_number),
+    FOREIGN KEY (opportunity_id) REFERENCES investment_opportunities(opportunity_id) ON DELETE CASCADE
+);
+"""
+
+
+def _migrate_to_v8(conn: sqlite3.Connection) -> None:
+    conn.executescript(V8_OPPORTUNITY_ENGINE_SQL)
+
+
 def _migrate_v2_to_v3(conn: sqlite3.Connection) -> None:
     """对已有 v2 库:加 6 列(predictions)+ 建 4 个新表(都 IF NOT EXISTS)。
 
@@ -806,6 +900,7 @@ def _ensure_schema(conn: sqlite3.Connection) -> None:
     _migrate_to_v5(conn)
     _migrate_to_v6(conn)
     _migrate_to_v7(conn)
+    _migrate_to_v8(conn)
     conn.execute(f"PRAGMA user_version = {CURRENT_SCHEMA_VERSION}")
 
 
