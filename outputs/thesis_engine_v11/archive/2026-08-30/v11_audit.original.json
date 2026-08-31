@@ -1,0 +1,3016 @@
+{
+  "counts": {
+    "post_references": 678,
+    "media_assets": 338,
+    "media_analyses": 10,
+    "claims": 213,
+    "themes": 146,
+    "theses": 24,
+    "underlying_sources": 142,
+    "claim_verifications": 40,
+    "thesis_analyses": 20,
+    "cross_author_theses": 2,
+    "research_case_analyses": 2
+  },
+  "theme_fragmentation": {
+    "claims_per_theme": 1.459,
+    "singleton_themes": 84
+  },
+  "media_backfill_estimate": {
+    "total_assets": 338,
+    "already_analyzed": 10,
+    "pending_assets": 328,
+    "known_hash_duplicates": 0,
+    "vision_calls_upper_bound": 328,
+    "estimated_input_tokens": 381643,
+    "estimated_output_tokens": 177776,
+    "estimated_cost_usd": 2.9,
+    "estimated_runtime_minutes_sequential": 33.4,
+    "batch_size": 30
+  },
+  "golden_evidence_graphs": {
+    "case_a_ymtc_nand_china_wfe": {
+      "posts": [
+        {
+          "post_id": "2090779070523162841",
+          "source_id": "tw_jukan05",
+          "published_at": "2026-08-21T12:32:29+00:00",
+          "text": "YMTC STAR Market IPO review officially accepted\n\n• According to the Shanghai Stock Exchange, the review status for YMTC’s proposed IPO and listing on the STAR Market has been updated to “Accepted (已受理).”\n\n• Planned issuance: 1.98–2.43 billion shares\n• Fundraising target: RMB 33.0 billion\n\nRMB 20.8 billion for upgrading and expanding mass-production lines\nRMB 12.2 billion for R&D"
+        },
+        {
+          "post_id": "2092457458341937311",
+          "source_id": "tw_jukan05",
+          "published_at": "2026-08-26T03:41:48+00:00",
+          "text": "Oh shit… This is faster than I expected... https://t.co/UlWAvEkBeb"
+        },
+        {
+          "post_id": "2092457470765531481",
+          "source_id": "tw_jukan05",
+          "published_at": "2026-08-26T03:41:51+00:00",
+          "text": "https://t.co/aeZiGW9zoD"
+        },
+        {
+          "post_id": "2092474407679922609",
+          "source_id": "ctx_tw_zijing_wu",
+          "published_at": "2026-08-26T04:49:09+00:00",
+          "text": "Exclusive: China’s YMTC aims to overtake Samsung &amp; SK Hynix in flash memory race\n* Internal meetings set target to take global #1 Nand spot by as early as end of 2027\n* IPO will most likely price low at Rmb200-300B while &gt;Rmb1T post valuation is expected\n\nhttps://t.co/Ofd2TDajLv"
+        },
+        {
+          "post_id": "2092482318665650559",
+          "source_id": "tw_zephyr_z9",
+          "published_at": "2026-08-26T05:20:35+00:00",
+          "text": "They are planning to build 5 new fabs in the long term"
+        },
+        {
+          "post_id": "2092492304976351332",
+          "source_id": "tw_zephyr_z9",
+          "published_at": "2026-08-26T06:00:16+00:00",
+          "text": "AMEC &amp; NAURA are going to make sooo much money"
+        },
+        {
+          "post_id": "2092503684810998119",
+          "source_id": "tw_zephyr_z9",
+          "published_at": "2026-08-26T06:45:29+00:00",
+          "text": "This has been well known for a while\nYMTC will have 300k WPM of total capacity (some of it will be dedicated to LPDDR) by early 2027\nThey will surpass Hynix (260k WPM by YE27) with that\nFab 4 & Fab 5 (100k WPM each) cleanrooms will be ready by next year\nThey will ramp production by mid 2028\nTotal capacity will be around 450k-500k WPM by mid to late 2028\nSamsung will have 350k WPM of NAND capacity by YE27\nYMTC won't deploy all the capacity for NAND\nSome capacity will be dedicated to LPDDR (50k-100k)"
+        },
+        {
+          "post_id": "2092550362691760189",
+          "source_id": "tw_zephyr_z9",
+          "published_at": "2026-08-26T09:50:58+00:00",
+          "text": "\"IPO will most likely price low at Rmb200-300B while &gt;Rmb1T post valuation is expected\"\n\nWill be over 2T RMB, SNDK trades at $220B \nYMTC has a higher market share, and the China semis premium will also apply"
+        }
+      ],
+      "edges": [
+        {
+          "source_post_id": "2092457470765531481",
+          "target_post_id": "2092457458341937311",
+          "type": "reply",
+          "status": "complete"
+        },
+        {
+          "source_post_id": "2092482318665650559",
+          "target_post_id": "2092457458341937311",
+          "type": "quote",
+          "status": "complete"
+        },
+        {
+          "source_post_id": "2092492304976351332",
+          "target_post_id": "2092482318665650559",
+          "type": "quote",
+          "status": "complete"
+        },
+        {
+          "source_post_id": "2092503684810998119",
+          "target_post_id": "2092474407679922609",
+          "type": "quote",
+          "status": "complete"
+        },
+        {
+          "source_post_id": "2092550362691760189",
+          "target_post_id": "2092474407679922609",
+          "type": "quote",
+          "status": "complete"
+        }
+      ],
+      "media": [
+        {
+          "media_id": "3_2090779041624358912",
+          "post_id": "2090779070523162841",
+          "status": "complete",
+          "hash": "5aa02ea1d28d2d458a169e91a341787a76f44771c1ad9069684a6850b66ecfde",
+          "analysis": {
+            "media_type": "news_screenshot",
+            "source_detected": "财联社电报（CLS.CN）",
+            "document_type": "财经新闻截图",
+            "summary": "财联社报道称，长江存储控股股份有限公司（简称“长存控股”）首次公开发行股票并在科创板上市的IPO审核状态变更为“已受理”，拟募资330亿元人民币；保荐机构为中信证券和中信建投。截图日期标注为2026年8月21日。",
+            "important_text": [
+              "【长江存储首次公开发行股票并在科创板上市审核状态变为已受理】",
+              "上交所长江存储控股股份有限公司首次公开发行股票并在科创板上市IPO审核状态变更为已受理",
+              "拟融资金额为330亿元",
+              "公司简称为“长存控股”",
+              "保荐机构为中信证券和中信建投",
+              "受理日期：2026-08-21"
+            ],
+            "companies": [
+              "长江存储控股股份有限公司（长存控股／YMTC）",
+              "中信证券",
+              "中信建投",
+              "上海证券交易所"
+            ],
+            "tickers": [],
+            "metrics": [
+              "拟融资金额：330亿元人民币"
+            ],
+            "dates": [
+              "2026-08-21",
+              "2026-08-21 20:08:59"
+            ],
+            "themes": [
+              "IPO",
+              "科创板",
+              "存储芯片",
+              "NAND闪存",
+              "中国半导体",
+              "资本开支"
+            ],
+            "claims": [
+              {
+                "claim_text": "长江存储控股股份有限公司在科创板首次公开发行股票并上市的审核状态已变更为“已受理”。",
+                "claim_type": "FACT",
+                "claim_author": "财联社（援引上海证券交易所披露页面）",
+                "companies": [
+                  "长江存储控股股份有限公司",
+                  "上海证券交易所"
+                ],
+                "themes": [
+                  "IPO",
+                  "科创板"
+                ],
+                "time_horizon": "截至2026-08-21"
+              },
+              {
+                "claim_text": "长存控股拟融资330亿元人民币。",
+                "claim_type": "FORECAST",
+                "claim_author": "财联社（援引IPO项目披露）",
+                "companies": [
+                  "长江存储控股股份有限公司"
+                ],
+                "themes": [
+                  "IPO",
+                  "融资"
+                ],
+                "time_horizon": "拟议融资，未完成"
+              },
+              {
+                "claim_text": "中信证券和中信建投担任该项目保荐机构。",
+                "claim_type": "FACT",
+                "claim_author": "财联社（援引IPO项目披露）",
+                "companies": [
+                  "中信证券",
+                  "中信建投",
+                  "长江存储控股股份有限公司"
+                ],
+                "themes": [
+                  "IPO"
+                ],
+                "time_horizon": "截至2026-08-21"
+              }
+            ],
+            "chart_insights": [],
+            "investment_implications": [
+              "IPO获受理仅代表交易所开始审核流程，不代表已获上市批准或融资已经完成。",
+              "若后续上市完成，330亿元拟融资规模可能支持长江存储的研发和产能投入，但具体募投用途及实际募资规模未在该截图中披露。",
+              "该事件凸显中国存储芯片企业寻求通过境内资本市场融资的趋势。"
+            ],
+            "confidence": 0.96
+          }
+        },
+        {
+          "media_id": "3_2092457347855613952",
+          "post_id": "2092457458341937311",
+          "status": "complete",
+          "hash": "5a4685acd63b548f80aca3d4466649309769750ea42b53642a75dd9b289e7353",
+          "analysis": {
+            "media_type": "news_screenshot",
+            "source_detected": "Financial Times",
+            "document_type": "News article excerpt",
+            "summary": "Financial Times报道称，长江存储（YMTC）在IPO筹备沟通中表示，目标最早于2027年底超越三星电子和SK海力士，成为全球最大的NAND闪存生产商。YMTC近期提交IPO申请，拟募资人民币330亿元（约50亿美元），主要用于升级产能设施及研发。",
+            "important_text": [
+              "“YMTC aims to overtake Samsung and SK Hynix to become the world’s largest Nand flash memory producer”",
+              "YMTC称希望最早于2027年底取得全球NAND市场第一。",
+              "YMTC已申请IPO，拟募集Rmb33bn（$5bn），主要投向生产设施升级及研发。"
+            ],
+            "companies": [
+              "Yangtze Memory Technologies Corp (YMTC)",
+              "Samsung Electronics",
+              "SK Hynix"
+            ],
+            "tickers": [
+              "005930.KS",
+              "000660.KS"
+            ],
+            "metrics": [
+              "IPO proceeds target: Rmb33bn ($5bn)",
+              "Target timing to lead global NAND: as soon as end-2027"
+            ],
+            "dates": [
+              "End of 2027",
+              "Last week"
+            ],
+            "themes": [
+              "NAND flash memory",
+              "China semiconductor industry",
+              "IPO financing",
+              "capacity expansion",
+              "research and development",
+              "memory competition"
+            ],
+            "claims": [
+              {
+                "claim_text": "YMTC计划最早在2027年底超越三星和SK海力士，成为全球最大的NAND闪存生产商。",
+                "claim_type": "FORECAST",
+                "claim_author": "YMTC（据Financial Times援引两名知情人士）",
+                "companies": [
+                  "Yangtze Memory Technologies Corp (YMTC)",
+                  "Samsung Electronics",
+                  "SK Hynix"
+                ],
+                "themes": [
+                  "NAND flash memory",
+                  "market-share competition"
+                ],
+                "time_horizon": "最早至2027年底"
+              },
+              {
+                "claim_text": "YMTC已提交IPO申请，拟募集人民币330亿元（约50亿美元）。",
+                "claim_type": "FACT",
+                "claim_author": "YMTC prospectus（据Financial Times）",
+                "companies": [
+                  "Yangtze Memory Technologies Corp (YMTC)"
+                ],
+                "themes": [
+                  "IPO financing"
+                ],
+                "time_horizon": "近期"
+              },
+              {
+                "claim_text": "拟募IPO资金大部分将用于生产设施升级以及研发。",
+                "claim_type": "FACT",
+                "claim_author": "YMTC prospectus（据Financial Times）",
+                "companies": [
+                  "Yangtze Memory Technologies Corp (YMTC)"
+                ],
+                "themes": [
+                  "capacity expansion",
+                  "research and development"
+                ],
+                "time_horizon": "未披露"
+              }
+            ],
+            "chart_insights": [],
+            "investment_implications": [
+              "若该融资及扩产计划推进，NAND行业的中国本土供给与价格竞争风险可能上升。",
+              "对三星电子和SK海力士而言，这反映出YMTC设定了激进的长期竞争目标；该目标本身并不等同于市场份额已经发生变化。"
+            ],
+            "confidence": 0.96
+          }
+        }
+      ],
+      "claims": [
+        {
+          "claim_id": "claim_8d4621e00fcada4b2b9be2c7",
+          "post_id": "2090779070523162841",
+          "author": "上海证券交易所",
+          "type": "FACT",
+          "text": "上交所已将YMTC科创板IPO审核状态更新为已受理。",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_5c32c5b701c26a921a446639",
+          "post_id": "2090779070523162841",
+          "author": "上海证券交易所",
+          "type": "FACT",
+          "text": "YMTC计划发行19.8-24.3亿股，募资330亿元人民币。",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_f8844780347f61c6bcda1f69",
+          "post_id": "2090779070523162841",
+          "author": "上海证券交易所",
+          "type": "FACT",
+          "text": "募资中208亿元用于扩产，122亿元用于研发。",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_media_137c4b1d52c4ce24c4ce5fc9",
+          "post_id": "2090779070523162841",
+          "author": "财联社（援引上海证券交易所披露页面）",
+          "type": "FACT",
+          "text": "长江存储控股股份有限公司在科创板首次公开发行股票并上市的审核状态已变更为“已受理”。",
+          "verification": "SUPPORTED_BY_SECONDARY"
+        },
+        {
+          "claim_id": "claim_media_38e86a4041b0068587e58594",
+          "post_id": "2090779070523162841",
+          "author": "财联社（援引IPO项目披露）",
+          "type": "FORECAST",
+          "text": "长存控股拟融资330亿元人民币。",
+          "verification": "SUPPORTED_BY_PRIMARY"
+        },
+        {
+          "claim_id": "claim_media_6e5fe7d95037ae9c3f9fa68c",
+          "post_id": "2090779070523162841",
+          "author": "财联社（援引IPO项目披露）",
+          "type": "FACT",
+          "text": "中信证券和中信建投担任该项目保荐机构。",
+          "verification": "SUPPORTED_BY_PRIMARY"
+        },
+        {
+          "claim_id": "claim_media_26ccd2fc7e17afa5d4eb5676",
+          "post_id": "2092457458341937311",
+          "author": "YMTC（据Financial Times援引两名知情人士）",
+          "type": "FORECAST",
+          "text": "YMTC计划最早在2027年底超越三星和SK海力士，成为全球最大的NAND闪存生产商。",
+          "verification": "SUPPORTED_BY_SECONDARY"
+        },
+        {
+          "claim_id": "claim_media_e856da61d2e07683328170d8",
+          "post_id": "2092457458341937311",
+          "author": "YMTC prospectus（据Financial Times）",
+          "type": "FACT",
+          "text": "YMTC已提交IPO申请，拟募集人民币330亿元（约50亿美元）。",
+          "verification": "SUPPORTED_BY_SECONDARY"
+        },
+        {
+          "claim_id": "claim_media_c5eababc2d87771d9ad72624",
+          "post_id": "2092457458341937311",
+          "author": "YMTC prospectus（据Financial Times）",
+          "type": "FACT",
+          "text": "拟募IPO资金大部分将用于生产设施升级以及研发。",
+          "verification": "SUPPORTED_BY_PRIMARY"
+        },
+        {
+          "claim_id": "claim_c338ca79cc6f5b83d9196e84",
+          "post_id": "2092474407679922609",
+          "author": "独家消息来源",
+          "type": "FORECAST",
+          "text": "YMTC内部会议设定目标，最早在2027年底前超越三星和SK海力士，成为全球NAND第一。",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_1dd824cdc77368fbacfc193c",
+          "post_id": "2092474407679922609",
+          "author": "独家消息来源",
+          "type": "FORECAST",
+          "text": "YMTC的IPO定价可能低至2000-3000亿元人民币，而上市后估值预计超过1万亿元。",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_788c87060e7a7f4cd53163ee",
+          "post_id": "2092482318665650559",
+          "author": null,
+          "type": "FACT",
+          "text": "某主体计划长期建设5座新晶圆厂。",
+          "verification": "UNVERIFIABLE"
+        },
+        {
+          "claim_id": "claim_59279894dc16d7118ab337a5",
+          "post_id": "2092492304976351332",
+          "author": "tw_zephyr_z9",
+          "type": "FORECAST",
+          "text": "AMEC 和 NAURA 将赚很多钱。",
+          "verification": "UNVERIFIABLE"
+        },
+        {
+          "claim_id": "claim_9f0d63906b1de42126f354ba",
+          "post_id": "2092503684810998119",
+          "author": "tw_zephyr_z9",
+          "type": "FORECAST",
+          "text": "YMTC will have 300k WPM of total capacity (some dedicated to LPDDR) by early 2027.",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_f5d134cf7d8d5344975c4011",
+          "post_id": "2092503684810998119",
+          "author": "tw_zephyr_z9",
+          "type": "FORECAST",
+          "text": "YMTC will surpass Hynix (260k WPM by YE27) with that capacity.",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_df095468ce12b7395ef4c15f",
+          "post_id": "2092503684810998119",
+          "author": "tw_zephyr_z9",
+          "type": "FORECAST",
+          "text": "Fab 4 & Fab 5 (100k WPM each) cleanrooms will be ready by next year.",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_bfa6f54039953cfc1b769ce7",
+          "post_id": "2092503684810998119",
+          "author": "tw_zephyr_z9",
+          "type": "FORECAST",
+          "text": "They will ramp production by mid 2028.",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_916e950a0ea19bdf8357fa35",
+          "post_id": "2092503684810998119",
+          "author": "tw_zephyr_z9",
+          "type": "FORECAST",
+          "text": "Total capacity will be around 450k-500k WPM by mid to late 2028.",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_02ddf206c5713cba2eb103f3",
+          "post_id": "2092503684810998119",
+          "author": "tw_zephyr_z9",
+          "type": "FORECAST",
+          "text": "Samsung will have 350k WPM of NAND capacity by YE27.",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_15c2ac659c11ccbeadd4d985",
+          "post_id": "2092503684810998119",
+          "author": "tw_zephyr_z9",
+          "type": "FORECAST",
+          "text": "YMTC won't deploy all the capacity for NAND; some capacity will be dedicated to LPDDR (50k-100k).",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_a6feff7e37e26820056cfaa5",
+          "post_id": "2092550362691760189",
+          "author": "tw_zephyr_z9",
+          "type": "FORECAST",
+          "text": "IPO will most likely price low at Rmb200-300B while >Rmb1T post valuation is expected",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_64e91edbc35a2700fbd777ba",
+          "post_id": "2092550362691760189",
+          "author": "tw_zephyr_z9",
+          "type": "FORECAST",
+          "text": "Will be over 2T RMB, SNDK trades at $220B",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_aeb6524a0926984b63532f8c",
+          "post_id": "2092550362691760189",
+          "author": "tw_zephyr_z9",
+          "type": "OPINION",
+          "text": "YMTC has a higher market share, and the China semis premium will also apply",
+          "verification": "UNVERIFIED"
+        }
+      ],
+      "claim_verifications": [
+        {
+          "claim_id": "claim_media_137c4b1d52c4ce24c4ce5fc9",
+          "status": "SUPPORTED_BY_SECONDARY",
+          "rationale": "权威财经媒体/行业媒体于2026年8月21日明确报道称，上交所网站显示长江存储控股股份有限公司“首次公开发行股票并在科创板上市”的IPO审核状态变更为“已受理”。上交所科创板“审核项目动态”官方页面当前亦显示存在“已受理”项目，但该页面的逐项目数据为动态加载，当前可抓取文本未直接展示该公司名称；因此未将其作为对该具体项目状态的直接一级确认。",
+          "corrected_claim": "截至2026年8月21日，长江存储控股股份有限公司首次公开发行股票并在上海证券交易所科创板上市的IPO审核状态为“已受理”。",
+          "sources": [
+            {
+              "title": "注册项目动态｜上海证券交易所科创板",
+              "url": "https://star.sse.com.cn/star/renewal",
+              "publisher": "上海证券交易所",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "上交所官方科创板审核项目动态页面显示“已受理”项目统计；但当前可抓取文本不含逐项目名称，不能单独直接确认长江存储条目。"
+            },
+            {
+              "title": "存储巨头大消息！一季度净赚333亿元，IPO刚刚受理",
+              "url": "https://stcn.com/article/detail/4099497.html",
+              "publisher": "证券时报网",
+              "source_tier": "INDUSTRY",
+              "support": "SUPPORTS",
+              "finding": "报道明确称：2026年8月21日晚间，上交所网站显示，长江存储首次公开发行股票并在科创板上市的IPO审核状态已变更为“已受理”。"
+            },
+            {
+              "title": "长江存储控股股份有限公司",
+              "url": "https://stcn.com/ipo/detail/3867.html",
+              "publisher": "证券时报网",
+              "source_tier": "INDUSTRY",
+              "support": "SUPPORTS",
+              "finding": "项目页列示发行人为长江存储控股股份有限公司，审核状态“已受理”，受理日期及更新日期均为2026年8月21日。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_media_38e86a4041b0068587e58594",
+          "status": "SUPPORTED_BY_PRIMARY",
+          "rationale": "发行人于2026年8月21日披露的科创板IPO招股说明书（申报稿）载明：扣除发行费用后的募集资金拟投向合计330.00亿元，其中208.00亿元用于“长江存储量产线技术升级项目”、122.00亿元用于“研发相关募投项目”。该申请仍须上交所及中国证监会履行程序，发行价格、实际募集资金总额及实际到账金额均未确定。因此，“拟融资330亿元”在IPO拟募资口径下成立，但不代表已完成融资。",
+          "corrected_claim": "长江存储控股拟通过科创板首次公开发行股票募集资金；申报稿披露的扣除发行费用后拟投入募投项目金额合计为330亿元（208亿元产线技术升级、122亿元研发）。截至2026年8月30日，项目处于已受理阶段，尚未完成发行或融资。",
+          "sources": [
+            {
+              "title": "国产闪存龙头长存控股科创板IPO获受理 拟募资330亿元",
+              "url": "https://companies.caixin.com/2026-08-22/102476776.html",
+              "publisher": "财新网",
+              "source_tier": "SECONDARY",
+              "support": "SUPPORTS",
+              "finding": "报道称2026年8月21日长存控股科创板IPO获受理，计划募集330亿元，并与招股书披露的208亿元、122亿元两项投向一致。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_media_6e5fe7d95037ae9c3f9fa68c",
+          "status": "SUPPORTED_BY_PRIMARY",
+          "rationale": "一级申报文件《中信证券股份有限公司关于长江存储控股股份有限公司首次公开发行股票并在科创板上市之发行保荐书》明确将中信证券称为“保荐人（主承销商）”；并在关联关系披露中明确写明“本次发行上市保荐人（主承销商）中信证券、中信建投”。该文件对应长江存储控股于2026年8月21日申报科创板的IPO项目，因此原说法在机构数量（两家）和角色（保荐机构）上成立。",
+          "corrected_claim": "长江存储控股股份有限公司于2026年8月21日申报科创板IPO时，中信证券股份有限公司和中信建投证券股份有限公司共同担任本次发行上市的保荐人（主承销商）。",
+          "sources": [
+            {
+              "title": "中信证券股份有限公司关于长江存储控股股份有限公司的辅导备案公告",
+              "url": "https://citics.citic/newsite/tzgg/ipoqyfdgg/202605/t20260519_1212097.html",
+              "publisher": "中信证券股份有限公司",
+              "source_tier": "PRIMARY",
+              "support": "PARTIAL",
+              "finding": "确认中信证券于2026年5月19日受聘担任长江存储IPO辅导机构；该公告本身未列明中信建投，且“辅导机构”不同于“保荐机构”。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_media_26ccd2fc7e17afa5d4eb5676",
+          "status": "SUPPORTED_BY_SECONDARY",
+          "rationale": "该表述与Financial Times于2026年8月援引“两名知情人士”的报道一致：YMTC据报在IPO筹备相关的投资者/利益相关方会议上，把“最早于2027年底成为全球最大NAND闪存制造商、超过三星和SK海力士”设为目标。该信息属于媒体转述的公司目标，而非已实现结果，且未找到YMTC公开公告或交易所/监管文件直接确认该目标。因此只能由二级权威媒体支持，不能视为一级来源确认的经营承诺。",
+          "corrected_claim": "据Financial Times援引两名知情人士报道，YMTC在近期IPO筹备会议中向投资者及利益相关方提出目标：最早在2027年底超过三星和SK海力士，成为全球最大的NAND闪存制造商；该目标尚未获YMTC公开公告直接证实，能否实现取决于扩产落地及竞争对手产能、市场需求等条件。",
+          "sources": [
+            {
+              "title": "“2027年超越三星电子和SK海力士” IPO在即的中国NAND企业目标登顶市场第一",
+              "url": "https://view.asiae.co.kr/cn/article/2026082614235221923",
+              "publisher": "Asiae Business Daily",
+              "source_tier": "SECONDARY",
+              "support": "SUPPORTS",
+              "finding": "报道明确转述FT：YMTC目标为最早于2027年底超越三星电子和SK海力士，成为全球最大NAND生产商；归因于两名知情人士。"
+            },
+            {
+              "title": "China's YMTC aims to become the world's largest NAND maker by the end of 2027, report says — company plans to overtake Samsung and SK hynix",
+              "url": "https://tomshardware.com/pc-components/dram/chinas-ymtc-aims-to-become-the-worlds-largest-nand-maker-by-the-end-of-2027",
+              "publisher": "Tom's Hardware",
+              "source_tier": "INDUSTRY",
+              "support": "SUPPORTS",
+              "finding": "报道称，依据FT报道，YMTC在IPO筹备会议中向投资者和利益相关方表示，其目标是在2027年底前成为最大NAND闪存生产商并超过三星和SK海力士。"
+            },
+            {
+              "title": "Chinese chipmaker YMTC plans new factories amid heightened US-Sino trade tensions, sources say",
+              "url": "https://marketscreener.com/news/chinese-chipmaker-ymtc-plans-new-factories-amid-heightened-us-sino-trade-tensions-sources-say-ce7e50ded18efe2d",
+              "publisher": "Reuters（由MarketScreener转载）",
+              "source_tier": "SECONDARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "Reuters于2026年4月报道称，YMTC拟在一座当年将完成的工厂之外再建两座工厂；全部投产后总产能将较当时水平增长逾一倍。该报道支持其扩产背景，但不确认“2027年底成为全球第一”的目标。"
+            },
+            {
+              "title": "YMTC Xtacking®4.0 Recognized as Most Innovative Technology at FMS 2025",
+              "url": "https://ymtc.com/en/news/41.html",
+              "publisher": "YMTC",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "YMTC公开新闻稿称其致力于成为领先的存储解决方案供应商，但未披露或确认“2027年底超过三星和SK海力士、成为全球最大NAND生产商”的具体目标。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_media_e856da61d2e07683328170d8",
+          "status": "SUPPORTED_BY_SECONDARY",
+          "rationale": "Reuters于2026年8月21日报道，YMTC拟通过上海IPO募资330亿元人民币（约49.1亿美元），并称更新后的招股书已提交交易所。上交所官方英文网站转载报道亦称，上交所科创板已受理该IPO申请。需严格表述为：申请主体是YMTC母公司/控股主体长江存储控股股份有限公司（CCSH），且“330亿元”是拟募资额，不代表已完成募集或IPO已获注册/上市。约50亿美元与Reuters按当日汇率计算的49.1亿美元一致。",
+          "corrected_claim": "长江存储（YMTC）的控股主体长江存储控股股份有限公司（CCSH）已向上交所科创板提交、且申请已获受理的IPO文件；其招股书拟募资人民币330亿元，按2026年8月21日Reuters所用汇率约合49.1亿美元（可近似表述为50亿美元）。",
+          "sources": [
+            {
+              "title": "Chinese flash-memory chipmaker YMTC plans to raise $4.9 billion in Shanghai IPO",
+              "url": "https://marketscreener.com/news/chinese-flash-memory-chipmaker-ymtc-plans-to-raise-4-9-billion-in-shanghai-ipo-ce7858dadb8ff420",
+              "publisher": "Reuters（经MarketScreener转载）",
+              "source_tier": "SECONDARY",
+              "support": "SUPPORTS",
+              "finding": "报道日期为2026年8月21日：称YMTC拟在上海IPO募资330亿元人民币（49.1亿美元），依据为向交易所提交的更新版招股书。"
+            },
+            {
+              "title": "Global Times | Chinese chipmaker YMTC files for $4.6 billion STAR market IPO after fellow CXMT's record debut",
+              "url": "https://english.sse.com.cn/news/newsrelease/voice/c/c_20260827_10830148.shtml",
+              "publisher": "上海证券交易所（转载《环球时报》）",
+              "source_tier": "INDUSTRY",
+              "support": "SUPPORTS",
+              "finding": "上交所官网页面称，科创板已受理YMTC的IPO申请；拟募资330亿元。该页同时表明发行主体/申请主体为长江存储相关控股公司，而非已上市主体YMTC本身。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_media_c5eababc2d87771d9ad72624",
+          "status": "SUPPORTED_BY_PRIMARY",
+          "rationale": "长存控股于2026年8月21日披露的科创板IPO申报稿明确：发行费用扣除后的募资拟投向两项，量产线技术升级208亿元、研发相关项目122亿元，合计330亿元。两项合计覆盖该申报募资用途；其中量产线升级单项占63.0%，研发占37.0%。这是拟定用途，并非已完成募资或已实际支出。",
+          "corrected_claim": "长江存储控股在2026年8月21日披露的IPO申报稿中拟将扣除发行费用后的330亿元募资全部投向量产线技术升级（208亿元）和研发相关项目（122亿元）；其中约63%用于量产线技术升级。",
+          "sources": [
+            {
+              "title": "上海证券交易所转载：Chinese chipmaker YMTC files for $4.6 billion STAR market IPO",
+              "url": "https://english.sse.com.cn/news/newsrelease/voice/c/c_20260827_10830148.shtml",
+              "publisher": "上海证券交易所（转载Global Times报道）",
+              "source_tier": "SECONDARY",
+              "support": "SUPPORTS",
+              "finding": "报道称招股书所列两项用途分别为量产线升级208亿元及研发122亿元。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_8d4621e00fcada4b2b9be2c7",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "2026年8月21日，长江存储控股股份有限公司（简称“长存控股”）的科创板IPO项目显示为“已受理”。但申报发行人并非“YMTC/长江存储科技有限责任公司”这一法律实体，而是其控股母公司长江存储控股股份有限公司；因此原表述在主体上不够准确。",
+          "corrected_claim": "上交所于2026年8月21日受理了长江存储控股股份有限公司（长存控股）的科创板IPO申请；长江存储科技有限责任公司（YMTC）为该集团相关主体，而非招股书载明的发行人。",
+          "sources": [
+            {
+              "title": "长江存储控股股份有限公司项目详情",
+              "url": "https://money.finance.sina.com.cn/corp/view/vRPD_NewStockMeetingDetail.php?companycode=81587825",
+              "publisher": "新浪财经",
+              "source_tier": "INDUSTRY",
+              "support": "SUPPORTS",
+              "finding": "项目页面列示：受理日期2026-08-21，审核状态“已受理”，更新日期2026-08-21。"
+            },
+            {
+              "title": "Chinese Memory-Chipmaker YMTC Parent Files for $4.9 Billion IPO",
+              "url": "https://caixinglobal.com/2026-08-24/chinese-memory-chipmaker-ymtc-parent-files-for-49-billion-ipo-102477468.html",
+              "publisher": "财新",
+              "source_tier": "SECONDARY",
+              "support": "SUPPORTS",
+              "finding": "报道称，上交所已受理长存控股（YMTC母公司）的科创板上市申请。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_5c32c5b701c26a921a446639",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "一级申报文件确认：发行主体长江存储控股拟首次公开发行不少于19.8亿股、不超过24.3亿股A股（行使超额配售选择权前），且全部为新股，不涉及原股东公开发售；可另行采用不超过基础发行数量15%的超额配售选择权。申报材料列示的两项募投项目拟投入募集资金合计330亿元（208亿元+122亿元）。但发行价格及“募集资金总额”在申报稿中均为空白，故330亿元应表述为拟投入募投项目/拟融资金额，而非已经确定的实际发行募资总额。申请于2026年8月21日获受理，尚须上交所及中国证监会履行后续程序。",
+          "corrected_claim": "2026年8月21日获上交所受理的长江存储控股（YMTC所属控股公司）科创板IPO申报稿显示，公司拟发行19.8亿至24.3亿股A股（超额配售前；另可有不超过基础发行量15%的超额配售），两项募投项目拟使用募集资金合计330亿元；最终发行价格及实际募资总额尚未确定。",
+          "sources": [
+            {
+              "title": "长江存储控股股份有限公司科创板项目详情",
+              "url": "https://money.finance.sina.com.cn/corp/view/vRPD_NewStockMeetingDetail.php?companycode=81587825",
+              "publisher": "上海证券交易所项目数据（镜像页）",
+              "source_tier": "PRIMARY",
+              "support": "SUPPORTS",
+              "finding": "项目页显示受理日期为2026年8月21日、融资金额330亿元；募投项目拟投入募集资金分别为208亿元和122亿元，合计330亿元。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_f8844780347f61c6bcda1f69",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "长存控股2026年8月21日披露的IPO申报稿列示：扣除发行费用后的募集资金中，208.00亿元拟用于“长江存储量产线技术升级项目”，122.00亿元拟用于“研发相关募投项目”，合计330.00亿元。数字准确，但原话将“量产线技术升级”概括为“扩产”，且未说明这是拟募资用途、以实际发行及扣除费用后金额为条件；申报稿还允许按项目进度和资金需求调整投入顺序及具体金额。",
+          "corrected_claim": "截至2026年8月21日的IPO申报稿，长存控股计划将本次发行扣除发行费用后的募集资金中208亿元用于长江存储量产线技术升级项目、122亿元用于研发相关募投项目，合计330亿元；这并非已完成募资，且具体投入可调整。",
+          "sources": []
+        },
+        {
+          "claim_id": "claim_9f0d63906b1de42126f354ba",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "截至2026年8月30日，未找到YMTC公司公告、招股书/交易所文件或政府文件直接确认“2027年初总产能30万片/月、其中部分用于LPDDR”。Reuters于2026年4月引述匿名知情人士称：现有两厂合计约20万片/月；第三厂预计2026年底投运、到2027年具备约5万片/月能力，即该报道可明确支持的2027年产能路径约为25万片/月，而非“2027年初30万片/月”。Reuters还称三座新增工厂均可能分配部分产能给DRAM，且LPDDR样品已送客户、实际DRAM生产决策取决于开发进展；这并不等同于确认30万片总产能中已有确定部分用于LPDDR。30万片及“2027年初”这一精确组合可见于行业媒体转述，但未见其披露可独立核验的一级出处。",
+          "corrected_claim": "较严谨的表述：Reuters在2026年4月报道称，基于匿名知情人士说法，YMTC现有两座厂合计约20万片/月，第三座厂预计2026年底开始运营并在2027年达到约5万片/月；因此该报道支持2027年约25万片/月的已披露路径。YMTC拟建的另外两座厂的投运时间当时未知。公司已向客户送出LPDDR样品，新增产线可能配置部分DRAM产能，但“2027年初总计30万片/月且部分确定用于LPDDR”尚无一级来源确认。",
+          "sources": [
+            {
+              "title": "Exclusive—Chinese chipmaker YMTC plans new factories amid heightened US-Sino trade tensions, sources say",
+              "url": "https://investing.com/news/stock-market-news/exclusivechinese-chipmaker-ymtc-plans-new-factories-amid-heightened-ussino-trade-tensions-sources-say-4611690",
+              "publisher": "Reuters（转载页）",
+              "source_tier": "SECONDARY",
+              "support": "PARTIAL",
+              "finding": "报道引述匿名知情人士：两座既有厂合计20万片/月；第三厂预计2026年底投运、2027年达到5万片/月。另两座规划厂的投运日期尚未获知。报道还称三座新增厂可能分配部分产能给DRAM，LPDDR样品已送客户，生产决定取决于后续反馈。"
+            },
+            {
+              "title": "企业公告",
+              "url": "https://ymtc.com/cn/entesearch",
+              "publisher": "长江存储（YMTC）",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "截至核验日，公司官网公告列表未见确认2027年初30万片/月总产能或LPDDR产能分配的公告；历史声明亦要求以公司官方渠道发布的建设计划为准。"
+            },
+            {
+              "title": "长江存储剑指全球第一！NAND产能猛扩：明年超越三星SK海力士",
+              "url": "https://finance.sina.com.cn/tech/discovery/2026-08-26/doc-iniprytq2385816.shtml",
+              "publisher": "新浪科技（转载快科技）",
+              "source_tier": "INDUSTRY",
+              "support": "SUPPORTS",
+              "finding": "该行业媒体转载文本明确写有“2027年初总产能30万片/月，其中部分分配给LPDDR”，但未给出可核验的公司文件、监管文件或具名消息源，不能独立确认该预测。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_f5d134cf7d8d5344975c4011",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "独立报道支持YMTC扩产的方向，但不支持该结论中的关键数字与时点。Reuters于2026年4月报道称：YMTC现有两座厂合计约20万片/月；第三座厂预计2026年底投产、到2027年约5万片/月；此外拟建两座厂，连同第三座在全面达产时各为10万片/月。故可直接支持的2027产能路径是约25万片/月（现有20万+第三厂5万），而不是“2027年初总计30万片/月”。两座额外新厂的10万片/月是各自全面达产的设计能力，报道未给出其在2027年初或2027年底达产的依据。SK hynix“2027年底26万片/月”未找到公司披露、交易所文件或权威媒体的独立出处；该数字目前只能归为作者帖文主张。即使假设YMTC为30万、SK hynix为26万，30万>26万仅能推出名义晶圆产能比较，不能确认NAND实际产出、位出货量或市场份额“超过”SK hynix。",
+          "corrected_claim": "截至2026年8月30日，Reuters报道的YMTC扩产计划显示：其两座现有厂约20万片/月，第三厂预计到2027年约5万片/月；另两座拟建厂与第三厂均以各10万片/月的全面达产设计能力为目标，但未获独立来源确认会在2027年初或年底达产。YMTC据报道以2027年底成为最大NAND供应商为目标，但“YMTC将在2027年以30万片/月超过SK hynix的26万片/月”尚不能独立核实。",
+          "sources": [
+            {
+              "title": "Massiver NAND-Ausbau: YMTC will Samsung und SK Hynix bereits Ende 2027 überholen",
+              "url": "https://computerbase.de/news/wirtschaft/massiver-nand-ausbau-ymtc-will-samsung-und-sk-hynix-bereits-ende-2027-ueberholen.99051",
+              "publisher": "ComputerBase",
+              "source_tier": "INDUSTRY",
+              "support": "CONTEXT_ONLY",
+              "finding": "该文逐字转载了作者X帖中“YMTC 2027年初30万片/月、SK hynix 2027年底26万片/月”的说法；它明确属于作者主张的传播，不能独立确认26万或30万数字。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_df095468ce12b7395ef4c15f",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "截至2026年8月30日，未找到YMTC公告、招股书或政府/交易所文件直接确认“Fab 4、Fab 5的洁净室将在2027年完工”。Reuters于2026年4月报道（匿名知情人士）称，YMTC规划的三座新增厂房各自在“全面运营时”具备10万片/月产能；该报道未逐一命名Fab 4/Fab 5，也未给出两者洁净室完工时间。原帖发布于2026年8月26日，因此“next year”应为2027年；其时间点目前仅属作者说法/后续转载，不能独立确认。",
+          "corrected_claim": "据Reuters 2026年4月援引匿名知情人士的报道，YMTC规划的三座新增晶圆厂各自在全面运营时可达10万片/月；但尚无一级来源或独立高等级报道确认其中Fab 4和Fab 5的洁净室会在2027年完工。10万片/月是满负荷设计产能，并非洁净室完工即实现的产量。",
+          "sources": [
+            {
+              "title": "China's YMTC aims for fully local chip production, but can it deliver?",
+              "url": "https://fidelity.com/news/article/technology/202604140210RTRSNEWSCOMBINED_KBN3QR0FE-OUSBS_1",
+              "publisher": "Reuters（经Fidelity转载）",
+              "source_tier": "SECONDARY",
+              "support": "PARTIAL",
+              "finding": "报道援引三名匿名知情人士称，YMTC三座新增工厂各自在全面运营时可产10万片/月；第三座预计2026年末开始运营、2027年达到5万片/月。未确认Fab 4/Fab 5名称或其洁净室于2027年完工。"
+            },
+            {
+              "title": "Massiver NAND-Ausbau: YMTC will Samsung und SK Hynix bereits Ende 2027 überholen",
+              "url": "https://computerbase.de/news/wirtschaft/massiver-nand-ausbau-ymtc-will-samsung-und-sk-hynix-bereits-ende-2027-ueberholen.99051",
+              "publisher": "ComputerBase",
+              "source_tier": "INDUSTRY",
+              "support": "CONTEXT_ONLY",
+              "finding": "该文嵌入并逐字展示Zephyr于2026年8月26日的X帖；因此只能证明作者确实提出过该预测，不能作为独立事实确认。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_bfa6f54039953cfc1b769ce7",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "“2028年中开始爬坡”仅见于二级聚合报道对Fab 4和Fab 5的转述，且该报道归因于FT；未找到长江存储公开公告直接确认该时点。Reuters此前报道称公司计划在现有项目外再建两座工厂，但未给出“2028年中爬坡”的时间表。因此，该说法若指Fab 4和Fab 5的预期爬坡，存在二级支持；若泛指YMTC整体产能，则表述过宽。",
+          "corrected_claim": "据二级转述，YMTC的Fab 4和Fab 5各规划月产能10万片，洁净室预计于2027年完成，并预计在2028年中开始生产爬坡；这不是YMTC截至2026年8月30日公开公告确认的时间表，且仍取决于建设、设备导入和良率等执行条件。",
+          "sources": [
+            {
+              "title": "企业公告-长江存储",
+              "url": "https://ymtc.com/cn/entesearch",
+              "publisher": "长江存储",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "截至核验日公开企业公告页面未见Fab 4/Fab 5或“2028年中生产爬坡”的正式公告。"
+            },
+            {
+              "title": "Exclusive-Chinese chipmaker YMTC plans new factories amid heightened US-Sino trade tensions, sources say",
+              "url": "https://ca.finance.yahoo.com/news/exclusive-chinese-chipmaker-ymtc-plans-061140921.html",
+              "publisher": "Reuters（经Yahoo Finance转载）",
+              "source_tier": "SECONDARY",
+              "support": "PARTIAL",
+              "finding": "报道称YMTC计划在一座当年完成的工厂之外再建设两座工厂，三座新厂全部投运后将使产能较当时水平增加逾一倍；报道未确认2028年中爬坡。"
+            },
+            {
+              "title": "YMTC Targets Top Global NAND Spot by 2027, Seeking $5B IPO to Oust Samsung",
+              "url": "https://marketbrief.now/tech/ymtc-targets-top-global-nand-spot-by-2027-seeking-5b-ipo-to-oust-samsung-513820d7",
+              "publisher": "MarketBrief",
+              "source_tier": "INDUSTRY",
+              "support": "SUPPORTS",
+              "finding": "页面称Fab 4和Fab 5各为10万片/月，洁净室预计次年完成，并将在2028年中开始爬坡；但其为聚合转述并归因于FT，不能替代公司公告或可直接核验的原始报道。"
+            },
+            {
+              "title": "Techmeme @ 8:25 AM ET, August 26, 2026",
+              "url": "https://techmeme.com/260826/h0825",
+              "publisher": "Techmeme",
+              "source_tier": "INDUSTRY",
+              "support": "CONTEXT_ONLY",
+              "finding": "记录了作者@zephyr_z9关于Fab 4/Fab 5及爬坡的帖子，并将其列为X内容；该帖属于AUTHOR CLAIM，不能独立确认事实。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_916e950a0ea19bdf8357fa35",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "Reuters于2026年4月14日援引匿名知情人士称：YMTC现有两座厂合计约20万片/月，三座新增厂各自满产设计产能10万片/月；据此推算，五座厂均满产时总名义产能约50万片/月。第三厂预计2026年末投运、2027年达到5万片/月；但Reuters明确表示，未能获悉另外两座规划厂的目标投产日期。因此，“总量约45万-50万片/月”有一定推算基础，但“2028年中至年底前实现”未获证实；45万这一具体下限也非Reuters直接披露。且报道称三座新增厂将有部分产能分配给DRAM，不能将全部50万片/月无条件视为NAND产能。YMTC官网可查公告中未发现公司对该2028产能/时点的正式确认。",
+          "corrected_claim": "截至2026年8月30日，权威媒体报道称，若YMTC现有两座厂（合计约20万片/月）和三座新增厂（各10万片/月设计产能）均满产，其总名义晶圆产能可约为50万片/月；但两座后续新厂的投产时间尚未披露，故无法核实其将在2028年中至年底实现，且新增产能的一部分可能用于DRAM而非NAND。",
+          "sources": [
+            {
+              "title": "企业公告 — 长江存储",
+              "url": "https://ymtc.com/cn/entesearch",
+              "publisher": "长江存储",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "截至检索日，公司公告索引未见对“2028年中至年底总产能45万-50万片/月”或两座后续新厂投产时间的正式确认。"
+            },
+            {
+              "title": "Exclusive-Chinese chipmaker YMTC plans new factories amid heightened US-Sino trade tensions, sources say",
+              "url": "https://investing.com/news/stock-market-news/exclusivechinese-chipmaker-ymtc-plans-new-factories-amid-heightened-ussino-trade-tensions-sources-say-4611690",
+              "publisher": "Reuters（经Investing.com转载）",
+              "source_tier": "SECONDARY",
+              "support": "PARTIAL",
+              "finding": "报道称现有两厂合计20万片/月、三座新增厂各自满产10万片/月，隐含总名义产能约50万片/月；第三厂预计2027年达到5万片/月。但Reuters称未能获悉两座后续规划厂的目标投产日期；并称三座新增厂会分配部分产能给DRAM。"
+            },
+            {
+              "title": "上海证券交易所披露文件：深圳市恒运昌真空技术股份有限公司首次公开发行股票并在科创板上市申请文件的第二轮审核问询函之回复",
+              "url": "https://static.sse.com.cn/stock/disclosure/announcement/c/202512/688072_20251229_ZMWD.pdf",
+              "publisher": "上海证券交易所",
+              "source_tier": "PRIMARY",
+              "support": "PARTIAL",
+              "finding": "该发行人回复文件列示的行业信息称，YMTC正在推进三期扩产，三期达产后总产能将达30万片/月；该文件未支持45万-50万片/月于2028年实现。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_02ddf206c5713cba2eb103f3",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "三星确实预计在2027年扩大NAND相关业务，但未在其公开IR/财报中披露“2027年末NAND产能350k WPM”的公司目标。最高优先级的独立量化来源为Mirae Asset Securities于2026年6月25日发布的研究报告，估计三星2027年NAND晶圆产能为403k WPM；该数字比350k高53k（约15%），且报告表述为“2027年”而非明确“2027年末”。因此，2027年NAND产能处于约数十万WPM量级的方向获得支持，但原话的350k和YE27时点均未获核实。",
+          "corrected_claim": "截至2026年8月30日，三星尚未公开确认2027年末NAND产能为350k WPM；Mirae Asset Securities的独立预测为三星2027年NAND产能约403k WPM，且未明确为年末口径。",
+          "sources": [
+            {
+              "title": "Samsung Electronics (005930 KS/Buy): Capacity advantage to become more pronounced in 2027",
+              "url": "https://securities.miraeasset.com/newir/view/pc/en/investor/researchReportsView.jsp?messageId=2340727",
+              "publisher": "Mirae Asset Securities",
+              "source_tier": "SECONDARY",
+              "support": "PARTIAL",
+              "finding": "报告日期为2026年6月25日，明确估计三星2027年NAND晶圆产能为403,000 wafers/month；并非350,000，也未将该数字限定为2027年末。"
+            },
+            {
+              "title": "Samsung Electronics Announces Fourth Quarter and FY 2025 Results",
+              "url": "https://news.samsungsemiconductor.com/global/samsung-electronics-announces-fourth-quarter-and-fy-2025-results",
+              "publisher": "Samsung Electronics",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "公司称将扩大面向AI推理的高性能TLC NAND销售，但公告未披露2027年或年末NAND WPM产能目标。"
+            },
+            {
+              "title": "Samsung Electronics 2026 1Q Interim Report",
+              "url": "https://images.samsung.com/is/content/samsung/assets/global/ir/docs/2026_1Q_Interim_Report.pdf",
+              "publisher": "Samsung Electronics",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "公司文件披露V-NAND技术和产品进展，但未给出350k WPM或2027年末NAND产能指引。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_15c2ac659c11ccbeadd4d985",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "方向上部分成立：Reuters于2026年4月援引两名匿名知情人士称，YMTC三座新增工厂均会为DRAM预留“部分”产能，且已向客户送出LPDDR样品；但报道明确称具体配置将取决于芯片开发进展及2026年末客户反馈。Reuters未给出LPDDR的50k–100k片/月数字，也未确认2027–2028年的确定量产配置。8月行业转述称武汉三期规划以20%产能用于LPDDR试产；按其所称10万片/月设计产能推算约2万片/月，明显不是50k–100k，且该信息不是公司公告或Reuters确认。",
+          "corrected_claim": "截至2026年8月，权威媒体报道称YMTC拟在三座新增工厂中为DRAM预留部分产能，并已送出LPDDR样品；LPDDR量产及产能分配仍取决于技术进展和2026年末客户反馈。没有一级或Reuters证据支持其将在2027–2028年部署50k–100k片/月LPDDR产能。",
+          "sources": [
+            {
+              "title": "Exclusive-Chinese chipmaker YMTC plans new factories amid heightened US-Sino trade tensions, sources say",
+              "url": "https://investing.com/news/stock-market-news/exclusivechinese-chipmaker-ymtc-plans-new-factories-amid-heightened-ussino-trade-tensions-sources-say-4611690",
+              "publisher": "Reuters（转载页）",
+              "source_tier": "SECONDARY",
+              "support": "PARTIAL",
+              "finding": "报道称三座新增工厂均将为DRAM配置部分产能；具体数量取决于DRAM研发进展。YMTC已向客户送出LPDDR样品，预计2026年末反馈将影响生产决策。另称第三厂预计2026年末启动、2027年达5万片/月，但该数字是该厂整体产能，非LPDDR产能。"
+            },
+            {
+              "title": "YMTC and CXMT Push Overseas as Chinese Memory Reaches North America Through Repackaged SSDs",
+              "url": "https://bit.fan/en/news/list/ymtc-cxmt-memory-north-america-ssd-route-en-48ee8fca-en-keyName-7e30386f",
+              "publisher": "Bit.Fan（转述DigiTimes）",
+              "source_tier": "INDUSTRY",
+              "support": "CONTRADICTS",
+              "finding": "转述称武汉三期设计月产能10万片、初始爬坡5万片，并拟将约20%用于LPDDR试产；即约2万片/月设计产能口径，而非50k–100k。该报道为供应链/行业媒体转述，未获公司一级确认。"
+            },
+            {
+              "title": "企业公告-长江存储",
+              "url": "https://ymtc.com/cn/entesearch",
+              "publisher": "长江存储",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "截至核验时查阅的公司公告索引未见关于LPDDR产能配置、50k–100k片/月或2027–2028年量产承诺的公告。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_a6feff7e37e26820056cfaa5",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "标的为长江存储控股（YMTC parent）。截至2026-08-30，公司科创板IPO仍处于“已受理”，尚未确定发行价格或上市后的市场价格。招股书申报稿拟募资330亿元、拟发行后股份占比10%-12%；据此倒推，IPO前股权估值约2,420亿-2,970亿元，基本吻合“Rmb200-300B”这一IPO定价估值区间。惟“上市后估值将超过1万亿元”是媒体/作者对二级市场表现的预期，不是公司、交易所文件已确认的结果或承诺。",
+          "corrected_claim": "长江存储控股的IPO申报文件所隐含的IPO前估值约为2,420亿-2,970亿元人民币；截至2026年8月30日，发行价尚未确定。“上市后市值超过1万亿元人民币”仅属媒体报道和市场预期，未获公司或交易所文件确认。",
+          "sources": [
+            {
+              "title": "国产闪存龙头长存控股科创板IPO获受理 拟募资330亿元",
+              "url": "https://companies.caixin.com/2026-08-22/102476776.html",
+              "publisher": "财新",
+              "source_tier": "SECONDARY",
+              "support": "PARTIAL",
+              "finding": "报道引述招股书：拟募资330亿元、发行后股本占比10%-12%，并估算发行估值可达3,300亿元；同时为更高的上市估值提供市场判断，但非已确定交易条款。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_64e91edbc35a2700fbd777ba",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "该表述包含两部分：(1)“SNDK trades at $220B”基本得到独立二级市场数据支持：2026年8月26日收盘价为$1,499.37；公司最新10-K披露截至2026年8月7日流通股为146,419,001股，隐含市值约$219.5B。(2)“Will be over 2T RMB”是未给出具体时点、估值口径或汇率假设的未来预测，无法由公司公告或独立来源确认。按约7.18人民币/美元举例，2万亿元人民币约合$278.6B，明显高于8月26日约$219.5B的隐含市值。公司在8月13日仅给出FY2028—FY2030收入中高个位数十几%增长、约80%非GAAP毛利率等经营框架，并未给出2万亿元人民币市值目标。",
+          "corrected_claim": "截至2026年8月26日，SNDK按$1,499.37收盘价及公司最新披露的146.419百万股计算，隐含市值约为$219.5B，约可称“$220B”。“市值将超过2万亿元人民币”属于尚未证实的预测；在约7.18人民币/美元下，该门槛约为$278.6B。",
+          "sources": [
+            {
+              "title": "Sandisk Corporation Form 10-K for fiscal year ended July 3, 2026",
+              "url": "https://sec.gov/Archives/edgar/data/2023554/000162828026057406/sndk-20260703.htm",
+              "publisher": "U.S. Securities and Exchange Commission",
+              "source_tier": "PRIMARY",
+              "support": "SUPPORTS",
+              "finding": "披露截至2026年8月7日普通股流通股数为146,419,001股；亦披露2026年1月2日非关联方持有表决权股票市值为$40.5B，后者不是8月26日市值。"
+            },
+            {
+              "title": "SNDK Historical Prices",
+              "url": "https://chartexchange.com/symbol/nasdaq-sndk/historical",
+              "publisher": "ChartExchange",
+              "source_tier": "SECONDARY",
+              "support": "SUPPORTS",
+              "finding": "列示2026年8月26日SNDK收盘价为$1,499.37。结合SEC披露股数，计算隐含市值约$219.5B。"
+            },
+            {
+              "title": "Sandisk Details Growth Strategy and Long-Term Financial Model at 2026 Investor Day",
+              "url": "https://sandisk.com/company/newsroom/press-releases/2026/2026-08-13-sandisk-investor-day-2026",
+              "publisher": "Sandisk",
+              "source_tier": "PRIMARY",
+              "support": "PARTIAL",
+              "finding": "公司对FY2028至FY2030的经营预期为收入中高个位数十几%增长、约80%非GAAP毛利率和约50%调整后自由现金流率；未发布市值或“超过2万亿元人民币”的预测。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_59279894dc16d7118ab337a5",
+          "status": "UNVERIFIABLE",
+          "rationale": "这是作者的定性预测，未定义“赚很多钱”的利润门槛、期间、比较基准或触发条件，因而不能逐字证实。一级披露仅能确认两家公司已有盈利及增长/投入事实，不能确认未来必然“赚很多钱”。北方华创2025年营收393.53亿元、归母净利润55.22亿元；中微公司2025年营收123.85亿元、归母净利润21.11亿元，但这些均为历史业绩，不构成未来盈利承诺。",
+          "corrected_claim": "截至已披露的2025年业绩，AMEC（中微公司）和NAURA（北方华创）均实现可观盈利；但“将赚很多钱”属于未量化、未设期限的作者预测，尚无公司公告或独立高优先级来源可验证其未来必然实现。",
+          "sources": [
+            {
+              "title": "北方华创科技集团股份有限公司2025年年度报告全文",
+              "url": "https://static.cninfo.com.cn/finalpage/2026-04-18/1225122918.PDF",
+              "publisher": "巨潮资讯网／北方华创",
+              "source_tier": "PRIMARY",
+              "support": "PARTIAL",
+              "finding": "披露2025年营业收入393.53亿元，同比增长30.85%；归母净利润55.22亿元，同比下降1.77%。证明公司当前盈利规模较大，但不能证明未来盈利预测。"
+            },
+            {
+              "title": "中微半导体设备（上海）股份有限公司2025年年度报告",
+              "url": "https://pdf.dfcfw.com/pdf/H2_AN202603301820874503_1.pdf",
+              "publisher": "中微公司年度报告（公开披露文件镜像）",
+              "source_tier": "INDUSTRY",
+              "support": "PARTIAL",
+              "finding": "报告披露2025年营业收入123.85亿元，同比增长36.62%；归母净利润21.11亿元，同比增长30.69%。支持其历史盈利增长，不足以确认未来预测。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_c338ca79cc6f5b83d9196e84",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "二级媒体报道支持“YMTC以2027年底为最早时点、超越三星和SK海力士并成为全球NAND第一”的目标。但报道所述场景是为IPO举行的投资者及利益相关方会议，而非可核实的“内部会议”；且未找到YMTC公告、IPO文件或会议材料对该具体目标的直接确认。",
+          "corrected_claim": "据《金融时报》援引两名知情人士、并被其他媒体转述，YMTC在筹备IPO期间的投资者及利益相关方会议上提出目标：最早于2027年底成为全球最大NAND供应商，超过三星电子和SK海力士。该目标尚无YMTC一级公告或公开文件直接证实。",
+          "sources": [
+            {
+              "title": "“2027年超越三星电子和SK海力士” IPO在即的中国NAND企业目标登顶市场第一",
+              "url": "https://view.asiae.co.kr/cn/article/2026082614235221923",
+              "publisher": "The Asia Business Daily",
+              "source_tier": "SECONDARY",
+              "support": "PARTIAL",
+              "finding": "报道称其援引《金融时报》及两名知情人士：YMTC在筹备IPO的投资者及利益相关方会议中提出，最早在2027年底前成为全球NAND市场第一。支持目标、对象和时点；但与“内部会议”表述不符。"
+            },
+            {
+              "title": "YMTC targets global NAND lead by 2027 as parent seeks US$5 billion IPO",
+              "url": "https://digitimes.com/news/a20260826VL222/ymtc-nand-2027-ipo-shipments.html",
+              "publisher": "DIGITIMES",
+              "source_tier": "INDUSTRY",
+              "support": "SUPPORTS",
+              "finding": "报道明确称YMTC目标是在2027年底前成为全球最大NAND闪存供应商，并将其与母公司筹备上海上市相联系。"
+            },
+            {
+              "title": "Company Profile",
+              "url": "https://ymtc.com/en/aboutus.html",
+              "publisher": "YMTC",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "YMTC官网仅表述其愿景为成为全球领先的3D NAND闪存解决方案提供商；未披露“2027年底成为全球第一”、超越三星和SK海力士，亦未披露相关会议。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_1dd824cdc77368fbacfc193c",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "“2000-3000亿元”有权威媒体来源支撑为早期潜在IPO估值区间，但不是已确定的IPO发行定价。2026年8月21日披露的申请材料显示，拟募资330亿元、发行后占比10%-12%，按此倒推的发行后估值约为2750亿-3300亿元。超过1万亿元属于媒体所述市场/行业预期，尚非公司、交易所或招股文件给出的正式估值或上市后结果。",
+          "corrected_claim": "截至2026年8月，YMTC母公司IPO尚未确定发行价。早期媒体曾报道称其潜在IPO估值或为2000亿-3000亿元；按已披露的330亿元募资额及10%-12%发行后股份占比倒推，隐含发行后估值约2750亿-3300亿元。上市后市值超过1万亿元仅属市场预期，未获公司或交易所正式确认。",
+          "sources": [
+            {
+              "title": "Global Times | Chinese chipmaker YMTC files for $4.6 billion STAR market IPO after fellow CXMT's record debut",
+              "url": "https://english.sse.com.cn/news/newsrelease/voice/c/c_20260827_10830148.shtml",
+              "publisher": "Shanghai Stock Exchange（转载Global Times）",
+              "source_tier": "PRIMARY",
+              "support": "PARTIAL",
+              "finding": "援引招股书：拟发行19.8亿-24.3亿股，占发行后10%-12%，募资330亿元；据此隐含发行后估值2750亿-3300亿元。该数字是按募资额和发行比例推算，并非已经确定的发行价格。"
+            },
+            {
+              "title": "Chinese flash-memory chipmaker YMTC parent targets $4.9 billion in Shanghai IPO",
+              "url": "https://fidelity.com/news/article/company-news/202608211052RTRSNEWSCOMBINED_L1N44I0DE_1",
+              "publisher": "Reuters（Fidelity转载）",
+              "source_tier": "SECONDARY",
+              "support": "PARTIAL",
+              "finding": "报道CCSH拟在上交所科创板募资330亿元，并称发行19.8亿-24.3亿股隐含发行后估值约2750亿-3300亿元。"
+            },
+            {
+              "title": "China Chipmaker Yangtze Memory Is Said to Consider IPO Next Year",
+              "url": "https://news.bloomberglaw.com/mergers-and-acquisitions/china-chipmaker-yangtze-memory-is-said-to-consider-ipo-next-year",
+              "publisher": "Bloomberg News",
+              "source_tier": "SECONDARY",
+              "support": "SUPPORTS",
+              "finding": "2025年报道援引知情人士称，YMTC可能寻求2000亿-3000亿元估值；这是非公开信息下的潜在估值说法，不是最终IPO定价。"
+            },
+            {
+              "title": "YMTC Moves Closer to Shanghai IPO",
+              "url": "https://caixinglobal.com/2026-08-20/ymtc-moves-closer-to-shanghai-ipo-102476082.html",
+              "publisher": "Caixin Global",
+              "source_tier": "SECONDARY",
+              "support": "PARTIAL",
+              "finding": "报道称在市场情绪推动下，YMTC估值“could potentially reach at least 1 trillion yuan”；属于媒体/市场预期，未给出公司正式预测或已实现上市后市值。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_788c87060e7a7f4cd53163ee",
+          "status": "UNVERIFIABLE",
+          "rationale": "原断言未披露“某主体”名称、地点或原始帖文内容，无法将“5座”唯一归属给某家公司并核验其是否为新增量。最接近的可核实匹配是三星电子：Reuters于2023年3月援引韩国贸易工业能源部称，三星在韩国的新增制造布局包括5座芯片工厂、投资期限至2042年。但该数字并非当前一手公司公告中可直接逐字确认的“长期新建5座晶圆厂”。",
+          "corrected_claim": "若所指主体为三星电子：其2023年公布的韩国半导体集群计划，被Reuters援引韩国政府表述为至2042年新增5座芯片工厂；应注明主体、地点及期限，且不要泛化为其全球长期计划。",
+          "sources": [
+            {
+              "title": "대한민국, 첨단산업 초강대국으로 도약한다!",
+              "url": "https://korea.kr/news/policyNewsView.do?newsId=148913139",
+              "publisher": "韩国政府政策简报",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "韩国政府确认计划至2042年在京畿道建设先进系统半导体集群，并支持约300万亿韩元私人投资；该页面未列明5座工厂。"
+            },
+            {
+              "title": "Samsung Electronics to invest $230 bln through 2042 in South Korea chipmaking base",
+              "url": "https://finance.yahoo.com/news/samsung-electronics-invest-230-bln-024015098.html",
+              "publisher": "Reuters",
+              "source_tier": "SECONDARY",
+              "support": "SUPPORTS",
+              "finding": "报道称韩国贸易工业能源部表示，三星的制造扩建将包括5座芯片工厂，相关投资延续至2042年。"
+            }
+          ]
+        }
+      ],
+      "underlying_sources": [
+        {
+          "underlying_source_id": "underlying_12f4482f450301ed889e4e40",
+          "class": "PRIMARY",
+          "publisher": "YMTC",
+          "title": "YMTC Xtacking®4.0 Recognized as Most Innovative Technology at FMS 2025",
+          "url": "https://ymtc.com/en/news/41.html",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_13d7c4317f5871ebf00f0c30",
+          "class": "PRIMARY",
+          "publisher": "韩国政府政策简报",
+          "title": "대한민국, 첨단산업 초강대국으로 도약한다!",
+          "url": "https://korea.kr/news/policyNewsView.do?newsId=148913139",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_17669a7da38925360682eea0",
+          "class": "SECONDARY",
+          "publisher": "Reuters",
+          "title": "Samsung Electronics to invest $230 bln through 2042 in South Korea chipmaking base",
+          "url": "https://finance.yahoo.com/news/samsung-electronics-invest-230-bln-024015098.html",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_1f62ea88717a976413dfa7ea",
+          "class": "PRIMARY",
+          "publisher": "YMTC",
+          "title": "Company Profile",
+          "url": "https://ymtc.com/en/aboutus.html",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_238e68ee929e07b374016fb6",
+          "class": "PRIMARY",
+          "publisher": "长江存储（YMTC）",
+          "title": "企业公告",
+          "url": "https://ymtc.com/cn/entesearch",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_2d9103496d8a0c732076b43c",
+          "class": "INDUSTRY",
+          "publisher": "证券时报网",
+          "title": "存储巨头大消息！一季度净赚333亿元，IPO刚刚受理",
+          "url": "https://stcn.com/article/detail/4099497.html",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_3502457b27cc4c5cf8a2b13b",
+          "class": "PRIMARY",
+          "publisher": "上海证券交易所",
+          "title": "注册项目动态｜上海证券交易所科创板",
+          "url": "https://star.sse.com.cn/star/renewal",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_35c74b6764e2d28016b2cc9c",
+          "class": "INDUSTRY",
+          "publisher": "Bit.Fan（转述DigiTimes）",
+          "title": "YMTC and CXMT Push Overseas as Chinese Memory Reaches North America Through Repackaged SSDs",
+          "url": "https://bit.fan/en/news/list/ymtc-cxmt-memory-north-america-ssd-route-en-48ee8fca-en-keyName-7e30386f",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_3ef9e7a146448e84e38b1195",
+          "class": "SECONDARY",
+          "publisher": "Asiae Business Daily",
+          "title": "“2027年超越三星电子和SK海力士” IPO在即的中国NAND企业目标登顶市场第一",
+          "url": "https://view.asiae.co.kr/cn/article/2026082614235221923",
+          "social_mentions": 2
+        },
+        {
+          "underlying_source_id": "underlying_40aa52415476e8a1a2fc93ca",
+          "class": "INDUSTRY",
+          "publisher": "Techmeme",
+          "title": "Techmeme @ 8:25 AM ET, August 26, 2026",
+          "url": "https://techmeme.com/260826/h0825",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_42fc05af23f092ee56c9ef37",
+          "class": "INDUSTRY",
+          "publisher": "证券时报网",
+          "title": "长江存储控股股份有限公司",
+          "url": "https://stcn.com/ipo/detail/3867.html",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_4b9ca5d98c7941e228ddabb3",
+          "class": "INDUSTRY",
+          "publisher": "新浪科技（转载快科技）",
+          "title": "长江存储剑指全球第一！NAND产能猛扩：明年超越三星SK海力士",
+          "url": "https://finance.sina.com.cn/tech/discovery/2026-08-26/doc-iniprytq2385816.shtml",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_4c71f023cc2b126634464284",
+          "class": "PRIMARY",
+          "publisher": "巨潮资讯网／北方华创",
+          "title": "北方华创科技集团股份有限公司2025年年度报告全文",
+          "url": "https://static.cninfo.com.cn/finalpage/2026-04-18/1225122918.PDF",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_4e7c3c4401380157d4c7680e",
+          "class": "MEDIA",
+          "publisher": null,
+          "title": null,
+          "url": null,
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_50acc166ded152cc914c3b9b",
+          "class": "PRIMARY",
+          "publisher": "上海证券交易所",
+          "title": "上海证券交易所披露文件：深圳市恒运昌真空技术股份有限公司首次公开发行股票并在科创板上市申请文件的第二轮审核问询函之回复",
+          "url": "https://static.sse.com.cn/stock/disclosure/announcement/c/202512/688072_20251229_ZMWD.pdf",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_53fce6dc6c9a22cab9e2326b",
+          "class": "SECONDARY",
+          "publisher": "ChartExchange",
+          "title": "SNDK Historical Prices",
+          "url": "https://chartexchange.com/symbol/nasdaq-sndk/historical",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_5ab96579d19ac57c571c18b0",
+          "class": "SECONDARY",
+          "publisher": "财新",
+          "title": "Chinese Memory-Chipmaker YMTC Parent Files for $4.9 Billion IPO",
+          "url": "https://caixinglobal.com/2026-08-24/chinese-memory-chipmaker-ymtc-parent-files-for-49-billion-ipo-102477468.html",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_5ba631149e388d9322f0f1b1",
+          "class": "SECONDARY",
+          "publisher": null,
+          "title": null,
+          "url": "https://ft.com/content/1b1c357f-6a1c-4ce3-bb47-980c3de4d3d2?desktop=true&segmentId=d8d3e364-5197-20eb-17cf-2437841d178a&syn-25a6b1a6=1",
+          "social_mentions": 4
+        },
+        {
+          "underlying_source_id": "underlying_5d611daea431c070edd11678",
+          "class": "INDUSTRY",
+          "publisher": "ComputerBase",
+          "title": "Massiver NAND-Ausbau: YMTC will Samsung und SK Hynix bereits Ende 2027 überholen",
+          "url": "https://computerbase.de/news/wirtschaft/massiver-nand-ausbau-ymtc-will-samsung-und-sk-hynix-bereits-ende-2027-ueberholen.99051",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_61d7b3a6cd9bf8befe960017",
+          "class": "INDUSTRY",
+          "publisher": "Tom's Hardware",
+          "title": "China's YMTC aims to become the world's largest NAND maker by the end of 2027, report says — company plans to overtake Samsung and SK hynix",
+          "url": "https://tomshardware.com/pc-components/dram/chinas-ymtc-aims-to-become-the-worlds-largest-nand-maker-by-the-end-of-2027",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_6244221e4e6d20ee72fe7962",
+          "class": "PRIMARY",
+          "publisher": "U.S. Securities and Exchange Commission",
+          "title": "Sandisk Corporation Form 10-K for fiscal year ended July 3, 2026",
+          "url": "https://sec.gov/Archives/edgar/data/2023554/000162828026057406/sndk-20260703.htm",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_6bd46b790a2dccb32e705c77",
+          "class": "SECONDARY",
+          "publisher": null,
+          "title": null,
+          "url": "https://as.ft.com/r/939b2ffb-5c0e-4c6a-8ba3-4fbb1746995a",
+          "social_mentions": 3
+        },
+        {
+          "underlying_source_id": "underlying_7517453e312eeb827460459f",
+          "class": "SECONDARY",
+          "publisher": "财新网",
+          "title": "国产闪存龙头长存控股科创板IPO获受理 拟募资330亿元",
+          "url": "https://companies.caixin.com/2026-08-22/102476776.html",
+          "social_mentions": 2
+        },
+        {
+          "underlying_source_id": "underlying_7d3412a51636ed29afd6ea34",
+          "class": "INDUSTRY",
+          "publisher": "DIGITIMES",
+          "title": "YMTC targets global NAND lead by 2027 as parent seeks US$5 billion IPO",
+          "url": "https://digitimes.com/news/a20260826VL222/ymtc-nand-2027-ipo-shipments.html",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_7dc27a80346ec9303f8332db",
+          "class": "INDUSTRY",
+          "publisher": "中微公司年度报告（公开披露文件镜像）",
+          "title": "中微半导体设备（上海）股份有限公司2025年年度报告",
+          "url": "https://pdf.dfcfw.com/pdf/H2_AN202603301820874503_1.pdf",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_7e953b22b4ef060ccc64a254",
+          "class": "PRIMARY",
+          "publisher": "中信证券股份有限公司",
+          "title": "中信证券股份有限公司关于长江存储控股股份有限公司的辅导备案公告",
+          "url": "https://citics.citic/newsite/tzgg/ipoqyfdgg/202605/t20260519_1212097.html",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_94948f36756c49d33003346b",
+          "class": "SECONDARY",
+          "publisher": "Reuters（Fidelity转载）",
+          "title": "Chinese flash-memory chipmaker YMTC parent targets $4.9 billion in Shanghai IPO",
+          "url": "https://fidelity.com/news/article/company-news/202608211052RTRSNEWSCOMBINED_L1N44I0DE_1",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_9771b04cdfeabc918a51cbbc",
+          "class": "SECONDARY",
+          "publisher": "Reuters（经Fidelity转载）",
+          "title": "China's YMTC aims for fully local chip production, but can it deliver?",
+          "url": "https://fidelity.com/news/article/technology/202604140210RTRSNEWSCOMBINED_KBN3QR0FE-OUSBS_1",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_98349be99626f9c3dec04d8e",
+          "class": "PRIMARY",
+          "publisher": "Sandisk",
+          "title": "Sandisk Details Growth Strategy and Long-Term Financial Model at 2026 Investor Day",
+          "url": "https://sandisk.com/company/newsroom/press-releases/2026/2026-08-13-sandisk-investor-day-2026",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_98e12b153be9df6da8c0de7b",
+          "class": "SECONDARY",
+          "publisher": "Reuters（转载页）",
+          "title": "Exclusive—Chinese chipmaker YMTC plans new factories amid heightened US-Sino trade tensions, sources say",
+          "url": "https://investing.com/news/stock-market-news/exclusivechinese-chipmaker-ymtc-plans-new-factories-amid-heightened-ussino-trade-tensions-sources-say-4611690",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_a50033b750e5ca66aeb75a67",
+          "class": "SECONDARY",
+          "publisher": "Caixin Global",
+          "title": "YMTC Moves Closer to Shanghai IPO",
+          "url": "https://caixinglobal.com/2026-08-20/ymtc-moves-closer-to-shanghai-ipo-102476082.html",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_ae8bb9c94175cbe83bad4d10",
+          "class": "SECONDARY",
+          "publisher": "Reuters（由MarketScreener转载）",
+          "title": "Chinese chipmaker YMTC plans new factories amid heightened US-Sino trade tensions, sources say",
+          "url": "https://marketscreener.com/news/chinese-chipmaker-ymtc-plans-new-factories-amid-heightened-us-sino-trade-tensions-sources-say-ce7e50ded18efe2d",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_b1684f24249cf7e8c01a2c11",
+          "class": "PRIMARY",
+          "publisher": "Samsung Electronics",
+          "title": "Samsung Electronics 2026 1Q Interim Report",
+          "url": "https://images.samsung.com/is/content/samsung/assets/global/ir/docs/2026_1Q_Interim_Report.pdf",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_c12434c2210d63bc8367d4b1",
+          "class": "PRIMARY",
+          "publisher": "Samsung Electronics",
+          "title": "Samsung Electronics Announces Fourth Quarter and FY 2025 Results",
+          "url": "https://news.samsungsemiconductor.com/global/samsung-electronics-announces-fourth-quarter-and-fy-2025-results",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_cc37a89003a26c6cdd5b739c",
+          "class": "INDUSTRY",
+          "publisher": "MarketBrief",
+          "title": "YMTC Targets Top Global NAND Spot by 2027, Seeking $5B IPO to Oust Samsung",
+          "url": "https://marketbrief.now/tech/ymtc-targets-top-global-nand-spot-by-2027-seeking-5b-ipo-to-oust-samsung-513820d7",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_d95739d44ca4bf0c9d891806",
+          "class": "SECONDARY",
+          "publisher": "Reuters（经Yahoo Finance转载）",
+          "title": "Exclusive-Chinese chipmaker YMTC plans new factories amid heightened US-Sino trade tensions, sources say",
+          "url": "https://ca.finance.yahoo.com/news/exclusive-chinese-chipmaker-ymtc-plans-061140921.html",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_de09a753617744fc574427c5",
+          "class": "SECONDARY",
+          "publisher": "Bloomberg News",
+          "title": "China Chipmaker Yangtze Memory Is Said to Consider IPO Next Year",
+          "url": "https://news.bloomberglaw.com/mergers-and-acquisitions/china-chipmaker-yangtze-memory-is-said-to-consider-ipo-next-year",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_e2afcd83ec55cedc8f3fd83b",
+          "class": "SECONDARY",
+          "publisher": "Mirae Asset Securities",
+          "title": "Samsung Electronics (005930 KS/Buy): Capacity advantage to become more pronounced in 2027",
+          "url": "https://securities.miraeasset.com/newir/view/pc/en/investor/researchReportsView.jsp?messageId=2340727",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_ea00776c0da3d3072b963180",
+          "class": "INDUSTRY",
+          "publisher": "新浪财经",
+          "title": "长江存储控股股份有限公司项目详情",
+          "url": "https://money.finance.sina.com.cn/corp/view/vRPD_NewStockMeetingDetail.php?companycode=81587825",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_edb28a04b34921e7d5422959",
+          "class": "SECONDARY",
+          "publisher": "Reuters（经MarketScreener转载）",
+          "title": "Chinese flash-memory chipmaker YMTC plans to raise $4.9 billion in Shanghai IPO",
+          "url": "https://marketscreener.com/news/chinese-flash-memory-chipmaker-ymtc-plans-to-raise-4-9-billion-in-shanghai-ipo-ce7858dadb8ff420",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_f119559ecb03ccb635307d45",
+          "class": "INDUSTRY",
+          "publisher": "上海证券交易所（转载《环球时报》）",
+          "title": "Global Times | Chinese chipmaker YMTC files for $4.6 billion STAR market IPO after fellow CXMT's record debut",
+          "url": "https://english.sse.com.cn/news/newsrelease/voice/c/c_20260827_10830148.shtml",
+          "social_mentions": 2
+        }
+      ],
+      "research_case_analysis": {
+        "title": "YMTC → NAND → China WFE",
+        "analysis": {
+          "author_views": [
+            {
+              "author": "tw_zephyr_z9",
+              "view": "称YMTC“长期计划建设5座新厂”，并认为AMEC与NAURA将显著受益。"
+            },
+            {
+              "author": "tw_zephyr_z9",
+              "view": "预测YMTC于2027—2028年快速扩产，部分产能转向LPDDR，并可能增加NAND供给。"
+            },
+            {
+              "author": "tw_jukan05 / Financial Times转述",
+              "view": "YMTC据报目标最早于2027年底成为全球最大NAND生产商；这是目标而非已实现事实。"
+            }
+          ],
+          "facts": [
+            "长江存储控股的科创板IPO于2026-08-21获受理；申报募投项目拟投入330亿元，其中208亿元用于量产线技术升级、122亿元用于研发。融资尚未完成。",
+            "Reuters 2026年4月报道称，YMTC两座既有厂合计约20万片/月；第三厂预计2026年底运营、2027年约达5万片/月。",
+            "同一Reuters报道指YMTC规划三座新增厂，满产设计能力各约10万片/月；后两座的投产日期未披露。",
+            "Reuters称新增厂可能为DRAM预留部分产能，YMTC已向客户送出LPDDR样品；具体配置取决于开发和客户反馈。",
+            "输入没有提供YMTC或CXMT当前/未来盈利能力、自由现金流或可用于资本开支的现金数据。",
+            "输入没有提供YMTC对NAURA或AMEC的采购份额、订单、设备品类覆盖或验收数据。"
+          ],
+          "verified_evidence": [
+            "“5座新厂”的唯一直接表述来自作者社交帖文，未获独立验证。",
+            "较高质量的Reuters证据支持的是：两座既有厂之外规划三座新增厂，而不是五座新增厂。",
+            "若将两座既有厂与三座新增厂相加，可推算远期为五座厂的总厂数；但这依赖于口径一致，且不是公司已确认的“长期五厂总计划”。",
+            "IPO募资用途支持潜在产线技术升级及研发投入，但不能证明实际资本开支、设备下单或任何供应商收入已发生。",
+            "同一FT报道的多次社交转发只构成一项底层二级证据，不能增加证据权重。"
+          ],
+          "logic_chain": [
+            "审计问题1：证据不支持“额外新建5座厂”。",
+            "更严谨的表述是：Reuters报道称YMTC有两座现有厂及三座规划新增厂；若均纳入同一口径，远期总数可推算为5座。Fab 4/Fab 5与Reuters所称后两座新增厂的映射仍未证实。",
+            "审计问题2：若YMTC/CXMT盈利和融资能力提高，理论上可提高其资本开支承受能力；但输入并未证明盈利提高，因此链条的首个前提未成立。",
+            "即使资本开支提高，只有在设备预算落地、采购本土设备、设备通过验证并完成交付/验收时，才会转化为中国WFE需求。",
+            "只有在NAURA/AMEC拥有相关工艺环节的合格产品、取得采购份额且订单规模具实质性时，行业WFE增长才会转化为两家公司收入和利润。",
+            "若YMTC有效NAND bit供给增加快于需求和竞争对手减产，NAND价格及原厂利润可能承压；这对SNDK构成条件性风险，但不能仅凭名义WPM直接推出。"
+          ],
+          "corrections": [
+            "将“5座新厂”修正为“报道支持三座新增厂；五座为两座现有厂加三座新增厂的条件性总数推算”。",
+            "将“330亿元扩产融资”修正为“IPO申报中拟投入量产线技术升级及研发的金额；并非已完成融资或已下达设备订单”。",
+            "将“产能”与“NAND供给”分开：总WPM、NAND可用WPM、良率后的bit产出及可销售出货不是同一口径。",
+            "将“AMEC/NAURA必然受益”修正为“若获得YMTC可验证订单及验收，可能受益”；目前没有供应商份额证据。"
+          ],
+          "contradictions": [
+            "作者称长期建设5座新厂；Reuters路径为三座新增厂加两座既有厂，二者在“新增量”口径上不一致。",
+            "作者称2027年初总产能30万片/月；Reuters直接支持的2027年路径约为25万片/月（既有20万加第三厂5万）。",
+            "作者称2028年中后期45万—50万片/月；Reuters虽支持五厂满产设计能力约50万片/月的理论推算，但未披露后两座厂投产时间。",
+            "作者将部分产能用于LPDDR的规模定为50k—100k WPM；Reuters仅支持“部分DRAM产能预留及LPDDR送样”，不支持该规模。"
+          ],
+          "ai_assessment": "这是值得追踪的中国存储扩产与NAND远期供给风险主题，但尚不能用“5座新增厂”或“YMTC/CXMT盈利提升”作为已证实前提。对中国WFE的方向性影响合理，对NAURA/AMEC的公司级盈利影响则缺订单和份额证据；对SNDK的影响为中期、条件性的供给风险。",
+          "counter_case": [
+            "后两座规划厂可能延迟、缩减，或受设备、材料、良率和出口限制影响而无法按设计能力爬坡。",
+            "新增厂可能有部分产能用于DRAM试产，降低NAND新增供给。",
+            "AI、企业级SSD及高容量NAND需求增长，或竞争对手减产，可吸收新增有效bit供给。",
+            "YMTC可能优先采购其他本土或海外替代设备；NAURA/AMEC未必取得足够份额，且收入确认滞后于厂务建设。",
+            "SNDK可通过产品结构、技术迭代、减产或定价策略缓冲区域性供给冲击。"
+          ],
+          "second_order_effects": [
+            "扩产预期本身可能影响NAND长单、库存和估值，早于实际晶圆投产。",
+            "若本土设备装机增加，后续备件、维护和升级需求可能形成，但通常晚于首台设备交付。",
+            "若NAND扩产与DRAM项目竞争资本和工程资源，YMTC的NAND成本与爬坡效率可能受机会成本影响。",
+            "本土NAND供给增加可改善中国SSD、模组及终端厂的供应安全和采购议价能力，同时加剧其产品价格竞争。"
+          ],
+          "beneficiaries": [
+            "获得YMTC订单、完成验证及验收的本土设备、材料、零部件供应商。",
+            "中国SSD、存储模组和终端厂商，前提是本地NAND供应具备成本、质量和稳定性竞争力。",
+            "YMTC本身，前提是融资、建设、良率和客户认证兑现。"
+          ],
+          "negative_exposure": [
+            "对消费级或主流NAND ASP高度敏感、且缺少成本或产品结构优势的NAND供应商。",
+            "若行业过度扩产后需求走弱，依赖新增晶圆厂订单的设备与材料供应链。",
+            "将远期设计WPM直接资本化、但缺乏订单验证的中国半导体概念标的。"
+          ],
+          "risks": [
+            "IPO仍处于受理阶段，最终融资额、资金到位时间和项目投入均可变动。",
+            "WPM不是bit产出：层数、die面积、良率、产品组合和稼动率会显著改变实际供给。",
+            "YMTC的NAND/DRAM产能分配及LPDDR商业化仍未确定。",
+            "设备供应商受益取决于工艺覆盖、认证、价格、份额和验收，不取决于厂房数量本身。",
+            "NAND价格对新增供给的敏感度取决于全球供需，而非单一厂商名义产能。"
+          ],
+          "valuation_questions": [
+            "YMTC实际资本开支中设备占比多少？哪些工艺环节由NAURA、AMEC或其他供应商覆盖？",
+            "NAURA和AMEC对YMTC/CXMT的收入敞口、订单能见度、毛利率及验收周期分别是多少？",
+            "YMTC后两座厂的正式建设、设备搬入、试产和良率里程碑为何？",
+            "新增总WPM中实际用于NAND的比例、对应的层数和可销售bit产出是多少？",
+            "SNDK当前估值隐含的NAND ASP、bit增长、行业利用率及长期自由现金流假设是什么？"
+          ],
+          "catalysts": [
+            "YMTC更新招股书披露产能、资本开支、设备采购、供应商或项目进度。",
+            "地方政府环评、招标、设备搬入或供应商公告验证后两座厂的建设时点。",
+            "NAURA/AMEC披露与YMTC相关的订单、验收或客户导入信息。",
+            "YMTC LPDDR获得客户认证或量产的独立确认。",
+            "NAND合约价、库存、利用率和主要原厂资本开支指引出现显著变化。"
+          ],
+          "invalidation_conditions": [
+            "可靠一级来源证实后两座规划厂取消、长期延后，或与市场所称Fab 4/Fab 5并非同一项目。",
+            "第三厂未能接近2027年约5万片/月的报道路径。",
+            "没有证据显示NAURA/AMEC取得实质订单或通过相关工艺验证。",
+            "新增有效NAND bit供给未上升，或需求及同业减产持续足以吸收供给，NAND价格未受压。",
+            "YMTC/CXMT盈利、现金流或融资可得性未改善，导致扩产资本开支无法兑现。"
+          ],
+          "unknowns": [
+            "“五座厂”中每座的正式编号、位置、建设阶段和与Reuters项目的映射。",
+            "YMTC与CXMT的盈利能力是否提高、提高幅度、现金流质量和资本开支预算。",
+            "YMTC对NAURA、AMEC的采购品类、份额、订单金额及验收时间。",
+            "后两座新厂的设备来源、先进节点能力、良率和实际投产日期。",
+            "LPDDR的客户、技术节点、良率、商业化时间与实际WPM配置。",
+            "YMTC新增NAND的可销售bit产出，以及其对全球而非中国区域供需平衡的净影响。"
+          ],
+          "actionability": "RESEARCH",
+          "scores": {
+            "thesis_quality": 5,
+            "evidence_quality": 4,
+            "novelty": 5,
+            "mispricing_potential": 6,
+            "actionability": 4
+          }
+        },
+        "model": "gpt-5.6-terra",
+        "updated_at": "2026-08-30T14:04:22.841Z"
+      },
+      "missing_seed_posts": []
+    },
+    "case_b_abf_copos_cowop_pcb": {
+      "posts": [
+        {
+          "post_id": "1997151412309078335",
+          "source_id": "ctx_tw_zephyr_z9",
+          "published_at": "2025-12-06T03:49:36+00:00",
+          "text": "ABF substrates are such a great long-term play\nShortages will persist for the next 2 years for sure\nAfter that, Feynman drops, which will lead to a huge increase in ABF substrate usage (TAM expansion) https://t.co/DU5HrU7Px0"
+        },
+        {
+          "post_id": "2025470786073755771",
+          "source_id": "tw_zephyr_z9",
+          "published_at": "2026-02-22T07:20:41+00:00",
+          "text": "@jukan05 @Alisvolatprop12 CoWoP"
+        },
+        {
+          "post_id": "2066651558784463190",
+          "source_id": "tw_jukan05",
+          "published_at": "2026-06-15T22:38:22+00:00",
+          "text": "TSMC Teams Up with Ibiden and Innolux to Push CoPoS — Reportedly Flooring the Accelerator in Glass Substrates\n\nTo meet robust AI chip demand, TSMC is not only ramping CoWoS advanced packaging capacity but has, for the first time, disclosed progress on its \"glass substrate\" technology. The company further signaled that the next-generation advanced packaging battle is gradually shifting from CoWoS to CoPoS (Chip-on-Panel-on-Substrate), as it moves to build out a complete ecosystem ahead of the curve.\n\nAccording to equipment-side sources, TSMC recently shared a \"Glass Substrate Development for CoWoS\" program with its supply chain. It has confirmed a partnership with ABF substrate giant Ibiden and panel maker Innolux to jointly validate the feasibility of introducing glass substrates into next-generation CoWoS advanced packaging. The aim is to address the warpage, thermal management, signal transmission, and power delivery challenges that loom over future large-die AI chip packaging.\n\nAt the same time, the move reflects rapidly intensifying customer demands around technical specifications and capacity, as well as mounting competitive pressure from Intel and Samsung Electronics. That pressure has finally pushed TSMC—long known for advancing R&D on a \"cautious, not aggressive\" basis—to step on the accelerator.\n\nGlass substrates are viewed as a key technology for the \"post-CoWoS era\" thanks to their low warpage, low thermal expansion, high rigidity, and excellent signal and power-delivery characteristics. Supply chain sources say the three-way collaboration among TSMC, Ibiden, and Innolux, together with simulation validation, has shown that glass substrates can improve the package-warpage indicator COP (Chip on Package) by 16%, lower the effective coefficient of thermal expansion (Effective CTE) by 19%, and raise the effective modulus (Effective Modulus) by 31%.\n\nOn power integrity, resistance fell by 27% and inductance by 42%. Overall, introducing glass substrates can deliver a marked improvement in package performance (PKG Improvement).\n\nTSMC nonetheless stressed that continued research and validation are still needed on glass thickness (Glass Thickness) and large-size CoWoS layout (Large-size CoWoS Layout). While full-scale mass production remains some distance away, this marks the first time TSMC has publicly disclosed joint glass-substrate validation results with Ibiden and Innolux—signaling that glass substrates have formally entered the industrialization-validation phase.\n\nIndustry observers added that the 16% COP improvement indicates package warpage is being effectively controlled. As AI GPU dies grow ever larger—with NVIDIA's GB200, GB300, and the now-ramping Rubin platform all expanding in package size—the importance of package flatness and warpage control has risen sharply. The performance glass substrates show in reducing warpage should help lift the yield and reliability of large packages.\n\nIn addition, the 19% reduction in SBT effective CTE shows improved matching between the glass material and the silicon die.\n\nToday, silicon's CTE differs substantially from that of conventional organic substrates, making it prone to stress under temperature swings that can compromise package reliability. By contrast, glass has a CTE closer to that of silicon, which helps reduce thermal stress and mitigate cracking and solder-joint fatigue. The 31% gain in effective modulus means higher overall rigidity, providing better structural support. In particular, as HBM stack heights keep increasing, substrate rigidity is becoming a critical condition for supporting large packages.\n\nThe test sample TSMC used this time featured a 0.8mm glass core substrate, a package spec of 5x reticle CoW, and an overall package size of 85×110mm—an AI GPU package-class footprint. TSMC specifically emphasized \"No SeWaRe (severe warpage) & Delamination,\" meaning no severe warpage or delamination/peeling—both yield killers—occurred during testing.\n\nFor glass substrates, material bonding reliability has always been a key challenge, so maintaining a stable structure at large package sizes demonstrates considerable progress in technical maturity.\n\nAnother focus of the program was the comparison between Glass-SBT and Organic-SBT. TSMC noted that Glass-SBT achieves \"thin but better COP,\" whereas Organic-SBT shows \"thick but worse COP\"—glass substrates can stay thinner while simultaneously improving package flatness and reliability.\n\nThe partner roster also hints at the direction of the future supply chain.\n\nIbiden currently sits in the critical substrate supply chain for NVIDIA and AMD AI chips and is regarded as a key player in industrializing glass substrates. It previously announced a ¥500 billion investment to expand its new Ono plant in Gifu Prefecture, dedicated to high-end packaging substrates for AI servers—underscoring its strong ambitions in the AI advanced-packaging market. Innolux's inclusion on the partner list is likewise seen as an important step toward staking out the next-generation glass-substrate battlefield.\n\nIndustry sources say the biggest challenge for glass substrates is not the glass itself but Through Glass Via (TGV) technology. Because glass is fundamentally an insulator, tens of thousands of TGVs must be formed to create vertical conductive paths before signal and power transmission becomes possible.\n\nGlass is also both hard and brittle, making it prone to micro-cracks during processing that can affect reliability and yield. As a result, via forming, copper-fill quality, and long-term thermal reliability are considered the three core hurdles to mass-producing glass substrates.\n\nSeparately, Intel began investing in glass-substrate R&D more than a decade ago and is regarded as the earliest and deepest player globally. Its glass-substrate pilot line in Arizona is gradually moving toward commercialization, and Intel is aiming to win AI GPU and ASIC customer orders through glass substrates and ultra-large chiplet packaging.\n\nSamsung Electro-Mechanics (Semco) established a glass-substrate pilot line in 2025 and has set up a joint venture with Japan's Sumitomo Chemical group to build out a glass-substrate supply chain ahead of the market.\n\n$TSM"
+        },
+        {
+          "post_id": "2070266870557704335",
+          "source_id": "tw_zephyr_z9",
+          "published_at": "2026-06-25T22:04:20+00:00",
+          "text": "Feynman is likely delayed to 2029 if they are adopting CoPoS and glass substrates (Innolux is hinting towards that)"
+        },
+        {
+          "post_id": "2074774120324276615",
+          "source_id": "tw_jukan05",
+          "published_at": "2026-07-08T08:34:32+00:00",
+          "text": "Morgan Stanley noted in its report that competition from Intel’s EMIB could push TSMC to accelerate CoPoS adoption to 2028, potentially with Feynman.\n\nInterestingly, Morgan Stanley also estimated that Feynman will use D2W for GPU stacking and adopt a SiC carrier.\n\n$TSM $INTC"
+        },
+        {
+          "post_id": "2087139633109115036",
+          "source_id": "tw_jukan05",
+          "published_at": "2026-08-11T11:30:40+00:00",
+          "text": "-Bottlenecks: ABF substrate shortages will be 2nd to memory in coming years. Companies are sourcing substrates from multiple suppliers now to keep up, and variations in thermal &amp; mechanical properties are an issue.\n\nHmmm"
+        },
+        {
+          "post_id": "2092785771979960560",
+          "source_id": "tw_zephyr_z9",
+          "published_at": "2026-08-27T01:26:24+00:00",
+          "text": "Btw, ABF substrates &amp; PCB/CCL are the biggest constraints for 2027\nNvidia or Google can reduce HBM per GPU and DRAM per server to increase shipments, but they can't work around this"
+        },
+        {
+          "post_id": "2092786981977915481",
+          "source_id": "tw_jukan05",
+          "published_at": "2026-08-27T01:31:13+00:00",
+          "text": "@zephyr_z9 💯"
+        }
+      ],
+      "edges": [
+        {
+          "source_post_id": "2025470786073755771",
+          "target_post_id": "2025470484952089067",
+          "type": "reply",
+          "status": "pending"
+        },
+        {
+          "source_post_id": "2070266870557704335",
+          "target_post_id": "2070247000860135657",
+          "type": "quote",
+          "status": "complete"
+        },
+        {
+          "source_post_id": "2087139633109115036",
+          "target_post_id": "2087125005658407295",
+          "type": "quote",
+          "status": "complete"
+        },
+        {
+          "source_post_id": "2092785771979960560",
+          "target_post_id": "1997151412309078335",
+          "type": "quote",
+          "status": "complete"
+        },
+        {
+          "source_post_id": "2092786981977915481",
+          "target_post_id": "2092785771979960560",
+          "type": "reply",
+          "status": "complete"
+        }
+      ],
+      "media": [
+        {
+          "media_id": "3_1997150826352316416",
+          "post_id": "1997151412309078335",
+          "status": "complete",
+          "hash": "e31645258fb8624d85114dde6250df2b9359cb0f36ed9c9e413daf376dc7e0e0",
+          "analysis": {
+            "media_type": "other",
+            "source_detected": "",
+            "document_type": "半导体先进封装技术对比示意图",
+            "summary": "图片对比CoWoS、CoPoS与CoWoP三种先进封装路径，核心差异在于是否使用ABF基板、制造载体及所处商业化阶段。",
+            "important_text": [
+              "CoWoS (Chip-on-Wafer-on-Substrate)",
+              "CoPoS (Chip-on-Panel-on-Substrate)",
+              "CoWoP (Chip-on-Wafer-on-PCB)",
+              "CoWoS：Chips + interposer → then on ABF substrate；Already mass-produced (e.g. NVIDIA H100)",
+              "CoPoS：Chips on panel substrate → more efficient, lower cost；Panel-level ABF；In development, targeting next-gen GPUs & AI servers",
+              "CoWoP：No ABF substrate → chip + interposer on precision PCB；Still R&D stage for future AI/GPU"
+            ],
+            "companies": [
+              "NVIDIA"
+            ],
+            "tickers": [],
+            "metrics": [],
+            "dates": [],
+            "themes": [
+              "先进封装",
+              "ABF载板",
+              "AI/GPU",
+              "HBM",
+              "半导体供应链",
+              "PCB"
+            ],
+            "claims": [
+              {
+                "claim_text": "CoWoS采用芯片加中介层、再置于ABF基板上的结构，并支持HBM堆叠和高速互连。",
+                "claim_type": "FACT",
+                "claim_author": "",
+                "companies": [],
+                "themes": [
+                  "CoWoS",
+                  "ABF载板",
+                  "HBM"
+                ],
+                "time_horizon": "当前"
+              },
+              {
+                "claim_text": "CoWoS已经量产，例子包括NVIDIA H100。",
+                "claim_type": "FACT",
+                "claim_author": "",
+                "companies": [
+                  "NVIDIA"
+                ],
+                "themes": [
+                  "CoWoS",
+                  "AI/GPU"
+                ],
+                "time_horizon": "当前"
+              },
+              {
+                "claim_text": "CoPoS使用面板级ABF，图片将其描述为效率更高、成本更低的方案。",
+                "claim_type": "OPINION",
+                "claim_author": "",
+                "companies": [],
+                "themes": [
+                  "CoPoS",
+                  "ABF载板"
+                ],
+                "time_horizon": "未来/开发中"
+              },
+              {
+                "claim_text": "CoPoS仍在开发中，目标应用为下一代GPU和AI服务器。",
+                "claim_type": "FORECAST",
+                "claim_author": "",
+                "companies": [],
+                "themes": [
+                  "CoPoS",
+                  "AI服务器",
+                  "AI/GPU"
+                ],
+                "time_horizon": "未来"
+              },
+              {
+                "claim_text": "CoWoP不使用ABF基板，而是在精密PCB上集成芯片和中介层。",
+                "claim_type": "FACT",
+                "claim_author": "",
+                "companies": [],
+                "themes": [
+                  "CoWoP",
+                  "ABF载板",
+                  "PCB"
+                ],
+                "time_horizon": "当前"
+              },
+              {
+                "claim_text": "CoWoP仍处于研发阶段，面向未来AI/GPU应用。",
+                "claim_type": "FORECAST",
+                "claim_author": "",
+                "companies": [],
+                "themes": [
+                  "CoWoP",
+                  "AI/GPU"
+                ],
+                "time_horizon": "未来"
+              }
+            ],
+            "chart_insights": [
+              "图示呈现技术路线分化：CoWoS和CoPoS均涉及ABF基板，而CoWoP路线明确旨在取消ABF基板。",
+              "商业成熟度按图片描述为：CoWoS已量产，CoPoS开发中，CoWoP仍属研发阶段。"
+            ],
+            "investment_implications": [
+              "若CoPoS实现规模化，面板级ABF可能成为AI封装需求扩张的潜在增量来源；这只是基于图片技术路径的推断，未给出量产时间或需求规模。",
+              "若CoWoP成熟并被采用，其“无ABF基板”设计可能对部分ABF需求构成长期替代风险；图片并未证明其会成功商业化或取代CoWoS/CoPoS。"
+            ],
+            "confidence": 0.93
+          }
+        },
+        {
+          "media_id": "3_2066651508146610176",
+          "post_id": "2066651558784463190",
+          "status": "complete",
+          "hash": "0b5ebbd91509c9644b7d61fcce9ddc9e338dafdbb3f0f3d3d1eeffb9ff2d22af",
+          "analysis": {
+            "media_type": "company_presentation",
+            "source_detected": "",
+            "document_type": "展会产品/技术展示照片",
+            "summary": "图片展示一块标有“#CoPoS”和“Max. Production Capacity”的面板/样品，右下角可见“Powered by amanz”字样。图片本身未展示台积电、Ibiden或群创的合作信息，也未提供玻璃基板、CoWoS或产能数据。",
+            "important_text": [
+              "#CoPoS",
+              "Max. Production Capacity",
+              "Powered by amanz"
+            ],
+            "companies": [
+              "amanz"
+            ],
+            "tickers": [],
+            "metrics": [],
+            "dates": [],
+            "themes": [
+              "CoPoS",
+              "先进封装",
+              "面板级封装"
+            ],
+            "claims": [
+              {
+                "claim_text": "展示物标注为“#CoPoS”及“Max. Production Capacity”。",
+                "claim_type": "FACT",
+                "claim_author": "",
+                "companies": [],
+                "themes": [
+                  "CoPoS",
+                  "先进封装"
+                ],
+                "time_horizon": ""
+              },
+              {
+                "claim_text": "展示物右下角标注“Powered by amanz”。",
+                "claim_type": "FACT",
+                "claim_author": "amanz",
+                "companies": [
+                  "amanz"
+                ],
+                "themes": [],
+                "time_horizon": ""
+              }
+            ],
+            "chart_insights": [],
+            "investment_implications": [
+              "图片可作为CoPoS相关技术展示存在的视觉线索，但不足以验证帖文所称的台积电供应链合作、玻璃基板计划或竞争格局。"
+            ],
+            "confidence": 0.86
+          }
+        }
+      ],
+      "claims": [
+        {
+          "claim_id": "claim_3a56eaa72a0909d286cc950a",
+          "post_id": "1997151412309078335",
+          "author": "ctx_tw_zephyr_z9",
+          "type": "FORECAST",
+          "text": "ABF基板短缺将持续至少2年。",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_aff463a651b56368870f2b5b",
+          "post_id": "1997151412309078335",
+          "author": "ctx_tw_zephyr_z9",
+          "type": "FORECAST",
+          "text": "Feynman推出后，ABF基板使用量将大幅增加，TAM扩大。",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_media_60f558c2843e00c1eddc3ec4",
+          "post_id": "1997151412309078335",
+          "author": null,
+          "type": "FACT",
+          "text": "CoWoS采用芯片加中介层、再置于ABF基板上的结构，并支持HBM堆叠和高速互连。",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_media_d2beee3b65b02f2097294b85",
+          "post_id": "1997151412309078335",
+          "author": null,
+          "type": "FACT",
+          "text": "CoWoS已经量产，例子包括NVIDIA H100。",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_media_f342d81f1f4ceea6cf2462b0",
+          "post_id": "1997151412309078335",
+          "author": null,
+          "type": "OPINION",
+          "text": "CoPoS使用面板级ABF，图片将其描述为效率更高、成本更低的方案。",
+          "verification": "UNVERIFIED"
+        },
+        {
+          "claim_id": "claim_media_1236023ed2ca2d4000cae683",
+          "post_id": "1997151412309078335",
+          "author": null,
+          "type": "FORECAST",
+          "text": "CoPoS仍在开发中，目标应用为下一代GPU和AI服务器。",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_media_d0c4b44f1557f6bb442de34e",
+          "post_id": "1997151412309078335",
+          "author": null,
+          "type": "FACT",
+          "text": "CoWoP不使用ABF基板，而是在精密PCB上集成芯片和中介层。",
+          "verification": "SUPPORTED_BY_PRIMARY"
+        },
+        {
+          "claim_id": "claim_media_abc739bf72e1a052511d9ef1",
+          "post_id": "1997151412309078335",
+          "author": null,
+          "type": "FORECAST",
+          "text": "CoWoP仍处于研发阶段，面向未来AI/GPU应用。",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_206a565812e6e8203bf12577",
+          "post_id": "2066651558784463190",
+          "author": "设备端消息来源",
+          "type": "FACT",
+          "text": "台积电与Ibiden、Innolux合作验证玻璃基板在下一代CoWoS先进封装中的可行性。",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_20245bf248b42f13ee17bc32",
+          "post_id": "2066651558784463190",
+          "author": "供应链消息来源",
+          "type": "FACT",
+          "text": "玻璃基板可将封装翘曲指标COP改善16%，有效CTE降低19%，有效模量提高31%，电阻降低27%，电感降低42%。",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_0ab42e4621bda34752d494a3",
+          "post_id": "2066651558784463190",
+          "author": "行业观察者",
+          "type": "OPINION",
+          "text": "玻璃基板面临的主要挑战是TGV技术、微裂纹和长期热可靠性。",
+          "verification": "UNVERIFIED"
+        },
+        {
+          "claim_id": "claim_2e49e93a33c186053f4ac5d3",
+          "post_id": "2066651558784463190",
+          "author": "行业消息",
+          "type": "FACT",
+          "text": "Intel在玻璃基板研发上投入超过十年，其亚利桑那试点线正走向商业化。",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_08c26f20b21ecc3e33ad6db9",
+          "post_id": "2066651558784463190",
+          "author": "行业消息",
+          "type": "FACT",
+          "text": "三星电机于2025年建立玻璃基板试点线，并与住友化学成立合资企业。",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_media_9dfebae09edfcc74f2e20b5a",
+          "post_id": "2066651558784463190",
+          "author": null,
+          "type": "FACT",
+          "text": "展示物标注为“#CoPoS”及“Max. Production Capacity”。",
+          "verification": "SUPPORTED_BY_SECONDARY"
+        },
+        {
+          "claim_id": "claim_media_e68332810692b076e93241d6",
+          "post_id": "2066651558784463190",
+          "author": "amanz",
+          "type": "FACT",
+          "text": "展示物右下角标注“Powered by amanz”。",
+          "verification": "UNVERIFIABLE"
+        },
+        {
+          "claim_id": "claim_810e79e6c0684604d88b1171",
+          "post_id": "2070266870557704335",
+          "author": "tw_zephyr_z9",
+          "type": "INFERENCE",
+          "text": "Feynman 若采用 CoPoS 和玻璃基板，可能延迟至 2029 年。",
+          "verification": "UNVERIFIED"
+        },
+        {
+          "claim_id": "claim_a82631a5de641f2f622f7f5e",
+          "post_id": "2070266870557704335",
+          "author": "tw_zephyr_z9",
+          "type": "FACT",
+          "text": "Innolux 暗示 Feynman 将采用 CoPoS 和玻璃基板。",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_49b8451b2eb95e8123734cdd",
+          "post_id": "2074774120324276615",
+          "author": "Morgan Stanley",
+          "type": "FACT",
+          "text": "摩根士丹利报告称，Intel EMIB 的竞争可能促使 TSMC 将 CoPoS 采用提前至 2028 年，可能用于 Feynman。",
+          "verification": "SUPPORTED_BY_SECONDARY"
+        },
+        {
+          "claim_id": "claim_7f3ad493b1d8a20a4eacb619",
+          "post_id": "2074774120324276615",
+          "author": "Morgan Stanley",
+          "type": "FACT",
+          "text": "摩根士丹利估计 Feynman 将使用 D2W 进行 GPU 堆叠，并采用 SiC 载板。",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_17375c5fa771f2d568645aff",
+          "post_id": "2087139633109115036",
+          "author": "tw_jukan05",
+          "type": "FORECAST",
+          "text": "ABF substrate shortages will be 2nd to memory in coming years.",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_d07cff781e3e6ff88b5f5834",
+          "post_id": "2087139633109115036",
+          "author": "tw_jukan05",
+          "type": "FACT",
+          "text": "Companies are sourcing substrates from multiple suppliers now to keep up, and variations in thermal & mechanical properties are an issue.",
+          "verification": "UNVERIFIED"
+        },
+        {
+          "claim_id": "claim_a32188d5455a576689a0054f",
+          "post_id": "2092785771979960560",
+          "author": "tw_zephyr_z9",
+          "type": "FORECAST",
+          "text": "ABF substrates and PCB/CCL are the biggest constraints for 2027.",
+          "verification": "PARTIALLY_SUPPORTED"
+        },
+        {
+          "claim_id": "claim_895aa776ecef722b8053cf02",
+          "post_id": "2092785771979960560",
+          "author": "tw_zephyr_z9",
+          "type": "OPINION",
+          "text": "Nvidia or Google can reduce HBM per GPU and DRAM per server to increase shipments, but they can't work around this constraint.",
+          "verification": "UNVERIFIED"
+        }
+      ],
+      "claim_verifications": [
+        {
+          "claim_id": "claim_media_60f558c2843e00c1eddc3ec4",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "截至2026年8月30日，TSMC一级资料直接支持：CoWoS是Chip-on-Wafer-on-Substrate封装平台；其CoWoS-S采用硅中介层，可在中介层上整合逻辑芯粒及HBM堆叠；CoWoS-R/L则采用RDL类中介层/局部硅互连等不同实现。TSMC亦明确描述其互连可实现高数据传输速率、低损耗高频信号传输或高速芯粒间互连。惟所核验的TSMC官方资料没有直接将CoWoS的基板材料明确限定为“ABF基板”；且CoWoS并非单一固定结构。因此“置于ABF基板上”作为对全部CoWoS的确定性描述，证据不足。",
+          "corrected_claim": "CoWoS是台积电的Chip-on-Wafer-on-Substrate先进封装平台：不同版本可采用硅中介层或RDL类中介层，并在封装中整合逻辑芯粒与HBM堆叠，提供高密度及高速芯粒间互连。现有TSMC一级资料未直接确认所有CoWoS均使用ABF基板。",
+          "sources": [
+            {
+              "title": "CoWoS®",
+              "url": "https://3dfabric.tsmc.com/english/dedicatedFoundry/technology/cowos.htm",
+              "publisher": "TSMC",
+              "source_tier": "PRIMARY",
+              "support": "PARTIAL",
+              "finding": "官方页面说明CoWoS-S在大面积硅中介层上整合逻辑芯粒及HBM；CoWoS-R采用由聚合物和铜导线构成的RDL中介层，且其RDL互连可实现高数据传输速率；CoWoS-L采用RDL中介层和嵌入式局部硅互连，并称可在高速传输中降低高频信号损耗。该页未将基板明确标注为ABF。"
+            },
+            {
+              "title": "HPC Platform – TSMC 3DFabric®",
+              "url": "https://tsmc.com/english/dedicatedFoundry/technology/platform_HPC_tech_WLSI",
+              "publisher": "TSMC",
+              "source_tier": "PRIMARY",
+              "support": "SUPPORTS",
+              "finding": "TSMC将CoWoS定义为其chip-last on interposer工艺，并说明该产品族包括CoWoS-S、CoWoS-L和CoWoS-R；页面还称前后段芯粒互连技术提供增强布线和更佳屏蔽，以改善信号完整性并支持更高内存带宽。"
+            },
+            {
+              "title": "TSMC 2024 Annual Report, Chapter 5",
+              "url": "https://investor.tsmc.com/static/annualReports/2024/english/pdf/2024_tsmc_ar_e_ch5.pdf",
+              "publisher": "TSMC",
+              "source_tier": "PRIMARY",
+              "support": "PARTIAL",
+              "finding": "年报将CoWoS-S称为“Chip on Wafer on Substrate with Silicon Interposer”，并确认其具有高互连布线密度；这支持硅中介层版本，但不能外推为全部CoWoS版本都使用硅中介层或ABF基板。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_media_d2beee3b65b02f2097294b85",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "台积电一级来源明确：CoWoS自2012年起已量产，故“CoWoS已经量产”成立。NVIDIA H100已于2023年5月进入全面量产亦有Reuters报道；但在本次核验中，H100采用CoWoS的直接具名证据来自行业媒体，而非台积电或NVIDIA的直接产品公告。因此，“H100是CoWoS量产实例”可合理支持，但未达到整项主张均由一级来源直接确认的标准。",
+          "corrected_claim": "CoWoS已自2012年起量产；NVIDIA H100为采用台积电CoWoS先进封装的量产AI GPU实例（该H100—CoWoS对应关系本次主要由行业媒体证实）。",
+          "sources": [
+            {
+              "title": "CoWoS®",
+              "url": "https://3dfabric.tsmc.com/chinese/dedicatedFoundry/technology/cowos.htm",
+              "publisher": "TSMC",
+              "source_tier": "PRIMARY",
+              "support": "SUPPORTS",
+              "finding": "台积电称CoWoS自2012年量产；CoWoS-S亦明确自2012年起投入量产。"
+            },
+            {
+              "title": "NVIDIA CEO Says H100 Now In Full Production",
+              "url": "https://marketscreener.com/quote/stock/NVIDIA-CORPORATION-57355629/news/NVIDIA-CEO-SAYS-H100-NOW-IN-FULL-PRODUCTION--43974190",
+              "publisher": "Reuters（经MarketScreener转载）",
+              "source_tier": "SECONDARY",
+              "support": "SUPPORTS",
+              "finding": "Reuters于2023年5月28日报道，NVIDIA CEO称H100当时已进入全面量产。"
+            },
+            {
+              "title": "NVIDIA: GPU Supply Issues Involve Packaging, Not Chip Wafers",
+              "url": "https://tomshardware.com/news/nvidia-gpu-supply-packaging-chip-wafers",
+              "publisher": "Tom's Hardware",
+              "source_tier": "INDUSTRY",
+              "support": "SUPPORTS",
+              "finding": "行业媒体称NVIDIA H系列GPU采用台积电CoWoS封装；H100属于该H系列。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_media_1236023ed2ca2d4000cae683",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "截至当前，未找到台积电公告、财报或SEC文件直接披露“CoPoS”名称、开发状态及其具体终端应用。2025年11月17日DIGITIMES报道称，台积电正推进CoPoS，并将量产目标指向2029年；报道明确将市场需求与NVIDIA AI GPU及AI ASIC关联。故“仍在开发中、面向下一代AI加速器/GPU”获得行业媒体支持，但“AI服务器”属于由芯片终端用途延伸出的推论，而非已获公司确认的CoPoS特定应用。",
+          "corrected_claim": "据2025年11月的DIGITIMES行业报道，台积电CoPoS仍处于推进/开发阶段，量产目标约为2029年；其需求逻辑主要关联NVIDIA AI GPU及AI ASIC等下一代AI加速器。尚无台积电一级披露直接确认CoPoS将用于特定“AI服务器”产品。",
+          "sources": [
+            {
+              "title": "（独家）台积电先进封装扩产方向大改　AP8、AP7、美国厂全变",
+              "url": "https://digitimes.cn/tech/dt/n/shwnws.asp?CnlID=1&id=745207&query=COWOS",
+              "publisher": "DIGITIMES",
+              "source_tier": "INDUSTRY",
+              "support": "PARTIAL",
+              "finding": "2026年1月29日报道援引供应链称，CoPoS原定AP7 P4或P5，并称原计划2028年量产已改为2029年；这是供应链信息，不是台积电公告。"
+            },
+            {
+              "title": "TSMC 2025 Annual Report",
+              "url": "https://investor.tsmc.com/sites/ir/annual-report/2025/2025%20Annual%20Report_E.pdf",
+              "publisher": "TSMC",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "年报确认CoWoS-L用于下一代数据中心计算芯片，且其支持逻辑与HBM的第二代技术仍在开发；但文件未出现CoPoS名称，因此不能作为CoPoS开发或应用的直接确认。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_media_d0c4b44f1557f6bb442de34e",
+          "status": "SUPPORTED_BY_PRIMARY",
+          "rationale": "芯碁微装在其2025年年报（2026年3月14日披露）中明确将CoWoP描述为：不再需要ABF载板，并将芯片通过中介层键合至类载板（SLP）。这支持该技术路线的结构性描述。独立行业来源亦将其描述为省去传统有机封装基板、把芯片—硅中介层组件直接装配至多层/高精度PCB。不过，CoWoP仍属早期且存在不确定性的技术路线；该结论不等同于其已被特定客户正式量产采用。原声明中的“精密PCB”更严谨的表述应为类载板PCB（SLP）或具备高精度RDL的多层PCB。",
+          "corrected_claim": "CoWoP作为一种仍在推进中的封装架构，旨在取消传统ABF有机封装载板，将含芯片的中介层组件直接键合/装配至类载板PCB（SLP）或具备高精度RDL的多层PCB；这不代表该路线已获特定产品大规模量产采用。",
+          "sources": [
+            {
+              "title": "合肥芯碁微电子装备股份有限公司2025年年度报告摘要",
+              "url": "https://static.cninfo.com.cn/finalpage/2026-03-14/1225007946.PDF",
+              "publisher": "合肥芯碁微电子装备股份有限公司／巨潮资讯网",
+              "source_tier": "PRIMARY",
+              "support": "SUPPORTS",
+              "finding": "年报称CoWoP“不再需要ABF载板”，并“直接将芯片通过中介层键合到类载板（SLP）上”。"
+            },
+            {
+              "title": "CoWoP: A Game-Changer Beyond CoWoS—Or Just Hype? PCB Makers Stay Skeptical",
+              "url": "https://trendforce.com/news/2025/07/30/news-cowop-a-game-changer-beyond-cowos-or-just-hype-pcb-makers-stay-skeptical",
+              "publisher": "TrendForce",
+              "source_tier": "INDUSTRY",
+              "support": "SUPPORTS",
+              "finding": "报道将CoWoP描述为跳过传统IC封装基板、将芯片和硅中介层组件直接装配至多层PCB；同时明确指出该路线仍处很早阶段且不确定。"
+            },
+            {
+              "title": "CoWoP Is Coming, and Semiconductor Inspection Is Ready All Along",
+              "url": "https://baslerweb.com/en-us/learning/semicon-chip-on-wafer-on-pcb",
+              "publisher": "Basler",
+              "source_tier": "INDUSTRY",
+              "support": "SUPPORTS",
+              "finding": "将CoWoP定义为移除传统ABF载板、把硅中介层直接键合到高精度PCB，并说明PCB需形成细间距RDL。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_media_abc739bf72e1a052511d9ef1",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "截至2026年3月可取得的一级披露，CoWoP被相关产业链上市公司表述为“未来的CoWoP技术”、技术储备或拟建设的前沿技术孵化平台，支持其尚未成为已明确披露的成熟量产方案、仍处于研发/验证导入阶段。其应用语境明确指向AI芯片封装；但未找到TSMC或NVIDIA直接公告确认CoWoP已被其正式定案用于某一未来AI/GPU产品，因此不能将其作为已确认的GPU路线图事实。",
+          "corrected_claim": "CoWoP在已披露的产业链一级资料中仍被定位为面向未来量产的前沿研发、验证与技术储备方向，并瞄准AI芯片/高性能计算封装；但尚无TSMC或NVIDIA一级公告确认其已定案用于某一具体未来AI/GPU产品。",
+          "sources": [
+            {
+              "title": "沪士电子股份有限公司2025年度总经理工作报告",
+              "url": "https://static.cninfo.com.cn/finalpage/2026-03-25/1225027842.PDF",
+              "publisher": "沪士电子／巨潮资讯网",
+              "source_tier": "PRIMARY",
+              "support": "SUPPORTS",
+              "finding": "公司披露其于2026年初“规划搭建CoWoP等前沿技术……孵化平台”，并构建“研发-中试-验证-应用”闭环，直接支持CoWoP仍属前沿研发和验证导入方向。"
+            },
+            {
+              "title": "合肥芯碁微电子装备股份有限公司2025年年度报告摘要",
+              "url": "https://static.cninfo.com.cn/finalpage/2026-03-14/1225007946.PDF",
+              "publisher": "合肥芯碁微电子装备／巨潮资讯网",
+              "source_tier": "PRIMARY",
+              "support": "SUPPORTS",
+              "finding": "报告将CoWoP列为AI芯片封装从当前CoWoS向CoPoS、CoWoP演变的未来路线，并称公司为头部客户未来CoWoP产品量产进行技术储备；支持“面向未来AI芯片应用”及尚待量产验证。"
+            },
+            {
+              "title": "TSMC 2025 Form 20-F",
+              "url": "https://sec.gov/Archives/edgar/data/1046179/000162828026025362/tsm-20251231.htm",
+              "publisher": "TSMC／SEC",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "TSMC披露的3DFabric方案包含CoWoS与SoIC，并将CoWoS用于AI GPU、AI ASIC等HPC产品；该文件未披露CoWoP或确认其量产/客户采用，故不能将CoWoP等同于当前量产CoWoS。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_media_9dfebae09edfcc74f2e20b5a",
+          "status": "SUPPORTED_BY_SECONDARY",
+          "rationale": "独立媒体页面的图片说明逐字写明：展台显示“Max. Production Capacity”，并有标注“#CoPoS”的面板。该来源支持原陈述的两处文字标注；但未找到展方/设备商发布的该展台原始照片或展品说明，故不能列为一级来源确认。",
+          "corrected_claim": "一张媒体报道所载的展会展示照片中，可见“#CoPoS”及“Max. Production Capacity”字样。",
+          "sources": [
+            {
+              "title": "TSMC, CoWoS sonrası için CoPoS ve cam substrate’e hız verdi",
+              "url": "https://hardwaremania.com/haber/tsmc-cowos-sonrasi-icin-copos-ve-cam-substratee-hiz-verdi",
+              "publisher": "hARDWAREMANIA",
+              "source_tier": "SECONDARY",
+              "support": "SUPPORTS",
+              "finding": "图片说明明确描述展台含“Max. Production Capacity”，以及标有“#CoPoS”的面板。"
+            },
+            {
+              "title": "Manz 亞智科技 CoPoS 技術藍圖成形　台灣半導體創新研發中心啟用",
+              "url": "https://manz.com.tw/wp-content/uploads/2025_0414_TC_Manz_Asia.pdf",
+              "publisher": "Manz Asia",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "公司公告确认Manz Asia从事CoPoS相关设备与研发，但没有该展示物、照片或上述两处英文标注的逐字记录。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_media_e68332810692b076e93241d6",
+          "status": "UNVERIFIABLE",
+          "rationale": "未能取得 source_post_id 2066651558784463190 的原始帖文或展示物高清原图，因此无法逐字确认右下角是否写有“Powered by amanz”。检索到的一级来源仅证明 Manz 发布过涉及 CoPoS/面板级封装的官方材料，不能证明该特定展示物含有该标注；“Powered by amanz”亦可能是转发者添加的水印而非展示物原有文字。",
+          "corrected_claim": "截至核验时，无法依据可访问的独立来源确认该展示物右下角标注“Powered by amanz”。",
+          "sources": [
+            {
+              "title": "Panel-Level Packaging — RDL Production Solutions",
+              "url": "https://manz.com.tw/ecomaXL/files/2024_FOPLP_Flyer_EN_read.pdf",
+              "publisher": "Manz AG",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "官方资料涵盖 CoPoS 与面板级封装，但未提供所涉展示物，亦未出现“Powered by amanz”标注。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_a32188d5455a576689a0054f",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "独立二级研究机构Counterpoint在2026年3月预测：先进ABF载板供需缺口将由2026年下半年的10%扩大至2027年的20%，并将载板可得性称为先进封装的“战略性约束”。但其将关键上游瓶颈明确指向低CTE T-glass；对CCL的直接表述是成本上涨约30%，不足以证明“PCB/CCL”整体会是2027年最大的约束。且没有一级来源或跨环节供需排名，能证明ABF载板和PCB/CCL超过HBM、先进封装产能、电力、网络等所有其他潜在限制。因此，“最大”这一绝对排名不成立；ABF载板在AI/HPC高端链条中可能紧缺则有支持。Ajinomoto的一级披露仅确认AI/服务器/网络用ABF销售强劲，并未确认2027年短缺。",
+          "corrected_claim": "对AI/HPC而言，先进ABF载板在2027年可能是重要甚至具约束力的供应环节，核心风险包括低CTE T-glass、良率和合格产能；CCL存在显著成本与材料压力，但现有证据不足以认定PCB/CCL整体与ABF载板是2027年全产业链“最大的”两项约束。",
+          "sources": [
+            {
+              "title": "From T-Glass Crisis to Capacity Erosion: The Multi-Year Substrate Shortage",
+              "url": "https://counterpointresearch.com/en/reports/From-T-Glass-Crisis-Capacity-Erosion-The-Multi-Year-Substrate-Shortage",
+              "publisher": "Counterpoint Research",
+              "source_tier": "SECONDARY",
+              "support": "PARTIAL",
+              "finding": "预测ABF载板缺口由2026年下半年的10%扩大至2027年的20%；称载板可得性为先进封装的战略性约束。但报告将关键上游瓶颈指向T-glass，CCL主要体现为约30%的成本上涨，且未对所有AI供应链约束作“最大”排名。"
+            },
+            {
+              "title": "2026 AGM Agenda",
+              "url": "https://investor.tsmc.com/sites/ir/shareholders-meeting/2026-06-04/2026AGM_Agenda_wmn.pdf",
+              "publisher": "TSMC",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "TSMC确认AI相关需求强劲，并持续投资先进封装与产能；但文件没有将ABF、PCB或CCL界定为2027年最大的供应约束。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_206a565812e6e8203bf12577",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "2026年6月16日，DigiTimes报道称“设备端传出”台积电向供应链释出CoWoS玻璃基板开发计划，并与Ibiden、群创共同验证可行性；其措辞与原主张基本一致。但该报道依赖未具名设备端/供应链消息，未见台积电、Ibiden或群创的公告、财报、交易所文件或SEC文件直接确认该项三方验证。因此不能将合作验证作为已获公司一级来源证实的事实。",
+          "corrected_claim": "据DigiTimes于2026年6月16日援引未具名设备端/供应链消息报道，台积电据称正与Ibiden及群创共同验证玻璃基板导入下一代CoWoS先进封装的可行性；截至当前，三方尚未见公开一级文件直接确认。",
+          "sources": [
+            {
+              "title": "台積攜Ibiden、群創猛攻CoPoS　傳出玻璃基板領域踩油門",
+              "url": "https://digitimes.com.tw/tech/dt/n/shwnws.asp?CnlID=1&cat=40&id=0000758841_AJV7G8PH5KBC540867F4K&wpidx=3",
+              "publisher": "DigiTimes",
+              "source_tier": "INDUSTRY",
+              "support": "PARTIAL",
+              "finding": "2026年6月16日报道称，依据“设备端传出”的信息，台积电与Ibiden、群创共同验证玻璃基板用于下一代CoWoS；但并非三方公开确认。"
+            },
+            {
+              "title": "TSMC Launches OIP 3DFabric Alliance to Shape the Future of Semiconductor and System Innovations",
+              "url": "https://pr.tsmc.com/english/news/2968",
+              "publisher": "TSMC",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "台积电官方材料确认Ibiden为3DFabric Alliance相关合作方，但该2022年公告未提及群创、玻璃基板或本项CoWoS验证。"
+            },
+            {
+              "title": "TSMC 2024 Annual Report",
+              "url": "https://investor.tsmc.com/sites/ir/annual-report/2024/2024%20Annual%20Report.E.pdf",
+              "publisher": "TSMC",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "年报确认CoWoS-S、CoWoS-R和CoWoS-L等先进封装技术状态，但未披露与Ibiden、群创开展玻璃基板联合验证。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_49b8451b2eb95e8123734cdd",
+          "status": "SUPPORTED_BY_SECONDARY",
+          "rationale": "《經濟日報》2026年7月7日直接归因于摩根士丹利最新《亚太科技产业》报告：为应对Intel EMIB-T竞争，TSMC的CoPoS量产时程“有可能”提前至2028年，并面向2nm或以下GPU/AI ASIC需求，特别提及NVIDIA Feynman。该报道还区分了产品时点：2028年首代Feynman预计先用3D堆叠和SiC载板；CoPoS被称将由2029年Feynman Ultra全面导入。因此，这是一项券商判断/媒体转述，而非TSMC已经公告的量产承诺或客户定点。([money.udn.com](https://money.udn.com/money/amp/story/5607/9612882))",
+          "corrected_claim": "据《經濟日報》转述的摩根士丹利研究，为应对Intel EMIB-T竞争，TSMC的CoPoS量产时程可能提前至2028年；该判断将Feynman列为潜在相关需求，但报道同时称2028年首代Feynman预计先采用3D堆叠+SiC载板，而CoPoS全面导入指向2029年Feynman Ultra，尚非TSMC或NVIDIA的官方确认。",
+          "sources": [
+            {
+              "title": "外資驚爆台積電神祕武器 將提前上陣決戰英特爾",
+              "url": "https://money.udn.com/money/amp/story/5607/9612882",
+              "publisher": "經濟日報",
+              "source_tier": "SECONDARY",
+              "support": "SUPPORTS",
+              "finding": "2026年7月7日报道直接归因Morgan Stanley：CoPoS量产可能提前至2028年，以应对Intel EMIB-T竞争；提及Feynman，并给出首代Feynman与2029年Feynman Ultra的不同封装时点。"
+            },
+            {
+              "title": "TSMC 2025 Annual Report",
+              "url": "https://investor.tsmc.com/static/annualReports/2025/english/index.html",
+              "publisher": "TSMC",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "TSMC公开年报列举CoWoS、InFO、SoIC和COUPE等技术，但该公开材料未确认CoPoS的2028量产时点、Intel竞争动因或Feynman采用。"
+            },
+            {
+              "title": "Intel Foundry EMIB Technology Brief",
+              "url": "https://intel.com/content/dam/www/central-libraries/us/en/documents/2025-07/emib-product-brief.pdf",
+              "publisher": "Intel",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "Intel确认EMIB是其先进封装互连技术，适用于AI、ML和HPC；但不确认其促使TSMC调整CoPoS路线图。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_3a56eaa72a0909d286cc950a",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "截至2026年8月，独立行业研究支持ABF载板在2026年至2027年持续供不应求，但不足以把“至少2年”表述为已被事实确认的确定结果。该措辞与2025年12月4日Goldman Sachs研究报告的预测基本一致：其预计2026年订单可能延后至2027年，并称短缺将是“至少两年”的问题；前提是T-glass供应扩张有限、2026/2027需求持续增长。独立的Counterpoint于2026年3月预计短缺自2026年上半年开始、2027年恶化。Ibiden公告其新增产能自FY2027起逐步投产，亦说明供给调整并非即时完成，但不能单独证明全行业短缺必然持续满两年。",
+          "corrected_claim": "更准确地说：根据2025年12月的分析师预测，在T-glass等材料供应受限且AI需求保持强劲的条件下，ABF载板可能在2026年及2027年持续偏紧，构成约两年的短缺风险；这是一项预测，不是已被证实的确定事实，也不代表所有ABF规格均短缺。",
+          "sources": [
+            {
+              "title": "Taiwan PCB/CCL Industry Outlook 2026",
+              "url": "https://scribd.com/document/961428102/251204-gs-AI-PCB-CCL",
+              "publisher": "Goldman Sachs Taiwan Technology（报告由第三方平台转载）",
+              "source_tier": "INDUSTRY",
+              "support": "SUPPORTS",
+              "finding": "报告日期为2025年12月4日。其预测2026年T-glass相关ABF需求大增、供给增长有限，2026年未满足订单可延至2027年，并明确称ABF载板短缺“至少两年”。这是分析师预测，附带需求和材料供给假设，并非公司公告或已实现结果。"
+            },
+            {
+              "title": "From T-Glass Crisis to Capacity Erosion: The Multi-Year Substrate Shortage",
+              "url": "https://counterpointresearch.com/en/reports/From-T-Glass-Crisis-Capacity-Erosion-The-Multi-Year-Substrate-Shortage",
+              "publisher": "Counterpoint Research",
+              "source_tier": "INDUSTRY",
+              "support": "PARTIAL",
+              "finding": "2026年3月报告预计ABF行业自2026年上半年进入持续供不应求，2026年下半年缺口约10%、2027年约20%。它独立支持短缺跨越2026和2027，但没有以“自2025年12月起至少两年”作无条件保证。"
+            },
+            {
+              "title": "Notice Regarding Capital Investment Plan for High-Performance IC Package Substrates",
+              "url": "https://ibiden.com/company/2026/02/notice-regarding-capital-investment-plan-for-high-performance-ic-package-substrates.html",
+              "publisher": "IBIDEN CO., LTD.",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "Ibiden于2026年2月3日公告约5,000亿日元、FY2026-FY2028的高性能IC封装载板投资计划，首阶段新增产能计划自FY2027起逐步量产。公告证明主要供应商仍在扩产及供给释放需要时间，但未声明全球ABF载板将短缺至少两年。"
+            },
+            {
+              "title": "Ajinomoto Co., Inc. and Ajinomoto Fine-Techno Co., Inc. Acquire New Plant Site",
+              "url": "https://ajinomoto.com/cms_wp_ajnmt_global/wp-content/uploads/pdf/2026_05_07_02E.pdf",
+              "publisher": "Ajinomoto Co., Inc.",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "Ajinomoto于2026年5月7日公告第三个ABF膜生产基地拟2028年开建、2032年运营，面向2030年后的需求。该公告反映长期扩产，但不构成2026-2027年ABF载板短缺程度或时长的直接证明。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_20245bf248b42f13ee17bc32",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "五个百分比与多家行业/媒体报道一致，但最高可得证据并非TSMC、Ibiden或Innolux的可公开核验原始公告/演示材料。DigiTimes明确将数据归为供应链人士所称的三方“模拟验证”结果；因此不能将其表述为已普遍实现、无条件适用的玻璃基板性能事实。报道所涉条件为0.8mm玻璃芯基板、5x reticle CoW、85×110mm测试封装，且应为相对既有/有机基板方案的比较。",
+          "corrected_claim": "据DigiTimes援引供应链消息报道，TSMC、Ibiden与Innolux在针对0.8mm玻璃芯基板、5x reticle CoW、85×110mm大型封装测试载具的联合模拟验证中，相对既有/有机基板方案，COP（共面性/翘曲相关指标）改善16%，有效CTE降低19%，有效模量提高31%；供电完整性相关的电阻和电感分别降低27%和42%。这些为特定验证条件下、尚未由三方公开原始数据文件独立证实的结果。",
+          "sources": [
+            {
+              "title": "台積攜Ibiden、群創猛攻CoPoS　傳出玻璃基板領域踩油門",
+              "url": "https://digitimes.com.tw/tech/dt/n/shwnws.asp?CnlID=1&cat=40&id=0000758841_AJV7G8PH5KBC540867F4K&wpidx=3",
+              "publisher": "DigiTimes",
+              "source_tier": "INDUSTRY",
+              "support": "SUPPORTS",
+              "finding": "报道明确列出16%、19%、31%、27%、42%五项数值，但将其归因于供应链人士所述的三方合作及模拟验证；并披露0.8mm玻璃芯、5x reticle CoW、85×110mm等测试条件。"
+            },
+            {
+              "title": "TSMC touts glass substrate gains as Korea players race to commercialize",
+              "url": "https://biz.chosun.com/en/en-it/2026/06/18/CFQ2NQPKEZC5LCMU7HNR7UQUVE?outputType=amp",
+              "publisher": "ChosunBiz",
+              "source_tier": "SECONDARY",
+              "support": "SUPPORTS",
+              "finding": "独立媒体复述相同五项指标，并称其来自TSMC、Ibiden和Innolux的联合模拟验证；未提供原始测试方法、基准值或误差范围。"
+            },
+            {
+              "title": "Introduction | JPCA Show 2026",
+              "url": "https://jpcashow.com/show2026/en/outline/index.html",
+              "publisher": "Japan Electronics Packaging and Circuits Association",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "官方活动页面确认JPCA Show 2026于2026年6月10日至12日举行；其页面本身不披露TSMC玻璃基板五项性能数据。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_2e49e93a33c186053f4ac5d3",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "截至2026年8月30日，Intel一级公告明确称其对玻璃基板替代有机基板的研发及可靠性评估已持续“超过十年”，并确认钱德勒（亚利桑那州）设有玻璃基板工具和测试单元的封装技术开发工厂。Intel亦在2023年称计划于本十年后半段将完整玻璃基板解决方案推向市场；2026年7月又宣布与Lens Technology合作，探索加速玻璃基板封装方案开发及扩大采用。因此，“长期研发并向商业应用推进”有支持。 但“亚利桑那试点线”不准确：一级来源称其为“Assembly and Test Technology Development factories”/玻璃研发线，未称为pilot line；且并无已量产或已商业化的公告，商业化仍具计划、开发与合作条件。",
+          "corrected_claim": "Intel对玻璃基板替代有机基板的研发和可靠性评估已超过十年。其位于亚利桑那州钱德勒的封装技术开发设施拥有玻璃基板研发/测试能力；Intel曾目标在2020年代后半段将完整方案推向市场，且2026年仍通过外部合作探索加速开发和规模化采用，但尚不能表述为该“试点线”已进入商业化或量产。",
+          "sources": [
+            {
+              "title": "Intel Unveils Industry-Leading Glass Substrates to Meet Demand for More Powerful Compute",
+              "url": "https://intc.com/news-events/press-releases/detail/1647/intel-unveils-industry-leading-glass-substrates-to-meet",
+              "publisher": "Intel Corporation",
+              "source_tier": "PRIMARY",
+              "support": "SUPPORTS",
+              "finding": "公告称Intel对玻璃基板的研发及可靠性评估已“more than a decade”，并称目标是在本十年后半段向市场交付完整玻璃基板解决方案；配图说明钱德勒的Assembly and Test Technology Development factories已有玻璃基板测试单元。"
+            },
+            {
+              "title": "Intel's Glass Substrates Advancements Could Revolutionize Multi-Chiplet Packages",
+              "url": "https://tomshardware.com/news/intels-glass-substrates-advancements-could-revolutionize-multi-chiplet-packages",
+              "publisher": "Tom's Hardware",
+              "source_tier": "INDUSTRY",
+              "support": "PARTIAL",
+              "finding": "报道复述Intel称其钱德勒园区有完整玻璃研发线、投入逾10亿美元；该金额和“研发线”描述主要归因于Intel，不能替代公司财报或交易所文件的资本开支确认。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_08c26f20b21ecc3e33ad6db9",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "截至2026年8月30日，三星电机一级来源确认：其世宗工厂在2025年1月已“构建”玻璃基板试验生产线，并计划于2025年向客户提供样品、2027年以后量产。但该公告未确认该产线是在2025年内新建完成；其较早的可持续发展报告反而表述为计划在2024年建设原型线、2025年进行原型生产。因此，“于2025年建立”这一精确时点不能被一级来源直接确认。合资部分也不准确：2026年7月2日签署的是与住友化学全资韩国子公司东友精细化工设立GlaSSEM的合资协议；公司当时仍预计在2026年内设立，三星电机披露的出资交割日为2026年9月1日。故不能表述为2025年已经与住友化学成立合资企业。",
+          "corrected_claim": "三星电机截至2025年1月已在韩国世宗工厂建成玻璃基板试验生产线，计划在2025年进行客户样品推广，并目标于2027年以后量产。三星电机于2026年7月与住友化学的韩国全资子公司东友精细化工签署设立玻璃芯（Glass Core）业务合资公司GlaSSEM（暂定名）的协议；该公司计划于2026年内设立，三星电机的预计出资交割日为2026年9月1日。",
+          "sources": [
+            {
+              "title": "CES2025 三星电机代表理事新闻发布会：三星电机“Mi-RAE”新事业成果",
+              "url": "https://m.samsungsem.com/cn/newsroom/news/view.do?id=8924",
+              "publisher": "Samsung Electro-Mechanics",
+              "source_tier": "PRIMARY",
+              "support": "PARTIAL",
+              "finding": "2025年1月9日公告称，公司已在世宗工厂构建玻璃基板试验生产线，计划于2025年进行客户样品推广、2027年以后量产；但未说明产线的实际建成日期为2025年。"
+            },
+            {
+              "title": "2023-2024 Sustainability Report",
+              "url": "https://m.samsungsem.com/resources/file/jp/sustainability/report/SEM_SR2023_EN.pdf",
+              "publisher": "Samsung Electro-Mechanics",
+              "source_tier": "PRIMARY",
+              "support": "PARTIAL",
+              "finding": "报告称公司的计划是2024年建立玻璃基板原型生产线、2025年进行原型生产；这不是实际完成证明，但与“于2025年建立”的精确时点不一致。"
+            },
+            {
+              "title": "サムスン電機とのガラスコア基板事業に関する合弁会社設立について",
+              "url": "https://sumitomo-chem.co.jp/news/detail/20260702_2.html",
+              "publisher": "Sumitomo Chemical",
+              "source_tier": "PRIMARY",
+              "support": "CONTRADICTS",
+              "finding": "2026年7月2日，住友化学披露其全资子公司东友精细化工与三星电机签署的是设立合资公司的协议；新公司计划在取得必要批准后于2026年内设立，股权为三星电机66%、东友精细化工34%。"
+            },
+            {
+              "title": "Decision on Acquisition of Shares or Investment Certificates of Other Corporations",
+              "url": "https://m.samsungsem.com/global/about-us/investor-relations/disclosure/view.do?id=332",
+              "publisher": "Samsung Electro-Mechanics",
+              "source_tier": "PRIMARY",
+              "support": "CONTRADICTS",
+              "finding": "三星电机2026年7月2日披露显示，GlaSSEM仍为“暂定名”的新设合资公司，预计出资交割日为2026年9月1日；合作方是住友化学子公司东友精细化工，而非住友化学母公司直接持股。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_17375c5fa771f2d568645aff",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "截至2026年8月30日，一级公司披露支持AI服务器用先进IC载板需求超过产能，行业研究也预测ABF载板在2026年下半年至2027年存在供需缺口。一级存储厂商披露DRAM和NAND在2026年受供给约束；Reuters报道的SK hynix CEO则预测2027年将是存储供给最紧张的一年。可是，没有可比口径的独立来源对各类半导体瓶颈作出“ABF短缺仅次于存储、排名第二”的排序。因此，ABF和存储均可能持续紧张得到支持，但“second to memory”的相对排名未获核验。原X帖子仅为作者预测，不能独立确认事实。",
+          "corrected_claim": "可核验的表述是：先进ABF/IC载板预计在2026年下半年至2027年出现或维持供给紧张，存储器（DRAM/NAND）也面临供给约束，且部分公司及行业预测认为2027年存储紧张将尤为严重；但没有独立、统一口径的证据证明ABF短缺在所有供应链瓶颈中“仅次于存储”。",
+          "sources": [
+            {
+              "title": "Key Q&A: Q3 Financial Results for the Year Ended March 31, 2026",
+              "url": "https://ibiden.com/ir/items/en_QA_FY2025Q3.pdf",
+              "publisher": "Ibiden",
+              "source_tier": "PRIMARY",
+              "support": "PARTIAL",
+              "finding": "公司称AI服务器IC封装载板需求持续超过其产能，并预期先进产品SAP产能可能短缺；这证明其自身所见的高端载板约束，不构成全行业短缺排名。"
+            },
+            {
+              "title": "Micron Technology investor presentation",
+              "url": "https://investors.micron.com/static-files/9c0becf5-df56-4eec-bd67-453dda68b273?lidx=0&referring_guid=df5d8e23-4eeb-48ed-a593-8e28ae6d9ec7",
+              "publisher": "Micron Technology",
+              "source_tier": "PRIMARY",
+              "support": "PARTIAL",
+              "finding": "Micron预计2026年DRAM和NAND行业bit需求将受供给限制；该披露支持存储供给紧张，但未比较ABF与存储短缺的严重程度。"
+            },
+            {
+              "title": "SK Hynix CEO sees worst memory shortage in 2027, demand to outstrip supply beyond 2030",
+              "url": "https://investing.com/news/stock-market-news/sk-hynix-ceo-sees-worstever-memory-supply-shortage-in-2027-says-demand-to-outstrip-supply-beyond-2030-4786660",
+              "publisher": "Reuters",
+              "source_tier": "SECONDARY",
+              "support": "PARTIAL",
+              "finding": "Reuters报道SK hynix CEO于2026年7月预测，2027年将是存储行业史上供给最紧的一年，且其客户需求或在2030年后仍超过公司供给能力。这是公司高管预测，不是ABF与存储的横向排名。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_7f3ad493b1d8a20a4eacb619",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "两家行业媒体转述的内容与该表述的技术路径一致：2028年首代Feynman预计以台积电3D Stack（Die-to-Wafer）进行GPU堆叠，并配合SiC carrier改善散热；同时将CoPoS的潜在采用时点区分为2029年Feynman Ultra。华盛通明确将该观点标为“大摩（MS）”2026年7月6日供应链更新，但未提供可核验的摩根士丹利原始报告；经济日报仅称“美系大行”。NVIDIA和TSMC的一级资料分别确认Feynman产品路线及TSMC具备chip-on-wafer/SoIC技术能力，但均未确认Feynman采用D2W或SiC carrier。因此，作为券商预测可部分支持；不能表述为NVIDIA/TSMC已确认的产品规格。",
+          "corrected_claim": "据行业媒体转述的一份标注为摩根士丹利、日期为2026年7月6日的供应链更新，首代Feynman预计在2028年采用台积电3D Stack（Die-to-Wafer）进行GPU堆叠，并使用SiC carrier辅助散热；这属于券商/供应链预测，尚无NVIDIA、TSMC或公开的摩根士丹利原始报告直接确认。应使用“SiC载体（carrier）”，不宜泛化为已确认的“SiC载板/基板”。",
+          "sources": [
+            {
+              "title": "弹幕组TMT日报｜美股半导体2Q前瞻…（转述“大摩（MS）｜供应链更新：CoPoS、TGV玻璃和GlassBridge仍在路线验证（26年7月6日）”）",
+              "url": "https://daily.hstong.com/news/detail/26070717022298745",
+              "publisher": "华盛通",
+              "source_tier": "INDUSTRY",
+              "support": "PARTIAL",
+              "finding": "明确写称：2028年Feynman“仍以TSMC 3D stack与SiC carrier强化散热为主”，CoPoS可能在2029年Feynman Ultra路线出现；并将内容标注为MS于2026年7月6日的更新。未附摩根士丹利原始报告。"
+            },
+            {
+              "title": "外資觀察科技產業：對CPO看法不變 這年才是大規模導入CoPoS時間",
+              "url": "https://udn.com/news/story/7240/9611492",
+              "publisher": "经济日报／联合新闻网",
+              "source_tier": "INDUSTRY",
+              "support": "PARTIAL",
+              "finding": "2026年7月7日报道称“美系大行”认为：2028年首代Feynman将采用TSMC 3D Stack（Die-to-Wafer）堆叠GPU，并搭配SiC载体；2029年Feynman Ultra可能采用CoPoS。该文未点名摩根士丹利。"
+            },
+            {
+              "title": "GTC 2026 Keynote",
+              "url": "https://nvidia.com/en-us/on-demand/session/gtc26-s81595?playlistId=playList-5d17c33f-65f5-4fb1-9fed-bc5b7f4dec44",
+              "publisher": "NVIDIA",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "NVIDIA一级资料确认Feynman为后续一代平台并包含新GPU等路线信息，但未披露D2W GPU堆叠或SiC carrier。"
+            },
+            {
+              "title": "TSMC-SoIC®",
+              "url": "https://3dfabric.tsmc.com/english/dedicatedFoundry/technology/SoIC.htm",
+              "publisher": "TSMC",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "TSMC确认SoIC提供chip-on-wafer和wafer-on-wafer 3D堆叠能力，且面向HPC/AI；但未将该技术、SiC carrier或Feynman产品直接关联。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_aff463a651b56368870f2b5b",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "可核实的是：NVIDIA路线图将Feynman列为2028年推出的后续架构。独立的一级来源还显示，面向AI/HPC的CoWoS封装在2028年将扩展至14倍光罩尺寸，通常意味着更大的封装互连需求。但没有公司公告、财报、交易所文件或权威媒体直接证实Feynman必然采用多少ABF、较前代增加多少ABF面积/片数，或其单独驱动的ABF TAM增量。因此，“ABF使用量将大幅增加、TAM扩大”属于作者推论，不能作为已证实的Feynman事实。",
+          "corrected_claim": "截至2026年8月30日，NVIDIA已将Feynman列入2028年路线图；若其最终采用更大规模的先进封装，可能对高端封装基板需求形成上行因素。但Feynman的ABF用量、相对前代增量及其对ABF TAM的量化贡献尚未获一级来源披露。",
+          "sources": [
+            {
+              "title": "GTC 2025 Highlights",
+              "url": "https://images.nvidia.com/nvimages/gtc/pdf/GTC2025_Highlights_v2.pdf?ncid=ref-inor-876100&regcode=ref-inor-876100",
+              "publisher": "NVIDIA",
+              "source_tier": "PRIMARY",
+              "support": "PARTIAL",
+              "finding": "NVIDIA于2025年GTC发布的路线图将Blackwell、Rubin和Feynman排在2025—2028时间轴上；该材料不披露Feynman封装基板材料、ABF面积或采购量。"
+            },
+            {
+              "title": "Factbox—Everything Nvidia announced at its annual developer conference GTC",
+              "url": "https://m.investing.com/news/stock-market-news/factboxeverything-nvidia-announced-at-its-annual-developer-conference-gtc-3935516?ampMode=1",
+              "publisher": "Reuters",
+              "source_tier": "SECONDARY",
+              "support": "SUPPORTS",
+              "finding": "Reuters于2025年3月18日报道，Feynman计划于2028年推出，接替Vera Rubin；仅支持架构与时点，不支持ABF用量或TAM的量化判断。"
+            },
+            {
+              "title": "TSMC Debuts A13 Technology at 2026 North America Technology Symposium",
+              "url": "https://pr.tsmc.com/english/news/3302",
+              "publisher": "TSMC",
+              "source_tier": "PRIMARY",
+              "support": "PARTIAL",
+              "finding": "TSMC于2026年4月22日称，为支持AI对单封装内更多算力和HBM的需求，正扩大CoWoS；14倍光罩CoWoS计划于2028年量产，可集成约10颗大型计算芯片和20组HBM。该信息支持先进封装尺寸/复杂度上升的行业背景，但未点名Feynman，亦未确认ABF材料和需求增量。"
+            },
+            {
+              "title": "Scale of Global Market for ABF Substrates Will Grow at a CAGR of 16.4% in 2022–2026 Period",
+              "url": "https://trendforce.com/news/2022/11/14/scale-of-global-market-for-abf-substrates-will-grow-at-a-cagr-of-16-4-in-20222026-period-us-export-restrictions-will-influence-supply-demand-dynamics-of-this-material",
+              "publisher": "TrendForce",
+              "source_tier": "INDUSTRY",
+              "support": "CONTEXT_ONLY",
+              "finding": "该行业预测认为AI、HPC及更大封装会推动ABF需求，并预测2022—2026年市场增长；预测截止于2026年，且未覆盖或量化Feynman在2028年对TAM的贡献。"
+            }
+          ]
+        },
+        {
+          "claim_id": "claim_a82631a5de641f2f622f7f5e",
+          "status": "PARTIALLY_SUPPORTED",
+          "rationale": "群創的一级披露支持其正重点布局TGV/玻璃芯基板，并称正与全球一线客户合作开发；但披露未出现“CoPoS”或“Feynman/NVIDIA”名称，因而不能将其泛化技术布局解读为群创暗示Feynman将采用CoPoS及玻璃基板。NVIDIA官方路线图仅确认Feynman为2028年后续平台及“Next-Gen HBM”，未披露其封装方案或基板材料。",
+          "corrected_claim": "群创公开表示玻璃芯基板（TGV）是其先进封装重点，并与未具名的一线客户合作开发；截至当前，没有群创、NVIDIA或TSMC的一级公开文件确认Feynman将采用CoPoS或永久性玻璃芯基板。该关联应标注为作者/供应链推论，而非公告事实。",
+          "sources": [
+            {
+              "title": "Innolux Corporation 2025 Annual Report",
+              "url": "https://financialfilings.com/filings/inx-3481/annual-report/2026/48016006",
+              "publisher": "Innolux Corporation（年报文件）",
+              "source_tier": "PRIMARY",
+              "support": "PARTIAL",
+              "finding": "年报称玻璃基板/TGV为先进封装的重要方向，公司与“全球一线客户”合作开发技术；未点名TSMC、NVIDIA、Feynman或CoPoS。"
+            },
+            {
+              "title": "NVIDIA GTC 2025 Highlights",
+              "url": "https://images.nvidia.com/nvimages/gtc/pdf/GTC2025_Highlights_v2.pdf?ncid=ref-inor-876100&regcode=ref-inor-876100",
+              "publisher": "NVIDIA",
+              "source_tier": "PRIMARY",
+              "support": "CONTEXT_ONLY",
+              "finding": "官方路线图列出Feynman及其“Next-Gen HBM”，时间轴延伸至2028年；没有CoPoS、玻璃基板或群创供应关系的披露。"
+            }
+          ]
+        }
+      ],
+      "underlying_sources": [
+        {
+          "underlying_source_id": "underlying_01f75e5f836f337ccfc5d5bf",
+          "class": "INDUSTRY",
+          "publisher": "华盛通",
+          "title": "弹幕组TMT日报｜美股半导体2Q前瞻…（转述“大摩（MS）｜供应链更新：CoPoS、TGV玻璃和GlassBridge仍在路线验证（26年7月6日）”）",
+          "url": "https://daily.hstong.com/news/detail/26070717022298745",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_122f46dda5b189989015a108",
+          "class": "PRIMARY",
+          "publisher": "TSMC",
+          "title": "HPC Platform – TSMC 3DFabric®",
+          "url": "https://tsmc.com/english/dedicatedFoundry/technology/platform_HPC_tech_WLSI",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_19e8ea8d30036f3f06c4e7ac",
+          "class": "INDUSTRY",
+          "publisher": "Tom's Hardware",
+          "title": "Intel's Glass Substrates Advancements Could Revolutionize Multi-Chiplet Packages",
+          "url": "https://tomshardware.com/news/intels-glass-substrates-advancements-could-revolutionize-multi-chiplet-packages",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_1a3621bb27a600a8a8fc78b6",
+          "class": "INDUSTRY",
+          "publisher": "经济日报／联合新闻网",
+          "title": "外資觀察科技產業：對CPO看法不變 這年才是大規模導入CoPoS時間",
+          "url": "https://udn.com/news/story/7240/9611492",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_22a912c3eb9d7abb72c88d21",
+          "class": "SECONDARY",
+          "publisher": "Counterpoint Research",
+          "title": "From T-Glass Crisis to Capacity Erosion: The Multi-Year Substrate Shortage",
+          "url": "https://counterpointresearch.com/en/reports/From-T-Glass-Crisis-Capacity-Erosion-The-Multi-Year-Substrate-Shortage",
+          "social_mentions": 2
+        },
+        {
+          "underlying_source_id": "underlying_236e056cc16f20fd553eb0c6",
+          "class": "PRIMARY",
+          "publisher": "TSMC",
+          "title": "TSMC 2024 Annual Report",
+          "url": "https://investor.tsmc.com/sites/ir/annual-report/2024/2024%20Annual%20Report.E.pdf",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_30245ab0f65738f000948c3d",
+          "class": "SECONDARY",
+          "publisher": "Reuters",
+          "title": "Factbox—Everything Nvidia announced at its annual developer conference GTC",
+          "url": "https://m.investing.com/news/stock-market-news/factboxeverything-nvidia-announced-at-its-annual-developer-conference-gtc-3935516?ampMode=1",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_36697caab9e5855b233a0450",
+          "class": "PRIMARY",
+          "publisher": "合肥芯碁微电子装备股份有限公司／巨潮资讯网",
+          "title": "合肥芯碁微电子装备股份有限公司2025年年度报告摘要",
+          "url": "https://static.cninfo.com.cn/finalpage/2026-03-14/1225007946.PDF",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_3816cfc655462b951202f4a3",
+          "class": "PRIMARY",
+          "publisher": "TSMC／SEC",
+          "title": "TSMC 2025 Form 20-F",
+          "url": "https://sec.gov/Archives/edgar/data/1046179/000162828026025362/tsm-20251231.htm",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_3bd617d06e799f9b45fd64aa",
+          "class": "PRIMARY",
+          "publisher": "NVIDIA",
+          "title": "GTC 2025 Highlights",
+          "url": "https://images.nvidia.com/nvimages/gtc/pdf/GTC2025_Highlights_v2.pdf?ncid=ref-inor-876100&regcode=ref-inor-876100",
+          "social_mentions": 2
+        },
+        {
+          "underlying_source_id": "underlying_41b11dd8e9e1c737b9e2b851",
+          "class": "INDUSTRY",
+          "publisher": "Tom's Hardware",
+          "title": "NVIDIA: GPU Supply Issues Involve Packaging, Not Chip Wafers",
+          "url": "https://tomshardware.com/news/nvidia-gpu-supply-packaging-chip-wafers",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_4920ff720f042e22859e01a8",
+          "class": "PRIMARY",
+          "publisher": "Samsung Electro-Mechanics",
+          "title": "CES2025 三星电机代表理事新闻发布会：三星电机“Mi-RAE”新事业成果",
+          "url": "https://m.samsungsem.com/cn/newsroom/news/view.do?id=8924",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_4a723634293e04fce647bfab",
+          "class": "MEDIA",
+          "publisher": null,
+          "title": null,
+          "url": null,
+          "social_mentions": 3
+        },
+        {
+          "underlying_source_id": "underlying_4e8b3a34d0c5971b0c1a4697",
+          "class": "INDUSTRY",
+          "publisher": "DIGITIMES",
+          "title": "（独家）台积电先进封装扩产方向大改　AP8、AP7、美国厂全变",
+          "url": "https://digitimes.cn/tech/dt/n/shwnws.asp?CnlID=1&id=745207&query=COWOS",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_537e5d5009f87e15c8a03a3f",
+          "class": "PRIMARY",
+          "publisher": "TSMC",
+          "title": "TSMC 2025 Annual Report",
+          "url": "https://investor.tsmc.com/static/annualReports/2025/english/index.html",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_538ae74f17fa539efec1568c",
+          "class": "PRIMARY",
+          "publisher": "Ajinomoto Co., Inc.",
+          "title": "Ajinomoto Co., Inc. and Ajinomoto Fine-Techno Co., Inc. Acquire New Plant Site",
+          "url": "https://ajinomoto.com/cms_wp_ajnmt_global/wp-content/uploads/pdf/2026_05_07_02E.pdf",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_54daab0bb129102ab8480d3f",
+          "class": "INDUSTRY",
+          "publisher": "Basler",
+          "title": "CoWoP Is Coming, and Semiconductor Inspection Is Ready All Along",
+          "url": "https://baslerweb.com/en-us/learning/semicon-chip-on-wafer-on-pcb",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_5c133f41e1b2aea8e77aba4a",
+          "class": "SECONDARY",
+          "publisher": "Reuters（经MarketScreener转载）",
+          "title": "NVIDIA CEO Says H100 Now In Full Production",
+          "url": "https://marketscreener.com/quote/stock/NVIDIA-CORPORATION-57355629/news/NVIDIA-CEO-SAYS-H100-NOW-IN-FULL-PRODUCTION--43974190",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_5c8cf17ce32fde31fb9b9a4b",
+          "class": "PRIMARY",
+          "publisher": "Manz Asia",
+          "title": "Manz 亞智科技 CoPoS 技術藍圖成形　台灣半導體創新研發中心啟用",
+          "url": "https://manz.com.tw/wp-content/uploads/2025_0414_TC_Manz_Asia.pdf",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_5ebd6e7935ca7b5cee6f53c1",
+          "class": "PRIMARY",
+          "publisher": "TSMC",
+          "title": "2026 AGM Agenda",
+          "url": "https://investor.tsmc.com/sites/ir/shareholders-meeting/2026-06-04/2026AGM_Agenda_wmn.pdf",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_6e24c37e0bbd0d450c3fc935",
+          "class": "PRIMARY",
+          "publisher": "Manz AG",
+          "title": "Panel-Level Packaging — RDL Production Solutions",
+          "url": "https://manz.com.tw/ecomaXL/files/2024_FOPLP_Flyer_EN_read.pdf",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_73babdc82a65d21586cfc3aa",
+          "class": "SECONDARY",
+          "publisher": "hARDWAREMANIA",
+          "title": "TSMC, CoWoS sonrası için CoPoS ve cam substrate’e hız verdi",
+          "url": "https://hardwaremania.com/haber/tsmc-cowos-sonrasi-icin-copos-ve-cam-substratee-hiz-verdi",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_750841274436f4a03a6eaa4f",
+          "class": "PRIMARY",
+          "publisher": "TSMC",
+          "title": "CoWoS®",
+          "url": "https://3dfabric.tsmc.com/english/dedicatedFoundry/technology/cowos.htm",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_75e8bfaa6017135cbb5c2330",
+          "class": "PRIMARY",
+          "publisher": "TSMC",
+          "title": "TSMC 2025 Annual Report",
+          "url": "https://investor.tsmc.com/sites/ir/annual-report/2025/2025%20Annual%20Report_E.pdf",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_791b8dc6f1ae406ba674b441",
+          "class": "PRIMARY",
+          "publisher": "TSMC",
+          "title": "TSMC Launches OIP 3DFabric Alliance to Shape the Future of Semiconductor and System Innovations",
+          "url": "https://pr.tsmc.com/english/news/2968",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_7c0aacc25a092fffae4b44cc",
+          "class": "INDUSTRY",
+          "publisher": "TrendForce",
+          "title": "Scale of Global Market for ABF Substrates Will Grow at a CAGR of 16.4% in 2022–2026 Period",
+          "url": "https://trendforce.com/news/2022/11/14/scale-of-global-market-for-abf-substrates-will-grow-at-a-cagr-of-16-4-in-20222026-period-us-export-restrictions-will-influence-supply-demand-dynamics-of-this-material",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_7e9c007b8e9db9d664e02fe3",
+          "class": "PRIMARY",
+          "publisher": "IBIDEN CO., LTD.",
+          "title": "Notice Regarding Capital Investment Plan for High-Performance IC Package Substrates",
+          "url": "https://ibiden.com/company/2026/02/notice-regarding-capital-investment-plan-for-high-performance-ic-package-substrates.html",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_801bbe062e31a826fbcfb71d",
+          "class": "PRIMARY",
+          "publisher": "沪士电子／巨潮资讯网",
+          "title": "沪士电子股份有限公司2025年度总经理工作报告",
+          "url": "https://static.cninfo.com.cn/finalpage/2026-03-25/1225027842.PDF",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_86b1d37d573e9323eb330a57",
+          "class": "PRIMARY",
+          "publisher": "Intel",
+          "title": "Intel Foundry EMIB Technology Brief",
+          "url": "https://intel.com/content/dam/www/central-libraries/us/en/documents/2025-07/emib-product-brief.pdf",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_8e84fe7c8e98e1b3881fc288",
+          "class": "PRIMARY",
+          "publisher": "TSMC",
+          "title": "TSMC-SoIC®",
+          "url": "https://3dfabric.tsmc.com/english/dedicatedFoundry/technology/SoIC.htm",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_964289a4191ae79b6c978233",
+          "class": "INDUSTRY",
+          "publisher": "TrendForce",
+          "title": "CoWoP: A Game-Changer Beyond CoWoS—Or Just Hype? PCB Makers Stay Skeptical",
+          "url": "https://trendforce.com/news/2025/07/30/news-cowop-a-game-changer-beyond-cowos-or-just-hype-pcb-makers-stay-skeptical",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_96af9e542b07aebbff2f063e",
+          "class": "PRIMARY",
+          "publisher": "TSMC",
+          "title": "TSMC Debuts A13 Technology at 2026 North America Technology Symposium",
+          "url": "https://pr.tsmc.com/english/news/3302",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_9dd3911e784275ae996cb30c",
+          "class": "PRIMARY",
+          "publisher": "Innolux Corporation（年报文件）",
+          "title": "Innolux Corporation 2025 Annual Report",
+          "url": "https://financialfilings.com/filings/inx-3481/annual-report/2026/48016006",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_9e02e10abb758d70ba660ca2",
+          "class": "MEDIA",
+          "publisher": null,
+          "title": null,
+          "url": null,
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_a2080679ca2264e9d5ad616b",
+          "class": "PRIMARY",
+          "publisher": "TSMC",
+          "title": "CoWoS®",
+          "url": "https://3dfabric.tsmc.com/chinese/dedicatedFoundry/technology/cowos.htm",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_bb78f439f6cd0480eb3a1a74",
+          "class": "PRIMARY",
+          "publisher": "Samsung Electro-Mechanics",
+          "title": "Decision on Acquisition of Shares or Investment Certificates of Other Corporations",
+          "url": "https://m.samsungsem.com/global/about-us/investor-relations/disclosure/view.do?id=332",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_c38f6a88ea3d6f8886903128",
+          "class": "PRIMARY",
+          "publisher": "Intel Corporation",
+          "title": "Intel Unveils Industry-Leading Glass Substrates to Meet Demand for More Powerful Compute",
+          "url": "https://intc.com/news-events/press-releases/detail/1647/intel-unveils-industry-leading-glass-substrates-to-meet",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_c63ec95905ee697e9eee5f4f",
+          "class": "PRIMARY",
+          "publisher": "TSMC",
+          "title": "TSMC 2024 Annual Report, Chapter 5",
+          "url": "https://investor.tsmc.com/static/annualReports/2024/english/pdf/2024_tsmc_ar_e_ch5.pdf",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_c7e0ad6af40eca914cefd58e",
+          "class": "PRIMARY",
+          "publisher": "Sumitomo Chemical",
+          "title": "サムスン電機とのガラスコア基板事業に関する合弁会社設立について",
+          "url": "https://sumitomo-chem.co.jp/news/detail/20260702_2.html",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_d2bd8fa73765375a922ee129",
+          "class": "PRIMARY",
+          "publisher": "NVIDIA",
+          "title": "GTC 2026 Keynote",
+          "url": "https://nvidia.com/en-us/on-demand/session/gtc26-s81595?playlistId=playList-5d17c33f-65f5-4fb1-9fed-bc5b7f4dec44",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_d33c3bc07a14e317caaeed98",
+          "class": "SECONDARY",
+          "publisher": "Reuters",
+          "title": "SK Hynix CEO sees worst memory shortage in 2027, demand to outstrip supply beyond 2030",
+          "url": "https://investing.com/news/stock-market-news/sk-hynix-ceo-sees-worstever-memory-supply-shortage-in-2027-says-demand-to-outstrip-supply-beyond-2030-4786660",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_d9f6c5d8b675a178b0e4640d",
+          "class": "INDUSTRY",
+          "publisher": "DigiTimes",
+          "title": "台積攜Ibiden、群創猛攻CoPoS　傳出玻璃基板領域踩油門",
+          "url": "https://digitimes.com.tw/tech/dt/n/shwnws.asp?CnlID=1&cat=40&id=0000758841_AJV7G8PH5KBC540867F4K&wpidx=3",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_e277ccf778d255ef9d47dbd3",
+          "class": "PRIMARY",
+          "publisher": "Micron Technology",
+          "title": "Micron Technology investor presentation",
+          "url": "https://investors.micron.com/static-files/9c0becf5-df56-4eec-bd67-453dda68b273?lidx=0&referring_guid=df5d8e23-4eeb-48ed-a593-8e28ae6d9ec7",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_e3ae1dc400b99a38d7b616d9",
+          "class": "SECONDARY",
+          "publisher": "ChosunBiz",
+          "title": "TSMC touts glass substrate gains as Korea players race to commercialize",
+          "url": "https://biz.chosun.com/en/en-it/2026/06/18/CFQ2NQPKEZC5LCMU7HNR7UQUVE?outputType=amp",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_e958f3239f23a665ad4a04b9",
+          "class": "PRIMARY",
+          "publisher": "Ibiden",
+          "title": "Key Q&A: Q3 Financial Results for the Year Ended March 31, 2026",
+          "url": "https://ibiden.com/ir/items/en_QA_FY2025Q3.pdf",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_eb5c9b97b9896c2f698fdbdb",
+          "class": "PRIMARY",
+          "publisher": "Samsung Electro-Mechanics",
+          "title": "2023-2024 Sustainability Report",
+          "url": "https://m.samsungsem.com/resources/file/jp/sustainability/report/SEM_SR2023_EN.pdf",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_ebcbab131e2cf60497f9f511",
+          "class": "PRIMARY",
+          "publisher": "Japan Electronics Packaging and Circuits Association",
+          "title": "Introduction | JPCA Show 2026",
+          "url": "https://jpcashow.com/show2026/en/outline/index.html",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_eca52673b09bbc7e9c8bdd13",
+          "class": "INDUSTRY",
+          "publisher": "Goldman Sachs Taiwan Technology（报告由第三方平台转载）",
+          "title": "Taiwan PCB/CCL Industry Outlook 2026",
+          "url": "https://scribd.com/document/961428102/251204-gs-AI-PCB-CCL",
+          "social_mentions": 1
+        },
+        {
+          "underlying_source_id": "underlying_fc0696c7596966517b49a6be",
+          "class": "SECONDARY",
+          "publisher": "經濟日報",
+          "title": "外資驚爆台積電神祕武器 將提前上陣決戰英特爾",
+          "url": "https://money.udn.com/money/amp/story/5607/9612882",
+          "social_mentions": 1
+        }
+      ],
+      "research_case_analysis": {
+        "title": "ABF → CoPoS / CoWoP → PCB",
+        "analysis": {
+          "author_views": [
+            {
+              "author": "zephyr_z9",
+              "view": "“Feynman drops”将显著扩大ABF TAM；若采用CoPoS和玻璃基板，Feynman可能延至2029年。"
+            },
+            {
+              "author": "jukan05",
+              "view": "转述摩根士丹利观点：首代Feynman或先采用D2W GPU堆叠及SiC carrier，CoPoS全面导入或对应2029年Feynman Ultra。"
+            }
+          ],
+          "facts": [
+            "NVIDIA官方路线图将Feynman列于2028年，但未披露封装架构、基板材料或供应商。",
+            "CoWoP取消传统ABF载板、将芯片/中介层组件直接装配至类载板PCB（SLP）或高精度多层PCB；相关产业链一级资料将其定位为未来技术储备/验证方向。",
+            "CoWoS已量产；TSMC官方资料未确认所有CoWoS版本均使用ABF。",
+            "关于CoPoS使用“面板级ABF”的信息主要来自图片，尚未获独立核验。",
+            "Ibiden披露AI服务器先进IC封装载板需求超过其产能；这支持高端载板局部紧张，不等于整个ABF市场普遍短缺。"
+          ],
+          "verified_evidence": [
+            "Feynman—CoPoS—玻璃基板的直接关联没有NVIDIA、TSMC或供应商一级确认。",
+            "媒体转述的摩根士丹利框架反而区分了首代Feynman与2029年Feynman Ultra：前者预期D2W+SiC carrier，后者才可能全面导入CoPoS。",
+            "CoWoP的“无ABF、上PCB/SLP”结构有一级来源支持，但仍未获TSMC或NVIDIA对具体未来产品采用的确认。",
+            "Counterpoint预测2027年先进ABF供给缺口扩大，但该预测不能证明PCB、CCL和ABF均为同等或最大瓶颈。"
+          ],
+          "logic_chain": [
+            "若Feynman采用延续CoWoS或导入CoPoS，且CoPoS确实采用面板级ABF，则高端ABF需求可受益；但ABF面积、层数、良率和单机用量均未知。",
+            "若Feynman或后续平台改用CoWoP，传统ABF载板被结构性移除，需求价值可能转向高精度PCB、RDL、CCL及相关制造环节。",
+            "因此，Feynman对ABF不是确定性利好，而是对封装路线高度敏感的条件性命题。",
+            "在ABF、PCB和高端CCL三者之间，当前证据未证明存在一个可被点名的、真正路线中性的单一标的；ABF与CoWoP本身存在替代关系。"
+          ],
+          "corrections": [
+            "应将“Feynman将大幅扩大ABF TAM”改为：若最终封装路径保留并增加高规格ABF使用，Feynman可能形成需求上行；目前无法量化。",
+            "应将“Feynman因CoPoS/玻璃基板延至2029年”改为：这是未验证推论；2029年在媒体转述中更接近Feynman Ultra潜在CoPoS导入节点，而非对首代Feynman已确认的延期。",
+            "不应把CCL成本压力等同于CCL物理短缺，也不应把ABF、PCB和CCL混为同一供需市场。"
+          ],
+          "contradictions": [
+            "图片称CoPoS采用面板级ABF，但该结构描述未获独立验证；CoWoP取消ABF则有一级资料支持。",
+            "供应链报道混用“CoPoS”“玻璃基板”和“下一代CoWoS”；三者的技术层级与商业关系尚未厘清。",
+            "社交帖称14x reticle CoWoS于2029年推出，而TSMC 2026年公告称14x reticle CoWoS计划于2028年量产。",
+            "NVIDIA路线图列Feynman于2028年；将2029年直接称为“延迟”缺少已确认的原始量产基准。"
+          ],
+          "ai_assessment": "审计问题一的结论是否定：Feynman并非确定受益于ABF；结果取决于未披露的CoWoS/CoPoS/CoWoP路线及每封装材料用量。问题二没有证据支持某一具体ABF、PCB或高端CCL公司可跨三条路径保持中性受益。相对更接近路线中性的应是服务多种先进封装路径的互连、检测、自动化或可靠性能力，但输入未提供可验证的具体公司或收入暴露。",
+          "counter_case": [
+            "首代Feynman采用D2W+SiC carrier但不采用CoPoS，ABF需求变化可能主要由封装尺寸而非新路线决定。",
+            "CoWoP若最终成熟，会压缩传统ABF载板需求，即便AI封装总价值量继续增长。",
+            "改良有机载板、CoWoS-L/R、硅中介层或其他架构可能延后CoPoS、玻璃或CoWoP的导入。",
+            "HBM、先进封装产能、电力或网络可能先限制系统出货，削弱ABF需求向收入的转化。"
+          ],
+          "second_order_effects": [
+            "若CoWoP导入，价值池可能由ABF转向高精度SLP/PCB、高端CCL、RDL、检测和可靠性验证。",
+            "若CoPoS保留ABF且实现面板化，需求可能从传统载板形态迁移至面板级材料与工艺，未必等比例利好现有ABF供应商。",
+            "多路线并行会延长客户认证周期，提高材料热机械一致性、良率和供应保障的门槛。"
+          ],
+          "beneficiaries": [
+            "具备经认证先进ABF有效产能的供应商：仅在CoWoS/CoPoS保留ABF且需求兑现时。",
+            "具备高精度PCB/SLP、高端CCL、RDL和可靠性能力的供应商：仅在CoWoP或面板级路线获得采用时。",
+            "跨材料路线提供检测、计量、自动化或可靠性验证的供应商：理论上更中性，但本案未验证具体受益公司。"
+          ],
+          "negative_exposure": [
+            "将Feynman ABF增量或Innolux相关订单直接纳入短期营收预测的投资逻辑。",
+            "仅押注传统ABF、且缺乏面板级或高精度PCB技术迁移能力的供应商，面临远期CoWoP替代风险。",
+            "无法向客户转嫁高端CCL成本的高速PCB厂商。"
+          ],
+          "risks": [
+            "Feynman封装、材料、供应商和量产时间均未获一级披露。",
+            "CoPoS面板级ABF定义及玻璃基板在封装中的位置不清楚。",
+            "CoWoP尚处研发/验证阶段，不能把其结构优势当作已实现的商业替代。",
+            "单一券商转述和匿名供应链报道不能作为设计定案或订单证据。"
+          ],
+          "valuation_questions": [
+            "Feynman每颗封装的ABF面积、层数、单位价值及相对Rubin的增量是多少？",
+            "首代Feynman与Feynman Ultra是否采用不同封装路线？其量产基准分别为何？",
+            "CoPoS是否使用ABF、何种面板尺寸、良率和成本相对CoWoS如何？",
+            "CoWoP中的高精度PCB/SLP与高端CCL的单位价值、认证门槛和利润池归属如何？",
+            "是否存在同时具备先进ABF、SLP/PCB和高端CCL真实收入暴露的公司？"
+          ],
+          "catalysts": [
+            "NVIDIA或TSMC披露Feynman的封装架构、基板材料和量产时程。",
+            "TSMC披露CoPoS的材料栈、客户认证和量产节点。",
+            "CoWoP出现具名客户、试产良率、可靠性结果或设备订单。",
+            "ABF、PCB及CCL厂商披露按产品等级划分的交期、价格、利用率和客户认证数据。"
+          ],
+          "invalidation_conditions": [
+            "NVIDIA/TSMC正式确认Feynman采用CoWoP或其他无ABF结构，将否定“Feynman必然扩张ABF TAM”。",
+            "CoPoS被确认不使用ABF或仅服务极窄应用，将削弱面板级ABF增量逻辑。",
+            "先进ABF有效产能和T-glass供给在2027年前明显宽松，且价格/交期无紧张迹象。",
+            "高端CCL或高精度PCB未获得CoWoP/面板级封装认证，无法承接潜在材料迁移。"
+          ],
+          "unknowns": [
+            "Feynman实际封装路线、ABF用量、基板供应商、量产时点及是否存在延期。",
+            "CoPoS是否确实采用面板级ABF，以及其与玻璃基板、下一代CoWoS的准确关系。",
+            "CoWoP从研发到量产的客户、良率、可靠性、成本和时间表。",
+            "任何具体公司在ABF、PCB与高端CCL三项上的收入占比和路线中性程度。"
+          ],
+          "actionability": "RESEARCH",
+          "scores": {
+            "thesis_quality": 6,
+            "evidence_quality": 5,
+            "novelty": 5,
+            "mispricing_potential": 5,
+            "actionability": 4
+          }
+        },
+        "model": "gpt-5.6-terra",
+        "updated_at": "2026-08-30T14:04:48.795Z"
+      },
+      "missing_seed_posts": []
+    }
+  },
+  "openai_actual": {
+    "calls": 113,
+    "cost_usd_recorded": 4.905548
+  }
+}

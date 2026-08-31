@@ -226,7 +226,11 @@ a{color:inherit;text-decoration:none}
 .thesis-change-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:14px 0 22px}
 .thesis-change-card{border:1px solid var(--line);border-radius:14px;background:#fff;padding:17px;box-shadow:0 8px 28px rgba(31,47,78,.04)}
 .thesis-change-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}.thesis-theme{font-size:17px;font-weight:750}.change-pill,.action-pill{font-family:var(--mono);font-size:9.5px;border-radius:999px;padding:4px 7px;background:var(--blue-soft);color:var(--blue)}
+.golden-pill{font-family:var(--mono);font-size:9.5px;border-radius:999px;padding:4px 7px;background:#e9f8f0;color:#148052;border:1px solid #bde8d5;font-weight:800}
 .action-pill{background:#f2f4f8;color:var(--ink-faint)}.thesis-row{display:grid;grid-template-columns:105px 1fr;gap:10px;padding:7px 0;border-top:1px solid var(--line-soft);font-size:12.5px;line-height:1.5}.thesis-row b{color:var(--ink-faint);font-size:10px;letter-spacing:.04em}.exposure{display:inline-block;margin:2px 5px 2px 0;padding:2px 6px;border-radius:5px;background:#f4f7fb}.thesis-actions{display:flex;gap:8px;margin-top:11px}.thesis-actions button,.thesis-actions a{border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--blue);font-size:10.5px;padding:6px 8px;cursor:pointer}
+.cost-panel{border:1px solid var(--line);border-radius:14px;background:#fff;padding:16px;margin:14px 0 22px;box-shadow:0 8px 28px rgba(31,47,78,.04)}
+.cost-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.cost-stat{padding:11px;border-radius:10px;background:var(--panel-2);border:1px solid var(--line-soft)}.cost-stat b{display:block;font-family:var(--mono);font-size:17px}.cost-stat span{font-size:10px;color:var(--ink-faint)}
+.cost-controls{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}.cost-detail{margin-top:12px;font-family:var(--mono);font-size:10.5px;color:var(--ink-dim);line-height:1.7}
 .evidence-pop{position:fixed;z-index:90;left:50%;top:50%;transform:translate(-50%,-50%);width:min(560px,calc(100vw - 32px));max-height:min(70vh,620px);overflow:auto;padding:18px;border:1px solid #d7def1;border-radius:18px;background:#fff;box-shadow:0 24px 80px rgba(23,32,51,.24)}
 .evidence-pop:before{content:'原文';display:block;margin-bottom:10px;padding-right:42px;font-size:11px;font-weight:800;color:var(--blue);letter-spacing:.08em}.evidence-close{position:absolute;z-index:2;right:12px;top:12px;width:36px;height:36px;display:grid;place-items:center;border:1px solid var(--line);border-radius:50%;background:#fff;color:var(--ink-dim);font-size:22px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(23,32,51,.08)}.evidence-close:hover{background:var(--blue-soft);color:var(--blue);border-color:#cfd8ff}.evidence-close:focus-visible{outline:3px solid rgba(49,94,251,.25);outline-offset:2px}.evidence-text{padding:12px 13px;border-radius:11px;background:var(--panel-2);color:var(--ink-dim);font-size:13px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}.evidence-link{margin-top:10px}.evidence-link a{color:var(--blue);font-size:11px;font-weight:650}.filter-note{font-size:11px;color:var(--ink-faint);margin:-5px 0 14px}
 /* ===== explainable signal strength ===== */
@@ -242,10 +246,10 @@ a{color:inherit;text-decoration:none}
 .return-bar.in{left:50%;background:#25a36f}.return-bar.out{right:50%;background:#d45467}.return-value{min-width:50px;font-family:var(--mono);font-size:11px;font-weight:800}
 .return-value.in{color:#16845a}.return-value.out{color:#c13e55}
 
-@media(max-width:1080px){.layout{display:block}.side-nav{display:none}.kolgrid{grid-template-columns:repeat(2,1fr)}.stance-grid,.thesis-change-grid{grid-template-columns:1fr}}
+@media(max-width:1080px){.layout{display:block}.side-nav{display:none}.kolgrid{grid-template-columns:repeat(2,1fr)}.stance-grid,.thesis-change-grid{grid-template-columns:1fr}.cost-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:680px){
   .topbar{padding:0 14px;height:58px}.brand .sub,.clock{display:none}
-  .kolgrid{grid-template-columns:1fr}.wrap{padding:12px 14px 60px}.shead{margin-top:30px}.shead:first-child{margin-top:14px}.shead .hint,.shead .rule{display:none}
+  .kolgrid,.cost-grid{grid-template-columns:1fr}.wrap{padding:12px 14px 60px}.shead{margin-top:30px}.shead:first-child{margin-top:14px}.shead .hint,.shead .rule{display:none}
   .brief{padding:20px 16px}.brief .bh{flex-wrap:wrap}.brief .bdate{margin-left:0}.brief .bhot{width:100%;margin-left:0;margin-top:6px}
   .summary-line{grid-template-columns:1fr;gap:4px;padding:10px 11px}.summary-key{font-size:11px}.summary-value{font-size:13px}
   .ttable thead{display:none}.ttable,.ttable tbody,.ttable tr,.ttable td{display:block;width:100%}
@@ -265,14 +269,18 @@ a{color:inherit;text-decoration:none}
   <span class="live" id="live-meta"><span class="dot"></span><span id="live-text">loading...</span></span>
 </div>
 
-<div class="layout"><nav class="side-nav"><div class="nav-title">页面导航</div><a href="#thesis-changes">01 Thesis变化</a><a href="#market">02 市场态度</a><a href="#tracking">03 标的追踪</a><a href="#feed-section">04 近期明细</a><a href="#people">05 追踪对象</a></nav><div class="wrap">
+<div class="layout"><nav class="side-nav"><div class="nav-title">页面导航</div><a href="#thesis-changes">01 Thesis变化</a><a href="#ai-cost">02 AI Cost</a><a href="#market">03 市场态度</a><a href="#tracking">04 标的追踪</a><a href="#feed-section">05 近期明细</a><a href="#people">06 追踪对象</a></nav><div class="wrap">
 
   <div class="shead section-anchor" id="thesis-changes"><span class="num">01</span><h2>TODAY'S THESIS CHANGES</h2>
     <span class="hint">新证据改变了什么 · 独立 AI 评估 · 非买卖建议</span><span class="rule"></span></div>
   <div class="thesis-change-grid" id="thesis-change-grid"></div>
 
+  <div class="shead section-anchor" id="ai-cost"><span class="num">02</span><h2>AI COST GUARDRAILS</h2>
+    <span class="hint">风险费用包含 Pending / Unknown · 管理员审计</span><span class="rule"></span></div>
+  <div class="cost-panel" id="ai-cost-panel"></div>
+
   <!-- ===== 市场态度：今日总结与近期态度合并 ===== -->
-  <div class="shead section-anchor" id="market"><span class="num">02</span><h2>市场态度</h2>
+  <div class="shead section-anchor" id="market"><span class="num">03</span><h2>市场态度</h2>
     <span class="hint">共识结论 · 个人立场 · 每条判断可查看原文</span><span class="rule"></span></div>
   <div class="period-control"><label for="stance-window">时间范围</label><select id="stance-window">
     <option value="0" selected>今日</option><option value="0.25">近 1 周</option><option value="1">近 1 个月</option><option value="3">近 3 个月</option>
@@ -282,7 +290,7 @@ a{color:inherit;text-decoration:none}
   <div class="stance-grid" id="stancegrid"></div>
 
   <!-- ===== 标的追踪：优先于明细 ===== -->
-  <div class="shead section-anchor" id="tracking"><span class="num">03</span><h2>标的追踪</h2>
+  <div class="shead section-anchor" id="tracking"><span class="num">04</span><h2>标的追踪</h2>
     <span class="hint">首次明确方向计分 · 最近发言优先 · 点击查看首条原文</span><span class="rule"></span></div>
   <div class="filters"><label for="perf-kol">人物</label><select id="perf-kol"></select>
     <label for="perf-window">首次喊单</label><select id="perf-window"><option value="7">近 1 周</option><option value="30" selected>近 1 个月</option><option value="90">近 3 个月</option><option value="365">近 1 年</option></select><label for="perf-sort">排序</label><select id="perf-sort"><option value="return_desc">方向收益高 → 低</option><option value="return_asc">方向收益低 → 高</option><option value="latest">最近提及优先</option><option value="first">首次喊单最新</option></select></div>
@@ -294,14 +302,14 @@ a{color:inherit;text-decoration:none}
     <tbody id="tbody"></tbody></table></div>
 
   <!-- ===== 近期明细 ===== -->
-  <div class="shead section-anchor" id="feed-section"><span class="num">04</span><h2>近期明细</h2>
+  <div class="shead section-anchor" id="feed-section"><span class="num">05</span><h2>近期明细</h2>
     <span class="hint" id="feed-date"></span><span class="rule"></span></div>
   <div class="filters"><label for="feed-kol">人物</label><select id="feed-kol"></select><label for="feed-level">信号等级</label><select id="feed-level"><option value="all">全部</option><option value="focus">重点</option><option value="reference">参考</option><option value="general">一般</option></select>
     <label for="feed-size">每页</label><select id="feed-size"><option>20</option><option selected>30</option><option>50</option></select></div>
   <div class="feed-empty" id="feed-empty"></div><div class="feed" id="feed"></div><div class="pager" id="feed-pager"></div>
 
   <!-- ===== 追踪对象 (ref, bottom) ===== -->
-  <div class="shead section-anchor" id="people"><span class="num">05</span><h2>追踪对象</h2>
+  <div class="shead section-anchor" id="people"><span class="num">06</span><h2>追踪对象</h2>
     <span class="hint">能力圈备忘 · 信什么 / 略过什么</span><span class="rule"></span></div>
   <div class="kolgrid" id="kolgrid"></div>
 
@@ -320,6 +328,7 @@ a{color:inherit;text-decoration:none}
 <script id="TODAY_RECORDS" type="application/json">__TODAY_RECORDS__</script>
 <script id="BUILD_META" type="application/json">__BUILD_META__</script>
 <script id="THESIS_CHANGES" type="application/json">__THESIS_CHANGES__</script>
+<script id="AI_COST_PANEL" type="application/json">__AI_COST_PANEL__</script>
 <script>
 const RECORDS=JSON.parse(document.getElementById('DATA').textContent);
 const KOLS=JSON.parse(document.getElementById('KOLS').textContent);
@@ -330,6 +339,7 @@ const TODAY_STATS=JSON.parse(document.getElementById('TODAY_STATS').textContent)
 const TODAY_RECORDS=JSON.parse(document.getElementById('TODAY_RECORDS').textContent);
 const BUILD_META=JSON.parse(document.getElementById('BUILD_META').textContent);
 const THESIS_CHANGES=JSON.parse(document.getElementById('THESIS_CHANGES').textContent);
+const AI_COST_PANEL=JSON.parse(document.getElementById('AI_COST_PANEL').textContent);
 // 单一今日窗口函数 (24h 滚动) — 跟 build_dashboard.py / intel_gen_summaries.py / query_today_stats 共用
 function todayWindowUTC(){return [new Date(BUILD_META.window_start_utc), new Date(BUILD_META.window_end_utc)];}
 const COLORS={jukan:'#48c9d6',serenity:'#f0a73c',zephyr:'#9a8cff',austin:'#e0617a',dgretta:'#2e9d69',feroce:'#d17c2f',tradex:'#5277d3',gsmferrari:'#8255b5'};
@@ -377,7 +387,7 @@ function renderThesisChanges(){
       ${lines('CATALYSTS',x.catalysts)}${lines('INVALIDATION',x.invalidation_conditions)}
       ${sources?`<div class="thesis-row"><b>SOURCES</b><span><ul>${sources}</ul></span></div>`:''}
       </details>`:'';
-    return `<article class="thesis-change-card"><div class="thesis-change-head"><span class="thesis-theme">${escHtml(x.theme)}</span><span class="change-pill">${escHtml(x.change_type)}</span><span class="action-pill">${escHtml(x.actionability)}</span></div>
+    return `<article class="thesis-change-card"><div class="thesis-change-head"><span class="thesis-theme">${escHtml(x.theme)}</span><span class="change-pill">${escHtml(x.change_type)}</span><span class="action-pill">${escHtml(x.actionability)}</span>${x.golden_status?`<span class="golden-pill">GOLDEN ${escHtml(x.golden_status)}</span>`:''}</div>
       <div class="meta">${escHtml((x.authors||[]).join(' · '))} · Confidence ${x.confidence==null?'—':Math.round(x.confidence*100)} · Social ${x.social_mentions||0} / Independent ${x.independent_evidence||0}</div>
       <div class="thesis-row"><b>PREVIOUS VIEW</b><span>${escHtml(x.previous_view)}</span></div>
       <div class="thesis-row"><b>NEW EVIDENCE</b><span><ul>${evidence||'<li>—</li>'}</ul></span></div>
@@ -389,6 +399,19 @@ function renderThesisChanges(){
       ${researchDetail}
       <div class="thesis-actions"><button type="button" onclick="const d=this.closest('article').querySelector('details');if(d){d.open=true;d.scrollIntoView({behavior:'smooth'})}">View Thesis</button><button type="button" onclick="const u=this.closest('article').querySelector('ul');if(u)u.scrollIntoView({behavior:'smooth'})">View Evidence</button><button type="button" title="仅用户主动触发，Daily 不调用 Sol" onclick="alert('Deep Analysis 仅在你主动触发后运行，不会由 Daily Feed 自动调用。')">Deep Analysis</button></div></article>`;
   }).join('');
+}
+function renderAiCostPanel(){
+  const x=AI_COST_PANEL,usd=v=>`$${Number(v||0).toFixed(4)}`,flag=v=>`<span class="${v?'sig focus':'sig general'}">${v?'YES':'NO'}</span>`;
+  const stages=(x.by_stage||[]).map(v=>`${escHtml(v.name)} ${usd(v.cost)} / ${v.calls}`).join(' · ')||'No calls';
+  const models=(x.by_model||[]).map(v=>`${escHtml(v.name)} ${usd(v.cost)} / ${v.calls}`).join(' · ')||'No calls';
+  document.getElementById('ai-cost-panel').innerHTML=`<div class="cost-grid">
+    <div class="cost-stat"><b>${usd(x.today_cost)}</b><span>Today AI Cost</span></div>
+    <div class="cost-stat"><b>${usd(x.days_7_cost)}</b><span>Last 7 Days</span></div>
+    <div class="cost-stat"><b>${usd(x.days_30_cost)}</b><span>Last 30 Days</span></div>
+    <div class="cost-stat"><b>${x.calls_today||0}</b><span>Calls Today</span></div>
+    <div class="cost-stat"><b>${x.pending_unknown_calls||0}</b><span>Pending / Unknown · ${usd(x.pending_unknown_risk)}</span></div></div>
+    <div class="cost-controls"><span>AI Enabled ${flag(x.ai_enabled)}</span><span>Expensive Jobs ${flag(x.expensive_jobs_enabled)}</span><span class="change-pill">Daily ${usd(x.daily_budget)}</span><span class="change-pill">Run ${usd(x.run_budget)}</span><span class="change-pill">Calls ${x.call_limit}</span></div>
+    <div class="cost-detail"><b>BY STAGE</b> · ${stages}<br><b>BY MODEL</b> · ${models}</div>`;
 }
 const SIGNAL_POLICY={
   jukan:{focus:'存储/HBM能力圈内的明确方向与实际操作',caution:'模糊、无行动证据的短线风险评论',review:'每月更新表现 · 每季度复核能力圈'},
@@ -819,7 +842,7 @@ document.addEventListener('click',e=>{
   });
 });
 document.getElementById('foot-sources').textContent=`${ORDER.length} sources`;
-renderLiveMeta();renderThesisChanges();renderStance();renderFeed();renderTickers();renderKols();
+renderLiveMeta();renderThesisChanges();renderAiCostPanel();renderStance();renderFeed();renderTickers();renderKols();
 </script>
 </body>
 </html>

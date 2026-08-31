@@ -1,0 +1,447 @@
+{
+  "mode": "archived_ai_result_deterministic_revalidation",
+  "openai_calls": 0,
+  "openai_estimated_cost_usd": 0.0,
+  "original_golden_result": "outputs/thesis_engine_v11/archive/2026-08-30/golden_results.original.json",
+  "original_golden_result_sha256": "302d884e9c2409a35fa9d9e5428bbc21b91784fac1eca0bb701ca4bb58104f46",
+  "report_type": "Golden Validation Report",
+  "results": [
+    {
+      "additional_openai_calls": 0,
+      "additional_openai_cost_usd": 0.0,
+      "ai_analysis_source": "existing completed Golden audit",
+      "case_id": "case_a_ymtc_nand_china_wfe",
+      "categories": {
+        "actionability": {
+          "status": "PASS"
+        },
+        "citation_chain": {
+          "checks": [
+            {
+              "pass": true,
+              "source": "2092457470765531481",
+              "target": "2092457458341937311"
+            },
+            {
+              "pass": true,
+              "source": "2092482318665650559",
+              "target": "2092457458341937311"
+            },
+            {
+              "pass": true,
+              "source": "2092492304976351332",
+              "target": "2092482318665650559"
+            },
+            {
+              "pass": true,
+              "source": "2092503684810998119",
+              "target": "2092474407679922609"
+            }
+          ],
+          "status": "PASS"
+        },
+        "expected_beneficiaries": {
+          "checks": [
+            {
+              "concepts": [
+                "NAURA"
+              ],
+              "pass": true
+            },
+            {
+              "concepts": [
+                "AMEC"
+              ],
+              "pass": true
+            }
+          ],
+          "status": "PASS"
+        },
+        "expected_corrections": {
+          "checks": [
+            {
+              "concepts": [
+                "5",
+                "total|总共|总计",
+                "fab|晶圆厂"
+              ],
+              "pass": true
+            }
+          ],
+          "status": "PASS"
+        },
+        "expected_facts": {
+          "checks": [
+            {
+              "concepts": [
+                "2027",
+                "largest|最大",
+                "NAND"
+              ],
+              "pass": true
+            },
+            {
+              "concepts": [
+                "IPO|上市",
+                "production|生产",
+                "R&D|研发"
+              ],
+              "pass": true
+            },
+            {
+              "concepts": [
+                "300",
+                "wafer|晶圆"
+              ],
+              "pass": true
+            }
+          ],
+          "status": "PASS"
+        },
+        "expected_logic": {
+          "checks": [
+            {
+              "concepts": [
+                "YMTC",
+                "profit|利润",
+                "CapEx|资本开支"
+              ],
+              "pass": true
+            },
+            {
+              "concepts": [
+                "CapEx|资本开支",
+                "WFE"
+              ],
+              "pass": true
+            },
+            {
+              "concepts": [
+                "WFE",
+                "NAURA",
+                "AMEC"
+              ],
+              "pass": true
+            }
+          ],
+          "status": "PASS"
+        },
+        "expected_losers": {
+          "checks": [
+            {
+              "concepts": [
+                "SNDK"
+              ],
+              "pass": true
+            }
+          ],
+          "status": "PASS"
+        },
+        "expected_risks": {
+          "checks": [
+            {
+              "concepts": [
+                "oversupply|过剩",
+                "NAND"
+              ],
+              "pass": true
+            },
+            {
+              "concepts": [
+                "oversupply|过剩",
+                "SNDK"
+              ],
+              "pass": true
+            }
+          ],
+          "status": "PASS"
+        },
+        "expected_unknowns": {
+          "checks": [
+            {
+              "concepts": [
+                "fab|晶圆厂",
+                "schedule|进度|时点"
+              ],
+              "pass": true
+            },
+            {
+              "concepts": [
+                "capacity|产能",
+                "ramp|爬坡"
+              ],
+              "pass": true
+            }
+          ],
+          "status": "PASS"
+        },
+        "fact_opinion_separation": {
+          "facts": 8,
+          "opinions_forecasts_inferences_risks": 15,
+          "status": "PASS",
+          "supported_opinions_error": 0
+        },
+        "media_coverage": {
+          "checks": [
+            {
+              "media_id": "3_2092457347855613952",
+              "pass": true,
+              "status": "complete"
+            }
+          ],
+          "status": "PASS"
+        },
+        "seed_posts": {
+          "missing": [],
+          "present": [
+            "2090779070523162841",
+            "2092457458341937311",
+            "2092457470765531481",
+            "2092474407679922609",
+            "2092482318665650559",
+            "2092492304976351332",
+            "2092503684810998119",
+            "2092550362691760189"
+          ],
+          "status": "PASS"
+        },
+        "source_deduplication": {
+          "independent_evidence": 41,
+          "largest_same_source_group": 4,
+          "social_mentions": 8,
+          "status": "PASS"
+        }
+      },
+      "original_discrepancy": {
+        "actual_research_wording": "资本开支",
+        "capex_or_capital_expenditure": "PASS",
+        "expected_keyword": "CapEx",
+        "resolution": "validator now accepts CapEx | 资本开支",
+        "wfe": "PASS"
+      },
+      "original_status": "PARTIAL",
+      "production_seed_integrity": {
+        "claims": 23,
+        "media": 2,
+        "posts": 8,
+        "research_case": 1,
+        "status": "PASS",
+        "theses": 2
+      },
+      "revalidation": "deterministic only",
+      "source_ai_completed_at": "2026-08-30T14:04:22.841Z",
+      "source_ai_model": "gpt-5.6-terra",
+      "status": "PASS",
+      "title": "YMTC → NAND → China WFE"
+    },
+    {
+      "additional_openai_calls": 0,
+      "additional_openai_cost_usd": 0.0,
+      "ai_analysis_source": "existing completed Golden audit",
+      "case_id": "case_b_abf_copos_cowop_pcb",
+      "categories": {
+        "actionability": {
+          "status": "PASS"
+        },
+        "citation_chain": {
+          "checks": [
+            {
+              "pass": true,
+              "source": "2092785771979960560",
+              "target": "1997151412309078335"
+            },
+            {
+              "pass": true,
+              "source": "2092786981977915481",
+              "target": "2092785771979960560"
+            }
+          ],
+          "status": "PASS"
+        },
+        "expected_beneficiaries": {
+          "checks": [
+            {
+              "concepts": [
+                "PCB"
+              ],
+              "pass": true
+            },
+            {
+              "concepts": [
+                "CCL"
+              ],
+              "pass": true
+            }
+          ],
+          "status": "PASS"
+        },
+        "expected_corrections": {
+          "checks": [
+            {
+              "concepts": [
+                "Feynman",
+                "not|不能|不确定",
+                "certain|确定",
+                "ABF"
+              ],
+              "pass": true
+            }
+          ],
+          "status": "PASS"
+        },
+        "expected_facts": {
+          "checks": [
+            {
+              "concepts": [
+                "2026",
+                "2027",
+                "ABF"
+              ],
+              "pass": true
+            },
+            {
+              "concepts": [
+                "Feynman",
+                "CoPoS"
+              ],
+              "pass": true
+            }
+          ],
+          "status": "PASS"
+        },
+        "expected_logic": {
+          "checks": [
+            {
+              "concepts": [
+                "short|短期",
+                "ABF",
+                "bull|看多|利好"
+              ],
+              "pass": true
+            },
+            {
+              "concepts": [
+                "long|长期",
+                "architecture|架构",
+                "uncertain|不确定"
+              ],
+              "pass": true
+            }
+          ],
+          "status": "PASS"
+        },
+        "expected_losers": {
+          "checks": [
+            {
+              "concepts": [
+                "ABF",
+                "CoWoP"
+              ],
+              "pass": true
+            }
+          ],
+          "status": "PASS"
+        },
+        "expected_risks": {
+          "checks": [
+            {
+              "concepts": [
+                "CoWoP",
+                "reduce|减少|消除",
+                "ABF"
+              ],
+              "pass": true
+            },
+            {
+              "concepts": [
+                "CoPoS",
+                "ABF"
+              ],
+              "pass": true
+            }
+          ],
+          "status": "PASS"
+        },
+        "expected_unknowns": {
+          "checks": [
+            {
+              "concepts": [
+                "Feynman",
+                "architecture|架构"
+              ],
+              "pass": true
+            },
+            {
+              "concepts": [
+                "CoPoS",
+                "CoWoP",
+                "adoption|采用|路线"
+              ],
+              "pass": true
+            }
+          ],
+          "status": "PASS"
+        },
+        "fact_opinion_separation": {
+          "facts": 20,
+          "opinions_forecasts_inferences_risks": 15,
+          "status": "PASS",
+          "supported_opinions_error": 0
+        },
+        "media_coverage": {
+          "checks": [
+            {
+              "media_id": "3_1997150826352316416",
+              "pass": true,
+              "status": "complete"
+            }
+          ],
+          "status": "PASS"
+        },
+        "seed_posts": {
+          "missing": [],
+          "present": [
+            "1997151412309078335",
+            "2025470786073755771",
+            "2066651558784463190",
+            "2070266870557704335",
+            "2074774120324276615",
+            "2087139633109115036",
+            "2092785771979960560",
+            "2092786981977915481"
+          ],
+          "status": "PASS"
+        },
+        "source_deduplication": {
+          "independent_evidence": 49,
+          "largest_same_source_group": 3,
+          "social_mentions": 4,
+          "status": "PASS"
+        }
+      },
+      "original_status": "PASS",
+      "production_seed_integrity": {
+        "claims": 23,
+        "media": 2,
+        "posts": 8,
+        "research_case": 1,
+        "status": "PASS",
+        "theses": 2
+      },
+      "revalidation": "existing PASS preserved; deterministic integrity check only",
+      "source_ai_completed_at": "2026-08-30T14:04:48.795Z",
+      "source_ai_model": "gpt-5.6-terra",
+      "status": "PASS",
+      "title": "ABF → CoPoS / CoWoP → PCB"
+    }
+  ],
+  "source_audit": "outputs/thesis_engine_v11/archive/2026-08-30/v11_audit.original.json",
+  "source_audit_sha256": "418493603acd299ed2caea060c2571330f05d500ec679a9e113f0399e464f4d7",
+  "summary": {
+    "FAIL": 0,
+    "PARTIAL": 0,
+    "PASS": 2
+  },
+  "validation_timestamp": "2026-08-31T02:42:20.163Z",
+  "validator_version": "golden-validator-v1.1.0-capex-bilingual"
+}

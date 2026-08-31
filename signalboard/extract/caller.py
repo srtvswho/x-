@@ -260,6 +260,7 @@ def extract_one(
     from .config import CACHE_KEY_PROMPT_VERSION, ACTIVE_MODEL
     actual_pv = prompt_version or CACHE_KEY_PROMPT_VERSION
     actual_model = model or ACTIVE_MODEL
+    paid_caller = caller is None
     if caller is None:
         caller = _call_llm
 
@@ -282,13 +283,32 @@ def extract_one(
     system_prompt = get_system_prompt()
     user_prompt = f"现在请抽取这条推文:\n{assembled}\n\n(这条推文的 post_id: {post_id})"
 
+    permit = None
     try:
+        if paid_caller:
+            from signalboard.ai.guardrails import finish_failure, finish_success, preflight
+            from signalboard.ai.router import DEFAULT_PRICING_USD_PER_MILLION
+
+            os.environ.setdefault("AI_LEDGER_DB_PATH", str(db_path))
+            prices = DEFAULT_PRICING_USD_PER_MILLION.get(actual_model, (0.0, 0.0, 0.0))
+            permit = preflight(
+                workload="bulk_post_processing", provider=PROVIDER, model=actual_model,
+                system=system_prompt, user=user_prompt, image_count=0, max_output_tokens=LLM_MAX_TOKENS,
+                prices_per_million=prices, input_hash=in_hash, prompt_version=actual_pv,
+                entity_type="post", entity_id=post_id,
+            )
         resp = caller(system_prompt, user_prompt, model=actual_model)
         usage_block = resp.pop("_usage", None) or {}
         pt = usage_block.get("prompt_tokens", 0)
         ct = usage_block.get("completion_tokens", 0)
         tt = usage_block.get("total_tokens", 0)
+        if permit is not None:
+            input_rate, _cached_rate, output_rate = prices
+            actual_cost = round((pt * input_rate + ct * output_rate) / 1_000_000, 8)
+            finish_success(permit, input_tokens=pt, cached_input_tokens=0, output_tokens=ct, actual_cost=actual_cost)
     except Exception as e:
+        if permit is not None:
+            finish_failure(permit, e)
         _queue_put(db_path, post_id, "llm_call_error", {"error": str(e), "input": assembled[:500]})
         return LLMCallResult(
             post_id=post_id, prompt_version=actual_pv, model=actual_model,

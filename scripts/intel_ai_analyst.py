@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import sqlite3
 import sys
 from pathlib import Path
@@ -226,6 +227,8 @@ def main() -> None:
     ap.add_argument("--post-ids", help="逗号分隔精确 post_id；Golden 定向分析")
     ap.add_argument("--deep-analysis", action="store_true", help="仅用户主动触发；使用 Sol，不得用于 daily")
     args = ap.parse_args()
+    if args.deep_analysis:
+        os.environ.setdefault("AI_EXPENSIVE_JOB", "true")
     init_db(args.db)
     con = sqlite3.connect(args.db, timeout=120)
     themes = [x.strip() for x in (args.themes or "").split(",") if x.strip()]

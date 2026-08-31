@@ -16,7 +16,8 @@ import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from signalboard.ai.router import call_json, record_usage, stable_input_hash
+from signalboard.ai.guardrails import AIGuardrailBlocked
+from signalboard.ai.router import call_json, record_usage, resolve_route, stable_input_hash
 from signalboard.db import init_db
 
 DB_PATH = "/workspace/data/signalboard_full.db"
@@ -138,6 +139,8 @@ def main() -> None:
     args = parser.parse_args()
     if args.limit < 0 or args.limit > 50:
         raise SystemExit("--limit must be between 0 and 50")
+    if args.limit > int(os.getenv("MEDIA_AI_MAX_ITEMS", "6")):
+        os.environ.setdefault("AI_JOB_KIND", "historical_media_backfill")
 
     init_db(args.db)
     con = sqlite3.connect(args.db, timeout=120)
@@ -176,6 +179,8 @@ def main() -> None:
         "selected": len(rows), "analyzed": 0, "deduplicated": 0, "hashed_only": 0,
         "media_claims": 0, "failed_retryable": 0, "cost_usd": 0.0,
     }
+    configured_model = resolve_route("media_understanding").model
+    force_reanalyze = os.getenv("FORCE_REANALYZE", "false").strip().lower() in {"1", "true", "yes", "on"}
     for media_id, post_id, source_url, old_hash, post_text in rows:
         started = time.monotonic()
         try:
@@ -191,14 +196,14 @@ def main() -> None:
                 """,
                 (content_hash, mime_type, media_id),
             )
-            duplicate = con.execute(
+            duplicate = None if force_reanalyze else con.execute(
                 """
                 SELECT a.prompt_version, a.provider, a.model, a.input_hash, a.analysis_json
                 FROM media_assets m JOIN media_analyses a ON a.media_id=m.media_id
-                WHERE m.content_hash=? AND a.prompt_version=? AND m.media_id<>?
+                WHERE m.content_hash=? AND a.prompt_version=? AND a.model=? AND m.media_id<>?
                 LIMIT 1
                 """,
-                (content_hash, PROMPT_VERSION, media_id),
+                (content_hash, PROMPT_VERSION, configured_model, media_id),
             ).fetchone()
             if duplicate:
                 con.execute(
@@ -230,6 +235,7 @@ def main() -> None:
                 image_urls=[_data_url(content, mime_type)],
                 max_output_tokens=2200,
                 timeout=120,
+                prompt_version=PROMPT_VERSION, entity_type="media", entity_id=media_id,
             )
             con.execute(
                 """
@@ -245,6 +251,12 @@ def main() -> None:
             con.commit()
             stats["analyzed"] += 1
             stats["cost_usd"] = round(stats["cost_usd"] + result.estimated_cost_usd, 8)
+        except AIGuardrailBlocked as exc:
+            con.rollback()
+            stats["budget_blocked"] = stats.get("budget_blocked", 0) + 1
+            stats["stop_reason"] = exc.reason
+            print(f"AI_GUARDRAIL_STOP media_id={media_id} reason={exc.reason}")
+            break
         except Exception as exc:
             con.rollback()
             con.execute(
