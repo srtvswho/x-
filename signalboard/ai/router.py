@@ -339,6 +339,11 @@ def _call(
             last_error = exc
             if isinstance(exc, AIGuardrailBlocked):
                 raise
+            # Retrying the exact same prompt with the exact same output cap
+            # cannot repair an incomplete max_output_tokens response.  It only
+            # repeats spend and was the main amplification source in Preview 1.
+            if "max_output_tokens" in str(exc):
+                break
             if attempt < max_retries:
                 time.sleep(1 + 2 * attempt)
     assert last_error is not None
