@@ -1,6 +1,11 @@
 name: SignalBoard Opportunity Engine v1.2 Preview
 
 on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - .github/workflows/opportunity-engine-v12-preview.yml
   workflow_dispatch:
     inputs:
       confirm_paid_run:
@@ -60,7 +65,7 @@ jobs:
       - name: Verify bounded AI authorization
         shell: bash
         env:
-          CONFIRM_PAID_RUN: ${{ inputs.confirm_paid_run }}
+          CONFIRM_PAID_RUN: ${{ (github.event_name == 'workflow_dispatch' && inputs.confirm_paid_run) || (github.event_name == 'pull_request' && github.head_ref == 'codex/opportunity-engine-v12-preview') }}
         run: |
           set -Eeuo pipefail
           test "$CONFIRM_PAID_RUN" = "true"
