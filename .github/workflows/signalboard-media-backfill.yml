@@ -3,6 +3,21 @@ name: Signalboard Media Backfill
 on:
   workflow_dispatch:
     inputs:
+      ai_enabled:
+        description: "Explicitly enable paid AI"
+        required: true
+        type: boolean
+        default: false
+      allow_expensive_ai_job:
+        description: "Acknowledge historical media backfill cost"
+        required: true
+        type: boolean
+        default: false
+      ai_dry_run:
+        description: "Estimate the batch without sending paid AI requests"
+        required: true
+        type: boolean
+        default: true
       batch_size:
         description: "Max unique pending media in this batch"
         required: true
@@ -17,10 +32,23 @@ concurrency:
 
 jobs:
   backfill:
+    if: inputs.ai_enabled && inputs.allow_expensive_ai_job
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
-      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_API_KEY: ${{ inputs.ai_enabled && secrets.OPENAI_API_KEY || '' }}
+      AI_ENABLED: ${{ inputs.ai_enabled }}
+      ALLOW_EXPENSIVE_AI_JOB: ${{ inputs.allow_expensive_ai_job }}
+      AI_JOB_KIND: historical_media_backfill
+      AI_WORKFLOW: signalboard_media_backfill
+      AI_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+      AI_LEDGER_DB_PATH: /workspace/data/signalboard_full.db
+      AI_MAX_COST_PER_RUN_USD: "0.50"
+      AI_MAX_DAILY_COST_USD: "1.00"
+      AI_MAX_CALLS_PER_RUN: "20"
+      MEDIA_MAX_COST_PER_RUN: "0.50"
+      AI_DRY_RUN: ${{ inputs.ai_dry_run }}
+      FORCE_REANALYZE: "false"
       MEDIA_BACKFILL_BATCH_SIZE: ${{ inputs.batch_size }}
       AI_ROUTE_MEDIA_UNDERSTANDING_MODEL: gpt-5.6-terra
     steps:
