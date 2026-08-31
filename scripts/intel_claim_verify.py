@@ -61,12 +61,20 @@ def importance_score(claim_type: str, confidence: float, text: str) -> float:
     return min(100.0, round(base + numeric + (confidence - 0.5) * 10, 1))
 
 
-def _targets(con: sqlite3.Connection, limit: int, post_ids: list[str] | None) -> list[dict]:
+def _targets(
+    con: sqlite3.Connection,
+    limit: int,
+    post_ids: list[str] | None,
+    claim_ids: list[str] | None = None,
+) -> list[dict]:
     where = ["NOT EXISTS (SELECT 1 FROM claim_verifications cv WHERE cv.claim_id=c.claim_id AND cv.verification_version=?)"]
     params: list[object] = [VERIFY_VERSION]
     if post_ids:
         where.append(f"c.source_post_id IN ({','.join('?' for _ in post_ids)})")
         params.extend(post_ids)
+    if claim_ids:
+        where.append(f"c.claim_id IN ({','.join('?' for _ in claim_ids)})")
+        params.extend(claim_ids)
     rows = con.execute(
         f"""SELECT c.claim_id,c.claim_text,c.claim_type,c.author_id,c.companies_json,c.themes_json,
                    c.time_horizon,c.confidence,c.point_in_time,c.source_post_id,
@@ -104,7 +112,7 @@ def _targets(con: sqlite3.Connection, limit: int, post_ids: list[str] | None) ->
             priority_reasons.append("high_actionability")
         if row[3] and float(row[7]) >= author_confidence_threshold:
             priority_reasons.append("high_confidence_author_claim")
-        if score >= importance_threshold and priority_reasons:
+        if claim_ids or (score >= importance_threshold and priority_reasons):
             targets.append({
                 "claim_id": row[0], "claim_text": row[1], "claim_type": row[2], "author_id": row[3],
                 "companies": json.loads(row[4] or "[]"), "themes": json.loads(row[5] or "[]"),
@@ -112,7 +120,11 @@ def _targets(con: sqlite3.Connection, limit: int, post_ids: list[str] | None) ->
                 "source_post_id": row[9], "importance_score": score,
                 "priority_reasons": priority_reasons,
             })
-    targets.sort(key=lambda item: (-item["importance_score"], -item["confidence"], item["claim_id"]))
+    if claim_ids:
+        order = {claim_id: index for index, claim_id in enumerate(claim_ids)}
+        targets.sort(key=lambda item: order.get(item["claim_id"], len(order)))
+    else:
+        targets.sort(key=lambda item: (-item["importance_score"], -item["confidence"], item["claim_id"]))
     return targets[:limit]
 
 
@@ -120,9 +132,14 @@ def _source_id(url: str) -> str:
     return "ext_" + hashlib.sha256(canonical_url(url).encode()).hexdigest()[:24]
 
 
-def verify_claims(con: sqlite3.Connection, limit: int, post_ids: list[str] | None = None) -> dict:
+def verify_claims(
+    con: sqlite3.Connection,
+    limit: int,
+    post_ids: list[str] | None = None,
+    claim_ids: list[str] | None = None,
+) -> dict:
     stats = {"selected": 0, "verified": 0, "failed_retryable": 0, "cost_usd": 0.0, "statuses": {}}
-    for claim in _targets(con, limit, post_ids):
+    for claim in _targets(con, limit, post_ids, claim_ids):
         stats["selected"] += 1
         try:
             result = call_json_web(
@@ -131,7 +148,7 @@ def verify_claims(con: sqlite3.Connection, limit: int, post_ids: list[str] | Non
                     "claim": claim,
                     "instruction": "寻找截至当前可用的最高优先级独立来源；逐字核验数量、时点、总量/增量与条件。",
                 }, ensure_ascii=False),
-                SCHEMA, schema_name="signalboard_claim_verification", max_output_tokens=2600, timeout=180,
+                SCHEMA, schema_name="signalboard_claim_verification", max_output_tokens=1500, timeout=180,
                 prompt_version=f"claim-verification-v{VERIFY_VERSION}", entity_type="claim", entity_id=claim["claim_id"],
             )
             data = result.data
@@ -207,6 +224,7 @@ def main() -> None:
     ap.add_argument("--db", default=DB_PATH)
     ap.add_argument("--limit", type=int, default=8)
     ap.add_argument("--post-ids")
+    ap.add_argument("--claim-ids", help="逗号分隔的精确 Claim priority queue")
     args = ap.parse_args()
     if args.limit < 0 or args.limit > 50:
         raise SystemExit("--limit must be between 0 and 50")
@@ -215,7 +233,8 @@ def main() -> None:
     init_db(args.db)
     con = sqlite3.connect(args.db, timeout=120)
     post_ids = [x.strip() for x in (args.post_ids or "").split(",") if x.strip()]
-    stats = verify_claims(con, args.limit, post_ids or None)
+    claim_ids = [x.strip() for x in (args.claim_ids or "").split(",") if x.strip()]
+    stats = verify_claims(con, args.limit, post_ids or None, claim_ids or None)
     con.close()
     print(json.dumps(stats, ensure_ascii=False, sort_keys=True))
 
