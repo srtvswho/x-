@@ -496,6 +496,52 @@ def query_thesis_changes(conn, limit=12):
     return out
 
 
+def query_opportunities(conn, limit=20):
+    """Decision-first Opportunity objects; Thesis remains the evidence layer."""
+    table = conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='investment_opportunities'"
+    ).fetchone()
+    if not table:
+        return []
+    rows = conn.execute(
+        """SELECT opportunity_id,title,theme_ids_json,companies_json,primary_company,direction,time_horizon,
+                  driver,industry_change,bottleneck,earnings_mechanism,valuation_question,market_expectations,
+                  mispricing_hypothesis,catalysts_json,risks_json,invalidation_conditions_json,
+                  missing_evidence_json,actionability,chain_completeness,opportunity_score,
+                  thesis_quality_score,evidence_quality_score,earnings_impact_score,mispricing_score,
+                  catalyst_score,risk_reward_score,one_line_thesis,why_now,ai_verdict,next_trigger,
+                  positive_exposure_json,negative_exposure_json,authors_json,source_roots_json,
+                  social_mention_count,independent_evidence_count,valuation_json,synthesis_json,
+                  source_candidate_id,updated_at
+           FROM investment_opportunities
+           ORDER BY opportunity_score DESC, evidence_quality_score DESC, updated_at DESC LIMIT ?""",
+        (limit,),
+    ).fetchall()
+    json_indexes = {2, 3, 14, 15, 16, 17, 31, 32, 33, 34, 37, 38}
+    keys = [
+        "opportunity_id", "title", "themes", "companies", "primary_company", "direction", "time_horizon",
+        "driver", "industry_change", "bottleneck", "earnings_mechanism", "valuation_question",
+        "market_expectations", "mispricing_hypothesis", "catalysts", "risks", "invalidation",
+        "missing_evidence", "actionability", "chain_completeness", "opportunity_score",
+        "thesis_quality_score", "evidence_quality_score", "earnings_impact_score", "mispricing_score",
+        "catalyst_score", "risk_reward_score", "one_line_thesis", "why_now", "ai_verdict", "next_trigger",
+        "positive_exposure", "negative_exposure", "authors", "source_roots", "social_mention_count",
+        "independent_evidence_count", "valuation", "synthesis", "source_candidate_id", "updated_at",
+    ]
+    out = []
+    for row in rows:
+        item = {}
+        for index, key in enumerate(keys):
+            item[key] = json.loads(row[index] or ("{}" if key in {"valuation", "synthesis"} else "[]")) if index in json_indexes else row[index]
+        item["score_components"] = {
+            "Thesis": item["thesis_quality_score"], "Evidence": item["evidence_quality_score"],
+            "Earnings": item["earnings_impact_score"], "Mispricing": item["mispricing_score"],
+            "Catalyst": item["catalyst_score"], "Risk / Reward": item["risk_reward_score"],
+        }
+        out.append(item)
+    return out
+
+
 def query_ai_cost_panel(conn):
     """Risk-aware cost summary. PENDING rows remain visible and reserve estimated cost."""
     enabled = os.getenv("AI_ENABLED", "false").strip().lower() in {"1", "true", "yes", "on"}
@@ -768,6 +814,7 @@ def main():
         today_records = query_today_records(conn)
         build_meta = build_metadata(conn)
         thesis_changes = query_thesis_changes(conn)
+        opportunities = query_opportunities(conn)
         ai_cost_panel = query_ai_cost_panel(conn)
         print(f"  24h window: {build_meta['window_label']} "
               f"posts={today_stats['n_posts_24h']} "
@@ -788,6 +835,7 @@ def main():
         html = html.replace("__TODAY_RECORDS__", json.dumps(today_records, ensure_ascii=False))
         html = html.replace("__BUILD_META__",    json.dumps(build_meta, ensure_ascii=False))
         html = html.replace("__THESIS_CHANGES__", json.dumps(thesis_changes, ensure_ascii=False))
+        html = html.replace("__OPPORTUNITIES__", json.dumps(opportunities, ensure_ascii=False))
         html = html.replace("__AI_COST_PANEL__", json.dumps(ai_cost_panel, ensure_ascii=False))
         OUT.write_text(html, encoding="utf-8")
         # 检查 null 字样没渲染到 HTML (兜底, 即使前端处理对了)
