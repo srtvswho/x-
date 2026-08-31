@@ -3,11 +3,16 @@ name: Signalboard Daily Update
 on:
   workflow_dispatch:
     inputs:
-      run_openai:
-        description: "Run bounded OpenAI research enrichment in this update"
+      ai_enabled:
+        description: "Explicitly enable bounded paid AI for this incremental run"
         required: true
         type: boolean
         default: false
+      ai_dry_run:
+        description: "Estimate paid AI calls without sending them"
+        required: true
+        type: boolean
+        default: true
       max_price_requests:
         description: "Maximum Polygon ticker requests for this manual update"
         required: true
@@ -94,11 +99,29 @@ jobs:
     timeout-minutes: 180
     env:
       APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
-      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-      OPENAI_API_KEY: ${{ github.event_name == 'workflow_dispatch' && inputs.run_openai && secrets.OPENAI_API_KEY || '' }}
-      RUN_OPENAI_ENRICHMENT: ${{ github.event_name == 'workflow_dispatch' && inputs.run_openai }}
+      DEEPSEEK_API_KEY: ${{ github.event_name == 'workflow_dispatch' && inputs.ai_enabled && secrets.DEEPSEEK_API_KEY || '' }}
+      OPENAI_API_KEY: ${{ github.event_name == 'workflow_dispatch' && inputs.ai_enabled && secrets.OPENAI_API_KEY || '' }}
+      AI_ENABLED: ${{ github.event_name == 'workflow_dispatch' && inputs.ai_enabled || false }}
+      ALLOW_EXPENSIVE_AI_JOB: "false"
+      AI_JOB_KIND: incremental_daily
+      AI_WORKFLOW: signalboard_daily
+      AI_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+      AI_LEDGER_DB_PATH: /workspace/data/signalboard_full.db
+      AI_MAX_COST_PER_RUN_USD: "0.50"
+      AI_MAX_DAILY_COST_USD: "1.00"
+      AI_MAX_CALLS_PER_RUN: "20"
+      EXTRACT_MAX_COST_PER_RUN: "0.10"
+      MEDIA_MAX_COST_PER_RUN: "0.15"
+      THEME_MAX_COST_PER_RUN: "0.10"
+      CLAIM_MAX_COST_PER_RUN: "0.20"
+      THESIS_MAX_COST_PER_RUN: "0.15"
+      ANALYST_MAX_COST_PER_RUN: "0.15"
+      GOLDEN_MAX_COST_PER_RUN: "0"
+      AI_DRY_RUN: ${{ github.event_name != 'workflow_dispatch' || inputs.ai_dry_run }}
+      FORCE_REANALYZE: "false"
       POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
       POLYGON_REQUEST_INTERVAL: "13"
+      # Scheduled default retained for audit compatibility: POLYGON_MAX_API_REQUESTS: "60"
       POLYGON_MAX_API_REQUESTS: ${{ github.event_name == 'workflow_dispatch' && inputs.max_price_requests || '60' }}
       MEDIA_AI_MAX_ITEMS: "6"
       THESIS_AI_MAX_UPDATES: "4"
@@ -133,14 +156,18 @@ jobs:
         shell: bash
         run: |
           set -Eeuo pipefail
-          for key in APIFY_TOKEN DEEPSEEK_API_KEY POLYGON_API_KEY; do
+          for key in APIFY_TOKEN POLYGON_API_KEY; do
             if [ -z "${!key:-}" ]; then
               echo "::error::Required repository secret is missing: $key"
               exit 1
             fi
           done
-          if [ "$RUN_OPENAI_ENRICHMENT" = "true" ] && [ -z "${OPENAI_API_KEY:-}" ]; then
-            echo "::error::OPENAI_API_KEY is required when run_openai is enabled"
+          if [ "$AI_ENABLED" = "true" ] && [ -z "${OPENAI_API_KEY:-}" ]; then
+            echo "::error::OPENAI_API_KEY is required when ai_enabled is enabled"
+            exit 1
+          fi
+          if [ "$AI_ENABLED" = "true" ] && [ -z "${DEEPSEEK_API_KEY:-}" ]; then
+            echo "::error::DEEPSEEK_API_KEY is required when ai_enabled is enabled"
             exit 1
           fi
 
@@ -198,6 +225,7 @@ jobs:
           fi
 
       - name: Incremental extraction
+        if: env.AI_ENABLED == 'true'
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -212,7 +240,7 @@ jobs:
           python scripts/intel_graph_ingest.py --since "$since"
 
       - name: One-time recent Claim and Theme backfill
-        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[p0-claims-backfill]')
+        if: github.event_name == 'workflow_dispatch' && env.AI_ENABLED == 'true' && env.ALLOW_EXPENSIVE_AI_JOB == 'true'
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -238,11 +266,11 @@ jobs:
           fi
 
       - name: Verify OpenAI Responses API and Terra access
-        if: env.RUN_OPENAI_ENRICHMENT == 'true'
+        if: env.AI_ENABLED == 'true'
         run: python scripts/intel_openai_smoke.py
 
       - name: Analyze new Post media
-        if: env.RUN_OPENAI_ENRICHMENT == 'true'
+        if: env.AI_ENABLED == 'true'
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -254,7 +282,7 @@ jobs:
         run: python scripts/intel_source_dedup.py
 
       - name: Audit and canonicalize Themes
-        if: env.RUN_OPENAI_ENRICHMENT == 'true'
+        if: env.AI_ENABLED == 'true'
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -263,7 +291,7 @@ jobs:
           fi
 
       - name: Verify high-importance claims
-        if: env.RUN_OPENAI_ENRICHMENT == 'true'
+        if: env.AI_ENABLED == 'true'
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -272,7 +300,7 @@ jobs:
           fi
 
       - name: Update Author by Theme theses
-        if: env.RUN_OPENAI_ENRICHMENT == 'true'
+        if: env.AI_ENABLED == 'true'
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -281,7 +309,7 @@ jobs:
           fi
 
       - name: Run independent Terra analyst
-        if: env.RUN_OPENAI_ENRICHMENT == 'true'
+        if: env.AI_ENABLED == 'true'
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -290,7 +318,7 @@ jobs:
           fi
 
       - name: Refresh bounded cross-theme research cases
-        if: env.RUN_OPENAI_ENRICHMENT == 'true'
+        if: env.AI_ENABLED == 'true' && env.ALLOW_EXPENSIVE_AI_JOB == 'true'
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -299,7 +327,9 @@ jobs:
           fi
 
       - name: One-time low-cost historical call backfill
-        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[backfill-calls-1y]')
+        # Legacy trigger [backfill-calls-1y] is no longer honored on push.
+        # Historical AI work now requires manual dispatch plus the expensive-job gate.
+        if: github.event_name == 'workflow_dispatch' && env.AI_ENABLED == 'true' && env.ALLOW_EXPENSIVE_AI_JOB == 'true'
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -317,6 +347,7 @@ jobs:
         run: python scripts/dashboard/refresh_prices_polygon.py
 
       - name: Generate summaries
+        if: env.AI_ENABLED == 'true'
         run: python scripts/dashboard/intel_gen_summaries.py
 
       - name: Build dashboard
