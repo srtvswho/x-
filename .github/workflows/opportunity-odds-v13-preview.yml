@@ -1,0 +1,156 @@
+name: SignalBoard Opportunity Odds v1.3 Preview
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/opportunity-engine-v12-preview]
+    paths:
+      - ".github/workflows/opportunity-odds-v13-preview.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: opportunity-odds-v13-preview
+  cancel-in-progress: false
+
+jobs:
+  odds-mvp:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      AI_ENABLED: "true"
+      AI_DRY_RUN: "false"
+      AI_MAX_COST_PER_RUN_USD: "20.00"
+      AI_MAX_DAILY_COST_USD: "30.00"
+      AI_MAX_CALLS_PER_RUN: "150"
+      ANALYST_MAX_COST_PER_RUN: "20.00"
+      GOLDEN_MAX_COST_PER_RUN: "0"
+      ALLOW_EXPENSIVE_AI_JOB: "false"
+      FORCE_REANALYZE: "false"
+      AI_JOB_KIND: "incremental_opportunity_odds"
+      AI_WORKFLOW: "opportunity_odds_v13_preview"
+      AI_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+      AI_LEDGER_DB_PATH: /workspace/data/signalboard_full.db
+      AI_ROUTE_OPPORTUNITY_ODDS_ANALYSIS_MODEL: "gpt-5.6-terra"
+      AI_ROUTE_OPPORTUNITY_ODDS_ANALYSIS_REASONING_EFFORT: "medium"
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: codex/opportunity-engine-v12-preview
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Verify bounded authorization
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test "$AI_ENABLED" = "true"
+          test "$AI_DRY_RUN" = "false"
+          test "$ALLOW_EXPENSIVE_AI_JOB" = "false"
+          test "$AI_MAX_COST_PER_RUN_USD" = "20.00"
+          test "$AI_MAX_DAILY_COST_USD" = "30.00"
+          test "$AI_MAX_CALLS_PER_RUN" = "150"
+          test -n "${OPENAI_API_KEY:-}"
+
+      - name: Restore isolated Preview database
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          python -m pip install --disable-pip-version-check requests pytest
+          gzip -t data/signalboard.db.gz
+          gzip -cd data/signalboard.db.gz > data/signalboard_full.db
+          sudo ln -sfn "$GITHUB_WORKSPACE" /workspace
+          python - <<'PY'
+          import sqlite3
+          from signalboard.db import CURRENT_SCHEMA_VERSION, init_db
+          path = "/workspace/data/signalboard_full.db"
+          init_db(path)
+          con = sqlite3.connect(path)
+          assert con.execute("PRAGMA quick_check").fetchone()[0] == "ok"
+          assert con.execute("PRAGMA user_version").fetchone()[0] == CURRENT_SCHEMA_VERSION == 10
+          assert con.execute("SELECT COUNT(*) FROM investment_opportunities").fetchone()[0] == 8
+          con.close()
+          PY
+
+      - name: Run targeted zero-AI regression tests
+        env:
+          AI_ENABLED: "false"
+        run: python -m pytest -q tests/test_opportunity_odds_v13.py tests/test_opportunity_engine_v12.py tests/test_ai_guardrails.py tests/test_research_engine.py
+
+      - name: Research seven securities and compute deterministic odds
+        run: python scripts/intel_opportunity_odds_v13.py
+
+      - name: Enforce universe, evidence and cost fuses
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          python - <<'PY'
+          import json, os, sqlite3
+          report = json.load(open("outputs/opportunity_odds_v13/run_report.json"))
+          assert report["status"] == "COMPLETED", report["errors"]
+          rows = report["results"]
+          assert len(rows) == 7, len(rows)
+          assert len({row["opportunity_id"] for row in rows}) == 5
+          assert all(len(row["source_roots"]) >= 2 for row in rows)
+          con = sqlite3.connect("data/signalboard_full.db")
+          run_id = os.environ["AI_RUN_ID"]
+          calls, risk = con.execute(
+              """SELECT COUNT(*),COALESCE(SUM(COALESCE(actual_cost_if_available,estimated_cost)),0)
+                 FROM ai_usage_ledger WHERE run_id=?
+                 AND status IN ('PENDING','SUCCESS','FAILED','CANCELLED','UNKNOWN_COST')""", (run_id,)
+          ).fetchone()
+          golden = con.execute(
+              "SELECT COUNT(*) FROM ai_usage_ledger WHERE run_id=? AND stage='golden'", (run_id,)
+          ).fetchone()[0]
+          assert calls <= 150, calls
+          assert risk <= 20.000001, risk
+          assert golden == 0, golden
+          assert con.execute("SELECT COUNT(*) FROM opportunity_odds").fetchone()[0] == 7
+          assert con.execute("PRAGMA quick_check").fetchone()[0] == "ok"
+          print(f"AI_CALLS={calls} RISK_COST_USD={risk:.6f} ODDS_ROWS={len(rows)}")
+          con.close()
+          PY
+
+      - name: Build Odds Preview Dashboard
+        env:
+          SIGNALBOARD_DB: /workspace/data/signalboard_full.db
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          python scripts/dashboard/build_dashboard.py
+          test -s scripts/dashboard/dashboard.html
+          ! grep -q '__OPPORTUNITY_' scripts/dashboard/dashboard.html
+          mkdir -p dashboard_deploy_dist/opportunities
+          cp scripts/dashboard/dashboard.html dashboard_deploy_dist/index.html
+          cp scripts/dashboard/dashboard.html dashboard_deploy_dist/opportunities/index.html
+          cp scripts/dashboard/dashboard.html dashboard.html
+
+      - name: Save audited Odds Preview artifacts
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          gzip -c data/signalboard_full.db > data/signalboard.db.gz.new
+          gzip -t data/signalboard.db.gz.new
+          mv data/signalboard.db.gz.new data/signalboard.db.gz
+          git config user.name signalboard-bot
+          git config user.email signalboard-bot@users.noreply.github.com
+          git add data/signalboard.db.gz dashboard.html scripts/dashboard/dashboard.html outputs/opportunity_odds_v13
+          git add -f dashboard_deploy_dist/index.html dashboard_deploy_dist/opportunities/index.html
+          git commit -m "Generate Opportunity Odds v1.3 Preview [skip daily]"
+          git push origin HEAD:codex/opportunity-engine-v12-preview
+
+      - name: Upload Odds audit
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: opportunity-odds-v13-audit
+          path: |
+            outputs/opportunity_odds_v13
+            scripts/dashboard/dashboard.html
+          retention-days: 30

@@ -532,6 +532,9 @@ def query_opportunities(conn, limit=20):
     has_best_expression = conn.execute(
         "SELECT 1 FROM sqlite_master WHERE type='table' AND name='opportunity_best_expressions'"
     ).fetchone()
+    has_odds = conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='opportunity_odds'"
+    ).fetchone()
     for row in rows:
         item = {}
         for index, key in enumerate(keys):
@@ -546,6 +549,47 @@ def query_opportunities(conn, limit=20):
             (item["opportunity_id"],),
         ).fetchone() if has_best_expression else None
         item["best_expression"] = json.loads(best[0]) if best and best[0] else None
+        odds_rows = conn.execute(
+            """SELECT ticker,company,currency,best_expression_rank,current_price,bear_fair_value,
+                      base_fair_value,bull_fair_value,base_upside,bear_downside,reward_risk,
+                      expected_return,earnings_gap,expectations_gap,odds_band,odds_score,
+                      odds_status,valuation_confidence,thesis_confidence,analysis_json,as_of_date
+               FROM opportunity_odds WHERE opportunity_id=?
+               ORDER BY odds_score IS NULL,odds_score DESC,best_expression_rank""",
+            (item["opportunity_id"],),
+        ).fetchall() if has_odds else []
+        item["odds"] = []
+        for odds_row in odds_rows:
+            analysis = json.loads(odds_row[19] or "{}")
+            item["odds"].append({
+                "ticker": odds_row[0], "company": odds_row[1], "currency": odds_row[2],
+                "best_expression_rank": odds_row[3], "current_price": odds_row[4],
+                "bear_fair_value": odds_row[5], "base_fair_value": odds_row[6],
+                "bull_fair_value": odds_row[7], "base_upside": odds_row[8],
+                "bear_downside": odds_row[9], "reward_risk": odds_row[10],
+                "expected_return": odds_row[11], "earnings_gap": odds_row[12],
+                "expectations_gap": odds_row[13], "odds_band": odds_row[14],
+                "odds_score": odds_row[15], "odds_status": odds_row[16],
+                "valuation_confidence": odds_row[17], "thesis_confidence": odds_row[18],
+                "market_expectations": analysis.get("market_expectations") or {},
+                "market_data": analysis.get("market_data") or {},
+                "earnings_bridge": analysis.get("earnings_bridge") or {},
+                "scenarios": analysis.get("scenarios") or [],
+                "why_not_buy_now": analysis.get("why_not_buy_now") or "",
+                "verdict": analysis.get("verdict") or "",
+                "catalyst": analysis.get("catalyst") or "",
+                "invalidation": analysis.get("invalidation") or "",
+                "data_gaps": analysis.get("data_gaps") or [],
+                "buy_gate_blockers": (analysis.get("computed") or {}).get("buy_gate_blockers") or [],
+                "as_of_date": odds_row[20],
+            })
+        item["best_odds"] = item["odds"][0] if item["odds"] else None
+        expression_ticker = ((item["best_expression"] or {}).get("best_expression") or {}).get("ticker")
+        item["best_expression_vs_best_odds"] = {
+            "best_expression": expression_ticker,
+            "best_odds": item["best_odds"]["ticker"] if item["best_odds"] else None,
+            "same_security": bool(expression_ticker and item["best_odds"] and expression_ticker == item["best_odds"]["ticker"]),
+        }
         out.append(item)
     return out
 

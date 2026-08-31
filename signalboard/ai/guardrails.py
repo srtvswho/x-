@@ -33,6 +33,7 @@ STAGE_BY_WORKLOAD = {
     "opportunity_discovery": "analyst",
     "opportunity_synthesis": "analyst",
     "best_expression_analysis": "analyst",
+    "opportunity_odds_analysis": "analyst",
     "deep_investment_analysis": "analyst",
     "golden_evaluation": "golden",
     "embedding": "theme",

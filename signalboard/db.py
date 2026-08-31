@@ -13,6 +13,7 @@ Schema 版本:
     v7 (2026-08-31): AI 请求前置费用账本 + Golden 确认状态
     v8 (2026-08-31): Investment Opportunity / Candidate Logic Chain 独立层
     v9 (2026-08-31): Candidate Coverage / Best Expression / Funnel 审计层
+    v10 (2026-08-31): Opportunity Odds / Market Expectations / Scenario Valuation 层
 
 init_db() 幂等且自适配:
 - 全新库 → 直接建 v3
@@ -30,7 +31,7 @@ from typing import Iterator, Union
 
 DbPath = Union[str, Path]
 
-CURRENT_SCHEMA_VERSION = 9
+CURRENT_SCHEMA_VERSION = 10
 
 
 # ---------------------------------------------------------------------------
@@ -692,6 +693,69 @@ def _migrate_to_v9(conn: sqlite3.Connection) -> None:
     conn.executescript(V9_OPPORTUNITY_COVERAGE_SQL)
 
 
+V10_OPPORTUNITY_ODDS_SQL = """
+CREATE TABLE IF NOT EXISTS opportunity_odds (
+    odds_id             TEXT PRIMARY KEY,
+    opportunity_id      TEXT NOT NULL,
+    ticker              TEXT NOT NULL,
+    company             TEXT NOT NULL,
+    exchange            TEXT,
+    currency            TEXT NOT NULL,
+    best_expression_rank INTEGER,
+    analysis_json       TEXT NOT NULL,
+    source_digest       TEXT NOT NULL,
+    model               TEXT NOT NULL,
+    prompt_version      TEXT NOT NULL,
+    as_of_date          TEXT NOT NULL,
+    current_price       REAL NOT NULL CHECK (current_price > 0),
+    bear_fair_value     REAL CHECK (bear_fair_value IS NULL OR bear_fair_value >= 0),
+    base_fair_value     REAL CHECK (base_fair_value IS NULL OR base_fair_value >= 0),
+    bull_fair_value     REAL CHECK (bull_fair_value IS NULL OR bull_fair_value >= 0),
+    base_upside         REAL,
+    bear_downside       REAL,
+    reward_risk         REAL,
+    expected_fair_value REAL,
+    expected_return     REAL,
+    earnings_gap        REAL,
+    expectations_gap    TEXT NOT NULL CHECK (expectations_gap IN (
+        'STRONGLY_POSITIVE','POSITIVE','NEUTRAL','NEGATIVE','STRONGLY_NEGATIVE','UNKNOWN'
+    )),
+    odds_band           TEXT NOT NULL CHECK (odds_band IN ('VERY_GOOD','GOOD','FAIR','POOR','VERY_POOR','INCOMPLETE')),
+    odds_score          REAL CHECK (odds_score IS NULL OR (odds_score BETWEEN 0 AND 100)),
+    odds_status         TEXT NOT NULL CHECK (odds_status IN (
+        'NOT_ACTIONABLE','WATCH','RESEARCH','BUY_CANDIDATE','AVOID',
+        'GOOD_COMPANY_BAD_ODDS','GOOD_ODDS_WEAK_EVIDENCE','VALUATION_INCOMPLETE'
+    )),
+    valuation_confidence TEXT NOT NULL CHECK (valuation_confidence IN ('LOW','MEDIUM','HIGH')),
+    thesis_confidence   TEXT NOT NULL CHECK (thesis_confidence IN ('LOW','MEDIUM','HIGH')),
+    created_at          TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_at          TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    UNIQUE (opportunity_id, ticker, prompt_version),
+    FOREIGN KEY (opportunity_id) REFERENCES investment_opportunities(opportunity_id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_opportunity_odds_rank
+    ON opportunity_odds(odds_status, odds_score DESC, base_upside DESC);
+CREATE INDEX IF NOT EXISTS idx_opportunity_odds_opportunity
+    ON opportunity_odds(opportunity_id, best_expression_rank);
+
+CREATE TABLE IF NOT EXISTS opportunity_odds_runs (
+    run_id              TEXT PRIMARY KEY,
+    universe_json       TEXT NOT NULL,
+    config_json         TEXT NOT NULL,
+    summary_json        TEXT NOT NULL,
+    status              TEXT NOT NULL CHECK (status IN ('COMPLETED','PARTIAL','FAILED','DRY_RUN')),
+    ai_calls            INTEGER NOT NULL DEFAULT 0,
+    known_cost_usd      REAL NOT NULL DEFAULT 0,
+    risk_cost_usd       REAL NOT NULL DEFAULT 0,
+    created_at          TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+"""
+
+
+def _migrate_to_v10(conn: sqlite3.Connection) -> None:
+    conn.executescript(V10_OPPORTUNITY_ODDS_SQL)
+
+
 def _migrate_v2_to_v3(conn: sqlite3.Connection) -> None:
     """对已有 v2 库:加 6 列(predictions)+ 建 4 个新表(都 IF NOT EXISTS)。
 
@@ -941,6 +1005,7 @@ def _ensure_schema(conn: sqlite3.Connection) -> None:
     _migrate_to_v7(conn)
     _migrate_to_v8(conn)
     _migrate_to_v9(conn)
+    _migrate_to_v10(conn)
     conn.execute(f"PRAGMA user_version = {CURRENT_SCHEMA_VERSION}")
 
 
