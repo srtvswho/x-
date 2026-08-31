@@ -32,6 +32,7 @@ STAGE_BY_WORKLOAD = {
     "logic_chain_analysis": "analyst",
     "opportunity_discovery": "analyst",
     "opportunity_synthesis": "analyst",
+    "best_expression_analysis": "analyst",
     "deep_investment_analysis": "analyst",
     "golden_evaluation": "golden",
     "embedding": "theme",

@@ -12,6 +12,7 @@ Schema 版本:
     v6 (2026-08-30): 跨 Theme Research Case 综合分析
     v7 (2026-08-31): AI 请求前置费用账本 + Golden 确认状态
     v8 (2026-08-31): Investment Opportunity / Candidate Logic Chain 独立层
+    v9 (2026-08-31): Candidate Coverage / Best Expression / Funnel 审计层
 
 init_db() 幂等且自适配:
 - 全新库 → 直接建 v3
@@ -29,7 +30,7 @@ from typing import Iterator, Union
 
 DbPath = Union[str, Path]
 
-CURRENT_SCHEMA_VERSION = 8
+CURRENT_SCHEMA_VERSION = 9
 
 
 # ---------------------------------------------------------------------------
@@ -653,6 +654,44 @@ def _migrate_to_v8(conn: sqlite3.Connection) -> None:
     conn.executescript(V8_OPPORTUNITY_ENGINE_SQL)
 
 
+V9_OPPORTUNITY_COVERAGE_SQL = """
+CREATE TABLE IF NOT EXISTS candidate_coverage (
+    candidate_id       TEXT PRIMARY KEY,
+    original_title     TEXT NOT NULL,
+    final_status       TEXT NOT NULL CHECK (final_status IN (
+        'ANALYZED_AND_PROMOTED','ANALYZED_AND_WATCH','ANALYZED_AND_REJECTED',
+        'MERGED_INTO_OTHER_CHAIN','SUPERSEDED','NOT_ANALYZED'
+    )),
+    reason              TEXT NOT NULL,
+    mapped_candidate_id TEXT,
+    opportunity_id     TEXT,
+    analysis_source     TEXT NOT NULL,
+    updated_at          TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+
+CREATE TABLE IF NOT EXISTS opportunity_best_expressions (
+    opportunity_id     TEXT PRIMARY KEY,
+    analysis_json      TEXT NOT NULL,
+    source_digest      TEXT NOT NULL,
+    model              TEXT NOT NULL,
+    prompt_version     TEXT NOT NULL,
+    updated_at          TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    FOREIGN KEY (opportunity_id) REFERENCES investment_opportunities(opportunity_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS opportunity_funnel_snapshots (
+    snapshot_id        TEXT PRIMARY KEY,
+    counts_json        TEXT NOT NULL,
+    definitions_json   TEXT NOT NULL,
+    created_at          TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+"""
+
+
+def _migrate_to_v9(conn: sqlite3.Connection) -> None:
+    conn.executescript(V9_OPPORTUNITY_COVERAGE_SQL)
+
+
 def _migrate_v2_to_v3(conn: sqlite3.Connection) -> None:
     """对已有 v2 库:加 6 列(predictions)+ 建 4 个新表(都 IF NOT EXISTS)。
 
@@ -901,6 +940,7 @@ def _ensure_schema(conn: sqlite3.Connection) -> None:
     _migrate_to_v6(conn)
     _migrate_to_v7(conn)
     _migrate_to_v8(conn)
+    _migrate_to_v9(conn)
     conn.execute(f"PRAGMA user_version = {CURRENT_SCHEMA_VERSION}")
 
 

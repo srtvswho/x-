@@ -3,7 +3,10 @@ import sqlite3
 from pathlib import Path
 
 from signalboard.db import CURRENT_SCHEMA_VERSION, init_db
-from scripts.dashboard.build_dashboard import query_opportunities
+from signalboard.ai.guardrails import STAGE_BY_WORKLOAD
+from signalboard.ai.router import DEFAULT_ROUTES
+from scripts.dashboard.build_dashboard import query_opportunities, query_opportunity_funnel
+from scripts.intel_opportunity_engine_v121 import MISSING_CANDIDATE_IDS, _build_coverage, _build_funnel
 from scripts.intel_opportunity_engine_v12 import _enforce_actionability
 
 
@@ -27,14 +30,15 @@ def _insert_candidate_and_opportunity(con: sqlite3.Connection) -> None:
     con.commit()
 
 
-def test_v8_schema_is_idempotent(tmp_path):
+def test_v9_schema_is_idempotent(tmp_path):
     db = tmp_path / "signalboard.db"
     init_db(db)
     init_db(db)
     con = sqlite3.connect(db)
-    assert con.execute("PRAGMA user_version").fetchone()[0] == CURRENT_SCHEMA_VERSION == 8
+    assert con.execute("PRAGMA user_version").fetchone()[0] == CURRENT_SCHEMA_VERSION == 9
     tables = {r[0] for r in con.execute("SELECT name FROM sqlite_master WHERE type='table'")}
     assert {"logic_chain_analyses", "investment_opportunities", "opportunity_evidence", "opportunity_versions"} <= tables
+    assert {"candidate_coverage", "opportunity_best_expressions", "opportunity_funnel_snapshots"} <= tables
     con.close()
 
 
@@ -47,6 +51,30 @@ def test_query_opportunities_exposes_score_components(tmp_path):
     assert rows[0]["title"] == "Memory Opportunity"
     assert rows[0]["actionability"] == "RESEARCH"
     assert rows[0]["score_components"]["Earnings"] == 85
+    con.close()
+
+
+def test_v121_closes_exact_mechanically_missing_candidates():
+    assert MISSING_CANDIDATE_IDS == [
+        "candidate_esmt_legacy_dram", "candidate_samsung_hbm4_broadcom",
+        "candidate_traditional_packaging_shortage", "candidate_cxmt_hbm3e",
+        "candidate_gpu_server_price", "candidate_memory_architecture",
+    ]
+    assert STAGE_BY_WORKLOAD["best_expression_analysis"] == "analyst"
+    assert DEFAULT_ROUTES["best_expression_analysis"] == ("openai", "gpt-5.6-terra", "high")
+
+
+def test_v121_coverage_and_funnel_never_silently_drop_candidates(tmp_path):
+    db = tmp_path / "signalboard.db"
+    init_db(db)
+    con = sqlite3.connect(db)
+    coverage = _build_coverage(con)
+    assert len(coverage) == 10
+    assert {x["final_status"] for x in coverage} == {"NOT_ANALYZED"}
+    assert con.execute("SELECT COUNT(*) FROM candidate_coverage").fetchone()[0] == 10
+    funnel = _build_funnel(con)
+    assert funnel["counts"]["raw_candidate_chains"] == 10
+    assert query_opportunity_funnel(con)["counts"] == funnel["counts"]
     con.close()
 
 
@@ -69,7 +97,10 @@ def test_home_is_conclusion_first_and_single_column():
     assert ".opportunity-card.primary .opp-title{font-size:21px}" in html
     assert "Admin · AI Cost Guardrails" in html
     assert "renderOpportunities()" in html
+    assert "renderCandidateFunnel()" in html
+    assert "Compare Stocks" in html
     assert "__OPPORTUNITIES__" in html
+    assert "__OPPORTUNITY_FUNNEL__" in html
 
 
 def test_completed_one_time_preview_workflows_are_removed():
