@@ -1,4 +1,5 @@
 name: Normalize Opportunity Scores (Zero AI)
+# One-time deterministic preview repair; no model provider is configured.
 
 on:
   push:
