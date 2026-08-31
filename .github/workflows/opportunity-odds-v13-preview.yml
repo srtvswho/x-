@@ -83,7 +83,7 @@ jobs:
           AI_ENABLED: "false"
         run: python -m pytest -q tests/test_opportunity_odds_v13.py tests/test_opportunity_engine_v12.py tests/test_ai_guardrails.py tests/test_research_engine.py
 
-      - name: Research seven securities and compute deterministic odds
+      - name: Research seven unique securities across five opportunities
         run: python scripts/intel_opportunity_odds_v13.py
 
       - name: Enforce universe, evidence and cost fuses
@@ -95,8 +95,9 @@ jobs:
           report = json.load(open("outputs/opportunity_odds_v13/run_report.json"))
           assert report["status"] == "COMPLETED", report["errors"]
           rows = report["results"]
-          assert len(rows) == 7, len(rows)
+          assert len(rows) == 9, len(rows)
           assert len({row["opportunity_id"] for row in rows}) == 5
+          assert len({row["ticker"] for row in rows}) == 7
           assert all(len(row["source_roots"]) >= 2 for row in rows)
           con = sqlite3.connect("data/signalboard_full.db")
           run_id = os.environ["AI_RUN_ID"]
@@ -111,7 +112,7 @@ jobs:
           assert calls <= 150, calls
           assert risk <= 20.000001, risk
           assert golden == 0, golden
-          assert con.execute("SELECT COUNT(*) FROM opportunity_odds").fetchone()[0] == 7
+          assert con.execute("SELECT COUNT(*) FROM opportunity_odds").fetchone()[0] == 9
           assert con.execute("PRAGMA quick_check").fetchone()[0] == "ok"
           print(f"AI_CALLS={calls} RISK_COST_USD={risk:.6f} ODDS_ROWS={len(rows)}")
           con.close()

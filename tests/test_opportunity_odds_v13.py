@@ -75,6 +75,11 @@ def test_good_company_bad_odds_and_good_odds_weak_evidence_are_distinct():
     normalized = normalize_analysis(bad_odds, context_fixture(), gate_config())
     assert normalized["computed"]["odds_status"] == "GOOD_COMPANY_BAD_ODDS"
 
+    low_confidence = copy.deepcopy(bad_odds)
+    low_confidence["valuation_confidence"] = "LOW"
+    normalized = normalize_analysis(low_confidence, context_fixture(), gate_config())
+    assert normalized["computed"]["odds_status"] == "GOOD_COMPANY_BAD_ODDS"
+
     weak = analysis_fixture()
     weak["earnings_bridge"]["our_base_eps"]["value"] = 7
     weak["scenarios"][1]["valuation_basis"] = 7

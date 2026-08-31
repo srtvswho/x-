@@ -45,6 +45,8 @@ UNIVERSE = (
     Security("opp_059a0ded5581814ea9612dc2", "TWSE:3006", "Elite Semiconductor Microelectronics Technology", "TWSE", "TWD"),
     Security("opp_a2cb1781922c965f79ff62e8", "MU", "Micron Technology", "NASDAQ", "USD"),
     Security("opp_a2cb1781922c965f79ff62e8", "000660.KS", "SK hynix", "KRX", "KRW"),
+    Security("opp_b4721f99daaa970ade4700b9", "MU", "Micron Technology", "NASDAQ", "USD"),
+    Security("opp_b4721f99daaa970ade4700b9", "000660.KS", "SK hynix", "KRX", "KRW"),
     Security("opp_10fee5b31c947c44118b429a", "COHR", "Coherent", "NYSE", "USD"),
     Security("opp_10fee5b31c947c44118b429a", "LITE", "Lumentum", "NASDAQ", "USD"),
 )
@@ -387,14 +389,16 @@ def _gate(data: dict[str, Any], context: dict[str, Any], metrics: dict[str, Any]
     reasons = [name for name, passed in checks.items() if not passed]
     if all(checks.values()):
         return "BUY_CANDIDATE", []
-    if not reliable or metrics["earnings_gap"] is None:
+    if metrics["earnings_gap"] is None:
         return "VALUATION_INCOMPLETE", reasons
     good_odds = upside_ok and rr_ok
     strong_research = thesis_ok and evidence_ok
     if strong_research and not good_odds:
         return "GOOD_COMPANY_BAD_ODDS", reasons
-    if good_odds and not strong_research:
+    if good_odds and (not strong_research or not reliable):
         return "GOOD_ODDS_WEAK_EVIDENCE", reasons
+    if not reliable:
+        return "VALUATION_INCOMPLETE", reasons
     return ("RESEARCH" if context["actionability"] == "RESEARCH" and strong_research else "WATCH"), reasons
 
 
@@ -551,6 +555,7 @@ def _report_rows(con: sqlite3.Connection) -> list[dict[str, Any]]:
             "odds_band": row[16], "odds_score": row[17], "odds_status": row[18],
             "valuation_confidence": row[19], "thesis_confidence": row[20],
             "market_expectations": data["market_expectations"], "earnings_bridge": data["earnings_bridge"],
+            "market_data": data["market_data"],
             "scenarios": data["scenarios"], "why_not_buy_now": data["why_not_buy_now"],
             "verdict": data["verdict"], "catalyst": data["catalyst"],
             "invalidation": data["invalidation"], "data_gaps": data["data_gaps"],
@@ -613,7 +618,10 @@ def main() -> None:
     cost = _run_cost(con, run_id)
     status = "COMPLETED" if len(rows) == len(UNIVERSE) and not errors else "PARTIAL"
     summary = {
-        "status": status, "universe_size": len(UNIVERSE), "completed_rows": len(rows),
+        "status": status, "opportunity_security_evaluations": len(UNIVERSE),
+        "unique_securities": len({sec.ticker for sec in UNIVERSE}),
+        "opportunities_covered": len({sec.opportunity_id for sec in UNIVERSE}),
+        "completed_rows": len(rows),
         "buy_candidates": [x["ticker"] for x in rows if x["odds_status"] == "BUY_CANDIDATE"],
         "good_company_bad_odds": [x["ticker"] for x in rows if x["odds_status"] == "GOOD_COMPANY_BAD_ODDS"],
         "good_odds_weak_evidence": [x["ticker"] for x in rows if x["odds_status"] == "GOOD_ODDS_WEAK_EVIDENCE"],
