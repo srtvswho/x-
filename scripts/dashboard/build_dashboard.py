@@ -375,10 +375,20 @@ def query_thesis_changes(conn, limit=12):
         "SELECT 1 FROM sqlite_master WHERE type='table' AND name='research_case_analyses'"
     ).fetchone()
     case_specs = json.loads(GOLDEN_CASES.read_text(encoding="utf-8")) if GOLDEN_CASES.exists() else {}
+    validation_table = conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='golden_validations'"
+    ).fetchone()
     if case_table:
-        for case_id,title,analysis_raw,updated_at in conn.execute(
-            "SELECT case_id,title,analysis_json,updated_at FROM research_case_analyses ORDER BY updated_at DESC LIMIT 4"
-        ).fetchall():
+        case_sql = (
+            """SELECT r.case_id,r.title,r.analysis_json,r.updated_at,g.status,g.mode,
+                      g.validation_timestamp,g.additional_ai_calls
+               FROM research_case_analyses r LEFT JOIN golden_validations g ON g.case_id=r.case_id
+               ORDER BY r.updated_at DESC LIMIT 4"""
+            if validation_table else
+            """SELECT case_id,title,analysis_json,updated_at,NULL,NULL,NULL,NULL
+               FROM research_case_analyses ORDER BY updated_at DESC LIMIT 4"""
+        )
+        for case_id,title,analysis_raw,updated_at,golden_status,validation_mode,validation_timestamp,additional_ai_calls in conn.execute(case_sql).fetchall():
             analysis=json.loads(analysis_raw)
             spec=case_specs.get(case_id,{})
             post_ids=spec.get("seed_post_ids",[])
@@ -413,7 +423,7 @@ def query_thesis_changes(conn, limit=12):
                 "consensus":[],"disagreement":analysis.get("contradictions") or [],
                 "positive_exposure":analysis.get("beneficiaries") or [],
                 "negative_exposure":analysis.get("negative_exposure") or [],
-                "confidence":scores.get("evidence_quality",0)/100,"actionability":action,
+                "confidence":scores.get("evidence_quality",0)/10,"actionability":action,
                 "social_mentions":social_count or 0,"independent_evidence":independent_count or 0,
                 "is_research_case":True,"author_views":analysis.get("author_views") or [],
                 "facts":analysis.get("facts") or [],"logic_chain":analysis.get("logic_chain") or [],
@@ -423,6 +433,8 @@ def query_thesis_changes(conn, limit=12):
                 "catalysts":analysis.get("catalysts") or [],
                 "invalidation_conditions":analysis.get("invalidation_conditions") or [],
                 "supporting_sources":links,"scores":scores,
+                "golden_status":golden_status,"validation_mode":validation_mode,
+                "validation_timestamp":validation_timestamp,"additional_ai_calls":additional_ai_calls,
             })
 
     rows = conn.execute("""
@@ -482,6 +494,60 @@ def query_thesis_changes(conn, limit=12):
             "social_mentions":source_counts[0] or 0,"independent_evidence":source_counts[1] or 0,
         })
     return out
+
+
+def query_ai_cost_panel(conn):
+    """Risk-aware cost summary. PENDING rows remain visible and reserve estimated cost."""
+    enabled = os.getenv("AI_ENABLED", "false").strip().lower() in {"1", "true", "yes", "on"}
+    expensive = os.getenv("ALLOW_EXPENSIVE_AI_JOB", "false").strip().lower() in {"1", "true", "yes", "on"}
+    panel = {
+        "today_cost": 0.0, "days_7_cost": 0.0, "days_30_cost": 0.0, "calls_today": 0,
+        "by_stage": [], "by_model": [], "pending_unknown_calls": 0, "pending_unknown_risk": 0.0,
+        "daily_budget": float(os.getenv("AI_MAX_DAILY_COST_USD", "1.00")),
+        "run_budget": float(os.getenv("AI_MAX_COST_PER_RUN_USD", "0.50")),
+        "call_limit": int(os.getenv("AI_MAX_CALLS_PER_RUN", "20")),
+        "ai_enabled": enabled, "expensive_jobs_enabled": expensive,
+    }
+    table = conn.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='ai_usage_ledger'").fetchone()
+    if not table:
+        return panel
+    risk_expr = "CASE WHEN actual_cost_if_available IS NOT NULL THEN actual_cost_if_available ELSE estimated_cost END"
+    for key, modifier in (("today_cost", "start of day"), ("days_7_cost", "-6 days"), ("days_30_cost", "-29 days")):
+        panel[key] = round(float(conn.execute(
+            f"""SELECT COALESCE(SUM({risk_expr}),0) FROM ai_usage_ledger
+                WHERE request_started_at>=strftime('%Y-%m-%dT00:00:00Z','now',?)
+                  AND status IN ('PENDING','SUCCESS','FAILED','CANCELLED','UNKNOWN_COST')""",
+            (modifier,),
+        ).fetchone()[0]), 8)
+    panel["calls_today"] = int(conn.execute(
+        """SELECT COUNT(*) FROM ai_usage_ledger WHERE request_started_at>=strftime('%Y-%m-%dT00:00:00Z','now')
+           AND status IN ('PENDING','SUCCESS','FAILED','CANCELLED','UNKNOWN_COST')"""
+    ).fetchone()[0])
+    panel["by_stage"] = [
+        {"name": row[0], "cost": round(float(row[1]), 8), "calls": int(row[2])}
+        for row in conn.execute(
+            f"""SELECT stage,COALESCE(SUM({risk_expr}),0),COUNT(*) FROM ai_usage_ledger
+                WHERE request_started_at>=strftime('%Y-%m-%dT00:00:00Z','now')
+                  AND status IN ('PENDING','SUCCESS','FAILED','CANCELLED','UNKNOWN_COST')
+                GROUP BY stage ORDER BY 2 DESC"""
+        ).fetchall()
+    ]
+    panel["by_model"] = [
+        {"name": row[0], "cost": round(float(row[1]), 8), "calls": int(row[2])}
+        for row in conn.execute(
+            f"""SELECT model,COALESCE(SUM({risk_expr}),0),COUNT(*) FROM ai_usage_ledger
+                WHERE request_started_at>=strftime('%Y-%m-%dT00:00:00Z','now')
+                  AND status IN ('PENDING','SUCCESS','FAILED','CANCELLED','UNKNOWN_COST')
+                GROUP BY model ORDER BY 2 DESC"""
+        ).fetchall()
+    ]
+    pending = conn.execute(
+        """SELECT COUNT(*),COALESCE(SUM(estimated_cost),0) FROM ai_usage_ledger
+           WHERE status IN ('PENDING','UNKNOWN_COST')"""
+    ).fetchone()
+    panel["pending_unknown_calls"] = int(pending[0])
+    panel["pending_unknown_risk"] = round(float(pending[1]), 8)
+    return panel
 
 
 def query_tickers(conn):
@@ -702,6 +768,7 @@ def main():
         today_records = query_today_records(conn)
         build_meta = build_metadata(conn)
         thesis_changes = query_thesis_changes(conn)
+        ai_cost_panel = query_ai_cost_panel(conn)
         print(f"  24h window: {build_meta['window_label']} "
               f"posts={today_stats['n_posts_24h']} "
               f"directional={today_stats['n_directional_24h']} "
@@ -721,6 +788,7 @@ def main():
         html = html.replace("__TODAY_RECORDS__", json.dumps(today_records, ensure_ascii=False))
         html = html.replace("__BUILD_META__",    json.dumps(build_meta, ensure_ascii=False))
         html = html.replace("__THESIS_CHANGES__", json.dumps(thesis_changes, ensure_ascii=False))
+        html = html.replace("__AI_COST_PANEL__", json.dumps(ai_cost_panel, ensure_ascii=False))
         OUT.write_text(html, encoding="utf-8")
         # 检查 null 字样没渲染到 HTML (兜底, 即使前端处理对了)
         with open(OUT, 'r', encoding='utf-8') as f:
