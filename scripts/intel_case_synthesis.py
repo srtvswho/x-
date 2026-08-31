@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import sqlite3
 import sys
 from pathlib import Path
@@ -166,6 +167,7 @@ def main() -> None:
     ap.add_argument("--cases", default=str(CASES))
     ap.add_argument("--case", action="append", dest="selected")
     args = ap.parse_args()
+    os.environ.setdefault("AI_JOB_KIND", "golden_full")
     init_db(args.db)
     cases = json.loads(Path(args.cases).read_text(encoding="utf-8"))
     con = sqlite3.connect(args.db, timeout=120)
