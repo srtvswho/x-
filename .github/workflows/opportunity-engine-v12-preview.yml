@@ -35,6 +35,8 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+      - name: Install runtime dependency
+        run: python -m pip install --disable-pip-version-check requests
       - name: Restore isolated preview database
         run: |
           set -Eeuo pipefail
