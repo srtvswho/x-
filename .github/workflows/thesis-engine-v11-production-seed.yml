@@ -1,4 +1,5 @@
 name: Thesis Engine v1.1 Production Seed
+# One-time audited zero-AI productionization trigger; remove after successful seed.
 
 on:
   workflow_dispatch:
