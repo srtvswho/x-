@@ -157,7 +157,7 @@ BEST_EXPRESSION_SYSTEM = """你是买方股票研究负责人。任务不是证�
 对于 CPO/CW Laser，至少区分 LITE、COHR、Sivers、Ayar 的技术位置与股票可投资性。
 对于 Wire Bonder，先判断瓶颈是设备还是 OSAT capacity，不得预设 KLIC/ASMPT 必胜。
 
-只输出符合 schema 的 JSON。"""
+只输出符合 schema 的紧凑 JSON。每个解释字段最多两句话，每个来源 finding 最多一句话；不要在 JSON 前后输出分析过程。"""
 
 
 def _spec_by_id() -> dict[str, dict[str, Any]]:
@@ -183,7 +183,8 @@ def _analyze_missing(con: sqlite3.Connection) -> tuple[list[dict[str, Any]], lis
         digest = hashlib.sha256(_json(evidence).encode()).hexdigest()
         instruction = (
             "Close the previously mechanically truncated Candidate. Validate every causal step, use independent "
-            "sources, decide whether it reaches company earnings, and explicitly reject weak or non-investable chains."
+            "sources, decide whether it reaches company earnings, and explicitly reject weak or non-investable chains. "
+            "Return compact JSON: each prose field at most two sentences and each source finding one sentence."
         )
         if candidate_id == "candidate_memory_architecture":
             instruction += " Compare with the existing ALAB/CXL chain and state whether this broader thesis is distinct, merged, or superseded."
@@ -191,7 +192,7 @@ def _analyze_missing(con: sqlite3.Connection) -> tuple[list[dict[str, Any]], lis
             result = call_json_web(
                 "logic_chain_analysis", CHAIN_SYSTEM,
                 _json({"as_of": "2026-08-31", "candidate": spec, "evidence_bundle": evidence, "instruction": instruction}),
-                CHAIN_SCHEMA, schema_name="signalboard_logic_chain_v121", max_output_tokens=6500,
+                CHAIN_SCHEMA, schema_name="signalboard_logic_chain_v121", max_output_tokens=9000,
                 timeout=300, max_retries=1, prompt_version=CHAIN_PROMPT_VERSION,
                 entity_type="logic_chain", entity_id=candidate_id,
             )
@@ -332,7 +333,7 @@ def _best_expression(con: sqlite3.Connection) -> tuple[list[dict[str, Any]], lis
                 "best_expression_analysis", BEST_EXPRESSION_SYSTEM,
                 _json({"as_of": "2026-08-31", "validated_opportunity": payload}),
                 BEST_EXPRESSION_SCHEMA, schema_name="signalboard_best_expression_v121",
-                max_output_tokens=5200, timeout=300, max_retries=1,
+                max_output_tokens=9000, timeout=300, max_retries=1,
                 prompt_version=BEST_EXPRESSION_PROMPT_VERSION,
                 entity_type="investment_opportunity", entity_id=row[0],
             )

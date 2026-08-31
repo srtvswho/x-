@@ -34,11 +34,11 @@ jobs:
       AI_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
       AI_LEDGER_DB_PATH: /workspace/data/signalboard_full.db
       AI_ROUTE_LOGIC_CHAIN_ANALYSIS_MODEL: "gpt-5.6-terra"
-      AI_ROUTE_LOGIC_CHAIN_ANALYSIS_REASONING_EFFORT: "high"
+      AI_ROUTE_LOGIC_CHAIN_ANALYSIS_REASONING_EFFORT: "medium"
       AI_ROUTE_OPPORTUNITY_SYNTHESIS_MODEL: "gpt-5.6-terra"
-      AI_ROUTE_OPPORTUNITY_SYNTHESIS_REASONING_EFFORT: "high"
+      AI_ROUTE_OPPORTUNITY_SYNTHESIS_REASONING_EFFORT: "medium"
       AI_ROUTE_BEST_EXPRESSION_ANALYSIS_MODEL: "gpt-5.6-terra"
-      AI_ROUTE_BEST_EXPRESSION_ANALYSIS_REASONING_EFFORT: "high"
+      AI_ROUTE_BEST_EXPRESSION_ANALYSIS_REASONING_EFFORT: "medium"
 
     steps:
       - uses: actions/checkout@v6
