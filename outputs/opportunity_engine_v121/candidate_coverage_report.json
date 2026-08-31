@@ -1,0 +1,82 @@
+[
+  {
+    "candidate_id": "candidate_esmt_legacy_dram",
+    "title": "Legacy DRAM tightness → ESMT earnings leverage",
+    "final_status": "ANALYZED_AND_PROMOTED",
+    "why": "保留为RESEARCH：产业驱动、公司敞口及盈利传导均获验证；但社交帖的ASP幅度、BOM低占比、月净利和完全成本转嫁等核心细节未获独立确认，且估值缺乏可靠一致预期。",
+    "opportunity_id": "opp_059a0ded5581814ea9612dc2",
+    "analysis_source": "v1.2.1 coverage closure"
+  },
+  {
+    "candidate_id": "candidate_hbm_dram_crowdout",
+    "title": "HBM wafer intensity → conventional DRAM supply squeeze",
+    "final_status": "ANALYZED_AND_WATCH",
+    "why": "不拒绝产业逻辑，但拒绝“基于当前证据即可买入MU/SK hynix”的结论：估值、FY2027共识、HBM对传统DRAM挤出幅度及5年LTA均未充分验证。",
+    "opportunity_id": "opp_b4721f99daaa970ade4700b9",
+    "analysis_source": "existing completed v1.2 audit"
+  },
+  {
+    "candidate_id": "candidate_socamm_lpddr",
+    "title": "SOCAMM2 → data-center LPDDR demand pool",
+    "final_status": "ANALYZED_AND_WATCH",
+    "why": "验证后保留“特定AI服务器平台扩大数据中心LPDDR需求”的主题，但拒绝MU独占、Apple议价受损及YMTC大规模LPDDR产能等延伸结论。该链条尚不能量化公司级收入和EPS，评级为WATCH而非BUY_CANDIDATE。",
+    "opportunity_id": "opp_143025db87e08895e3c9c88b",
+    "analysis_source": "existing completed v1.2 audit"
+  },
+  {
+    "candidate_id": "candidate_cpo_laser",
+    "title": "CPO / 1.6T ramp → CW laser and optical bottlenecks",
+    "final_status": "ANALYZED_AND_WATCH",
+    "why": "核心断点在于：1.6T LRO可插拔项目被混同为CPO供货；“FAU/CW laser全面短缺”和Sivers为关键瓶颈供应商未获独立验证；订单规模与盈利传导不可量化；当前估值预期无法以可靠共识校验。",
+    "opportunity_id": "opp_10fee5b31c947c44118b429a",
+    "analysis_source": "existing completed v1.2 audit"
+  },
+  {
+    "candidate_id": "candidate_datacenter_physical_bottlenecks",
+    "title": "AI data-center buildout → cooling / transformer / wiring constraints",
+    "final_status": "ANALYZED_AND_PROMOTED",
+    "why": "接受“主题与部分公司盈利传导”而拒绝“所有相关股票都会因短缺获益”的泛化结论。优先研究AAON、NVT与HPS.A的订单转化、产能利用率和利润率；IESC需额外审查项目毛利与劳动力风险。MOD仅保留观察，MTRS从本候选链中剔除。",
+    "opportunity_id": "opp_f9ce9de1c1cd0a6af97cf684",
+    "analysis_source": "existing completed v1.2 audit"
+  },
+  {
+    "candidate_id": "candidate_samsung_hbm4_broadcom",
+    "title": "Samsung HBM4 lead → Broadcom ASIC execution advantage",
+    "final_status": "ANALYZED_AND_REJECTED",
+    "why": "关键的Samsung HBM4份额、认证、供货量和对Broadcom ASIC出货及单位经济性的增量均未验证，因而因果链停在公司层面之前。",
+    "opportunity_id": null,
+    "analysis_source": "v1.2.1 coverage closure"
+  },
+  {
+    "candidate_id": "candidate_traditional_packaging_shortage",
+    "title": "AI server growth → traditional packaging / wire-bonder shortage",
+    "final_status": "ANALYZED_AND_REJECTED",
+    "why": "核心短缺命题没有独立一手证据，且现有AI订单证据主要指向TCB等先进封装设备，不能替代传统wire-bonder短缺的证明。",
+    "opportunity_id": null,
+    "analysis_source": "v1.2.1 coverage closure"
+  },
+  {
+    "candidate_id": "candidate_cxmt_hbm3e",
+    "title": "CXMT HBM3E ramp → China AI GPU bottleneck relief",
+    "final_status": "ANALYZED_AND_REJECTED",
+    "why": "关键的HBM3E qualification、国产GPU导入及收入/利润环节均未获独立验证，且公司招股书未披露HBM合同或项目。",
+    "opportunity_id": null,
+    "analysis_source": "v1.2.1 coverage closure"
+  },
+  {
+    "candidate_id": "candidate_gpu_server_price",
+    "title": "AI server price increases → memory and GPU revenue pass-through",
+    "final_status": "ANALYZED_AND_WATCH",
+    "why": "增量事件缺少价格归属、数量弹性和公司收入确认证据；估值与一致预期也不完整，未满足RESEARCH或BUY_CANDIDATE条件。",
+    "opportunity_id": "opp_01caeb0091099b6b778194b6",
+    "analysis_source": "v1.2.1 coverage closure"
+  },
+  {
+    "candidate_id": "candidate_memory_architecture",
+    "title": "HBM limits → hierarchical memory / high-bandwidth NAND",
+    "final_status": "ANALYZED_AND_PROMOTED",
+    "why": "与既有ALAB/CXL链是“合并但不替代”：本链为ALAB提供需求背景，ALAB仍须按其Scorpio/Aries/Leo实际收入单独验证；广义HBF部分因缺少量产和盈利证据，拒绝作为独立投资结论。",
+    "opportunity_id": "opp_a2cb1781922c965f79ff62e8",
+    "analysis_source": "v1.2.1 coverage closure"
+  }
+]
