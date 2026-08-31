@@ -71,16 +71,10 @@ def test_home_is_conclusion_first_and_single_column():
     assert "__OPPORTUNITIES__" in html
 
 
-def test_preview_workflow_has_research_fuse_and_no_expensive_jobs():
-    workflow = (ROOT / ".github/workflows/opportunity-engine-v12-preview.yml").read_text(encoding="utf-8")
-    assert 'AI_MAX_COST_PER_RUN_USD: "10.00"' in workflow
-    assert 'AI_MAX_DAILY_COST_USD: "20.00"' in workflow
-    assert 'AI_MAX_CALLS_PER_RUN: "100"' in workflow
-    assert 'ALLOW_EXPENSIVE_AI_JOB: "false"' in workflow
-    assert "--limit 10 --media-ids" in workflow
-    assert "--limit 15 --claim-ids" in workflow
-    assert "confirm_paid_run" in workflow
-    assert "push:" not in workflow.split("permissions:", 1)[0]
+def test_completed_one_time_preview_workflows_are_removed():
+    workflows = ROOT / ".github/workflows"
+    assert not (workflows / "opportunity-engine-v12-preview.yml").exists()
+    assert not (workflows / "opportunity-score-normalization-zero-ai.yml").exists()
 
 
 def test_prompt_outputs_preserve_source_and_decision_fields():
