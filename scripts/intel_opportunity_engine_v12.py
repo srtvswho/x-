@@ -395,6 +395,17 @@ def _enforce_actionability(data: dict[str, Any]) -> str:
     return action
 
 
+def normalize_score_scale(scores: dict[str, Any]) -> bool:
+    """Normalize an obvious 0-10 model response onto the required 0-100 scale."""
+    values = [float(value) for value in scores.values() if isinstance(value, (int, float))]
+    if not values or max(values) > 10 or not any(not value.is_integer() for value in values):
+        return False
+    for key, value in list(scores.items()):
+        if isinstance(value, (int, float)):
+            scores[key] = round(min(100.0, max(0.0, float(value) * 10)), 1)
+    return True
+
+
 def _discovery_inventory(con: sqlite3.Connection) -> dict[str, Any]:
     themes = []
     for row in con.execute(
@@ -433,6 +444,7 @@ def _synthesize(con: sqlite3.Connection, candidate_id: str, chain: dict[str, Any
         prompt_version=SYNTHESIS_PROMPT_VERSION, entity_type="opportunity_candidate", entity_id=candidate_id,
     )
     synthesis = result.data
+    normalize_score_scale(synthesis["scores"])
     completeness = int(chain["chain_completeness"])
     action = synthesis["actionability"]
     if completeness == 4 and action in {"RESEARCH", "BUY_CANDIDATE", "HEDGE_CANDIDATE"}:
@@ -637,6 +649,7 @@ def main() -> None:
                 prompt_version=CHAIN_PROMPT_VERSION, entity_type="logic_chain", entity_id=spec["candidate_id"],
             )
             data = result.data
+            normalize_score_scale(data["scores"])
             _sanitize_sources(data, result.sources, evidence["database_source_roots"])
             data["social_mention_count"] = evidence["social_mention_count"]
             data["evidence_claim_ids"] = [x["claim_id"] for x in evidence["claims"]]
