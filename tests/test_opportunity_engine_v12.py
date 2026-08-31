@@ -99,6 +99,7 @@ def test_home_is_conclusion_first_and_single_column():
     assert "renderOpportunities()" in html
     assert "renderCandidateFunnel()" in html
     assert "Compare Stocks" in html
+    assert "merged.filter(r=>KOLS[r.kol]&&" in html
     assert "__OPPORTUNITIES__" in html
     assert "__OPPORTUNITY_FUNNEL__" in html
 
