@@ -1,0 +1,189 @@
+name: SignalBoard Opportunity Engine v1.2 Preview
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_paid_run:
+        description: "I approve a bounded paid AI run: <=100 calls and <=$10"
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: opportunity-engine-v12-preview
+  cancel-in-progress: false
+
+jobs:
+  research-and-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      AI_ENABLED: "true"
+      AI_DRY_RUN: "false"
+      AI_MAX_COST_PER_RUN_USD: "10.00"
+      AI_MAX_DAILY_COST_USD: "20.00"
+      AI_MAX_CALLS_PER_RUN: "100"
+      ALLOW_EXPENSIVE_AI_JOB: "false"
+      AI_JOB_KIND: "incremental_opportunity_discovery"
+      AI_WORKFLOW: "opportunity_engine_v12_preview"
+      AI_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+      AI_LEDGER_DB_PATH: /workspace/data/signalboard_full.db
+      FORCE_REANALYZE: "false"
+      MEDIA_AI_MAX_ITEMS: "10"
+      CLAIM_VERIFY_MAX_ITEMS: "15"
+      THEME_MAX_COST_PER_RUN: "1.00"
+      MEDIA_MAX_COST_PER_RUN: "2.50"
+      CLAIM_MAX_COST_PER_RUN: "3.50"
+      ANALYST_MAX_COST_PER_RUN: "6.00"
+      GOLDEN_MAX_COST_PER_RUN: "0"
+      AI_ROUTE_MEDIA_UNDERSTANDING_MODEL: "gpt-5.6-terra"
+      AI_ROUTE_THEME_CANONICALIZATION_MODEL: "gpt-5.6-terra"
+      AI_ROUTE_CLAIM_VERIFICATION_MODEL: "gpt-5.6-terra"
+      AI_ROUTE_LOGIC_CHAIN_ANALYSIS_MODEL: "gpt-5.6-terra"
+      AI_ROUTE_LOGIC_CHAIN_ANALYSIS_REASONING_EFFORT: "medium"
+      AI_ROUTE_OPPORTUNITY_DISCOVERY_MODEL: "gpt-5.6-terra"
+      AI_ROUTE_OPPORTUNITY_DISCOVERY_REASONING_EFFORT: "medium"
+      AI_ROUTE_OPPORTUNITY_SYNTHESIS_MODEL: "gpt-5.6-terra"
+      AI_ROUTE_OPPORTUNITY_SYNTHESIS_REASONING_EFFORT: "medium"
+
+    steps:
+      - name: Checkout preview branch
+        uses: actions/checkout@v6
+        with:
+          ref: codex/opportunity-engine-v12-preview
+          fetch-depth: 1
+
+      - name: Verify bounded AI authorization
+        shell: bash
+        env:
+          CONFIRM_PAID_RUN: ${{ inputs.confirm_paid_run }}
+        run: |
+          set -Eeuo pipefail
+          test "$CONFIRM_PAID_RUN" = "true"
+          test "$AI_ENABLED" = "true"
+          test "$AI_DRY_RUN" = "false"
+          test "$ALLOW_EXPENSIVE_AI_JOB" = "false"
+          test "$AI_MAX_COST_PER_RUN_USD" = "10.00"
+          test "$AI_MAX_CALLS_PER_RUN" = "100"
+          if [ -z "${OPENAI_API_KEY:-}" ]; then
+            echo "::error::OPENAI_API_KEY repository secret is unavailable"
+            exit 1
+          fi
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check requests
+
+      - name: Restore isolated preview database
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          gzip -t data/signalboard.db.gz
+          gzip -cd data/signalboard.db.gz > data/signalboard_full.db
+          sudo ln -sfn "$GITHUB_WORKSPACE" /workspace
+          python - <<'PY'
+          from signalboard.db import init_db
+          import sqlite3
+          path = "/workspace/data/signalboard_full.db"
+          init_db(path)
+          con = sqlite3.connect(path)
+          assert con.execute("PRAGMA quick_check").fetchone()[0] == "ok"
+          assert con.execute("PRAGMA user_version").fetchone()[0] >= 8
+          con.close()
+          PY
+
+      - name: Canonicalize Themes conservatively
+        continue-on-error: true
+        run: python scripts/intel_theme_canonicalize.py --apply --max-pairs 120 --output outputs/opportunity_engine_v12/theme_canonicalization.json
+
+      - name: Analyze 10 high-value Media
+        continue-on-error: true
+        shell: bash
+        run: |
+          python scripts/intel_media_analyze.py --limit 10 --media-ids "3_2008639280902795266,3_2094076428841291776,3_2093052991620448256,3_2092404709323845632,3_2092782336635273216,3_2034136443397017600,3_2092500329921384448,3_2092710847550537728,3_2091953822445047808,3_2093252422579945472" | tee outputs/opportunity_engine_v12/media_run.log
+
+      - name: Verify 15 chain-critical Claims
+        continue-on-error: true
+        shell: bash
+        run: |
+          python scripts/intel_claim_verify.py --limit 15 --claim-ids "claim_9284983de2954fd11a4c3bd3,claim_062439d4b2895487e02937b6,claim_09dd726c51fdb508a6984cd7,claim_1854bf7262952de8005d0569,claim_19d31fcbb2e5dc475b12abf4,claim_89f485bcaa4da71b4f1e9389,claim_90c4a91adf57907d654720f1,claim_c9fbb96de104a7e30800eb25,claim_0dba5938397cea7965d5dc8d,claim_134a5af4d73768b672e1523d,claim_54d28989cd802c853962ae7b,claim_dbe7e2d1c2c1f6302555cbd0,claim_f786b9b75a8d71a51071a2ea,claim_f1f1fffa68a7e5fa8b462208,claim_da591b56a1e8bfad24a571ed" | tee outputs/opportunity_engine_v12/claim_run.log
+
+      - name: Rebuild root-source deduplication
+        continue-on-error: true
+        run: python scripts/intel_source_dedup.py
+
+      - name: Analyze chains and synthesize Opportunities
+        run: python scripts/intel_opportunity_engine_v12.py --max-new 5 --max-synthesis 5
+
+      - name: Enforce actual run fuse
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os, sqlite3
+          con = sqlite3.connect("data/signalboard_full.db")
+          run_id = os.environ["AI_RUN_ID"]
+          calls, cost = con.execute(
+              """SELECT COUNT(*),COALESCE(SUM(COALESCE(actual_cost_if_available,estimated_cost)),0)
+                 FROM ai_usage_ledger WHERE run_id=?
+                   AND status IN ('PENDING','SUCCESS','FAILED','CANCELLED','UNKNOWN_COST')""", (run_id,)
+          ).fetchone()
+          print(f"AI calls={calls} risk_cost_usd={cost:.6f}")
+          if calls > 100 or cost > 10.000001:
+              raise SystemExit("Opportunity run exceeded hard fuse")
+          con.close()
+          PY
+
+      - name: Build Preview Dashboard
+        if: always()
+        shell: bash
+        env:
+          SIGNALBOARD_DB: /workspace/data/signalboard_full.db
+        run: |
+          set -Eeuo pipefail
+          python scripts/dashboard/build_dashboard.py
+          test -s scripts/dashboard/dashboard.html
+          mkdir -p dashboard_deploy_dist/opportunities
+          cp scripts/dashboard/dashboard.html dashboard_deploy_dist/index.html
+          cp scripts/dashboard/dashboard.html dashboard_deploy_dist/opportunities/index.html
+          cp scripts/dashboard/dashboard.html dashboard.html
+
+      - name: Save preview artifacts to branch
+        if: always()
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          gzip -c data/signalboard_full.db > data/signalboard.db.gz.new
+          gzip -t data/signalboard.db.gz.new
+          mv data/signalboard.db.gz.new data/signalboard.db.gz
+          git config user.name "signalboard-bot"
+          git config user.email "signalboard-bot@users.noreply.github.com"
+          git add data/signalboard.db.gz
+          test ! -e scripts/dashboard/dashboard.html || git add scripts/dashboard/dashboard.html dashboard.html
+          test ! -d outputs/opportunity_engine_v12 || git add outputs/opportunity_engine_v12
+          test ! -e dashboard_deploy_dist/index.html || git add -f dashboard_deploy_dist/index.html
+          test ! -e dashboard_deploy_dist/opportunities/index.html || git add -f dashboard_deploy_dist/opportunities/index.html
+          if git diff --cached --quiet; then
+            echo "No generated preview changes."
+            exit 0
+          fi
+          git commit -m "Generate Opportunity Engine v1.2 preview [skip daily]"
+          git push origin HEAD:codex/opportunity-engine-v12-preview
+
+      - name: Upload research audit artifact
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: opportunity-engine-v12-audit
+          path: |
+            outputs/opportunity_engine_v12
+            scripts/dashboard/dashboard.html
+          retention-days: 30
