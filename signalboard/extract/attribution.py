@@ -17,6 +17,7 @@ from __future__ import annotations
 import json
 import urllib.request
 import os
+import hashlib
 from dataclasses import dataclass
 from collections import Counter
 
@@ -136,6 +137,10 @@ ATTRIBUTION_PROMPT = """你是内容归属判定器。给定一条内容 (X 推�
 def llm_attribution(text: str, max_retries: int = 2) -> AttributionResult:
     """LLM 判定 attribution。"""
     prompt = ATTRIBUTION_PROMPT.format(text=text[:2000])
+    from signalboard.ai.guardrails import AIGuardrailBlocked, finish_failure, finish_success, preflight
+    from signalboard.ai.router import DEFAULT_PRICING_USD_PER_MILLION
+
+    request_hash = hashlib.sha256((DEEPSEEK_MODEL + "\n" + prompt).encode()).hexdigest()
     data = json.dumps({
         "model": DEEPSEEK_MODEL,
         "messages": [{"role": "user", "content": prompt}],
@@ -150,9 +155,26 @@ def llm_attribution(text: str, max_retries: int = 2) -> AttributionResult:
     )
     for attempt in range(max_retries):
         try:
+            permit = preflight(
+                workload="bulk_post_processing", provider="deepseek", model=DEEPSEEK_MODEL,
+                system="attribution classifier", user=prompt, image_count=0, max_output_tokens=400,
+                prices_per_million=DEFAULT_PRICING_USD_PER_MILLION[DEEPSEEK_MODEL],
+                input_hash=request_hash, prompt_version="attribution-v1", entity_type="post", entity_id=request_hash[:24],
+            )
+        except AIGuardrailBlocked as exc:
+            return AttributionResult("?", f"AI guardrail: {exc.reason}", "guardrail", 0.0)
+        try:
             with urllib.request.urlopen(req, timeout=60) as r:
                 resp = json.loads(r.read())
             content = json.loads(resp["choices"][0]["message"]["content"])
+            usage = resp.get("usage") or {}
+            pt = int(usage.get("prompt_tokens") or 0)
+            ct = int(usage.get("completion_tokens") or 0)
+            input_rate, _cached_rate, output_rate = DEFAULT_PRICING_USD_PER_MILLION[DEEPSEEK_MODEL]
+            finish_success(
+                permit, input_tokens=pt, cached_input_tokens=0, output_tokens=ct,
+                actual_cost=round((pt * input_rate + ct * output_rate) / 1_000_000, 8),
+            )
             return AttributionResult(
                 attribution=content.get("attribution", "?"),
                 evidence=content.get("evidence", ""),
@@ -160,6 +182,7 @@ def llm_attribution(text: str, max_retries: int = 2) -> AttributionResult:
                 confidence=0.85,
             )
         except Exception as e:
+            finish_failure(permit, e)
             if attempt == max_retries - 1:
                 return AttributionResult(
                     attribution="?",
