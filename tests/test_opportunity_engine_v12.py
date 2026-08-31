@@ -66,6 +66,7 @@ def test_home_is_conclusion_first_and_single_column():
     assert html.index('id="opportunities"') < html.index('id="thesis-changes"') < html.index('id="alerts"')
     assert ".opportunity-stack{display:grid;grid-template-columns:1fr" in html
     assert ".thesis-change-grid{display:grid;grid-template-columns:1fr" in html
+    assert ".opportunity-card.primary .opp-title{font-size:21px}" in html
     assert "Admin · AI Cost Guardrails" in html
     assert "renderOpportunities()" in html
     assert "__OPPORTUNITIES__" in html
