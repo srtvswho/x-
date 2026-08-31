@@ -429,6 +429,7 @@ def _synthesize(con: sqlite3.Connection, candidate_id: str, chain: dict[str, Any
         "opportunity_synthesis", SYNTHESIS_SYSTEM,
         _json({"validated_logic_chain": chain, "as_of": "2026-08-31", "questions": "Answer all twelve synthesis questions."}),
         SYNTHESIS_SCHEMA, schema_name="signalboard_opportunity_synthesis", max_output_tokens=4500, timeout=240,
+        max_retries=1,
         prompt_version=SYNTHESIS_PROMPT_VERSION, entity_type="opportunity_candidate", entity_id=candidate_id,
     )
     synthesis = result.data
@@ -632,6 +633,7 @@ def main() -> None:
                 _json({"as_of": "2026-08-31", "evidence_bundle": evidence,
                        "instruction": "Validate every step, find independent sources and reject the chain when necessary."}),
                 CHAIN_SCHEMA, schema_name="signalboard_logic_chain", max_output_tokens=6000, timeout=300,
+                max_retries=1,
                 prompt_version=CHAIN_PROMPT_VERSION, entity_type="logic_chain", entity_id=spec["candidate_id"],
             )
             data = result.data
