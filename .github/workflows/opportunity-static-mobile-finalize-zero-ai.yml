@@ -1,0 +1,66 @@
+name: Finalize Opportunity Preview mobile CSS [zero AI]
+
+on:
+  push:
+    branches:
+      - codex/opportunity-engine-v12-preview
+    paths:
+      - .github/workflows/opportunity-static-mobile-finalize-zero-ai.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: opportunity-static-mobile-finalize-zero-ai
+  cancel-in-progress: false
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      AI_ENABLED: "false"
+      AI_DRY_RUN: "false"
+      ALLOW_EXPENSIVE_AI_JOB: "false"
+      AI_MAX_COST_PER_RUN_USD: "0"
+      AI_MAX_DAILY_COST_USD: "0"
+      AI_MAX_CALLS_PER_RUN: "0"
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: codex/opportunity-engine-v12-preview
+          fetch-depth: 1
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Synchronize generated dashboard CSS
+        run: |
+          set -Eeuo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          old = ".opp-card.primary .opp-title{font-size:21px}"
+          new = ".opportunity-card.primary .opp-title{font-size:21px}"
+          paths = [
+              Path("dashboard.html"),
+              Path("scripts/dashboard/dashboard.html"),
+              Path("dashboard_deploy_dist/index.html"),
+          ]
+          for path in paths:
+              text = path.read_text(encoding="utf-8")
+              if old not in text:
+                  raise SystemExit(f"stale selector not found in {path}")
+              path.write_text(text.replace(old, new), encoding="utf-8")
+          PY
+          python -m pytest tests/test_opportunity_engine_v12.py tests/test_ai_guardrails.py tests/test_research_engine.py -q
+          if rg -n '\\.opp-card\\.primary \\.opp-title' dashboard.html scripts/dashboard/dashboard.html dashboard_deploy_dist/index.html; then
+            echo "stale selector remains"
+            exit 1
+          fi
+      - name: Persist zero-AI static fix
+        run: |
+          set -Eeuo pipefail
+          git config user.name signalboard-bot
+          git config user.email signalboard-bot@users.noreply.github.com
+          git add dashboard.html scripts/dashboard/dashboard.html dashboard_deploy_dist/index.html
+          git commit -m "Synchronize mobile Opportunity CSS [zero AI] [skip daily]"
+          git push origin HEAD:codex/opportunity-engine-v12-preview
