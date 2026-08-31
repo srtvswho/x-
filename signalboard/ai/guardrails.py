@@ -29,6 +29,9 @@ STAGE_BY_WORKLOAD = {
     "cross_author_analysis": "thesis",
     "ai_analyst": "analyst",
     "research_case_synthesis": "analyst",
+    "logic_chain_analysis": "analyst",
+    "opportunity_discovery": "analyst",
+    "opportunity_synthesis": "analyst",
     "deep_investment_analysis": "analyst",
     "golden_evaluation": "golden",
     "embedding": "theme",
@@ -199,12 +202,17 @@ def preflight(
     prompt_version: str,
     entity_type: str | None = None,
     entity_id: str | None = None,
+    fixed_cost_usd: float = 0.0,
 ) -> RequestPermit:
     stage = STAGE_BY_WORKLOAD.get(workload, workload)
     estimated_input = estimate_tokens(system, user, image_count)
     estimated_output = max(0, max_output_tokens)
     input_rate, _cached_rate, output_rate = prices_per_million
-    estimated_cost = round((estimated_input * input_rate + estimated_output * output_rate) / 1_000_000, 8)
+    estimated_cost = round(
+        (estimated_input * input_rate + estimated_output * output_rate) / 1_000_000
+        + max(0.0, fixed_cost_usd),
+        8,
+    )
     event = dict(
         workload=workload, stage=stage, provider=provider, model=model,
         estimated_input_tokens=estimated_input, estimated_output_tokens=estimated_output,
@@ -252,8 +260,9 @@ def preflight(
             _insert_event(con, status="BUDGET_BLOCKED", reason="CALL_LIMIT_EXCEEDED", **event)
             raise AIGuardrailBlocked("CALL_LIMIT_EXCEEDED")
 
+        risk_cost_expr = "COALESCE(actual_cost_if_available,estimated_cost)"
         run_cost = float(con.execute(
-            f"SELECT COALESCE(SUM(estimated_cost),0) FROM ai_usage_ledger WHERE run_id=? AND status IN ({placeholders})",
+            f"SELECT COALESCE(SUM({risk_cost_expr}),0) FROM ai_usage_ledger WHERE run_id=? AND status IN ({placeholders})",
             (run_id, *ATTEMPTED_STATUSES),
         ).fetchone()[0])
         if run_cost + estimated_cost > _number("AI_MAX_COST_PER_RUN_USD", 0.50):
@@ -261,7 +270,7 @@ def preflight(
             raise AIGuardrailBlocked("RUN_BUDGET_EXCEEDED")
 
         daily_cost = float(con.execute(
-            f"""SELECT COALESCE(SUM(estimated_cost),0) FROM ai_usage_ledger
+            f"""SELECT COALESCE(SUM({risk_cost_expr}),0) FROM ai_usage_ledger
                 WHERE substr(request_started_at,1,10)=substr(?,1,10) AND status IN ({placeholders})""",
             (_now(), *ATTEMPTED_STATUSES),
         ).fetchone()[0])
@@ -272,7 +281,7 @@ def preflight(
         stage_env = STAGE_BUDGET_ENV.get(stage, f"{stage.upper()}_MAX_COST_PER_RUN")
         stage_limit = _number(stage_env, STAGE_BUDGET_DEFAULT.get(stage, 0.0))
         stage_cost = float(con.execute(
-            f"""SELECT COALESCE(SUM(estimated_cost),0) FROM ai_usage_ledger
+            f"""SELECT COALESCE(SUM({risk_cost_expr}),0) FROM ai_usage_ledger
                 WHERE run_id=? AND stage=? AND status IN ({placeholders})""",
             (run_id, stage, *ATTEMPTED_STATUSES),
         ).fetchone()[0])
