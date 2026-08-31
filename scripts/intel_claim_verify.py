@@ -29,7 +29,7 @@ SCHEMA = {
         ]},
         "rationale": {"type": "string"},
         "corrected_claim": {"type": "string"},
-        "sources": {"type": "array", "items": {
+        "sources": {"type": "array", "maxItems": 4, "items": {
             "type": "object", "additionalProperties": False,
             "properties": {
                 "title": {"type": "string"}, "url": {"type": "string"},
@@ -40,7 +40,7 @@ SCHEMA = {
             },
             "required": ["title", "url", "publisher", "source_tier", "support", "finding"],
         }},
-        "unknowns": {"type": "array", "items": {"type": "string"}},
+        "unknowns": {"type": "array", "maxItems": 5, "items": {"type": "string"}},
     },
     "required": ["status", "rationale", "corrected_claim", "sources", "unknowns"],
 }
@@ -148,7 +148,7 @@ def verify_claims(
                     "claim": claim,
                     "instruction": "寻找截至当前可用的最高优先级独立来源；逐字核验数量、时点、总量/增量与条件。",
                 }, ensure_ascii=False),
-                SCHEMA, schema_name="signalboard_claim_verification", max_output_tokens=1500, timeout=180,
+                SCHEMA, schema_name="signalboard_claim_verification", max_output_tokens=2800, timeout=180,
                 prompt_version=f"claim-verification-v{VERIFY_VERSION}", entity_type="claim", entity_id=claim["claim_id"],
             )
             data = result.data
