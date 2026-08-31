@@ -246,6 +246,7 @@ def main() -> None:
                 image_urls=[_data_url(content, mime_type)],
                 max_output_tokens=2500,
                 timeout=120,
+                max_retries=0,
                 prompt_version=PROMPT_VERSION, entity_type="media", entity_id=media_id,
             )
             con.execute(
