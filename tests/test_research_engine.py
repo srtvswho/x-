@@ -48,7 +48,7 @@ def test_v4_schema_and_recursive_graph_are_idempotent(tmp_path):
     db = tmp_path / "graph.db"
     init_db(db)
     con = sqlite3.connect(db)
-    assert con.execute("PRAGMA user_version").fetchone()[0] == CURRENT_SCHEMA_VERSION == 6
+    assert con.execute("PRAGMA user_version").fetchone()[0] == CURRENT_SCHEMA_VERSION == 7
     for table in ("theme_embeddings", "underlying_sources", "source_memberships",
                   "claim_verifications", "thesis_analyses", "cross_author_theses", "research_case_analyses"):
         assert con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (table,)).fetchone()
@@ -83,8 +83,11 @@ def test_v4_schema_and_recursive_graph_are_idempotent(tmp_path):
     con.close()
 
 
-def test_router_openai_responses_structured_output(monkeypatch):
+def test_router_openai_responses_structured_output(monkeypatch, tmp_path):
     monkeypatch.setenv("OPENAI_API_KEY", "test-only")
+    monkeypatch.setenv("AI_ENABLED", "true")
+    monkeypatch.setenv("AI_LEDGER_DB_PATH", str(tmp_path / "router.db"))
+    monkeypatch.setenv("AI_RUN_ID", "router-structured-test")
     monkeypatch.setenv("AI_ROUTE_MEDIA_UNDERSTANDING_PROVIDER", "openai")
     monkeypatch.setenv("AI_ROUTE_MEDIA_UNDERSTANDING_MODEL", "gpt-5.6-terra")
     captured = {}
@@ -124,8 +127,11 @@ def test_router_openai_responses_structured_output(monkeypatch):
     assert result.estimated_cost_usd > 0
 
 
-def test_router_web_search_captures_sources(monkeypatch):
+def test_router_web_search_captures_sources(monkeypatch, tmp_path):
     monkeypatch.setenv("OPENAI_API_KEY", "test-only")
+    monkeypatch.setenv("AI_ENABLED", "true")
+    monkeypatch.setenv("AI_LEDGER_DB_PATH", str(tmp_path / "router-web.db"))
+    monkeypatch.setenv("AI_RUN_ID", "router-web-test")
     captured = {}
 
     class Response:
