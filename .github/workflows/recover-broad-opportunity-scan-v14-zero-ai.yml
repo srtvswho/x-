@@ -1,0 +1,86 @@
+name: Recover Broad Opportunity Scan v1.4 Preview [zero AI]
+
+on:
+  push:
+    branches: [codex/opportunity-engine-v12-preview]
+    paths:
+      - ".github/workflows/recover-broad-opportunity-scan-v14-zero-ai.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: recover-broad-opportunity-scan-v14-zero-ai
+  cancel-in-progress: false
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      AI_ENABLED: "false"
+      AI_DRY_RUN: "true"
+      ALLOW_EXPENSIVE_AI_JOB: "false"
+      ARTIFACT_ID: "9765126080"
+      ARTIFACT_SHA256: "80053d1cafacafd67658e859cb67974386a22c2ff3c1d1b7bf4d6b2353e50ec7"
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: codex/opportunity-engine-v12-preview
+          fetch-depth: 1
+
+      - name: Verify zero-AI recovery gate
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test "$AI_ENABLED" = "false"
+          test "$AI_DRY_RUN" = "true"
+          test "$ALLOW_EXPENSIVE_AI_JOB" = "false"
+
+      - name: Download and verify existing audit artifact
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip" > /tmp/broad-v14-audit.zip
+          echo "$ARTIFACT_SHA256  /tmp/broad-v14-audit.zip" | sha256sum -c -
+          mkdir -p /tmp/broad-v14-recovered
+          unzip -q /tmp/broad-v14-audit.zip -d /tmp/broad-v14-recovered
+          test -s /tmp/broad-v14-recovered/outputs/broad_opportunity_scan_v14/run_report.json
+          test -s /tmp/broad-v14-recovered/scripts/dashboard/dashboard.html
+
+      - name: Restore Preview and audited reports
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir -p outputs/broad_opportunity_scan_v14
+          cp -f /tmp/broad-v14-recovered/outputs/broad_opportunity_scan_v14/*.json outputs/broad_opportunity_scan_v14/
+          cp -f /tmp/broad-v14-recovered/scripts/dashboard/dashboard.html scripts/dashboard/dashboard.html
+          cp -f /tmp/broad-v14-recovered/scripts/dashboard/dashboard.html dashboard.html
+          mkdir -p dashboard_deploy_dist/opportunities dashboard_deploy_dist/coverage
+          cp -f scripts/dashboard/dashboard.html dashboard_deploy_dist/index.html
+          cp -f scripts/dashboard/dashboard.html dashboard_deploy_dist/opportunities/index.html
+          cp -f scripts/dashboard/dashboard.html dashboard_deploy_dist/coverage/index.html
+          python - <<'PY'
+          import json
+          r=json.load(open("outputs/broad_opportunity_scan_v14/run_report.json"))
+          assert r["cost"]["attempted_calls"] == 33
+          assert r["cost"]["risk_cost_usd"] <= 50
+          assert r["coverage"]["security_expressions"] >= 50
+          assert r["coverage"]["quick_odds_completed"] >= 30
+          assert r["coverage"]["deep_odds_completed"] >= 10
+          print(json.dumps({"status":r["status"],"coverage":r["coverage"],"cost":r["cost"]},ensure_ascii=False))
+          PY
+
+      - name: Commit recovered Preview
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git config user.name signalboard-bot
+          git config user.email signalboard-bot@users.noreply.github.com
+          git add dashboard.html scripts/dashboard/dashboard.html outputs/broad_opportunity_scan_v14
+          git add -f dashboard_deploy_dist/index.html dashboard_deploy_dist/opportunities/index.html dashboard_deploy_dist/coverage/index.html
+          git commit -m "Recover Broad Opportunity Scan v1.4 Preview [zero AI]"
+          git push origin HEAD:codex/opportunity-engine-v12-preview
