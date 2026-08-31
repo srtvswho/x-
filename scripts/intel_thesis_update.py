@@ -286,6 +286,8 @@ def main() -> None:
     args = parser.parse_args()
     if args.limit < 0 or args.limit > 30:
         raise SystemExit("--limit must be between 0 and 30")
+    if args.limit > int(os.getenv("THESIS_AI_MAX_UPDATES", "4")):
+        os.environ.setdefault("AI_JOB_KIND", "full_thesis_regeneration")
     init_db(args.db)
     con = sqlite3.connect(args.db, timeout=120)
     post_ids = [x.strip() for x in (args.post_ids or "").split(",") if x.strip()]
