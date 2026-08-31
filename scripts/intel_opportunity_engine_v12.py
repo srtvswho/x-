@@ -171,23 +171,23 @@ CHAIN_SCHEMA = {
     "type": "object", "additionalProperties": False,
     "properties": {
         "title": {"type": "string"},
-        "authors": {"type": "array", "items": {"type": "string"}},
-        "source_roots": {"type": "array", "items": SOURCE_SCHEMA},
+        "authors": {"type": "array", "maxItems": 8, "items": {"type": "string"}},
+        "source_roots": {"type": "array", "maxItems": 12, "items": SOURCE_SCHEMA},
         "social_mention_count": {"type": "integer", "minimum": 0},
         "independent_evidence_count": {"type": "integer", "minimum": 0},
         "themes": {"type": "array", "items": {"type": "string"}},
         "driver": {"type": "string"}, "industry_change": {"type": "string"},
         "bottleneck": {"type": "string"},
         "causal_chain": {"type": "array", "items": {"type": "string"}},
-        "companies": {"type": "array", "items": COMPANY_SCHEMA},
+        "companies": {"type": "array", "maxItems": 8, "items": COMPANY_SCHEMA},
         "primary_beneficiary": COMPANY_SCHEMA,
-        "secondary_beneficiaries": {"type": "array", "items": COMPANY_SCHEMA},
-        "negative_exposure": {"type": "array", "items": COMPANY_SCHEMA},
+        "secondary_beneficiaries": {"type": "array", "maxItems": 5, "items": COMPANY_SCHEMA},
+        "negative_exposure": {"type": "array", "maxItems": 5, "items": COMPANY_SCHEMA},
         "earnings_mechanism": {"type": "string"}, "time_horizon": {"type": "string"},
-        "catalysts": {"type": "array", "items": {"type": "string"}},
+        "catalysts": {"type": "array", "maxItems": 6, "items": {"type": "string"}},
         "counter_case": {"type": "string"},
-        "invalidation": {"type": "array", "items": {"type": "string"}},
-        "missing_evidence": {"type": "array", "items": {"type": "string"}},
+        "invalidation": {"type": "array", "maxItems": 6, "items": {"type": "string"}},
+        "missing_evidence": {"type": "array", "maxItems": 6, "items": {"type": "string"}},
         "valuation_question": {"type": "string"}, "valuation": VALUATION_SCHEMA,
         "chain_completeness": {"type": "integer", "minimum": 0, "maximum": 6},
         "actionability": {"type": "string", "enum": ["THEME_ONLY", "WATCH", "RESEARCH", "BUY_CANDIDATE", "HEDGE_CANDIDATE", "AVOID", "REJECTED"]},
@@ -306,7 +306,7 @@ def _candidate_evidence(con: sqlite3.Connection, spec: dict[str, Any], all_claim
         if score >= 3:
             ranked.append((score, claim))
     ranked.sort(key=lambda x: (-x[0], -(x[1]["confidence"] or 0), x[1]["claim_id"]))
-    claims = [x[1] for x in ranked[:24]]
+    claims = [x[1] for x in ranked[:12]]
     post_ids = sorted({x["post_id"] for x in claims if x["post_id"]})
     authors = sorted({x["author"] for x in claims if x["author"]})
 
@@ -319,7 +319,8 @@ def _candidate_evidence(con: sqlite3.Connection, spec: dict[str, Any], all_claim
                 FROM claim_verifications WHERE claim_id IN ({placeholders})""", claim_ids
         ).fetchall():
             verification.append({"claim_id": row[0], "status": row[1], "rationale": row[2],
-                                 "corrected_claim": row[3], "sources": json.loads(row[4] or "[]")})
+                                 "corrected_claim": row[3], "sources": json.loads(row[4] or "[]")[:2]})
+        verification = verification[:6]
 
     source_roots: list[dict[str, Any]] = []
     if post_ids:
@@ -330,7 +331,10 @@ def _candidate_evidence(con: sqlite3.Connection, spec: dict[str, Any], all_claim
                   ON u.underlying_source_id=sm.underlying_source_id
                 WHERE sm.mention_post_id IN ({placeholders})""", post_ids
         ).fetchall()
+        tier_order = {"PRIMARY": 0, "SECONDARY": 1, "INDUSTRY": 2, "SOCIAL": 3, "UNKNOWN": 4}
         source_roots = [{"source_id": r[0], "url": r[1], "publisher": r[2], "title": r[3], "tier": r[4]} for r in rows]
+        source_roots.sort(key=lambda item: (tier_order.get(item["tier"], 4), item["source_id"]))
+        source_roots = source_roots[:12]
 
     media: list[dict[str, Any]] = []
     if post_ids:
@@ -339,7 +343,7 @@ def _candidate_evidence(con: sqlite3.Connection, spec: dict[str, Any], all_claim
             f"""SELECT m.media_id,a.analysis_json FROM media_assets m JOIN media_analyses a ON a.media_id=m.media_id
                 WHERE m.post_id IN ({placeholders}) LIMIT 8""", post_ids
         ).fetchall()
-        media = [{"media_id": r[0], "analysis": json.loads(r[1])} for r in rows]
+        media = [{"media_id": r[0], "analysis": json.loads(r[1])} for r in rows[:3]]
 
     return {
         "candidate": spec,
@@ -361,7 +365,7 @@ def _sanitize_sources(
     allowed = {str(x.get("url") or "").rstrip("/") for x in (returned_sources or []) if x.get("url")}
     retained = [x for x in data.get("source_roots", []) if str(x.get("url") or "").rstrip("/") in allowed]
     seen = {str(x.get("url") or "").rstrip("/") for x in retained}
-    for root in database_roots or []:
+    for root in (database_roots or [])[:12]:
         url = str(root.get("url") or "").rstrip("/")
         if not url or url in seen:
             continue
@@ -370,7 +374,7 @@ def _sanitize_sources(
                          "publisher": root.get("publisher") or "", "tier": tier,
                          "finding": "Existing deduplicated database source root."})
         seen.add(url)
-    data["source_roots"] = retained
+    data["source_roots"] = retained[:12]
     independent = {x["url"].rstrip("/") for x in data["source_roots"] if x["tier"] in {"PRIMARY", "SECONDARY", "INDUSTRY"}}
     data["independent_evidence_count"] = len(independent)
 
@@ -424,7 +428,7 @@ def _synthesize(con: sqlite3.Connection, candidate_id: str, chain: dict[str, Any
     result = call_json_web(
         "opportunity_synthesis", SYNTHESIS_SYSTEM,
         _json({"validated_logic_chain": chain, "as_of": "2026-08-31", "questions": "Answer all twelve synthesis questions."}),
-        SYNTHESIS_SCHEMA, schema_name="signalboard_opportunity_synthesis", max_output_tokens=3000, timeout=240,
+        SYNTHESIS_SCHEMA, schema_name="signalboard_opportunity_synthesis", max_output_tokens=4500, timeout=240,
         prompt_version=SYNTHESIS_PROMPT_VERSION, entity_type="opportunity_candidate", entity_id=candidate_id,
     )
     synthesis = result.data
@@ -514,23 +518,31 @@ def _cost_report(con: sqlite3.Connection) -> dict[str, Any]:
     run_id = os.getenv("AI_RUN_ID", "")
     rows = con.execute(
         """SELECT stage,status,COUNT(*),SUM(input_tokens),SUM(output_tokens),SUM(estimated_cost),
-                  SUM(COALESCE(actual_cost_if_available,0))
+                  SUM(COALESCE(actual_cost_if_available,0)),
+                  SUM(COALESCE(actual_cost_if_available,estimated_cost,0)),
+                  SUM(CASE WHEN actual_cost_if_available IS NULL THEN 1 ELSE 0 END)
            FROM ai_usage_ledger WHERE run_id=? GROUP BY stage,status ORDER BY stage,status""", (run_id,)
     ).fetchall()
     by_stage: dict[str, dict[str, Any]] = {}
-    for stage, status, calls, input_tokens, output_tokens, estimated, actual in rows:
+    for stage, status, calls, input_tokens, output_tokens, estimated, actual, risk, unknown_actual in rows:
         bucket = by_stage.setdefault(stage, {"calls": 0, "input_tokens": 0, "output_tokens": 0,
-                                             "estimated_cost": 0.0, "actual_cost": 0.0, "statuses": {}})
+                                             "estimated_cost": 0.0, "known_actual_cost": 0.0,
+                                             "risk_cost": 0.0, "unknown_actual_cost_calls": 0,
+                                             "statuses": {}})
         bucket["statuses"][status] = calls
         if status in {"PENDING", "SUCCESS", "FAILED", "CANCELLED", "UNKNOWN_COST"}:
             bucket["calls"] += calls
             bucket["input_tokens"] += input_tokens or 0
             bucket["output_tokens"] += output_tokens or 0
             bucket["estimated_cost"] += estimated or 0
-            bucket["actual_cost"] += actual or 0
+            bucket["known_actual_cost"] += actual or 0
+            bucket["risk_cost"] += risk or 0
+            bucket["unknown_actual_cost_calls"] += unknown_actual or 0
     total = {key: sum(float(x[key]) for x in by_stage.values()) for key in
-             ("calls", "input_tokens", "output_tokens", "estimated_cost", "actual_cost")}
+             ("calls", "input_tokens", "output_tokens", "estimated_cost", "known_actual_cost", "risk_cost",
+              "unknown_actual_cost_calls")}
     total["calls"] = int(total["calls"]); total["input_tokens"] = int(total["input_tokens"]); total["output_tokens"] = int(total["output_tokens"])
+    total["unknown_actual_cost_calls"] = int(total["unknown_actual_cost_calls"])
     blocked = con.execute(
         "SELECT COUNT(*) FROM ai_usage_ledger WHERE run_id=? AND status IN ('BUDGET_BLOCKED','DAILY_BUDGET_EXCEEDED')",
         (run_id,),
@@ -566,6 +578,8 @@ def main() -> None:
     ap.add_argument("--output-dir", default=str(OUTPUT_DIR))
     ap.add_argument("--max-new", type=int, default=5)
     ap.add_argument("--max-synthesis", type=int, default=5)
+    ap.add_argument("--skip-discovery", action="store_true")
+    ap.add_argument("--candidate-ids", help="Comma-separated exact candidate IDs for a bounded corrective run")
     args = ap.parse_args()
     if not 0 <= args.max_new <= 5 or not 3 <= args.max_synthesis <= 5:
         raise SystemExit("--max-new must be 0..5 and --max-synthesis must be 3..5")
@@ -573,25 +587,39 @@ def main() -> None:
     con = sqlite3.connect(args.db, timeout=120)
     con.row_factory = sqlite3.Row
     out = Path(args.output_dir); out.mkdir(parents=True, exist_ok=True)
+    requested_ids = [x.strip() for x in (args.candidate_ids or "").split(",") if x.strip()]
     all_claims = _claim_rows(con)
     analyzed: list[dict[str, Any]] = []
     stopped_reason = None
 
-    try:
-        discovery_result = call_json_web(
-            "opportunity_discovery", DISCOVERY_SYSTEM, _json(_discovery_inventory(con)), DISCOVERY_SCHEMA,
-            schema_name="signalboard_opportunity_discovery", max_output_tokens=2500, timeout=240,
-            prompt_version=DISCOVERY_PROMPT_VERSION, entity_type="opportunity_discovery", entity_id="history-v12",
-        )
-        discovered = discovery_result.data["candidates"][:args.max_new]
-        for index, item in enumerate(discovered):
-            item["candidate_id"] = _stable_id("candidate_discovered_", item["title"])
-        record_usage(con, discovery_result, workload="opportunity_discovery", object_type="discovery_run", object_id="history-v12")
-        con.commit()
-    except AIGuardrailBlocked as exc:
-        discovered = []
-        stopped_reason = exc.reason
+    discovered: list[dict[str, Any]] = []
+    if args.skip_discovery:
+        previous_report = out / "run_report.json"
+        if previous_report.exists():
+            discovered = json.loads(previous_report.read_text(encoding="utf-8")).get("discovered_candidates", [])
+    else:
+        try:
+            discovery_result = call_json_web(
+                "opportunity_discovery", DISCOVERY_SYSTEM, _json(_discovery_inventory(con)), DISCOVERY_SCHEMA,
+                schema_name="signalboard_opportunity_discovery", max_output_tokens=2500, timeout=240,
+                prompt_version=DISCOVERY_PROMPT_VERSION, entity_type="opportunity_discovery", entity_id="history-v12",
+            )
+            discovered = discovery_result.data["candidates"][:args.max_new]
+            for item in discovered:
+                item["candidate_id"] = _stable_id("candidate_discovered_", item["title"])
+            record_usage(con, discovery_result, workload="opportunity_discovery", object_type="discovery_run", object_id="history-v12")
+            con.commit()
+        except AIGuardrailBlocked as exc:
+            discovered = []
+            stopped_reason = exc.reason
     candidates = [(x, "SEEDED") for x in SEEDED_CANDIDATES] + [(x, "DISCOVERED") for x in discovered]
+    if requested_ids:
+        requested = set(requested_ids)
+        candidates = [item for item in candidates if item[0]["candidate_id"] in requested]
+        found = {item[0]["candidate_id"] for item in candidates}
+        missing = [candidate_id for candidate_id in requested_ids if candidate_id not in found]
+        if missing:
+            raise SystemExit(f"Unknown candidate IDs: {','.join(missing)}")
 
     for spec, discovery_type in candidates:
         if stopped_reason:
@@ -603,7 +631,7 @@ def main() -> None:
                 "logic_chain_analysis", CHAIN_SYSTEM,
                 _json({"as_of": "2026-08-31", "evidence_bundle": evidence,
                        "instruction": "Validate every step, find independent sources and reject the chain when necessary."}),
-                CHAIN_SCHEMA, schema_name="signalboard_logic_chain", max_output_tokens=2500, timeout=300,
+                CHAIN_SCHEMA, schema_name="signalboard_logic_chain", max_output_tokens=6000, timeout=300,
                 prompt_version=CHAIN_PROMPT_VERSION, entity_type="logic_chain", entity_id=spec["candidate_id"],
             )
             data = result.data
@@ -641,11 +669,12 @@ def main() -> None:
     _write_supporting_outputs(con, out)
     cost = _cost_report(con)
     theme_calls = int((cost.get("by_stage", {}).get("theme") or {}).get("calls", 0))
-    calls_planned = theme_calls + len(MEDIA_IDS) + len(CLAIM_IDS) + 1 + len(SEEDED_CANDIDATES) + len(discovered) + min(args.max_synthesis, len(eligible))
+    calls_planned = theme_calls + len(candidates) + min(args.max_synthesis, len(eligible)) + (0 if args.skip_discovery else 1)
     report = {
         "status": "BUDGET_STOPPED" if stopped_reason else "COMPLETED",
         "stop_reason": stopped_reason,
-        "seeded_candidates": len(SEEDED_CANDIDATES), "discovered_candidates": discovered,
+        "seeded_candidates": sum(1 for _, discovery_type in candidates if discovery_type == "SEEDED"),
+        "discovered_candidates": discovered,
         "analyzed": analyzed, "synthesized_opportunities": syntheses,
         "research_count": sum(1 for x in analyzed if x.get("analysis", {}).get("actionability") == "RESEARCH"),
         "watch_count": sum(1 for x in analyzed if x.get("analysis", {}).get("actionability") == "WATCH"),
