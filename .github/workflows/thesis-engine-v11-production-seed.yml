@@ -1,13 +1,7 @@
 name: Thesis Engine v1.1 Production Seed
-# One-time audited zero-AI productionization trigger; remove after successful seed.
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - master
-    paths:
-      - .github/workflows/thesis-engine-v11-production-seed.yml
 
 permissions:
   contents: write
@@ -18,7 +12,6 @@ concurrency:
 
 jobs:
   seed:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[run zero-ai production seed]')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
