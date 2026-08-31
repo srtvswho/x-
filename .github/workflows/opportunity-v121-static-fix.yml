@@ -35,7 +35,7 @@ jobs:
         shell: bash
         run: |
           set -Eeuo pipefail
-          python -m pip install --disable-pip-version-check pytest
+          python -m pip install --disable-pip-version-check pytest requests
           gzip -t data/signalboard.db.gz
           gzip -cd data/signalboard.db.gz > data/signalboard_full.db
           sudo ln -sfn "$GITHUB_WORKSPACE" /workspace
