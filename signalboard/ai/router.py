@@ -15,6 +15,13 @@ from typing import Any
 
 import requests
 
+from signalboard.ai.guardrails import (
+    AIGuardrailBlocked,
+    finish_failure,
+    finish_success,
+    preflight,
+)
+
 OPENAI_RESPONSES_URL = "https://api.openai.com/v1/responses"
 OPENAI_EMBEDDINGS_URL = "https://api.openai.com/v1/embeddings"
 DEEPSEEK_CHAT_URL = "https://api.deepseek.com/v1/chat/completions"
@@ -252,13 +259,35 @@ def _call(
     timeout: int = 90,
     max_retries: int = 2,
     web_search: bool = False,
+    prompt_version: str | None = None,
+    entity_type: str | None = None,
+    entity_id: str | None = None,
 ) -> AIResult:
     route = resolve_route(workload)
     if image_urls and route.provider != "openai":
         raise ValueError(f"Configured provider {route.provider} does not support this router's image path")
     started = time.monotonic()
     last_error: Exception | None = None
+    request_hash = stable_input_hash(
+        workload, route.provider, route.model, prompt_version or schema_name,
+        system, user, json.dumps(schema, ensure_ascii=False, sort_keys=True) if schema else "",
+        json.dumps(image_urls or [], ensure_ascii=False), str(max_output_tokens), str(web_search),
+    )
     for attempt in range(max_retries + 1):
+        permit = preflight(
+            workload=workload,
+            provider=route.provider,
+            model=route.model,
+            system=system,
+            user=user,
+            image_count=len(image_urls or []),
+            max_output_tokens=max_output_tokens,
+            prices_per_million=_pricing(route.model),
+            input_hash=request_hash,
+            prompt_version=prompt_version or schema_name,
+            entity_type=entity_type,
+            entity_id=entity_id,
+        )
         try:
             if route.provider == "openai":
                 text, payload, request_id = _request_openai(
@@ -272,7 +301,7 @@ def _call(
                     max_output_tokens=max_output_tokens, timeout=timeout,
                 )
             in_tok, cached_tok, out_tok, cost = _usage(route.provider, route.model, payload)
-            return AIResult(
+            result = AIResult(
                 text=text,
                 data=json.loads(text) if schema is not None else text,
                 workload=workload,
@@ -286,8 +315,19 @@ def _call(
                 request_id=request_id,
                 sources=_openai_web_sources(payload),
             )
+            finish_success(
+                permit,
+                input_tokens=in_tok,
+                cached_input_tokens=cached_tok,
+                output_tokens=out_tok,
+                actual_cost=cost,
+            )
+            return result
         except Exception as exc:
+            finish_failure(permit, exc)
             last_error = exc
+            if isinstance(exc, AIGuardrailBlocked):
+                raise
             if attempt < max_retries:
                 time.sleep(1 + 2 * attempt)
     assert last_error is not None
@@ -305,11 +345,15 @@ def call_json(
     max_output_tokens: int = 1800,
     timeout: int = 90,
     max_retries: int = 2,
+    prompt_version: str | None = None,
+    entity_type: str | None = None,
+    entity_id: str | None = None,
 ) -> AIResult:
     return _call(
         workload, system, user, schema=schema, schema_name=schema_name,
         image_urls=image_urls, max_output_tokens=max_output_tokens,
-        timeout=timeout, max_retries=max_retries,
+        timeout=timeout, max_retries=max_retries, prompt_version=prompt_version,
+        entity_type=entity_type, entity_id=entity_id,
     )
 
 
@@ -321,10 +365,14 @@ def call_text(
     max_output_tokens: int = 600,
     timeout: int = 90,
     max_retries: int = 2,
+    prompt_version: str | None = None,
+    entity_type: str | None = None,
+    entity_id: str | None = None,
 ) -> AIResult:
     return _call(
         workload, system, user, max_output_tokens=max_output_tokens,
-        timeout=timeout, max_retries=max_retries,
+        timeout=timeout, max_retries=max_retries, prompt_version=prompt_version,
+        entity_type=entity_type, entity_id=entity_id,
     )
 
 
@@ -357,6 +405,9 @@ def call_json_web(
     max_output_tokens: int = 2400,
     timeout: int = 180,
     max_retries: int = 2,
+    prompt_version: str | None = None,
+    entity_type: str | None = None,
+    entity_id: str | None = None,
 ) -> AIResult:
     """Structured Responses call with the built-in web_search tool and source capture."""
     route = resolve_route(workload)
@@ -365,7 +416,8 @@ def call_json_web(
     return _call(
         workload, system, user, schema=schema, schema_name=schema_name,
         max_output_tokens=max_output_tokens, timeout=timeout,
-        max_retries=max_retries, web_search=True,
+        max_retries=max_retries, web_search=True, prompt_version=prompt_version,
+        entity_type=entity_type, entity_id=entity_id,
     )
 
 
@@ -380,24 +432,37 @@ def embed_texts(
     body: dict[str, Any] = {"model": model, "input": texts, "encoding_format": "float"}
     if dimensions:
         body["dimensions"] = dimensions
-    response = requests.post(
-        OPENAI_EMBEDDINGS_URL,
-        headers={"Authorization": f"Bearer {_api_key('openai')}", "Content-Type": "application/json"},
-        json=body,
-        timeout=timeout,
+    request_hash = stable_input_hash("embedding", model, str(dimensions), *texts)
+    permit = preflight(
+        workload="embedding", provider="openai", model=model, system="embedding",
+        user="\n".join(texts), image_count=0, max_output_tokens=0,
+        prices_per_million=_pricing(model), input_hash=request_hash,
+        prompt_version=f"embedding-{dimensions}", entity_type="embedding_batch", entity_id=request_hash[:24],
     )
-    request_id = response.headers.get("x-request-id")
-    response.raise_for_status()
-    payload = response.json()
-    vectors = [row["embedding"] for row in sorted(payload.get("data") or [], key=lambda x: x["index"])]
-    if len(vectors) != len(texts):
-        raise RuntimeError(f"Embedding count mismatch: expected {len(texts)}, got {len(vectors)}")
-    input_tokens = int((payload.get("usage") or {}).get("prompt_tokens") or 0)
-    return EmbeddingResult(
-        vectors=vectors, model=model, input_tokens=input_tokens,
-        estimated_cost_usd=_estimate_cost(model, input_tokens, 0, 0),
-        latency_ms=int((time.monotonic() - started) * 1000), request_id=request_id,
-    )
+    try:
+        response = requests.post(
+            OPENAI_EMBEDDINGS_URL,
+            headers={"Authorization": f"Bearer {_api_key('openai')}", "Content-Type": "application/json"},
+            json=body,
+            timeout=timeout,
+        )
+        request_id = response.headers.get("x-request-id")
+        response.raise_for_status()
+        payload = response.json()
+        vectors = [row["embedding"] for row in sorted(payload.get("data") or [], key=lambda x: x["index"])]
+        if len(vectors) != len(texts):
+            raise RuntimeError(f"Embedding count mismatch: expected {len(texts)}, got {len(vectors)}")
+        input_tokens = int((payload.get("usage") or {}).get("prompt_tokens") or 0)
+        cost = _estimate_cost(model, input_tokens, 0, 0)
+        finish_success(permit, input_tokens=input_tokens, cached_input_tokens=0, output_tokens=0, actual_cost=cost)
+        return EmbeddingResult(
+            vectors=vectors, model=model, input_tokens=input_tokens,
+            estimated_cost_usd=cost,
+            latency_ms=int((time.monotonic() - started) * 1000), request_id=request_id,
+        )
+    except Exception as exc:
+        finish_failure(permit, exc)
+        raise
 
 
 def record_usage(
