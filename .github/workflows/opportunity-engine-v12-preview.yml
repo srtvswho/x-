@@ -1,4 +1,4 @@
-name: SignalBoard Opportunity Engine v1.2 Corrective Preview
+name: SignalBoard Opportunity Preview Finalize (Zero AI)
 
 on:
   push:
@@ -6,183 +6,80 @@ on:
       - codex/opportunity-engine-v12-preview
     paths:
       - .github/workflows/opportunity-engine-v12-preview.yml
-  workflow_dispatch:
-    inputs:
-      confirm_paid_run:
-        description: "I approve a bounded paid AI run: <=100 calls and <=$10"
-        required: true
-        type: boolean
-        default: false
 
 permissions:
   contents: write
 
 concurrency:
-  group: opportunity-engine-v12-preview
+  group: opportunity-preview-finalize-zero-ai
   cancel-in-progress: false
 
 jobs:
-  research-and-preview:
+  finalize:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 30
     env:
-      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      AI_ENABLED: "true"
+      AI_ENABLED: "false"
       AI_DRY_RUN: "false"
-      AI_MAX_COST_PER_RUN_USD: "6.00"
-      AI_MAX_DAILY_COST_USD: "20.00"
-      AI_MAX_CALLS_PER_RUN: "21"
       ALLOW_EXPENSIVE_AI_JOB: "false"
-      AI_JOB_KIND: "incremental_opportunity_discovery"
-      AI_WORKFLOW: "opportunity_engine_v12_preview"
-      AI_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+      AI_MAX_COST_PER_RUN_USD: "0"
+      AI_MAX_DAILY_COST_USD: "0"
+      AI_MAX_CALLS_PER_RUN: "0"
+      AI_RUN_ID: preview-finalize-${{ github.run_id }}
       AI_LEDGER_DB_PATH: /workspace/data/signalboard_full.db
-      FORCE_REANALYZE: "false"
-      MEDIA_AI_MAX_ITEMS: "10"
-      CLAIM_VERIFY_MAX_ITEMS: "15"
-      THEME_MAX_COST_PER_RUN: "0"
-      MEDIA_MAX_COST_PER_RUN: "2.50"
-      CLAIM_MAX_COST_PER_RUN: "0"
-      ANALYST_MAX_COST_PER_RUN: "3.50"
-      GOLDEN_MAX_COST_PER_RUN: "0"
-      AI_ROUTE_MEDIA_UNDERSTANDING_MODEL: "gpt-5.6-terra"
-      AI_ROUTE_THEME_CANONICALIZATION_MODEL: "gpt-5.6-terra"
-      AI_ROUTE_CLAIM_VERIFICATION_MODEL: "gpt-5.6-terra"
-      AI_ROUTE_LOGIC_CHAIN_ANALYSIS_MODEL: "gpt-5.6-terra"
-      AI_ROUTE_LOGIC_CHAIN_ANALYSIS_REASONING_EFFORT: "medium"
-      AI_ROUTE_OPPORTUNITY_DISCOVERY_MODEL: "gpt-5.6-terra"
-      AI_ROUTE_OPPORTUNITY_DISCOVERY_REASONING_EFFORT: "medium"
-      AI_ROUTE_OPPORTUNITY_SYNTHESIS_MODEL: "gpt-5.6-terra"
-      AI_ROUTE_OPPORTUNITY_SYNTHESIS_REASONING_EFFORT: "medium"
-
     steps:
-      - name: Checkout preview branch
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v6
         with:
           ref: codex/opportunity-engine-v12-preview
           fetch-depth: 1
-
-      - name: Verify bounded AI authorization
-        shell: bash
-        env:
-          CONFIRM_PAID_RUN: ${{ (github.event_name == 'workflow_dispatch' && inputs.confirm_paid_run) || (github.event_name == 'push' && github.ref == 'refs/heads/codex/opportunity-engine-v12-preview') }}
-        run: |
-          set -Eeuo pipefail
-          test "$CONFIRM_PAID_RUN" = "true"
-          test "$AI_ENABLED" = "true"
-          test "$AI_DRY_RUN" = "false"
-          test "$ALLOW_EXPENSIVE_AI_JOB" = "false"
-          test "$AI_MAX_COST_PER_RUN_USD" = "6.00"
-          test "$AI_MAX_CALLS_PER_RUN" = "21"
-          if [ -z "${OPENAI_API_KEY:-}" ]; then
-            echo "::error::OPENAI_API_KEY repository secret is unavailable"
-            exit 1
-          fi
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-
-      - name: Install dependencies
-        run: python -m pip install --disable-pip-version-check requests
-
       - name: Restore isolated preview database
-        shell: bash
         run: |
           set -Eeuo pipefail
           gzip -t data/signalboard.db.gz
           gzip -cd data/signalboard.db.gz > data/signalboard_full.db
           sudo ln -sfn "$GITHUB_WORKSPACE" /workspace
-          python - <<'PY'
-          from signalboard.db import init_db
-          import sqlite3
-          path = "/workspace/data/signalboard_full.db"
-          init_db(path)
-          con = sqlite3.connect(path)
-          assert con.execute("PRAGMA quick_check").fetchone()[0] == "ok"
-          assert con.execute("PRAGMA user_version").fetchone()[0] >= 8
-          con.close()
-          PY
-
-      - name: Analyze 10 high-value Media
-        continue-on-error: true
-        shell: bash
+      - name: Normalize score scale without AI
         run: |
-          python scripts/intel_media_analyze.py --limit 10 --media-ids "3_2008639280902795266,3_2094076428841291776,3_2093052991620448256,3_2092404709323845632,3_2092782336635273216,3_2034136443397017600,3_2092500329921384448,3_2092710847550537728,3_2091953822445047808,3_2093252422579945472" | tee outputs/opportunity_engine_v12/media_run.log
-
-      - name: Rebuild root-source deduplication
-        continue-on-error: true
-        run: python scripts/intel_source_dedup.py
-
-      - name: Analyze chains and synthesize Opportunities
-        run: >-
-          python scripts/intel_opportunity_engine_v12.py
-          --skip-discovery --max-new 0 --max-synthesis 5
-          --candidate-ids
-          candidate_hbm_dram_crowdout,candidate_socamm_lpddr,candidate_cpo_laser,candidate_datacenter_physical_bottlenecks,candidate_discovered_6d52ae3ca2765521c8d08cdf
-
-      - name: Enforce actual run fuse
-        if: always()
-        shell: bash
-        run: |
+          set -Eeuo pipefail
+          python scripts/intel_normalize_opportunity_scores.py
           python - <<'PY'
           import os, sqlite3
-          con = sqlite3.connect("data/signalboard_full.db")
-          run_id = os.environ["AI_RUN_ID"]
-          calls, cost = con.execute(
-              """SELECT COUNT(*),COALESCE(SUM(COALESCE(actual_cost_if_available,estimated_cost)),0)
-                 FROM ai_usage_ledger WHERE run_id=?
-                   AND status IN ('PENDING','SUCCESS','FAILED','CANCELLED','UNKNOWN_COST')""", (run_id,)
-          ).fetchone()
-          print(f"AI calls={calls} risk_cost_usd={cost:.6f}")
-          if calls > 21 or cost > 6.000001:
-              raise SystemExit("Opportunity run exceeded hard fuse")
-          con.close()
+          con=sqlite3.connect('data/signalboard_full.db')
+          calls=con.execute(
+              "SELECT COUNT(*) FROM ai_usage_ledger WHERE run_id=? AND status IN ('PENDING','SUCCESS','FAILED','CANCELLED','UNKNOWN_COST')",
+              (os.environ['AI_RUN_ID'],),
+          ).fetchone()[0]
+          assert calls == 0, f"zero-AI finalization attempted {calls} calls"
+          print('OPENAI_CALLS=0 OPENAI_COST_USD=0')
           PY
-
-      - name: Build Preview Dashboard
-        if: always()
-        shell: bash
+      - name: Rebuild Preview Dashboard
         env:
           SIGNALBOARD_DB: /workspace/data/signalboard_full.db
         run: |
           set -Eeuo pipefail
           python scripts/dashboard/build_dashboard.py
-          test -s scripts/dashboard/dashboard.html
           mkdir -p dashboard_deploy_dist/opportunities
           cp scripts/dashboard/dashboard.html dashboard_deploy_dist/index.html
           cp scripts/dashboard/dashboard.html dashboard_deploy_dist/opportunities/index.html
           cp scripts/dashboard/dashboard.html dashboard.html
-
-      - name: Save preview artifacts to branch
-        if: always()
-        shell: bash
+      - name: Save normalized preview
         run: |
           set -Eeuo pipefail
           gzip -c data/signalboard_full.db > data/signalboard.db.gz.new
           gzip -t data/signalboard.db.gz.new
           mv data/signalboard.db.gz.new data/signalboard.db.gz
-          git config user.name "signalboard-bot"
-          git config user.email "signalboard-bot@users.noreply.github.com"
-          git add data/signalboard.db.gz
-          test ! -e scripts/dashboard/dashboard.html || git add scripts/dashboard/dashboard.html dashboard.html
-          test ! -d outputs/opportunity_engine_v12 || git add outputs/opportunity_engine_v12
-          test ! -e dashboard_deploy_dist/index.html || git add -f dashboard_deploy_dist/index.html
-          test ! -e dashboard_deploy_dist/opportunities/index.html || git add -f dashboard_deploy_dist/opportunities/index.html
-          if git diff --cached --quiet; then
-            echo "No generated preview changes."
-            exit 0
-          fi
-          git commit -m "Generate Opportunity Engine v1.2 preview [skip daily]"
+          git config user.name signalboard-bot
+          git config user.email signalboard-bot@users.noreply.github.com
+          git add data/signalboard.db.gz scripts/dashboard/dashboard.html dashboard.html
+          git add -f dashboard_deploy_dist/index.html dashboard_deploy_dist/opportunities/index.html
+          git add outputs/opportunity_engine_v12
+          git commit -m "Finalize normalized Opportunity preview [zero AI] [skip daily]"
           git push origin HEAD:codex/opportunity-engine-v12-preview
-
-      - name: Upload research audit artifact
-        if: always()
-        uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v6
         with:
-          name: opportunity-engine-v12-audit
-          path: |
-            outputs/opportunity_engine_v12
-            scripts/dashboard/dashboard.html
-          retention-days: 30
+          name: opportunity-preview-finalize-zero-ai
+          path: outputs/opportunity_engine_v12/score_normalization_report.json
+          if-no-files-found: error
