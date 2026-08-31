@@ -10,6 +10,7 @@ Schema 版本:
     v5 (2026-08-30): 可审计的 Theme canonicalization / Underlying Source /
                       Claim Verification / AI Analyst 增量层
     v6 (2026-08-30): 跨 Theme Research Case 综合分析
+    v7 (2026-08-31): AI 请求前置费用账本 + Golden 确认状态
 
 init_db() 幂等且自适配:
 - 全新库 → 直接建 v3
@@ -27,7 +28,7 @@ from typing import Iterator, Union
 
 DbPath = Union[str, Path]
 
-CURRENT_SCHEMA_VERSION = 6
+CURRENT_SCHEMA_VERSION = 7
 
 
 # ---------------------------------------------------------------------------
@@ -508,6 +509,56 @@ def _migrate_to_v6(conn: sqlite3.Connection) -> None:
     conn.executescript(V6_RESEARCH_CASE_SQL)
 
 
+V7_AI_GUARDRAIL_SQL = """
+CREATE TABLE IF NOT EXISTS ai_usage_ledger (
+    ledger_id          TEXT PRIMARY KEY,
+    run_id             TEXT NOT NULL,
+    workflow           TEXT NOT NULL,
+    stage              TEXT NOT NULL,
+    entity_type        TEXT,
+    entity_id          TEXT,
+    provider           TEXT NOT NULL,
+    model              TEXT NOT NULL,
+    request_started_at TEXT NOT NULL,
+    request_finished_at TEXT,
+    input_tokens       INTEGER NOT NULL DEFAULT 0,
+    cached_input_tokens INTEGER NOT NULL DEFAULT 0,
+    output_tokens      INTEGER NOT NULL DEFAULT 0,
+    estimated_cost     REAL NOT NULL DEFAULT 0,
+    actual_cost_if_available REAL,
+    status             TEXT NOT NULL CHECK (status IN (
+        'PENDING','SUCCESS','FAILED','CANCELLED','BUDGET_BLOCKED','DAILY_BUDGET_EXCEEDED',
+        'SKIPPED','UNKNOWN_COST'
+    )),
+    input_hash         TEXT,
+    prompt_version     TEXT,
+    error_type         TEXT,
+    metadata_json      TEXT NOT NULL DEFAULT '{}'
+);
+CREATE INDEX IF NOT EXISTS idx_ai_ledger_run ON ai_usage_ledger(run_id, stage);
+CREATE INDEX IF NOT EXISTS idx_ai_ledger_started ON ai_usage_ledger(request_started_at);
+CREATE INDEX IF NOT EXISTS idx_ai_ledger_status ON ai_usage_ledger(status);
+CREATE INDEX IF NOT EXISTS idx_ai_ledger_dedup
+    ON ai_usage_ledger(stage, model, prompt_version, input_hash, status);
+
+CREATE TABLE IF NOT EXISTS golden_validations (
+    case_id            TEXT PRIMARY KEY,
+    status             TEXT NOT NULL CHECK (status IN ('PASS','PARTIAL','FAIL')),
+    validator_version  TEXT NOT NULL,
+    report_json        TEXT NOT NULL,
+    source_audit_sha256 TEXT NOT NULL,
+    validation_timestamp TEXT NOT NULL,
+    mode               TEXT NOT NULL,
+    additional_ai_calls INTEGER NOT NULL DEFAULT 0,
+    additional_ai_cost_usd REAL NOT NULL DEFAULT 0
+);
+"""
+
+
+def _migrate_to_v7(conn: sqlite3.Connection) -> None:
+    conn.executescript(V7_AI_GUARDRAIL_SQL)
+
+
 def _migrate_v2_to_v3(conn: sqlite3.Connection) -> None:
     """对已有 v2 库:加 6 列(predictions)+ 建 4 个新表(都 IF NOT EXISTS)。
 
@@ -754,6 +805,7 @@ def _ensure_schema(conn: sqlite3.Connection) -> None:
     _migrate_to_v4(conn)
     _migrate_to_v5(conn)
     _migrate_to_v6(conn)
+    _migrate_to_v7(conn)
     conn.execute(f"PRAGMA user_version = {CURRENT_SCHEMA_VERSION}")
 
 
