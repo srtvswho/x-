@@ -39,7 +39,9 @@ jobs:
           gzip -t data/signalboard.db.gz
           gzip -cd data/signalboard.db.gz > data/signalboard_full.db
           sudo ln -sfn "$GITHUB_WORKSPACE" /workspace
-          python -m pytest -q tests/test_opportunity_engine_v12.py tests/test_ai_guardrails.py tests/test_research_engine.py
+          env AI_MAX_CALLS_PER_RUN=20 AI_MAX_COST_PER_RUN_USD=1 AI_MAX_DAILY_COST_USD=1 \
+            CLAIM_MAX_COST_PER_RUN=1 ANALYST_MAX_COST_PER_RUN=1 \
+            python -m pytest -q tests/test_opportunity_engine_v12.py tests/test_ai_guardrails.py tests/test_research_engine.py
       - name: Rebuild static Dashboard with AI disabled
         env:
           SIGNALBOARD_DB: /workspace/data/signalboard_full.db
