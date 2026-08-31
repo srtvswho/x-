@@ -31,7 +31,7 @@ from typing import Iterator, Union
 
 DbPath = Union[str, Path]
 
-CURRENT_SCHEMA_VERSION = 10
+CURRENT_SCHEMA_VERSION = 11
 
 
 # ---------------------------------------------------------------------------
@@ -756,6 +756,128 @@ def _migrate_to_v10(conn: sqlite3.Connection) -> None:
     conn.executescript(V10_OPPORTUNITY_ODDS_SQL)
 
 
+V11_BROAD_OPPORTUNITY_SCAN_SQL = """
+CREATE TABLE IF NOT EXISTS beneficiary_maps (
+    opportunity_id TEXT PRIMARY KEY,
+    coverage_confidence TEXT NOT NULL CHECK (coverage_confidence IN ('LOW','MEDIUM','HIGH')),
+    thesis_pricing_status TEXT NOT NULL DEFAULT 'NOT_EXHAUSTED' CHECK (
+        thesis_pricing_status IN ('NOT_EXHAUSTED','MIXED','ATTRACTIVE_REMAINING','THESIS_FULLY_PRICED')
+    ),
+    best_business_ticker TEXT,
+    best_technology_ticker TEXT,
+    best_pure_play_ticker TEXT,
+    best_odds_ticker TEXT,
+    best_us_ticker TEXT,
+    best_local_ticker TEXT,
+    analysis_json TEXT NOT NULL,
+    source_digest TEXT NOT NULL,
+    model TEXT NOT NULL,
+    prompt_version TEXT NOT NULL,
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')),
+    FOREIGN KEY (opportunity_id) REFERENCES investment_opportunities(opportunity_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS security_expressions (
+    expression_id TEXT PRIMARY KEY,
+    opportunity_id TEXT NOT NULL,
+    ticker TEXT NOT NULL,
+    company TEXT NOT NULL,
+    market TEXT NOT NULL,
+    currency TEXT NOT NULL,
+    accessibility TEXT NOT NULL,
+    listing_type TEXT NOT NULL,
+    expression_type TEXT NOT NULL CHECK (expression_type IN (
+        'OBVIOUS_WINNER','PURE_PLAY','UNDERFOLLOWED','CHEAPER_ALTERNATIVE','HIGH_BETA',
+        'PICKS_AND_SHOVELS','UPSTREAM','DOWNSTREAM','SECOND_ORDER','NEGATIVE_EXPOSURE'
+    )),
+    direction TEXT NOT NULL CHECK (direction IN ('POSITIVE','NEGATIVE','MIXED')),
+    mechanism TEXT NOT NULL,
+    revenue_mechanism TEXT NOT NULL,
+    evidence_root_json TEXT NOT NULL DEFAULT '{}',
+    risks_json TEXT NOT NULL DEFAULT '[]',
+    source_digest TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE','REJECTED')),
+    rejection_reason TEXT,
+    created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')),
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')),
+    UNIQUE (opportunity_id,ticker,expression_type),
+    FOREIGN KEY (opportunity_id) REFERENCES investment_opportunities(opportunity_id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_security_expression_type
+    ON security_expressions(expression_type,status);
+
+CREATE TABLE IF NOT EXISTS quick_odds (
+    quick_odds_id TEXT PRIMARY KEY,
+    expression_id TEXT NOT NULL UNIQUE,
+    current_price REAL,
+    market_cap REAL,
+    forward_revenue_growth REAL,
+    forward_eps_growth REAL,
+    forward_pe REAL,
+    ev_ebitda REAL,
+    historical_multiple TEXT,
+    peer_multiple TEXT,
+    expectation_level TEXT NOT NULL CHECK (expectation_level IN ('LOW','MODERATE','HIGH','EXTREME','UNKNOWN')),
+    earnings_gap_estimate REAL,
+    valuation_level TEXT NOT NULL CHECK (valuation_level IN ('CHEAP','REASONABLE','EXPENSIVE','VERY_EXPENSIVE','UNKNOWN')),
+    quick_odds TEXT NOT NULL CHECK (quick_odds IN ('ATTRACTIVE','INTERESTING','FAIR','POOR','UNKNOWN')),
+    confidence TEXT NOT NULL CHECK (confidence IN ('LOW','MEDIUM','HIGH')),
+    deep_research_required INTEGER NOT NULL DEFAULT 0 CHECK (deep_research_required IN (0,1)),
+    category TEXT NOT NULL CHECK (category IN ('A_STRONG_CHEAP','B_STRONG_FAIR','C_STRONG_EXPENSIVE','D_WEAK_CHEAP','E_WEAK_EXPENSIVE','F_INSUFFICIENT_DATA')),
+    as_of_date TEXT NOT NULL,
+    sources_json TEXT NOT NULL DEFAULT '[]',
+    analysis_json TEXT NOT NULL,
+    source_digest TEXT NOT NULL,
+    model TEXT NOT NULL,
+    prompt_version TEXT NOT NULL,
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')),
+    FOREIGN KEY (expression_id) REFERENCES security_expressions(expression_id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_quick_odds_rank
+    ON quick_odds(quick_odds,confidence,earnings_gap_estimate DESC);
+
+CREATE TABLE IF NOT EXISTS deep_odds (
+    deep_odds_id TEXT PRIMARY KEY,
+    expression_id TEXT NOT NULL UNIQUE,
+    analysis_json TEXT NOT NULL,
+    odds_score REAL,
+    odds_band TEXT NOT NULL,
+    odds_status TEXT NOT NULL,
+    expectations_gap TEXT NOT NULL,
+    earnings_gap REAL,
+    base_upside REAL,
+    bear_downside REAL,
+    reward_risk REAL,
+    valuation_confidence TEXT NOT NULL,
+    thesis_confidence TEXT NOT NULL,
+    as_of_date TEXT NOT NULL,
+    source_digest TEXT NOT NULL,
+    model TEXT NOT NULL,
+    prompt_version TEXT NOT NULL,
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')),
+    FOREIGN KEY (expression_id) REFERENCES security_expressions(expression_id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_deep_odds_rank
+    ON deep_odds(odds_status,odds_score DESC,base_upside DESC);
+
+CREATE TABLE IF NOT EXISTS broad_opportunity_scan_runs (
+    run_id TEXT PRIMARY KEY,
+    status TEXT NOT NULL CHECK (status IN ('PLANNED','RUNNING','COMPLETED','PARTIAL','FAILED')),
+    coverage_json TEXT NOT NULL,
+    report_json TEXT NOT NULL,
+    ai_calls INTEGER NOT NULL DEFAULT 0,
+    known_cost_usd REAL NOT NULL DEFAULT 0,
+    risk_cost_usd REAL NOT NULL DEFAULT 0,
+    why_extra_calls_json TEXT NOT NULL DEFAULT '[]',
+    created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+);
+"""
+
+
+def _migrate_to_v11(conn: sqlite3.Connection) -> None:
+    conn.executescript(V11_BROAD_OPPORTUNITY_SCAN_SQL)
+
+
 def _migrate_v2_to_v3(conn: sqlite3.Connection) -> None:
     """对已有 v2 库:加 6 列(predictions)+ 建 4 个新表(都 IF NOT EXISTS)。
 
@@ -1006,6 +1128,7 @@ def _ensure_schema(conn: sqlite3.Connection) -> None:
     _migrate_to_v8(conn)
     _migrate_to_v9(conn)
     _migrate_to_v10(conn)
+    _migrate_to_v11(conn)
     conn.execute(f"PRAGMA user_version = {CURRENT_SCHEMA_VERSION}")
 
 

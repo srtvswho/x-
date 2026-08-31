@@ -1,0 +1,24 @@
+{
+  "mode": "ZERO_AI_PLAN",
+  "database": {
+    "posts": 40141,
+    "media": 354,
+    "claims": 305,
+    "themes": 205
+  },
+  "existing_candidate_chains": 13,
+  "discovery_batches": 5,
+  "expected_new_chains": "20–30",
+  "expected_company_mapped_opportunities": "20–35",
+  "expected_security_expressions": "50–100+",
+  "quick_odds_calls": "one per company-mapped opportunity",
+  "deep_odds_limit": 15,
+  "expected_total_calls": "40–55",
+  "hard_gates": {
+    "run_budget_usd": 50,
+    "daily_budget_usd": 75,
+    "calls": 400,
+    "expensive_jobs": false
+  },
+  "actual_api_calls": 0
+}

@@ -49,7 +49,7 @@ def test_v10_schema_is_idempotent(tmp_path):
     init_db(db)
     init_db(db)
     con = sqlite3.connect(db)
-    assert con.execute("PRAGMA user_version").fetchone()[0] == CURRENT_SCHEMA_VERSION == 10
+    assert con.execute("PRAGMA user_version").fetchone()[0] == CURRENT_SCHEMA_VERSION == 11
     tables = {row[0] for row in con.execute("SELECT name FROM sqlite_master WHERE type='table'")}
     assert {"opportunity_odds", "opportunity_odds_runs"} <= tables
     con.close()
