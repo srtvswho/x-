@@ -1,4 +1,5 @@
 name: SignalBoard Broad Opportunity Scan v1.4 Preview
+# One-time bounded Preview trigger; remove after the audited run completes.
 
 on:
   workflow_dispatch:
