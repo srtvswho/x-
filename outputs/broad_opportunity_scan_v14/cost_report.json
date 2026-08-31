@@ -1,0 +1,25 @@
+{
+  "cost": {
+    "run_id": "33406574868-1",
+    "attempted_calls": 33,
+    "successful_calls": 31,
+    "failed_calls": 2,
+    "input_tokens": 1073206,
+    "cached_input_tokens": 162683,
+    "output_tokens": 143585,
+    "known_actual_cost_usd": 3.8466026,
+    "risk_cost_usd": 4.0654046,
+    "statuses": {
+      "SUCCESS": 31,
+      "FAILED": 2
+    }
+  },
+  "cost_efficiency": {
+    "per_candidate_chain": 0.271027,
+    "per_company_opportunity": 0.338784,
+    "per_security_scanned": 0.072597,
+    "per_quick_odds": 0.072597,
+    "per_deep_odds": 0.271027,
+    "per_useful_candidate": 0.312723
+  }
+}

@@ -1,0 +1,996 @@
+{
+  "candidate_chains": [
+    {
+      "candidate_id": "broad_c9ecc1051d3428ce10beb0f2",
+      "title": "外置光源客户认证→POET收入增长",
+      "theme": "光学引擎",
+      "authors": [
+        "tw_aleabitoreddit"
+      ],
+      "source_roots": [
+        {
+          "source_id": "2093988125144207710",
+          "title": "POET外部光源供应商及终端用户说法",
+          "url": "https://x.com/aleabitoreddit/status/2093988125144207710",
+          "publisher": "tw_aleabitoreddit",
+          "as_of_date": "2026-08-30",
+          "finding": "帖文称POET已获外部光源供应商确认，终端用户包括Lumilens及超大规模数据中心。"
+        }
+      ],
+      "source_claim_ids": [
+        "claim_53a055ffb2129254b7976420"
+      ],
+      "social_mention_count": 1,
+      "independent_evidence_count": 1,
+      "driver": "外置光源被导入光学供应链。",
+      "industry_change": "光学模块可将激光源与其他光子组件解耦。",
+      "bottleneck": "没有采购订单、认证来源、产品数量或客户部署时点。",
+      "companies": [
+        {
+          "company": "POET Technologies",
+          "ticker": "PTK",
+          "mechanism": "若认证转为量产供货，外置光源销售可增加收入。"
+        }
+      ],
+      "earnings_mechanism": "理论上由量产光源出货带来收入，但现有证据未证明订单或利润贡献。",
+      "time_horizon": "未披露",
+      "counter_case": "认证并不等于设计赢单，客户也可能多源采购或延后部署。",
+      "missing_evidence": [
+        "客户或POET的独立确认",
+        "订单金额、ASP和量产时间表",
+        "外置光源业务的毛利率与产能"
+      ],
+      "chain_completeness": 2,
+      "thesis_quality": 0.31,
+      "evidence_quality": 0.38,
+      "supported": false,
+      "rejection_reason": "仅有单一社交来源的供应商/终端用户断言，未能连接至可量化收入或利润。"
+    },
+    {
+      "candidate_id": "broad_9733c56b323657d9a7a881cd",
+      "title": "CoWoS玻璃基板验证→Innolux盈利增量",
+      "theme": "先进封装材料",
+      "authors": [
+        "设备端消息来源",
+        "tw_zephyr_z9"
+      ],
+      "source_roots": [
+        {
+          "source_id": "2066651558784463190",
+          "title": "台积电、Ibiden与Innolux验证玻璃基板",
+          "url": "https://x.com/jukan05/status/2066651558784463190",
+          "publisher": "设备端消息来源",
+          "as_of_date": "2026-06-15",
+          "finding": "帖文称三方合作验证玻璃基板用于下一代CoWoS先进封装的可行性。"
+        },
+        {
+          "source_id": "2070266870557704335",
+          "title": "Feynman可能采用CoPoS与玻璃基板",
+          "url": "https://x.com/zephyr_z9/status/2070266870557704335",
+          "publisher": "tw_zephyr_z9",
+          "as_of_date": "2026-06-25",
+          "finding": "帖文称Innolux暗示Feynman将采用CoPoS及玻璃基板。"
+        }
+      ],
+      "source_claim_ids": [
+        "claim_206a565812e6e8203bf12577",
+        "claim_a82631a5de641f2f622f7f5e"
+      ],
+      "social_mention_count": 2,
+      "independent_evidence_count": 2,
+      "driver": "先进封装尝试玻璃基板路线。",
+      "industry_change": "下一代GPU/AI封装可能采用不同基板材料。",
+      "bottleneck": "验证并非量产定点；第二项为“暗示”，且无用量、价格或供应份额。",
+      "companies": [
+        {
+          "company": "Innolux",
+          "ticker": "3481.TW",
+          "mechanism": "若进入量产供应链，玻璃基板相关供货可能形成收入。"
+        }
+      ],
+      "earnings_mechanism": "尚无证据表明Innolux已获得订单、具备量产产能或可产生利润。",
+      "time_horizon": "未披露",
+      "counter_case": "技术验证失败、量产延后，或价值由其他材料/封装供应商获取。",
+      "missing_evidence": [
+        "台积电或客户量产认证",
+        "Innolux供货范围、产能和订单价值",
+        "材料相对ABF的经济性"
+      ],
+      "chain_completeness": 2,
+      "thesis_quality": 0.25,
+      "evidence_quality": 0.43,
+      "supported": false,
+      "rejection_reason": "缺少公司→收入/利润验证，且与既有CoWoP/ABF替代链条高度重叠。"
+    },
+    {
+      "candidate_id": "broad_4810adfb9a26385d8d0dc80c",
+      "title": "代理式AI持续行动→网络安全公司盈利",
+      "theme": "AI安全",
+      "authors": [
+        "tw_zephyr_z9",
+        "tw_FeroceResearch",
+        "tw_TradexWhisperer"
+      ],
+      "source_roots": [
+        {
+          "source_id": "2093947502299120112",
+          "title": "代理式AI对安全运营的观点",
+          "url": "https://x.com/zephyr_z9/status/2093947502299120112",
+          "publisher": "tw_zephyr_z9",
+          "as_of_date": "2026-08-30",
+          "finding": "作者预测安全将从持续监控转向持续行动，并称数据摄取与成本障碍利好既有安全公司。"
+        },
+        {
+          "source_id": "2091553907025572332",
+          "title": "用户数据库与安全/可观测性的观点",
+          "url": "https://x.com/FeroceResearch/status/2091553907025572332",
+          "publisher": "tw_FeroceResearch",
+          "as_of_date": "2026-08-23",
+          "finding": "作者认为用户数据库是agentic AI时代的重要资产，安全与云观测公司将继续受益。"
+        }
+      ],
+      "source_claim_ids": [
+        "claim_e34edac04226f557f6b48867",
+        "claim_4fefc94bad8ca17ab81943ec",
+        "claim_33f2c21bde64b20046ed7807",
+        "claim_189c9918082c317de495ab39"
+      ],
+      "social_mention_count": 4,
+      "independent_evidence_count": 2,
+      "driver": "代理式AI提高自动化安全运营需求的假设。",
+      "industry_change": "安全产品可能从告警/监控向自主响应扩展。",
+      "bottleneck": "没有客户预算、产品采用、价格或任何公司的执行证据。",
+      "companies": [
+        {
+          "company": "SentinelOne",
+          "ticker": "S",
+          "mechanism": "仅有非特定“安全股受益”评论，未证明其收入或利润受益。"
+        }
+      ],
+      "earnings_mechanism": "未建立；需求观点尚未映射到具体公司合同、净留存或利润率。",
+      "time_horizon": "未披露",
+      "counter_case": "AI代理也可能压低安全工具价格，或由云平台和大厂攫取价值。",
+      "missing_evidence": [
+        "具体公司产品采用与客户付费数据",
+        "合同价值、净新增ARR及毛利率",
+        "竞争格局和云平台分成"
+      ],
+      "chain_completeness": 1,
+      "thesis_quality": 0.19,
+      "evidence_quality": 0.3,
+      "supported": false,
+      "rejection_reason": "多条社交观点形成叙事共识，但没有独立的公司级收入或利润证据。"
+    },
+    {
+      "candidate_id": "broad_cd7b07898a8a65d3fa5b0e25",
+      "title": "TeraWulf单季营收披露→持续盈利改善",
+      "theme": "数据中心财务",
+      "authors": [
+        "tw_DGretta_Author"
+      ],
+      "source_roots": [
+        {
+          "source_id": "2091583484343046180",
+          "title": "TeraWulf 2026年Q2营收说法",
+          "url": "https://x.com/DGretta_Author/status/2091583484343046180",
+          "publisher": "tw_DGretta_Author",
+          "as_of_date": "2026-08-23",
+          "finding": "帖文称TeraWulf 2026年Q2营收为4,480万美元。"
+        }
+      ],
+      "source_claim_ids": [
+        "claim_8b02cc9b2fd4228b5543a526"
+      ],
+      "social_mention_count": 1,
+      "independent_evidence_count": 1,
+      "driver": "单季营收数字。",
+      "industry_change": "未提供。",
+      "bottleneck": "无同比/环比基准、收入来源、成本、产能或合同信息。",
+      "companies": [
+        {
+          "company": "TeraWulf",
+          "ticker": "WULF",
+          "mechanism": "单季营收本身不能推导后续收入、利润率或EPS趋势。"
+        }
+      ],
+      "earnings_mechanism": "未建立。",
+      "time_horizon": "不适用",
+      "counter_case": "收入可能一次性、低毛利或伴随更高资本开支与融资成本。",
+      "missing_evidence": [
+        "公司财报或业绩公告",
+        "收入构成和持续性",
+        "毛利、现金流、资本开支与合同积压"
+      ],
+      "chain_completeness": 1,
+      "thesis_quality": 0.12,
+      "evidence_quality": 0.35,
+      "supported": false,
+      "rejection_reason": "孤立营收数字不是因果驱动，无法延伸至未来收入、利润率或EPS。"
+    },
+    {
+      "candidate_id": "broad_7afbae4aca709e1a00e8a744",
+      "title": "LoRa三支柱扩张→Semtech连接业务增长",
+      "theme": "物联网/低功耗广域网",
+      "authors": [
+        "Semtech管理层"
+      ],
+      "source_roots": [
+        {
+          "source_id": "2092408620277457255",
+          "title": "LoRa增长驱动",
+          "url": "https://x.com/aleabitoreddit/status/2092408620277457255",
+          "publisher": "Semtech管理层",
+          "as_of_date": "2026-08-26",
+          "finding": "管理层称LoRaWAN、LoRa Plus及Amazon Sidewalk为当前增长三支柱。"
+        }
+      ],
+      "source_claim_ids": [
+        "claim_media_c569fc9c4417463be99526ef"
+      ],
+      "social_mention_count": 1,
+      "independent_evidence_count": 1,
+      "driver": "LoRa部署与Amazon Sidewalk生态扩张。",
+      "industry_change": "连接收入的增长来源由单一LoRaWAN拓展为多个平台。",
+      "bottleneck": "终端部署、客户激活率及平台变现尚未量化。",
+      "companies": [
+        {
+          "company": "Semtech Corporation",
+          "ticker": "SMTC",
+          "mechanism": "LoRa芯片和连接方案需求增长可转化为相关业务收入。"
+        },
+        {
+          "company": "Amazon",
+          "ticker": "AMZN",
+          "mechanism": "Sidewalk生态扩张可能增加兼容终端需求，但缺乏Amazon财务传导。"
+        }
+      ],
+      "earnings_mechanism": "新增节点和模组出货→Semtech LoRa收入；固定研发费用下的经营杠杆可能改善利润率。",
+      "time_horizon": "12–36个月",
+      "counter_case": "Sidewalk或LoRa Plus采用不足，或增长仅为产品组合迁移而非增量需求。",
+      "missing_evidence": [
+        "LoRa业务收入、出货量及同比增速",
+        "各支柱的客户/节点数据",
+        "管理层指引或订单证据",
+        "毛利率与EPS敏感性"
+      ],
+      "chain_completeness": 2,
+      "thesis_quality": 0.42,
+      "evidence_quality": 0.58,
+      "supported": false,
+      "rejection_reason": "仅有单一管理层表述，未证明三支柱带来可量化收入、利润或EPS增量。"
+    },
+    {
+      "candidate_id": "broad_1fe7ff585a7239604e4f5f96",
+      "title": "政府系统接入AI→持续防御代理需求",
+      "theme": "AI安全/公共服务AI",
+      "authors": [
+        "WSJ",
+        "tw_zephyr_z9"
+      ],
+      "source_roots": [
+        {
+          "source_id": "2094041814298669141",
+          "title": "AI工具接入政府系统",
+          "url": "https://x.com/austinsemis/status/2094041814298669141",
+          "publisher": "WSJ",
+          "as_of_date": "2026-08-30",
+          "finding": "报道指AI工具将连接政府系统，用于医疗预约、住房与税务咨询。"
+        },
+        {
+          "source_id": "2093947502299120112",
+          "title": "始终在线防御代理",
+          "url": "https://x.com/zephyr_z9/status/2093947502299120112",
+          "publisher": "tw_zephyr_z9",
+          "as_of_date": "2026-08-30",
+          "finding": "提出始终在线防御代理将出现。"
+        }
+      ],
+      "source_claim_ids": [
+        "claim_1da5bac90f20a424513b54d5",
+        "claim_6ab2edc521e97f8915d8eaa8"
+      ],
+      "social_mention_count": 2,
+      "independent_evidence_count": 1,
+      "driver": "政府业务流程与AI工具直连扩大身份、数据及代理权限暴露面。",
+      "industry_change": "AI从辅助界面进入可执行公共服务工作流。",
+      "bottleneck": "代理身份权限、审计、数据隔离和实时威胁响应。",
+      "companies": [],
+      "earnings_mechanism": "若政府采购持续防御能力，安全软件厂商可获得订阅及服务收入；当前证据未将需求映射至任何公司。",
+      "time_horizon": "24–60个月",
+      "counter_case": "政府部署进度缓慢，或由内部系统集成商及现有安全工具吸收需求。",
+      "missing_evidence": [
+        "已签约政府AI项目及安全预算",
+        "受益上市公司的产品定位和合同",
+        "采购金额、续费率及利润率传导"
+      ],
+      "chain_completeness": 2,
+      "thesis_quality": 0.38,
+      "evidence_quality": 0.4,
+      "supported": false,
+      "rejection_reason": "产业逻辑存在，但数据库未给出可投资公司或Company→Revenue/Margin/EPS证据。"
+    },
+    {
+      "candidate_id": "broad_6655fe6ee0fc907a663649c1",
+      "title": "玻璃基板商业化→先进封装可靠性验证约束",
+      "theme": "先进封装/玻璃基板",
+      "authors": [
+        "行业消息",
+        "行业观察者",
+        "tw_jukan05"
+      ],
+      "source_roots": [
+        {
+          "source_id": "2066651558784463190",
+          "title": "Intel玻璃基板试点线",
+          "url": "https://x.com/jukan05/status/2066651558784463190",
+          "publisher": "行业消息",
+          "as_of_date": "2026-06-15",
+          "finding": "称Intel投入逾十年研发，亚利桑那试点线正走向商业化；同时列出TGV、微裂纹和热可靠性挑战。"
+        },
+        {
+          "source_id": "2087139633109115036",
+          "title": "基板多供应商采购",
+          "url": "https://x.com/jukan05/status/2087139633109115036",
+          "publisher": "tw_jukan05",
+          "as_of_date": "2026-08-11",
+          "finding": "称客户正从多家供应商采购基板，且热机械属性差异构成问题。"
+        }
+      ],
+      "source_claim_ids": [
+        "claim_2e49e93a33c186053f4ac5d3",
+        "claim_0ab42e4621bda34752d494a3",
+        "claim_d07cff781e3e6ff88b5f5834"
+      ],
+      "social_mention_count": 3,
+      "independent_evidence_count": 2,
+      "driver": "更大封装和高带宽互连推动基板性能升级。",
+      "industry_change": "玻璃基板由长期研发进入潜在商业化验证阶段。",
+      "bottleneck": "TGV良率、微裂纹、长期热可靠性及跨供应商材料一致性。",
+      "companies": [
+        {
+          "company": "Intel",
+          "ticker": "INTC",
+          "mechanism": "若玻璃基板封装实现商业化，可强化先进封装产品差异化；但未见收入或利润贡献证据。"
+        }
+      ],
+      "earnings_mechanism": "可靠性验证通过→封装平台量产→潜在产品ASP/代工服务收入；现有证据没有订单、定价或盈利传导。",
+      "time_horizon": "36个月以上",
+      "counter_case": "可靠性和良率问题延后量产，传统ABF方案继续满足客户需求。",
+      "missing_evidence": [
+        "Intel量产时间表与客户导入",
+        "玻璃基板供应商及份额",
+        "良率、成本、ASP和资本开支数据",
+        "对Intel收入、毛利率或EPS的量化影响"
+      ],
+      "chain_completeness": 2,
+      "thesis_quality": 0.44,
+      "evidence_quality": 0.53,
+      "supported": false,
+      "rejection_reason": "已识别技术瓶颈，但没有可验证的商业采用、受益供应商或财务结果。"
+    },
+    {
+      "candidate_id": "broad_910cb09f6325031c06589136",
+      "title": "推理吞吐量跃升→AI硬件需求强度的方向不确定",
+      "theme": "AI推理/编译器协同设计",
+      "authors": [
+        "tw_jukan05",
+        "图片图表（来源未标注）"
+      ],
+      "source_roots": [
+        {
+          "source_id": "2093873540760269133",
+          "title": "Jalapeño芯片设计观点",
+          "url": "https://x.com/jukan05/status/2093873540760269133",
+          "publisher": "tw_jukan05",
+          "as_of_date": "2026-08-30",
+          "finding": "观点认为OpenAI Jalapeño围绕AI编写编译器的假设重构芯片设计。"
+        },
+        {
+          "source_id": "2092500771803963855",
+          "title": "Jalapeño吞吐量图表",
+          "url": "https://x.com/TradexWhisperer/status/2092500771803963855",
+          "publisher": "图片图表（来源未标注）",
+          "as_of_date": "2026-08-26",
+          "finding": "未标注来源的图表称单用户解码吞吐量为1,459 tokens/s，约为既有最佳的2.7倍。"
+        }
+      ],
+      "source_claim_ids": [
+        "claim_8c46a2cddf2a26c2207c2ab5",
+        "claim_media_3c86f32df87429273cebc8f2"
+      ],
+      "social_mention_count": 2,
+      "independent_evidence_count": 1,
+      "driver": "编译器与芯片协同设计可能提升推理效率。",
+      "industry_change": "硬件设计约束可能从人工可编程性转向AI辅助编译。",
+      "bottleneck": "性能数据的来源、可复现性、成本/功耗及实际部署规模。",
+      "companies": [
+        {
+          "company": "OpenAI",
+          "ticker": "PRIVATE",
+          "mechanism": "效率提升可能降低单位推理成本或支持更高服务容量，但未提供商业化数据。"
+        },
+        {
+          "company": "NVIDIA",
+          "ticker": "NVDA",
+          "mechanism": "潜在定制架构可能改变竞争格局，但方向可替代而非确定增量。"
+        }
+      ],
+      "earnings_mechanism": "吞吐量提升可降低每token成本，但既可能扩大推理需求，也可能减少同等工作负载的硬件需求；未建立任何公司财务净效应。",
+      "time_horizon": "24–60个月",
+      "counter_case": "性能优势无法在生产环境复制，或效率改善引发需求反弹而非硬件替代。",
+      "missing_evidence": [
+        "原始测试方法及第三方复现",
+        "芯片规格、功耗和单位token成本",
+        "部署、采购或供应链信息",
+        "对OpenAI或上市供应商收入/EPS的量化传导"
+      ],
+      "chain_completeness": 1,
+      "thesis_quality": 0.28,
+      "evidence_quality": 0.25,
+      "supported": false,
+      "rejection_reason": "单一未标注图表和观点不能确认技术事实；且对NVIDIA及其他公司盈利影响方向不确定。"
+    },
+    {
+      "candidate_id": "broad_ce112a1e041992a3c072fdb3",
+      "title": "数据中心用水增加→冷却与水处理资本开支",
+      "theme": "数据中心冷却/水资源",
+      "authors": [
+        "tw_TradexWhisperer"
+      ],
+      "source_roots": [
+        {
+          "source_id": "2094222017461723480",
+          "title": "数据中心冷却用水预测",
+          "url": "https://x.com/TradexWhisperer/status/2094222017461723480",
+          "publisher": "tw_TradexWhisperer",
+          "as_of_date": "2026-08-31",
+          "finding": "称全球数据中心冷却用水量将由2025年的586亿加仑增至2030年的1700亿加仑。"
+        }
+      ],
+      "source_claim_ids": [
+        "claim_4d8509938952240249c4bf8c"
+      ],
+      "social_mention_count": 1,
+      "independent_evidence_count": 0,
+      "driver": "AI数据中心扩张提高热管理与用水需求。",
+      "industry_change": "冷却约束可能从电力延展至水资源和许可。",
+      "bottleneck": "水源许可、回用设施、液冷架构及当地基础设施容量。",
+      "companies": [],
+      "earnings_mechanism": "若用水预测成立，冷却、水处理和回用设备需求可能增加；数据库没有受益公司、订单或财务映射。",
+      "time_horizon": "24–60个月",
+      "counter_case": "闭环液冷、空气冷却、选址迁移或更高效率显著降低取水强度。",
+      "missing_evidence": [
+        "预测的原始数据和方法",
+        "数据中心运营商的用水/资本开支计划",
+        "可投资设备或服务公司及订单",
+        "收入、利润率和EPS敏感性"
+      ],
+      "chain_completeness": 1,
+      "thesis_quality": 0.25,
+      "evidence_quality": 0.2,
+      "supported": false,
+      "rejection_reason": "只有单一社交转述且无可投资公司与财务传导，不能形成投资链。"
+    },
+    {
+      "batch": 3,
+      "rejection_reason": "ReadTimeout: HTTPSConnectionPool(host='api.openai.com', port=443): Read timed out. (read timeout=300)"
+    },
+    {
+      "candidate_id": "broad_5cb32544d44d2aa97c5811c7",
+      "title": "LoRa增长指引上修→Semtech收入加速",
+      "theme": "物联网/LoRa",
+      "authors": [
+        "图片中的电话会摘要作者"
+      ],
+      "source_roots": [
+        {
+          "source_id": "claim_media_7e5874d87f4501c01c95e44e",
+          "title": "Semtech电话会摘要",
+          "url": "https://x.com/aleabitoreddit/status/2092408620277457255",
+          "publisher": "电话会摘要",
+          "as_of_date": "2026-08-26",
+          "finding": "公司将LoRa增长预期上调至显著高于长期20%假设。"
+        }
+      ],
+      "source_claim_ids": [
+        "claim_media_7e5874d87f4501c01c95e44e"
+      ],
+      "social_mention_count": 1,
+      "independent_evidence_count": 1,
+      "driver": "LoRa需求/客户部署加速。",
+      "industry_change": "IoT连接需求可能恢复至高于公司长期增长假设的水平。",
+      "bottleneck": "缺少订单、设计导入和终端需求拆分。",
+      "companies": [
+        {
+          "company": "Semtech Corporation",
+          "ticker": "SMTC",
+          "mechanism": "LoRa业务增长可直接推升相关产品收入。"
+        }
+      ],
+      "earnings_mechanism": "收入增长已被指引暗示；毛利率、费用率及EPS传导未获证据验证。",
+      "time_horizon": "未来数季",
+      "counter_case": "指引上调可能反映低基数或一次性补库，而非持续份额提升。",
+      "missing_evidence": [
+        "LoRa收入基数及增长率",
+        "积压订单/设计导入",
+        "毛利率与EPS指引",
+        "独立客户或渠道验证"
+      ],
+      "chain_completeness": 4,
+      "thesis_quality": 0.42,
+      "evidence_quality": 0.65,
+      "supported": false,
+      "rejection_reason": "证据仅覆盖增长预期至收入，未走到利润率或EPS，且只有单一社交转述来源。"
+    },
+    {
+      "candidate_id": "broad_396555748b94f953a6c18c6b",
+      "title": "HBM4E速率确认→Samsung高端内存盈利",
+      "theme": "HBM",
+      "authors": [
+        "Samsung",
+        "SemiAnalysis"
+      ],
+      "source_roots": [
+        {
+          "source_id": "claim_48d3c8fc7f4c85578a92be92",
+          "title": "Samsung HBM4E产品幻灯片",
+          "url": "https://x.com/jukan05/status/2091575575265906868",
+          "publisher": "Samsung",
+          "as_of_date": "2026-08-23",
+          "finding": "幻灯片显示HBM4E确认为16 Gbps。"
+        },
+        {
+          "source_id": "claim_d94f3791ade294718b2c8470",
+          "title": "Samsung HBM4技术评价",
+          "url": "https://x.com/jukan05/status/2094204360800833602",
+          "publisher": "SemiAnalysis（经社交媒体转述）",
+          "as_of_date": "2026-08-30",
+          "finding": "认为Samsung目前拥有最佳HBM4技术。"
+        }
+      ],
+      "source_claim_ids": [
+        "claim_48d3c8fc7f4c85578a92be92",
+        "claim_d94f3791ade294718b2c8470"
+      ],
+      "social_mention_count": 2,
+      "independent_evidence_count": 2,
+      "driver": "HBM4E规格提升。",
+      "industry_change": "更高带宽HBM产品可能改善下一代AI加速器的内存性能。",
+      "bottleneck": "客户认证、良率、产能及实际定价。",
+      "companies": [
+        {
+          "company": "Samsung Electronics",
+          "ticker": "005930.KS",
+          "mechanism": "若通过认证并形成出货，高规格HBM可提升内存业务产品组合和ASP。"
+        }
+      ],
+      "earnings_mechanism": "技术规格及主观技术评价均未证明订单、出货、ASP、毛利率或EPS。",
+      "time_horizon": "2027年前后",
+      "counter_case": "领先规格不等于通过主要GPU客户认证或获得可盈利的量产份额。",
+      "missing_evidence": [
+        "HBM4E客户认证",
+        "量产良率与产能",
+        "合同价格/出货量",
+        "内存业务利润率与EPS影响"
+      ],
+      "chain_completeness": 3,
+      "thesis_quality": 0.35,
+      "evidence_quality": 0.58,
+      "supported": false,
+      "rejection_reason": "产品规格不能单独构成从技术到盈利的因果链；第二来源为观点而非独立商业验证。"
+    },
+    {
+      "candidate_id": "broad_6811569449edce812e33d926",
+      "title": "Spectrum-X量产→Nvidia网络业务变现",
+      "theme": "硅光网络",
+      "authors": [
+        "未注明"
+      ],
+      "source_roots": [
+        {
+          "source_id": "claim_media_8c36fb458c65a908ae98659f",
+          "title": "Spectrum-X硅光交换机量产消息",
+          "url": "https://x.com/aleabitoreddit/status/2091955482613486028",
+          "publisher": "未注明（社交媒体转述）",
+          "as_of_date": "2026-08-24",
+          "finding": "称Nvidia Spectrum-X Ethernet硅光交换机已进入全面量产。"
+        },
+        {
+          "source_id": "claim_media_5ac93c4d0157f61816b411ee",
+          "title": "FAU供需预测",
+          "url": "https://x.com/aleabitoreddit/status/2091955482613486028",
+          "publisher": "未注明（同一社交帖）",
+          "as_of_date": "2026-08-24",
+          "finding": "预测2027年FAU需求达数百万台、现有供应链产能不足。"
+        }
+      ],
+      "source_claim_ids": [
+        "claim_media_8c36fb458c65a908ae98659f",
+        "claim_media_5ac93c4d0157f61816b411ee"
+      ],
+      "social_mention_count": 1,
+      "independent_evidence_count": 1,
+      "driver": "硅光交换机据称进入量产。",
+      "industry_change": "AI网络可能向更高带宽、光互连架构迁移。",
+      "bottleneck": "FAU供应能力及客户采用节奏。",
+      "companies": [
+        {
+          "company": "NVIDIA",
+          "ticker": "NVDA",
+          "mechanism": "若Spectrum-X实现客户部署，网络产品收入可能增长。"
+        }
+      ],
+      "earnings_mechanism": "量产状态不等于出货或收入确认；FAU需求预测与量产消息同源，无法证明收入、毛利或EPS。",
+      "time_horizon": "2026-2027",
+      "counter_case": "供应约束、系统集成难度或客户改用替代网络架构可限制部署。",
+      "missing_evidence": [
+        "客户订单与出货量",
+        "Spectrum-X收入披露",
+        "FAU产能和供应商验证",
+        "网络业务毛利及EPS贡献"
+      ],
+      "chain_completeness": 3,
+      "thesis_quality": 0.3,
+      "evidence_quality": 0.45,
+      "supported": false,
+      "rejection_reason": "两项证据来自同一底层社交帖，且该方向与既有CPO/光学瓶颈链重叠，缺乏新增盈利验证。"
+    },
+    {
+      "candidate_id": "broad_6ad65dfba2f60f218e9943f5",
+      "title": "玻璃基板试点→先进封装材料商业化",
+      "theme": "ABF/玻璃基板",
+      "authors": [
+        "行业消息"
+      ],
+      "source_roots": [
+        {
+          "source_id": "claim_08c26f20b21ecc3e33ad6db9",
+          "title": "Samsung Electro-Mechanics玻璃基板试点消息",
+          "url": "https://x.com/jukan05/status/2066651558784463190",
+          "publisher": "行业消息（社交媒体转述）",
+          "as_of_date": "2026-06-15",
+          "finding": "称Samsung Electro-Mechanics于2025年建立玻璃基板试点线，并与住友化学成立合资企业。"
+        }
+      ],
+      "source_claim_ids": [
+        "claim_08c26f20b21ecc3e33ad6db9"
+      ],
+      "social_mention_count": 1,
+      "independent_evidence_count": 1,
+      "driver": "玻璃基板试点及材料合作。",
+      "industry_change": "先进封装可能探索玻璃基板以应对未来封装性能要求。",
+      "bottleneck": "客户导入、可靠性认证、量产良率和单位成本。",
+      "companies": [
+        {
+          "company": "Samsung Electro-Mechanics",
+          "ticker": "009150.KS",
+          "mechanism": "若试点转量产，公司可获得高阶基板收入机会。"
+        },
+        {
+          "company": "Sumitomo Chemical",
+          "ticker": "4005.T",
+          "mechanism": "若合资材料被量产采用，可能带来材料销售。"
+        }
+      ],
+      "earnings_mechanism": "仅有试点和合资事实，未有产品订单、产能、定价或利润贡献证据。",
+      "time_horizon": "2027年以后",
+      "counter_case": "玻璃基板可能因可靠性、成本或供应链成熟度不足而延后。",
+      "missing_evidence": [
+        "合资范围与产能",
+        "客户认证/设计定点",
+        "量产时间表",
+        "收入、毛利率和EPS敏感性"
+      ],
+      "chain_completeness": 2,
+      "thesis_quality": 0.25,
+      "evidence_quality": 0.5,
+      "supported": false,
+      "rejection_reason": "试点线是技术准备而非商业需求证明，无法建立公司盈利链。"
+    },
+    {
+      "candidate_id": "broad_595cacdfdd61920c0ae15083",
+      "title": "韩国AI公共服务→本土AI基础设施支出",
+      "theme": "国家级生成式AI",
+      "authors": [
+        "WSJ"
+      ],
+      "source_roots": [
+        {
+          "source_id": "claim_720e1cff77804e9afbce87a1",
+          "title": "韩国拟全民免费提供生成式AI服务",
+          "url": "https://x.com/austinsemis/status/2094041814298669141",
+          "publisher": "WSJ（经社交媒体转述）",
+          "as_of_date": "2026-08-30",
+          "finding": "报道称韩国计划向全民免费提供生成式AI服务。"
+        }
+      ],
+      "source_claim_ids": [
+        "claim_720e1cff77804e9afbce87a1"
+      ],
+      "social_mention_count": 1,
+      "independent_evidence_count": 1,
+      "driver": "潜在国家主导的生成式AI服务。",
+      "industry_change": "若落实，公共部门可能成为AI算力、模型和云服务需求方。",
+      "bottleneck": "政策预算、采购模式、服务提供商及实际算力建设规模均未披露。",
+      "companies": [],
+      "earnings_mechanism": "没有被点名的上市受益公司，也没有合同、支出或盈利传导证据。",
+      "time_horizon": "不确定",
+      "counter_case": "政策可能采用既有云资源、有限补贴或被财政约束而不形成新增基础设施投资。",
+      "missing_evidence": [
+        "正式政策和预算",
+        "采购及中标方",
+        "算力/云服务建设规模",
+        "受益公司收入和利润影响"
+      ],
+      "chain_completeness": 1,
+      "thesis_quality": 0.18,
+      "evidence_quality": 0.5,
+      "supported": false,
+      "rejection_reason": "宏观政策报道未连接到可投资公司，更未覆盖收入、利润率或EPS。"
+    },
+    {
+      "candidate_id": "broad_4a87ad247ce5ae14616959df",
+      "title": "SK海力士印第安纳产能扩张→美国本地供货收入",
+      "theme": "半导体产能",
+      "authors": [
+        "Kwak Noh-Jung"
+      ],
+      "source_roots": [
+        {
+          "source_id": "claim_media_66d04cb76c7a6d7b724d8ad9",
+          "title": "印第安纳工厂远期晶圆产能",
+          "url": "https://x.com/aleabitoreddit/status/2093252439973777674",
+          "publisher": "SK Hynix管理层（经X转述）",
+          "as_of_date": "2026-08-28",
+          "finding": "工厂最终年产能预计达数十万片晶圆。"
+        }
+      ],
+      "source_claim_ids": [
+        "claim_media_66d04cb76c7a6d7b724d8ad9"
+      ],
+      "social_mention_count": 1,
+      "independent_evidence_count": 1,
+      "driver": "美国本地存储产能建设。",
+      "industry_change": "潜在区域化供货。",
+      "bottleneck": "投产时间、产品组合、客户承诺及利用率均未知。",
+      "companies": [
+        {
+          "company": "SK Hynix",
+          "ticker": "000660.KS",
+          "mechanism": "若新增产能被高附加值产品填满，可增加位元出货与收入。"
+        }
+      ],
+      "earnings_mechanism": "产能只有在投产、获得客户认证并实现高利用率后才会转化为收入；毛利率取决于产品与价格。",
+      "time_horizon": "中长期",
+      "counter_case": "新增供给可能压低价格或替代既有产能，未必增厚利润。",
+      "missing_evidence": [
+        "建设与量产时间表",
+        "产品类型及客户订单",
+        "增量资本开支、利用率和利润率指引",
+        "独立来源验证"
+      ],
+      "chain_completeness": 3,
+      "thesis_quality": 0.32,
+      "evidence_quality": 0.42,
+      "supported": false,
+      "rejection_reason": "仅一项管理层转述，无法证明增量收入或利润。"
+    },
+    {
+      "candidate_id": "broad_b432c3d217a25da97e0eaad2",
+      "title": "中国DRAM制造效率差距→领先厂商竞争性利润池",
+      "theme": "DRAM制造成本",
+      "authors": [
+        "Hana Securities"
+      ],
+      "source_roots": [
+        {
+          "source_id": "claim_5de6107fcbae5ffa7efa77a2",
+          "title": "CXMT多重曝光成本劣势",
+          "url": "https://x.com/jukan05/status/2093949006619836554",
+          "publisher": "Hana Securities（经X转述）",
+          "as_of_date": "2026-08-30",
+          "finding": "认为CXMT因多重曝光而在单片产出和制造成本上落后领先厂商。"
+        }
+      ],
+      "source_claim_ids": [
+        "claim_5de6107fcbae5ffa7efa77a2"
+      ],
+      "social_mention_count": 1,
+      "independent_evidence_count": 1,
+      "driver": "中国竞争者的制造成本/良率可能落后。",
+      "industry_change": "若差距持续，DRAM供给的有效成本曲线更陡。",
+      "bottleneck": "该判断未量化CXMT实际成本、良率或可销售产量。",
+      "companies": [
+        {
+          "company": "Micron",
+          "ticker": "MU",
+          "mechanism": "较低成本竞争压力可支持价格与毛利率。"
+        },
+        {
+          "company": "SK Hynix",
+          "ticker": "000660.KS",
+          "mechanism": "技术领先若转化为成本优势，可保护DRAM盈利。"
+        }
+      ],
+      "earnings_mechanism": "竞争者成本劣势→行业有效供给受限/价格竞争减弱→领先厂商DRAM ASP和毛利率改善。",
+      "time_horizon": "12-36个月",
+      "counter_case": "补贴、扩产或工艺进展可迅速缩小成本差距；领先厂商也可能主动扩产。",
+      "missing_evidence": [
+        "各厂成本和良率数据",
+        "CXMT产能及产品合格率",
+        "领先厂商DRAM利润敏感度",
+        "独立供应链验证"
+      ],
+      "chain_completeness": 4,
+      "thesis_quality": 0.4,
+      "evidence_quality": 0.3,
+      "supported": false,
+      "rejection_reason": "单一券商观点，缺乏成本差距到行业定价及公司利润的验证。"
+    },
+    {
+      "candidate_id": "broad_1dbba4c649a2275e6c660b06",
+      "title": "玻璃基板性能改善→先进封装材料导入",
+      "theme": "先进封装基板",
+      "authors": [
+        "供应链消息来源"
+      ],
+      "source_roots": [
+        {
+          "source_id": "claim_20245bf248b42f13ee17bc32",
+          "title": "玻璃基板性能指标",
+          "url": "https://x.com/jukan05/status/2066651558784463190",
+          "publisher": "供应链消息来源（经X转述）",
+          "as_of_date": "2026-06-15",
+          "finding": "称玻璃基板可改善翘曲、CTE、电阻及电感等指标。"
+        }
+      ],
+      "source_claim_ids": [
+        "claim_20245bf248b42f13ee17bc32"
+      ],
+      "social_mention_count": 1,
+      "independent_evidence_count": 1,
+      "driver": "更低翘曲和更优电气特性可能提升先进封装可行性。",
+      "industry_change": "封装基板材料可能发生替代。",
+      "bottleneck": "没有导入客户、量产时间、供应商或成本数据。",
+      "companies": [],
+      "earnings_mechanism": "材料性能优势→客户认证及量产导入→材料/设备供应商收入和规模毛利改善；但数据库未识别受益上市公司。",
+      "time_horizon": "中长期",
+      "counter_case": "良率、面板尺寸、可靠性或成本问题可能阻碍量产。",
+      "missing_evidence": [
+        "明确的上市供应商",
+        "客户认证和量产订单",
+        "单位价值量与毛利率",
+        "独立技术及供应链验证"
+      ],
+      "chain_completeness": 2,
+      "thesis_quality": 0.25,
+      "evidence_quality": 0.35,
+      "supported": false,
+      "rejection_reason": "没有可投资公司，且只有未具名供应链来源的性能陈述。"
+    },
+    {
+      "candidate_id": "broad_5151bad36a1d8d26eb83bc73",
+      "title": "推理导向AI→高性能存储价值量提升",
+      "theme": "AI推理与存储",
+      "authors": [
+        "FMS 2026 panelists"
+      ],
+      "source_roots": [
+        {
+          "source_id": "claim_a62d57f2c6a974ce5937fb8f",
+          "title": "推理改变存储价值维度",
+          "url": "https://x.com/TradexWhisperer/status/2091752748073287754",
+          "publisher": "FMS 2026 panelists（经X转述）",
+          "as_of_date": "2026-08-24",
+          "finding": "预计存储价值从容量转向处理性能、速度与效率。"
+        },
+        {
+          "source_id": "claim_8f30b633aa1bdbf3ca44e4eb",
+          "title": "推理对高容量高速存储的需求",
+          "url": "https://x.com/TradexWhisperer/status/2091752748073287754",
+          "publisher": "FMS 2026 panelists（同一底层来源）",
+          "as_of_date": "2026-08-24",
+          "finding": "预计推理占比提升将增加对高容量、高速存储的需求。"
+        }
+      ],
+      "source_claim_ids": [
+        "claim_a62d57f2c6a974ce5937fb8f",
+        "claim_8f30b633aa1bdbf3ca44e4eb"
+      ],
+      "social_mention_count": 1,
+      "independent_evidence_count": 1,
+      "driver": "AI工作负载由训练向推理倾斜。",
+      "industry_change": "存储的性能、速度和能效权重上升。",
+      "bottleneck": "未证明推理增量需求流向哪类存储、哪家厂商或何种价格溢价。",
+      "companies": [
+        {
+          "company": "Micron",
+          "ticker": "MU",
+          "mechanism": "若高性能存储组合提升，可提高每比特价值与毛利率。"
+        },
+        {
+          "company": "SK Hynix",
+          "ticker": "000660.KS",
+          "mechanism": "若推理部署拉动高规格产品，可提升产品组合。"
+        },
+        {
+          "company": "Samsung Electronics",
+          "ticker": "005930.KS",
+          "mechanism": "若高性能存储需求增长，可扩大高附加值存储收入。"
+        }
+      ],
+      "earnings_mechanism": "推理部署→高规格存储需求/ASP提升→厂商收入组合及毛利率改善。",
+      "time_horizon": "12-36个月",
+      "counter_case": "推理优化可能降低每次推理的内存需求，或需求由低成本存储满足。",
+      "missing_evidence": [
+        "推理服务器存储BOM变化",
+        "各厂产品份额和订单",
+        "高性能产品ASP/毛利率数据",
+        "独立需求预测"
+      ],
+      "chain_completeness": 4,
+      "thesis_quality": 0.38,
+      "evidence_quality": 0.34,
+      "supported": false,
+      "rejection_reason": "同一场会议转述的两条表述只能计为一个来源，缺少公司级订单和盈利验证。"
+    },
+    {
+      "candidate_id": "broad_3008f65671d365fe8997c2a7",
+      "title": "Spectrum-X出货→FAU需求→光学组件收入",
+      "theme": "数据中心光互连",
+      "authors": [
+        "未具名来源",
+        "Market analysts"
+      ],
+      "source_roots": [
+        {
+          "source_id": "claim_media_bf825ff05244dae81c6cb17e",
+          "title": "Spectrum-X对应FAU需求",
+          "url": "https://x.com/aleabitoreddit/status/2091955482613486028",
+          "publisher": "未具名来源（经X转述）",
+          "as_of_date": "2026-08-24",
+          "finding": "约2万台Spectrum-X出货对应约60万至70万颗FAU需求。"
+        },
+        {
+          "source_id": "claim_media_5d7e3d0013018d6ac9166efd",
+          "title": "多通道FAU良率约束",
+          "url": "https://x.com/aleabitoreddit/status/2091955482613486028",
+          "publisher": "Market analysts（同一X帖）",
+          "as_of_date": "2026-08-24",
+          "finding": "多通道主动对准FAU量产受良率约束。"
+        }
+      ],
+      "source_claim_ids": [
+        "claim_media_bf825ff05244dae81c6cb17e",
+        "claim_media_5d7e3d0013018d6ac9166efd"
+      ],
+      "social_mention_count": 1,
+      "independent_evidence_count": 1,
+      "driver": "Spectrum-X部署可能提高FAU需求。",
+      "industry_change": "高密度光引擎对主动对准组件的需求增加。",
+      "bottleneck": "FAU供应商、单价、份额及实际出货均未被验证。",
+      "companies": [],
+      "earnings_mechanism": "系统出货→FAU消耗量→具备良率能力的供应商收入与毛利率提升；数据库未给出可映射的上市受益方。",
+      "time_horizon": "6-24个月",
+      "counter_case": "系统出货延后、设计变更或良率改善会降低供给稀缺价值。",
+      "missing_evidence": [
+        "Spectrum-X实际出货",
+        "FAU供应商和上市公司映射",
+        "单机用量及ASP",
+        "订单/产能与良率的独立验证"
+      ],
+      "chain_completeness": 3,
+      "thesis_quality": 0.29,
+      "evidence_quality": 0.31,
+      "supported": false,
+      "rejection_reason": "同一社交帖内的估算不能构成独立验证，且缺失可投资公司与盈利映射。"
+    }
+  ],
+  "security_expressions": [
+    {
+      "opportunity_id": "opp_0e9589e1d683a854992a0d9c",
+      "rejection_reason": "ReadTimeout: HTTPSConnectionPool(host='api.openai.com', port=443): Read timed out. (read timeout=360)"
+    }
+  ],
+  "deep_errors": []
+}
