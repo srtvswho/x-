@@ -1,6 +1,10 @@
 name: Focused Odds v1.4.1 Paid Preview
 
 on:
+  push:
+    branches: [codex/focused-odds-v141]
+    paths:
+      - ".github/workflows/focused-odds-v141-preview.yml"
   workflow_dispatch:
 
 permissions:
