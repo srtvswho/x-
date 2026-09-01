@@ -434,7 +434,7 @@ def build_report(con: sqlite3.Connection, run_id: str, errors: list[dict[str, An
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--db", default=DB_PATH)
+    parser.add_argument("--db", default=os.getenv("SIGNALBOARD_DB", DB_PATH))
     parser.add_argument("--output-dir", default=str(OUTPUT_DIR))
     parser.add_argument("--plan-only", action="store_true")
     args = parser.parse_args()
