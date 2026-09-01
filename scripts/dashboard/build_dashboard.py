@@ -622,6 +622,19 @@ def query_broad_opportunity_scan(conn):
     return json.loads(row[0]) if row and row[0] else {}
 
 
+def query_focused_odds(conn):
+    """Latest bounded six-security review; empty until the paid Preview completes."""
+    table = conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='focused_odds_runs'"
+    ).fetchone()
+    if not table:
+        return {}
+    row = conn.execute(
+        "SELECT report_json FROM focused_odds_runs ORDER BY created_at DESC LIMIT 1"
+    ).fetchone()
+    return json.loads(row[0]) if row and row[0] else {}
+
+
 def query_ai_cost_panel(conn):
     """Risk-aware cost summary. PENDING rows remain visible and reserve estimated cost."""
     enabled = os.getenv("AI_ENABLED", "false").strip().lower() in {"1", "true", "yes", "on"}
@@ -897,6 +910,7 @@ def main():
         opportunities = query_opportunities(conn)
         opportunity_funnel = query_opportunity_funnel(conn)
         broad_scan = query_broad_opportunity_scan(conn)
+        focused_odds = query_focused_odds(conn)
         ai_cost_panel = query_ai_cost_panel(conn)
         print(f"  24h window: {build_meta['window_label']} "
               f"posts={today_stats['n_posts_24h']} "
@@ -920,6 +934,7 @@ def main():
         html = html.replace("__OPPORTUNITIES__", json.dumps(opportunities, ensure_ascii=False))
         html = html.replace("__OPPORTUNITY_FUNNEL__", json.dumps(opportunity_funnel, ensure_ascii=False))
         html = html.replace("__BROAD_SCAN__", json.dumps(broad_scan, ensure_ascii=False))
+        html = html.replace("__FOCUSED_ODDS__", json.dumps(focused_odds, ensure_ascii=False))
         html = html.replace("__AI_COST_PANEL__", json.dumps(ai_cost_panel, ensure_ascii=False))
         OUT.write_text(html, encoding="utf-8")
         # 检查 null 字样没渲染到 HTML (兜底, 即使前端处理对了)

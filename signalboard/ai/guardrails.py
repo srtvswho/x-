@@ -37,6 +37,8 @@ STAGE_BY_WORKLOAD = {
     "broad_candidate_discovery": "analyst",
     "beneficiary_quick_odds": "analyst",
     "broad_deep_odds": "analyst",
+    "focused_financial_snapshot": "analyst",
+    "focused_odds_analysis": "analyst",
     "deep_investment_analysis": "analyst",
     "golden_evaluation": "golden",
     "embedding": "theme",

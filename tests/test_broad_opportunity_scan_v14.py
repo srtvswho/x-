@@ -49,7 +49,7 @@ def test_v11_schema_and_routes_are_available(tmp_path):
     db = tmp_path / "db.sqlite"
     init_db(db); init_db(db)
     con = sqlite3.connect(db)
-    assert con.execute("PRAGMA user_version").fetchone()[0] == CURRENT_SCHEMA_VERSION == 11
+    assert con.execute("PRAGMA user_version").fetchone()[0] == CURRENT_SCHEMA_VERSION == 12
     tables = {r[0] for r in con.execute("SELECT name FROM sqlite_master WHERE type='table'")}
     assert {"beneficiary_maps", "security_expressions", "quick_odds", "deep_odds", "broad_opportunity_scan_runs"} <= tables
     con.close()

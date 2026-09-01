@@ -45,6 +45,8 @@ DEFAULT_ROUTES: dict[str, tuple[str, str, str]] = {
     "broad_candidate_discovery": ("openai", "gpt-5.6-terra", "medium"),
     "beneficiary_quick_odds": ("openai", "gpt-5.6-terra", "medium"),
     "broad_deep_odds": ("openai", "gpt-5.6-terra", "medium"),
+    "focused_financial_snapshot": ("openai", "gpt-5.6-terra", "high"),
+    "focused_odds_analysis": ("openai", "gpt-5.6-terra", "high"),
     "deep_investment_analysis": ("openai", "gpt-5.6-sol", "high"),
 }
 
