@@ -124,6 +124,18 @@ def test_v162_product_home_and_evidence_are_integrated():
     assert "LATEST RESEARCH CHANGES" in audit_template
 
 
+def test_v163_evidence_routes_are_relevant_and_deduplicated():
+    template = (ROOT / "scripts" / "dashboard" / "research_clue_preview.template.html").read_text(encoding="utf-8")
+    assert "function defaultEvidenceIndex(c)" in template
+    assert "const hasRelevantEvidence=c=>" in template
+    assert "const evidenceLabel=c=>" in template
+    assert "function evidenceScore(c,e,index=0)" in template
+    assert "function uniqueEvidenceRows()" in template
+    assert "new Set(rows.map(x=>x.c.clue_id)).size" in template
+    assert "同一原始来源只显示一次" in template
+    assert "Research Clue Desk v1.6.3" in template
+
+
 def test_v162_builds_all_product_routes(tmp_path):
     build_module = load_module(ROOT / "scripts" / "dashboard" / "build_research_clue_preview.py", "clue_routes")
     outputs = build_module.render_product_routes(
