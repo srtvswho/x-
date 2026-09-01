@@ -69,7 +69,8 @@ def test_preview_html_is_research_first_and_has_hash_routes(tmp_path):
         output,
     )
     html = output.read_text(encoding="utf-8")
-    assert "Today's Research Clues" in html
+    assert "TODAY'S RESEARCH CLUES" in html
+    assert "今日研究线索" in html
     assert "CLUE TIMELINE" in html
     assert "QUOTE CHAIN" in html
     assert "MEDIA EVIDENCE" in html
@@ -78,7 +79,17 @@ def test_preview_html_is_research_first_and_has_hash_routes(tmp_path):
     assert "AI RESEARCH VIEW" in html
     assert "/legacy/#tracking" in html
     assert "/legacy/#feed-section" in html
-    assert "VALUATION UNDER AUDIT" in html
+    assert "/legacy/#ai-cost" in html
+    assert "href=\"#changes\"" in html
+    assert "/legacy/#thesis-changes" in html
+    assert "01&nbsp;&nbsp;今日线索" in html
+    assert "02&nbsp;&nbsp;全部研究线" in html
+    assert "05&nbsp;&nbsp;标的" in html
+    assert "function recommendedClues()" in html
+    assert "return rows.slice(0,7)" in html
+    assert "View Evidence" not in html
+    assert "View Posts" not in html
+    assert "VALUATION UNDER AUDIT" not in html
     assert "#clue/" in html
     assert "#author/" in html
     assert "#theme/" in html
@@ -86,6 +97,19 @@ def test_preview_html_is_research_first_and_has_hash_routes(tmp_path):
     assert "FOCUSED ODDS REVIEW" not in html
     assert "BUY_CANDIDATE" not in html
     assert "Bear Fair Value" not in html
+
+
+def test_v161_home_is_single_feed_and_audit_is_demoted():
+    template = (ROOT / "scripts" / "dashboard" / "research_clue_preview.template.html").read_text(encoding="utf-8")
+    assert "grid-template-columns:176px minmax(0,980px)" in template
+    assert "<aside class=\"rail\"" not in template
+    assert "WHY RECOMMENDED" in template
+    assert "查看完整线索" in template
+    assert "AI COST GUARDRAILS" not in template
+    assert "GOLDEN PASS" not in template
+    assert "TOP INVESTMENT OPPORTUNITIES" not in template
+    audit_template = (ROOT / "scripts" / "dashboard" / "dashboard.template.html").read_text(encoding="utf-8")
+    assert "LATEST RESEARCH CHANGES" in audit_template
 
 
 def test_synthesizer_has_no_openai_dependency():
