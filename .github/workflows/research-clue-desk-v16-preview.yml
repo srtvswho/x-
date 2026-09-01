@@ -1,0 +1,87 @@
+name: Research Clue Desk v1.6 Preview
+
+on:
+  push:
+    branches: [codex/research-clue-desk-v16]
+    paths:
+      - ".github/workflows/research-clue-desk-v16-preview.yml"
+      - "scripts/intel_research_clue_preview.py"
+      - "scripts/dashboard/build_research_clue_preview.py"
+      - "scripts/dashboard/research_clue_preview.template.html"
+      - "tests/test_research_clue_preview_v16.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: research-clue-desk-v16-preview
+  cancel-in-progress: false
+
+jobs:
+  build-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SIGNALBOARD_DB: /tmp/signalboard_clue_preview.db
+      OPENAI_API_KEY: ""
+      AI_ENABLED: "false"
+      AI_DRY_RUN: "true"
+      ALLOW_EXPENSIVE_AI_JOB: "false"
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: codex/research-clue-desk-v16
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Restore read-only research snapshot
+        run: gzip -dc data/signalboard.db.gz > "$SIGNALBOARD_DB"
+
+      - name: Build deterministic clue artifact
+        run: python scripts/intel_research_clue_preview.py --db "$SIGNALBOARD_DB"
+
+      - name: Validate Clue MVP contract
+        run: python -m pytest -q tests/test_research_clue_preview_v16.py
+
+      - name: Render standalone Preview
+        run: python scripts/dashboard/build_research_clue_preview.py
+
+      - name: Enforce zero-AI and Preview isolation
+        run: |
+          python - <<'PY'
+          import json
+          report = json.load(open("outputs/research_clue_desk_v16/run_report.json"))
+          assert report["status"] == "RESEARCH CLUE DESK PREVIEW READY"
+          assert report["openai_calls"] == 0
+          assert report["openai_cost_usd"] == 0
+          assert report["production_changed"] is False
+          assert 8 <= report["clue_count"] <= 15
+          assert report["complete_timeline_count"] >= 5
+          assert report["multi_author_count"] >= 3
+          assert report["media_clue_count"] >= 3
+          assert report["source_dedup_count"] >= 3
+          PY
+
+      - name: Upload Preview artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: research-clue-desk-v16-${{ github.run_id }}
+          retention-days: 14
+          if-no-files-found: error
+          path: |
+            outputs/research_clue_desk_v16/
+            dashboard_deploy_dist/research-clues/index.html
+
+      - name: Commit Preview artifact to isolated branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add outputs/research_clue_desk_v16
+          git add -f dashboard_deploy_dist/research-clues/index.html
+          git commit -m "Build Research Clue Desk v1.6 Preview [skip daily]" || exit 0
+          git push origin HEAD:codex/research-clue-desk-v16

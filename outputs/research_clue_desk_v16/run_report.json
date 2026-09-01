@@ -1,0 +1,23 @@
+{
+  "status": "RESEARCH CLUE DESK PREVIEW READY",
+  "generated_at": "2026-09-01T06:53:47.417642Z",
+  "clue_count": 13,
+  "complete_timeline_count": 11,
+  "multi_author_count": 12,
+  "media_clue_count": 6,
+  "source_dedup_count": 13,
+  "openai_calls": 0,
+  "openai_cost_usd": 0,
+  "production_changed": false,
+  "checks": {
+    "clue_count_8_to_15": true,
+    "five_complete_timelines": true,
+    "three_multi_author": true,
+    "three_with_media": true,
+    "three_with_source_dedup": true,
+    "all_required_fields": true,
+    "zero_openai_calls": true,
+    "zero_openai_cost": true,
+    "production_unchanged": true
+  }
+}
