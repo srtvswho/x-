@@ -1,4 +1,5 @@
 name: Focused Odds v1.4.1 Paid Preview
+# Manual bounded resume after API credit refill (2026-09-01)
 
 on:
   push:
