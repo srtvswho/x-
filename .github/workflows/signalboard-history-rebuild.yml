@@ -244,9 +244,12 @@ jobs:
           if "<html" not in text or "</html>" not in text:
               raise SystemExit("dashboard artifact is incomplete")
           PY
-          mkdir -p dashboard_deploy_dist
-          cp scripts/dashboard/dashboard.html dashboard_deploy_dist/index.html
-          cp scripts/dashboard/dashboard.html dashboard.html
+          mkdir -p dashboard_deploy_dist/legacy dashboard_deploy_dist/research-clues
+          cp scripts/dashboard/dashboard.html dashboard_deploy_dist/legacy/index.html
+          python scripts/dashboard/build_research_clue_preview.py \
+            --output dashboard_deploy_dist/research-clues/index.html
+          cp dashboard_deploy_dist/research-clues/index.html dashboard_deploy_dist/index.html
+          cp dashboard_deploy_dist/research-clues/index.html dashboard.html
 
       - name: Save and publish rebuilt database
         shell: bash
@@ -259,6 +262,6 @@ jobs:
           git config user.email "signalboard-bot@users.noreply.github.com"
           git add data/signalboard.db.gz outputs/signalboard_history_rebuild_latest.json
           git add scripts/dashboard/summaries.json scripts/dashboard/dashboard.html dashboard.html
-          git add -f dashboard_deploy_dist/index.html
+          git add -f dashboard_deploy_dist/index.html dashboard_deploy_dist/research-clues/index.html dashboard_deploy_dist/legacy/index.html
           git commit -m "Rebuild Signalboard 1Y history for 8 KOLs"
           git push origin HEAD:master

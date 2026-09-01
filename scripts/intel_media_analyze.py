@@ -135,7 +135,6 @@ def main() -> None:
         default=int(os.getenv("MEDIA_BACKFILL_BATCH_SIZE", os.getenv("MEDIA_AI_MAX_ITEMS", "6"))),
     )
     parser.add_argument("--post-ids", help="逗号分隔的精确 post_id；Golden media 优先")
-    parser.add_argument("--media-ids", help="逗号分隔的精确 media_id；Opportunity 队列使用")
     parser.add_argument("--estimate-only", action="store_true", help="只下载/hash/估算，不调用 Vision")
     args = parser.parse_args()
     if args.limit < 0 or args.limit > 50:
@@ -146,15 +145,11 @@ def main() -> None:
     init_db(args.db)
     con = sqlite3.connect(args.db, timeout=120)
     post_ids = [x.strip() for x in (args.post_ids or "").split(",") if x.strip()]
-    media_ids = [x.strip() for x in (args.media_ids or "").split(",") if x.strip()]
     post_filter = ""
     params: list[object] = []
     if post_ids:
         post_filter = f"AND m.post_id IN ({','.join('?' for _ in post_ids)})"
         params.extend(post_ids)
-    if media_ids:
-        post_filter += f" AND m.media_id IN ({','.join('?' for _ in media_ids)})"
-        params.extend(media_ids)
     params.append(args.limit)
     rows = con.execute(
         f"""
@@ -230,12 +225,6 @@ def main() -> None:
                 stats["hashed_only"] += 1
                 continue
 
-            # The AI guardrail writes a PENDING ledger row through a separate
-            # SQLite connection before sending the request.  Release this
-            # media metadata transaction first or the ledger pre-write can
-            # deadlock against our own connection.
-            con.commit()
-
             user = (
                 "分析这张帖子图片。帖子文字仅用于语境，不代表图片内容已经被证实。\n"
                 f"post_id: {post_id}\n帖子文字: {(post_text or '')[:1200]}"
@@ -244,9 +233,8 @@ def main() -> None:
                 "media_understanding", SYSTEM_PROMPT, user, MEDIA_SCHEMA,
                 schema_name="signalboard_media_analysis",
                 image_urls=[_data_url(content, mime_type)],
-                max_output_tokens=2500,
+                max_output_tokens=2200,
                 timeout=120,
-                max_retries=0,
                 prompt_version=PROMPT_VERSION, entity_type="media", entity_id=media_id,
             )
             con.execute(

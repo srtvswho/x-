@@ -1,4 +1,3 @@
-import gzip
 import importlib.util
 import json
 from pathlib import Path
@@ -15,16 +14,16 @@ def load_module(path: Path, name: str):
     return module
 
 
-def preview_db(tmp_path: Path) -> Path:
-    target = tmp_path / "signalboard.db"
-    with gzip.open(ROOT / "data" / "signalboard.db.gz", "rb") as src:
-        target.write_bytes(src.read())
-    return target
+def approved_report() -> dict:
+    return json.loads(
+        (ROOT / "outputs" / "research_clue_desk_v16" / "research_clues.json")
+        .read_text(encoding="utf-8")
+    )
 
 
-def test_research_clue_contract_and_zero_ai(tmp_path):
+def test_research_clue_contract_and_zero_ai():
     module = load_module(ROOT / "scripts" / "intel_research_clue_preview.py", "clue_preview")
-    report = module.build(preview_db(tmp_path))
+    report = approved_report()
     checks = module.validate(report)
     clues = report["clues"]
 
@@ -41,9 +40,8 @@ def test_research_clue_contract_and_zero_ai(tmp_path):
     assert all(x["additional_openai_calls"] == 0 for x in clues)
 
 
-def test_clue_timeline_preserves_evidence_layers_and_author_evolution(tmp_path):
-    module = load_module(ROOT / "scripts" / "intel_research_clue_preview.py", "clue_preview_layers")
-    clues = module.build(preview_db(tmp_path))["clues"]
+def test_clue_timeline_preserves_evidence_layers_and_author_evolution():
+    clues = approved_report()["clues"]
     for clue in clues:
         assert clue["one_line_thesis"]
         assert clue["first_seen"] <= clue["last_updated"]
@@ -62,14 +60,8 @@ def test_clue_timeline_preserves_evidence_layers_and_author_evolution(tmp_path):
 
 
 def test_preview_html_is_research_first_and_has_hash_routes(tmp_path):
-    clue_module = load_module(ROOT / "scripts" / "intel_research_clue_preview.py", "clue_preview_html_data")
     build_module = load_module(ROOT / "scripts" / "dashboard" / "build_research_clue_preview.py", "clue_preview_html")
-    out_dir = tmp_path / "outputs"
-    report = clue_module.build(preview_db(tmp_path))
-    clue_module.validate(report)
-    data_path = out_dir / "research_clues.json"
-    out_dir.mkdir()
-    data_path.write_text(json.dumps(report, ensure_ascii=False), encoding="utf-8")
+    data_path = ROOT / "outputs" / "research_clue_desk_v16" / "research_clues.json"
     output = tmp_path / "index.html"
     build_module.render(
         data_path,
@@ -79,8 +71,14 @@ def test_preview_html_is_research_first_and_has_hash_routes(tmp_path):
     html = output.read_text(encoding="utf-8")
     assert "Today's Research Clues" in html
     assert "CLUE TIMELINE" in html
+    assert "QUOTE CHAIN" in html
+    assert "MEDIA EVIDENCE" in html
+    assert "POSITIVE / NEGATIVE EXPOSURE" in html
     assert "AUTHOR THESIS EVOLUTION" in html
     assert "AI RESEARCH VIEW" in html
+    assert "/legacy/#tracking" in html
+    assert "/legacy/#feed-section" in html
+    assert "VALUATION UNDER AUDIT" in html
     assert "#clue/" in html
     assert "#author/" in html
     assert "#theme/" in html
@@ -96,3 +94,11 @@ def test_synthesizer_has_no_openai_dependency():
     assert "import openai" not in source
     assert "call_json(" not in source
     assert "OPENAI_CALLS = 0" in source
+
+
+def test_daily_production_build_reuses_approved_artifact_only():
+    workflow = (ROOT / ".github" / "workflows" / "signalboard-daily.yml").read_text(encoding="utf-8")
+    assert "python scripts/dashboard/build_research_clue_preview.py" in workflow
+    assert "dashboard_deploy_dist/legacy/index.html" in workflow
+    assert "python scripts/intel_research_clue_preview.py" not in workflow
+    assert 'ALLOW_EXPENSIVE_AI_JOB: "false"' in workflow

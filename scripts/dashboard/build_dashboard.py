@@ -496,132 +496,6 @@ def query_thesis_changes(conn, limit=12):
     return out
 
 
-def query_opportunities(conn, limit=20):
-    """Decision-first Opportunity objects; Thesis remains the evidence layer."""
-    table = conn.execute(
-        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='investment_opportunities'"
-    ).fetchone()
-    if not table:
-        return []
-    rows = conn.execute(
-        """SELECT opportunity_id,title,theme_ids_json,companies_json,primary_company,direction,time_horizon,
-                  driver,industry_change,bottleneck,earnings_mechanism,valuation_question,market_expectations,
-                  mispricing_hypothesis,catalysts_json,risks_json,invalidation_conditions_json,
-                  missing_evidence_json,actionability,chain_completeness,opportunity_score,
-                  thesis_quality_score,evidence_quality_score,earnings_impact_score,mispricing_score,
-                  catalyst_score,risk_reward_score,one_line_thesis,why_now,ai_verdict,next_trigger,
-                  positive_exposure_json,negative_exposure_json,authors_json,source_roots_json,
-                  social_mention_count,independent_evidence_count,valuation_json,synthesis_json,
-                  source_candidate_id,updated_at
-           FROM investment_opportunities
-           ORDER BY opportunity_score DESC, evidence_quality_score DESC, updated_at DESC LIMIT ?""",
-        (limit,),
-    ).fetchall()
-    json_indexes = {2, 3, 14, 15, 16, 17, 31, 32, 33, 34, 37, 38}
-    keys = [
-        "opportunity_id", "title", "themes", "companies", "primary_company", "direction", "time_horizon",
-        "driver", "industry_change", "bottleneck", "earnings_mechanism", "valuation_question",
-        "market_expectations", "mispricing_hypothesis", "catalysts", "risks", "invalidation",
-        "missing_evidence", "actionability", "chain_completeness", "opportunity_score",
-        "thesis_quality_score", "evidence_quality_score", "earnings_impact_score", "mispricing_score",
-        "catalyst_score", "risk_reward_score", "one_line_thesis", "why_now", "ai_verdict", "next_trigger",
-        "positive_exposure", "negative_exposure", "authors", "source_roots", "social_mention_count",
-        "independent_evidence_count", "valuation", "synthesis", "source_candidate_id", "updated_at",
-    ]
-    out = []
-    has_best_expression = conn.execute(
-        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='opportunity_best_expressions'"
-    ).fetchone()
-    has_odds = conn.execute(
-        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='opportunity_odds'"
-    ).fetchone()
-    for row in rows:
-        item = {}
-        for index, key in enumerate(keys):
-            item[key] = json.loads(row[index] or ("{}" if key in {"valuation", "synthesis"} else "[]")) if index in json_indexes else row[index]
-        item["score_components"] = {
-            "Thesis": item["thesis_quality_score"], "Evidence": item["evidence_quality_score"],
-            "Earnings": item["earnings_impact_score"], "Mispricing": item["mispricing_score"],
-            "Catalyst": item["catalyst_score"], "Risk / Reward": item["risk_reward_score"],
-        }
-        best = conn.execute(
-            "SELECT analysis_json FROM opportunity_best_expressions WHERE opportunity_id=?",
-            (item["opportunity_id"],),
-        ).fetchone() if has_best_expression else None
-        item["best_expression"] = json.loads(best[0]) if best and best[0] else None
-        odds_rows = conn.execute(
-            """SELECT ticker,company,currency,best_expression_rank,current_price,bear_fair_value,
-                      base_fair_value,bull_fair_value,base_upside,bear_downside,reward_risk,
-                      expected_return,earnings_gap,expectations_gap,odds_band,odds_score,
-                      odds_status,valuation_confidence,thesis_confidence,analysis_json,as_of_date
-               FROM opportunity_odds WHERE opportunity_id=?
-               ORDER BY odds_score IS NULL,odds_score DESC,best_expression_rank""",
-            (item["opportunity_id"],),
-        ).fetchall() if has_odds else []
-        item["odds"] = []
-        for odds_row in odds_rows:
-            analysis = json.loads(odds_row[19] or "{}")
-            item["odds"].append({
-                "ticker": odds_row[0], "company": odds_row[1], "currency": odds_row[2],
-                "best_expression_rank": odds_row[3], "current_price": odds_row[4],
-                "bear_fair_value": odds_row[5], "base_fair_value": odds_row[6],
-                "bull_fair_value": odds_row[7], "base_upside": odds_row[8],
-                "bear_downside": odds_row[9], "reward_risk": odds_row[10],
-                "expected_return": odds_row[11], "earnings_gap": odds_row[12],
-                "expectations_gap": odds_row[13], "odds_band": odds_row[14],
-                "odds_score": odds_row[15], "odds_status": odds_row[16],
-                "valuation_confidence": odds_row[17], "thesis_confidence": odds_row[18],
-                "market_expectations": analysis.get("market_expectations") or {},
-                "market_data": analysis.get("market_data") or {},
-                "earnings_bridge": analysis.get("earnings_bridge") or {},
-                "scenarios": analysis.get("scenarios") or [],
-                "why_not_buy_now": analysis.get("why_not_buy_now") or "",
-                "verdict": analysis.get("verdict") or "",
-                "catalyst": analysis.get("catalyst") or "",
-                "invalidation": analysis.get("invalidation") or "",
-                "data_gaps": analysis.get("data_gaps") or [],
-                "buy_gate_blockers": (analysis.get("computed") or {}).get("buy_gate_blockers") or [],
-                "as_of_date": odds_row[20],
-            })
-        item["best_odds"] = item["odds"][0] if item["odds"] else None
-        expression_ticker = ((item["best_expression"] or {}).get("best_expression") or {}).get("ticker")
-        item["best_expression_vs_best_odds"] = {
-            "best_expression": expression_ticker,
-            "best_odds": item["best_odds"]["ticker"] if item["best_odds"] else None,
-            "same_security": bool(expression_ticker and item["best_odds"] and expression_ticker == item["best_odds"]["ticker"]),
-        }
-        out.append(item)
-    return out
-
-
-def query_opportunity_funnel(conn):
-    """Latest auditable funnel snapshot; definitions travel with the counts."""
-    table = conn.execute(
-        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='opportunity_funnel_snapshots'"
-    ).fetchone()
-    if not table:
-        return {"counts": {}, "definitions": {}, "created_at": None}
-    row = conn.execute(
-        "SELECT counts_json,definitions_json,created_at FROM opportunity_funnel_snapshots ORDER BY created_at DESC LIMIT 1"
-    ).fetchone()
-    if not row:
-        return {"counts": {}, "definitions": {}, "created_at": None}
-    return {"counts": json.loads(row[0]), "definitions": json.loads(row[1]), "created_at": row[2]}
-
-
-def query_broad_opportunity_scan(conn):
-    """Latest v1.4 Coverage/Top Odds report; empty before a bounded scan exists."""
-    table = conn.execute(
-        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='broad_opportunity_scan_runs'"
-    ).fetchone()
-    if not table:
-        return {}
-    row = conn.execute(
-        "SELECT report_json FROM broad_opportunity_scan_runs ORDER BY created_at DESC LIMIT 1"
-    ).fetchone()
-    return json.loads(row[0]) if row and row[0] else {}
-
-
 def query_ai_cost_panel(conn):
     """Risk-aware cost summary. PENDING rows remain visible and reserve estimated cost."""
     enabled = os.getenv("AI_ENABLED", "false").strip().lower() in {"1", "true", "yes", "on"}
@@ -894,9 +768,6 @@ def main():
         today_records = query_today_records(conn)
         build_meta = build_metadata(conn)
         thesis_changes = query_thesis_changes(conn)
-        opportunities = query_opportunities(conn)
-        opportunity_funnel = query_opportunity_funnel(conn)
-        broad_scan = query_broad_opportunity_scan(conn)
         ai_cost_panel = query_ai_cost_panel(conn)
         print(f"  24h window: {build_meta['window_label']} "
               f"posts={today_stats['n_posts_24h']} "
@@ -917,9 +788,6 @@ def main():
         html = html.replace("__TODAY_RECORDS__", json.dumps(today_records, ensure_ascii=False))
         html = html.replace("__BUILD_META__",    json.dumps(build_meta, ensure_ascii=False))
         html = html.replace("__THESIS_CHANGES__", json.dumps(thesis_changes, ensure_ascii=False))
-        html = html.replace("__OPPORTUNITIES__", json.dumps(opportunities, ensure_ascii=False))
-        html = html.replace("__OPPORTUNITY_FUNNEL__", json.dumps(opportunity_funnel, ensure_ascii=False))
-        html = html.replace("__BROAD_SCAN__", json.dumps(broad_scan, ensure_ascii=False))
         html = html.replace("__AI_COST_PANEL__", json.dumps(ai_cost_panel, ensure_ascii=False))
         OUT.write_text(html, encoding="utf-8")
         # 检查 null 字样没渲染到 HTML (兜底, 即使前端处理对了)

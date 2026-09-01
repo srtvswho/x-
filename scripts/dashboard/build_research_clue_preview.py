@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render the standalone Research Clue Desk v1.6 Preview."""
+"""Render the standalone Research Clue Desk v1.6 from approved static artifacts."""
 
 from __future__ import annotations
 
@@ -17,9 +17,9 @@ DEFAULT_OUTPUT = ROOT / "dashboard_deploy_dist" / "research-clues" / "index.html
 def render(data_path: Path, template_path: Path, output_path: Path) -> Path:
     data = json.loads(data_path.read_text(encoding="utf-8"))
     if data.get("openai_calls") != 0 or data.get("production_changed") is not False:
-        raise RuntimeError("Preview must be zero-AI and production-isolated")
+        raise RuntimeError("Research Clue build must be zero-AI and database-isolated")
     if not 8 <= len(data.get("clues", [])) <= 15:
-        raise RuntimeError("Preview requires 8–15 clues")
+        raise RuntimeError("Research Clue Desk requires 8–15 approved clues")
     payload = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     template = template_path.read_text(encoding="utf-8")
     if template.count("__RESEARCH_CLUES__") != 1:

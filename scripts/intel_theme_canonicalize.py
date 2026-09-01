@@ -32,13 +32,11 @@ JUDGMENT_SCHEMA = {
                 "properties": {
                     "pair_id": {"type": "string"},
                     "decision": {"type": "string", "enum": ["MERGE_ALIAS", "RELATED_DISTINCT", "DISTINCT"]},
-                    "relationship_type": {"type": "string", "enum": ["ALIAS", "PARENT_CHILD", "RELATED", "KEEP_SEPARATE", "UNCERTAIN"]},
-                    "semantic_relationship": {"type": "string"},
                     "canonical_name": {"type": "string"},
                     "confidence": {"type": "number", "minimum": 0, "maximum": 1},
                     "rationale": {"type": "string"},
                 },
-                "required": ["pair_id", "decision", "relationship_type", "semantic_relationship", "canonical_name", "confidence", "rationale"],
+                "required": ["pair_id", "decision", "canonical_name", "confidence", "rationale"],
             },
         }
     },
@@ -47,7 +45,6 @@ JUDGMENT_SCHEMA = {
 
 SYSTEM = """你负责投资研究主题本体治理。Embedding 只负责召回相似候选，你必须根据语义和 Claim 语境独立判断。
 MERGE_ALIAS 仅用于同一经济/技术主题的不同语言、缩写或同义表达；上下游、驱动因素、产品与受益逻辑必须保留为 RELATED_DISTINCT。
-relationship_type 必须明确输出 ALIAS / PARENT_CHILD / RELATED / KEEP_SEPARATE / UNCERTAIN；decision 与其保持一致，只有 ALIAS 才能 MERGE_ALIAS。
 尤其不能因为共同出现就把 Agent Memory、AI demand、NAND、China WFE、CoPoS、CoWoP、ABF、PCB 合并。
 canonical_name 必须逐字选择该 pair 的 left_name 或 right_name。宁可不合并，不可误合并。"""
 
@@ -188,10 +185,6 @@ def _judge(con: sqlite3.Connection, candidates: list[dict], max_pairs: int) -> t
                 judgment["decision"] = "DISTINCT"
                 judgment["canonical_name"] = ""
                 judgment["rationale"] = "Invalid canonical name returned; merge rejected. " + judgment["rationale"]
-            if judgment["relationship_type"] != "ALIAS" and judgment["decision"] == "MERGE_ALIAS":
-                judgment["decision"] = "RELATED_DISTINCT" if judgment["relationship_type"] in {"PARENT_CHILD", "RELATED"} else "DISTINCT"
-                judgment["canonical_name"] = ""
-                judgment["rationale"] = "Relationship type is not ALIAS; deterministic merge rejection. " + judgment["rationale"]
             judgment.update({
                 "left_theme_id": left["theme_id"], "left_name": left["name"],
                 "right_theme_id": right["theme_id"], "right_name": right["name"],
@@ -242,8 +235,6 @@ def _apply_merges(con: sqlite3.Connection, judgments: list[dict]) -> int:
         if left_constraint != right_constraint:
             # A demand/supply constraint is a causal driver, not an alias of the product itself.
             item["decision"] = "RELATED_DISTINCT"
-            item["relationship_type"] = "RELATED"
-            item["semantic_relationship"] = "Constraint/bottleneck driver is related to, but not an alias of, the product theme."
             item["canonical_name"] = ""
             item["rationale"] = "Deterministic guard: constraint/bottleneck theme must remain distinct from product theme."
             con.execute(

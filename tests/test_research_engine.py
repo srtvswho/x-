@@ -48,7 +48,7 @@ def test_v4_schema_and_recursive_graph_are_idempotent(tmp_path):
     db = tmp_path / "graph.db"
     init_db(db)
     con = sqlite3.connect(db)
-    assert con.execute("PRAGMA user_version").fetchone()[0] == CURRENT_SCHEMA_VERSION == 11
+    assert con.execute("PRAGMA user_version").fetchone()[0] == CURRENT_SCHEMA_VERSION == 7
     for table in ("theme_embeddings", "underlying_sources", "source_memberships",
                   "claim_verifications", "thesis_analyses", "cross_author_theses", "research_case_analyses"):
         assert con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (table,)).fetchone()

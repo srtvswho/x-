@@ -37,14 +37,6 @@ DEFAULT_ROUTES: dict[str, tuple[str, str, str]] = {
     "ai_analyst": ("openai", "gpt-5.6-terra", "medium"),
     "golden_evaluation": ("openai", "gpt-5.6-terra", "medium"),
     "research_case_synthesis": ("openai", "gpt-5.6-terra", "high"),
-    "logic_chain_analysis": ("openai", "gpt-5.6-terra", "high"),
-    "opportunity_discovery": ("openai", "gpt-5.6-terra", "high"),
-    "opportunity_synthesis": ("openai", "gpt-5.6-terra", "high"),
-    "best_expression_analysis": ("openai", "gpt-5.6-terra", "high"),
-    "opportunity_odds_analysis": ("openai", "gpt-5.6-terra", "medium"),
-    "broad_candidate_discovery": ("openai", "gpt-5.6-terra", "medium"),
-    "beneficiary_quick_odds": ("openai", "gpt-5.6-terra", "medium"),
-    "broad_deep_odds": ("openai", "gpt-5.6-terra", "medium"),
     "deep_investment_analysis": ("openai", "gpt-5.6-sol", "high"),
 }
 
@@ -60,11 +52,6 @@ DEFAULT_PRICING_USD_PER_MILLION: dict[str, tuple[float, float, float]] = {
     "deepseek-v4-pro": (1.32, 0.044, 3.96),
     "deepseek-v4-flash-vision-exp": (0.44, 0.014, 1.32),
 }
-
-
-def _web_search_cost_per_call() -> float:
-    # Official Responses API pricing: $10 / 1,000 calls; search content tokens are free.
-    return float(os.getenv("AI_WEB_SEARCH_COST_PER_CALL_USD", "0.01"))
 
 
 @dataclass(frozen=True)
@@ -300,7 +287,6 @@ def _call(
             prompt_version=prompt_version or schema_name,
             entity_type=entity_type,
             entity_id=entity_id,
-            fixed_cost_usd=_web_search_cost_per_call() if web_search else 0.0,
         )
         try:
             if route.provider == "openai":
@@ -315,8 +301,6 @@ def _call(
                     max_output_tokens=max_output_tokens, timeout=timeout,
                 )
             in_tok, cached_tok, out_tok, cost = _usage(route.provider, route.model, payload)
-            if web_search:
-                cost = round(cost + _web_search_cost_per_call(), 8)
             result = AIResult(
                 text=text,
                 data=json.loads(text) if schema is not None else text,
@@ -344,11 +328,6 @@ def _call(
             last_error = exc
             if isinstance(exc, AIGuardrailBlocked):
                 raise
-            # Retrying the exact same prompt with the exact same output cap
-            # cannot repair an incomplete max_output_tokens response.  It only
-            # repeats spend and was the main amplification source in Preview 1.
-            if "max_output_tokens" in str(exc):
-                break
             if attempt < max_retries:
                 time.sleep(1 + 2 * attempt)
     assert last_error is not None

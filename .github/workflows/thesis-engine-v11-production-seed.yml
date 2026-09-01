@@ -72,9 +72,12 @@ jobs:
           python scripts/dashboard/build_dashboard.py
           test -s scripts/dashboard/dashboard.html
           test "$(stat -c%s scripts/dashboard/dashboard.html)" -ge 10000
-          cp scripts/dashboard/dashboard.html dashboard.html
-          mkdir -p dashboard_deploy_dist
-          cp scripts/dashboard/dashboard.html dashboard_deploy_dist/index.html
+          mkdir -p dashboard_deploy_dist/legacy dashboard_deploy_dist/research-clues
+          cp scripts/dashboard/dashboard.html dashboard_deploy_dist/legacy/index.html
+          python scripts/dashboard/build_research_clue_preview.py \
+            --output dashboard_deploy_dist/research-clues/index.html
+          cp dashboard_deploy_dist/research-clues/index.html dashboard_deploy_dist/index.html
+          cp dashboard_deploy_dist/research-clues/index.html dashboard.html
       - name: Persist audited production seed
         run: |
           set -Eeuo pipefail
@@ -84,7 +87,7 @@ jobs:
           git config user.name signalboard-bot
           git config user.email signalboard-bot@users.noreply.github.com
           git add data/signalboard.db.gz scripts/dashboard/dashboard.html dashboard.html
-          git add -f dashboard_deploy_dist/index.html outputs/thesis_engine_v11/golden_validation_report.* outputs/thesis_engine_v11/production_seed_run_*.json
+          git add -f dashboard_deploy_dist/index.html dashboard_deploy_dist/research-clues/index.html dashboard_deploy_dist/legacy/index.html outputs/thesis_engine_v11/golden_validation_report.* outputs/thesis_engine_v11/production_seed_run_*.json
           git commit -m "Productionize archived Golden cases with zero AI [skip daily]"
           git push origin HEAD:master
       - name: Upload final production audit
