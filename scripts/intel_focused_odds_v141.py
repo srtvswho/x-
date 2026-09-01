@@ -329,8 +329,8 @@ def plan() -> dict[str, Any]:
     stages = []
     for sec in UNIVERSE:
         stages.extend([
-            {"ticker": sec.ticker, "stage": "focused_financial_snapshot", "model": "gpt-5.6-terra", "reasoning": "high", "estimated_input_tokens": 9000, "estimated_output_tokens": 7000},
-            {"ticker": sec.ticker, "stage": "focused_odds_analysis", "model": "gpt-5.6-terra", "reasoning": "high", "estimated_input_tokens": 16000, "estimated_output_tokens": 9000},
+            {"ticker": sec.ticker, "stage": "focused_financial_snapshot", "model": "gpt-5.6-terra", "reasoning": "high", "estimated_input_tokens": 9000, "estimated_output_tokens": 25000, "max_output_tokens": 30000},
+            {"ticker": sec.ticker, "stage": "focused_odds_analysis", "model": "gpt-5.6-terra", "reasoning": "high", "estimated_input_tokens": 16000, "estimated_output_tokens": 25000, "max_output_tokens": 30000},
         ])
     # Token cost plus one web-search allowance for snapshot calls. Conservative planning figure.
     estimated = sum((x["estimated_input_tokens"] * 2 + x["estimated_output_tokens"] * 12) / 1_000_000 for x in stages) + .01 * len(UNIVERSE)
@@ -437,6 +437,7 @@ def main() -> None:
     parser.add_argument("--db", default=os.getenv("SIGNALBOARD_DB", DB_PATH))
     parser.add_argument("--output-dir", default=str(OUTPUT_DIR))
     parser.add_argument("--plan-only", action="store_true")
+    parser.add_argument("--allow-partial", action="store_true", help="Persist resumable audit state without failing the job")
     args = parser.parse_args()
     output = Path(args.output_dir); output.mkdir(parents=True, exist_ok=True)
     if args.plan_only:
@@ -453,29 +454,34 @@ def main() -> None:
             cached = None if force else con.execute("SELECT snapshot_json,source_digest,model FROM focused_financial_snapshots WHERE ticker=? AND prompt_version=?", (sec.ticker, SNAPSHOT_VERSION)).fetchone()
             if cached:
                 snapshot, digest, snapshot_model = json.loads(cached[0]), cached[1], cached[2]
+                print(f"{sec.ticker}: reuse financial snapshot", flush=True)
             else:
                 result = call_json_web("focused_financial_snapshot", SNAPSHOT_SYSTEM,
                     _json({"security": asdict(sec), "required_as_of": AS_OF_DATE,
                            "required_market_metric_names": ["current_price", "market_cap", "enterprise_value", "ttm_revenue", "ttm_eps", "ttm_fcf", "forward_pe"]}), SNAPSHOT_SCHEMA,
-                    schema_name="focused_financial_snapshot", max_output_tokens=11000, timeout=600, max_retries=0,
+                    schema_name="focused_financial_snapshot", max_output_tokens=30000, timeout=600, max_retries=0,
                     prompt_version=SNAPSHOT_VERSION, entity_type="focused_security", entity_id=sec.ticker)
                 snapshot = result.data; sanitize_snapshot(snapshot, result.sources)
-                digest, snapshot_model = persist_snapshot(con, sec, snapshot, result.model)
+                digest, snapshot_model = persist_snapshot(con, sec, snapshot, result.model), result.model
                 record_usage(con, result, workload="focused_financial_snapshot", object_type="focused_security", object_id=sec.ticker)
                 con.commit()
+                print(f"{sec.ticker}: financial snapshot complete", flush=True)
             review_cached = None if force else con.execute("SELECT analysis_json FROM focused_odds_reviews WHERE ticker=? AND prompt_version=? AND source_digest=?", (sec.ticker, PROMPT_VERSION, digest)).fetchone()
             if review_cached:
+                print(f"{sec.ticker}: reuse odds review", flush=True)
                 continue
             result = call_json("focused_odds_analysis", REVIEW_SYSTEM,
                 _json({"security": asdict(sec), "snapshot": snapshot, "cyclical_normalized_pe_ceiling": CYCLICAL_PE_CEILINGS.get(sec.ticker)}),
-                REVIEW_SCHEMA, schema_name="focused_odds_review", max_output_tokens=13000, timeout=600, max_retries=0,
+                REVIEW_SCHEMA, schema_name="focused_odds_review", max_output_tokens=30000, timeout=600, max_retries=0,
                 prompt_version=PROMPT_VERSION, entity_type="focused_security", entity_id=sec.ticker)
             review = normalize_review(sec, snapshot, result.data)
             persist_review(con, sec, review, digest, result.model)
             record_usage(con, result, workload="focused_odds_analysis", object_type="focused_security", object_id=sec.ticker)
             con.commit()
+            print(f"{sec.ticker}: odds review complete", flush=True)
         except Exception as exc:
             con.rollback(); errors.append({"ticker": sec.ticker, "error_type": type(exc).__name__, "message": str(exc)[:500]})
+            print(f"{sec.ticker}: {type(exc).__name__}: {str(exc)[:180]}", flush=True)
     report = build_report(con, run_id, errors)
     con.execute("""INSERT OR REPLACE INTO focused_odds_runs
       (run_id,status,universe_json,report_json,ai_calls,known_cost_usd,risk_cost_usd) VALUES (?,?,?,?,?,?,?)""",
@@ -486,7 +492,7 @@ def main() -> None:
     (output / "six_security_reviews.json").write_text(json.dumps(report["ranking"], ensure_ascii=False, indent=2), encoding="utf-8")
     (output / "cost_by_security.json").write_text(json.dumps(report["cost"], ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(report, ensure_ascii=False, indent=2))
-    if report["status"] != "COMPLETED":
+    if report["status"] != "COMPLETED" and not args.allow_partial:
         raise SystemExit(2)
 
 
