@@ -1,0 +1,35 @@
+{
+  "attempted_calls": 6,
+  "successful_calls": 0,
+  "input_tokens": 0,
+  "cached_input_tokens": 0,
+  "output_tokens": 0,
+  "known_cost_usd": 0,
+  "risk_cost_usd": 1.50416,
+  "by_security": {
+    "JBL": {
+      "calls": 1,
+      "risk_cost_usd": 0.250684
+    },
+    "KLIC": {
+      "calls": 1,
+      "risk_cost_usd": 0.250708
+    },
+    "NVT": {
+      "calls": 1,
+      "risk_cost_usd": 0.250706
+    },
+    "JCI": {
+      "calls": 1,
+      "risk_cost_usd": 0.25068
+    },
+    "005930.KS": {
+      "calls": 1,
+      "risk_cost_usd": 0.250692
+    },
+    "MU": {
+      "calls": 1,
+      "risk_cost_usd": 0.25069
+    }
+  }
+}
