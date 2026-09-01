@@ -15,6 +15,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # One bounded run; result commits do not match the workflow-only push filter.
   focused-odds:
     runs-on: ubuntu-latest
     timeout-minutes: 180
