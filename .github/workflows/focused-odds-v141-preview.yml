@@ -20,8 +20,8 @@ jobs:
     timeout-minutes: 180
     env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      SIGNALBOARD_DB: /workspace/data/signalboard_full.db
-      AI_LEDGER_DB_PATH: /workspace/data/signalboard_full.db
+      SIGNALBOARD_DB: /tmp/signalboard_focused_v141.db
+      AI_LEDGER_DB_PATH: /tmp/signalboard_focused_v141.db
       AI_ENABLED: "true"
       AI_DRY_RUN: "false"
       ALLOW_EXPENSIVE_AI_JOB: "false"
@@ -63,7 +63,6 @@ jobs:
         run: |
           set -Eeuo pipefail
           test -n "$OPENAI_API_KEY"
-          mkdir -p /workspace/data
           gzip -dc data/signalboard.db.gz > "$SIGNALBOARD_DB"
           python -c "from signalboard.db import init_db; init_db('$SIGNALBOARD_DB')"
 
