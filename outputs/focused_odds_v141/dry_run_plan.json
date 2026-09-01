@@ -58,7 +58,8 @@
       "model": "gpt-5.6-terra",
       "reasoning": "high",
       "estimated_input_tokens": 9000,
-      "estimated_output_tokens": 7000
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
     },
     {
       "ticker": "JBL",
@@ -66,7 +67,8 @@
       "model": "gpt-5.6-terra",
       "reasoning": "high",
       "estimated_input_tokens": 16000,
-      "estimated_output_tokens": 9000
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
     },
     {
       "ticker": "KLIC",
@@ -74,7 +76,8 @@
       "model": "gpt-5.6-terra",
       "reasoning": "high",
       "estimated_input_tokens": 9000,
-      "estimated_output_tokens": 7000
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
     },
     {
       "ticker": "KLIC",
@@ -82,7 +85,8 @@
       "model": "gpt-5.6-terra",
       "reasoning": "high",
       "estimated_input_tokens": 16000,
-      "estimated_output_tokens": 9000
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
     },
     {
       "ticker": "NVT",
@@ -90,7 +94,8 @@
       "model": "gpt-5.6-terra",
       "reasoning": "high",
       "estimated_input_tokens": 9000,
-      "estimated_output_tokens": 7000
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
     },
     {
       "ticker": "NVT",
@@ -98,7 +103,8 @@
       "model": "gpt-5.6-terra",
       "reasoning": "high",
       "estimated_input_tokens": 16000,
-      "estimated_output_tokens": 9000
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
     },
     {
       "ticker": "JCI",
@@ -106,7 +112,8 @@
       "model": "gpt-5.6-terra",
       "reasoning": "high",
       "estimated_input_tokens": 9000,
-      "estimated_output_tokens": 7000
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
     },
     {
       "ticker": "JCI",
@@ -114,7 +121,8 @@
       "model": "gpt-5.6-terra",
       "reasoning": "high",
       "estimated_input_tokens": 16000,
-      "estimated_output_tokens": 9000
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
     },
     {
       "ticker": "005930.KS",
@@ -122,7 +130,8 @@
       "model": "gpt-5.6-terra",
       "reasoning": "high",
       "estimated_input_tokens": 9000,
-      "estimated_output_tokens": 7000
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
     },
     {
       "ticker": "005930.KS",
@@ -130,7 +139,8 @@
       "model": "gpt-5.6-terra",
       "reasoning": "high",
       "estimated_input_tokens": 16000,
-      "estimated_output_tokens": 9000
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
     },
     {
       "ticker": "MU",
@@ -138,7 +148,8 @@
       "model": "gpt-5.6-terra",
       "reasoning": "high",
       "estimated_input_tokens": 9000,
-      "estimated_output_tokens": 7000
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
     },
     {
       "ticker": "MU",
@@ -146,12 +157,13 @@
       "model": "gpt-5.6-terra",
       "reasoning": "high",
       "estimated_input_tokens": 16000,
-      "estimated_output_tokens": 9000
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
     }
   ],
   "planned_calls": 12,
   "actual_api_calls": 0,
-  "estimated_cost_usd": 1.512,
+  "estimated_cost_usd": 2.952,
   "hard_gates": {
     "model": "gpt-5.6-terra",
     "run_budget_usd": 30,
