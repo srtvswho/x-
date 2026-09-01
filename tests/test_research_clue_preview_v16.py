@@ -77,18 +77,23 @@ def test_preview_html_is_research_first_and_has_hash_routes(tmp_path):
     assert "POSITIVE / NEGATIVE EXPOSURE" in html
     assert "AUTHOR THESIS EVOLUTION" in html
     assert "AI RESEARCH VIEW" in html
-    assert "/legacy/#tracking" in html
-    assert "/legacy/#feed-section" in html
-    assert "/legacy/#ai-cost" in html
-    assert "href=\"#changes\"" in html
-    assert "/legacy/#thesis-changes" in html
+    assert "/research-changes/" in html
+    assert "/evidence/" in html
+    assert "/companies/" in html
+    assert "/admin/" in html
     assert "01&nbsp;&nbsp;今日线索" in html
     assert "02&nbsp;&nbsp;全部研究线" in html
     assert "05&nbsp;&nbsp;标的" in html
     assert "function recommendedClues()" in html
     assert "return rows.slice(0,7)" in html
-    assert "View Evidence" not in html
-    assert "View Posts" not in html
+    assert "View Evidence" in html
+    assert "View Timeline" in html
+    assert "EVIDENCE DETAIL" in html
+    assert "ORIGINAL CONTENT" in html
+    assert "EXTRACTED FACTS" in html
+    assert "COMPANY RESEARCH MAP" in html
+    assert "href=\"/legacy/#feed-section\"" not in html
+    assert "href=\"/legacy/#ai-cost\"" not in html
     assert "VALUATION UNDER AUDIT" not in html
     assert "#clue/" in html
     assert "#author/" in html
@@ -99,17 +104,42 @@ def test_preview_html_is_research_first_and_has_hash_routes(tmp_path):
     assert "Bear Fair Value" not in html
 
 
-def test_v161_home_is_single_feed_and_audit_is_demoted():
+def test_v162_product_home_and_evidence_are_integrated():
     template = (ROOT / "scripts" / "dashboard" / "research_clue_preview.template.html").read_text(encoding="utf-8")
     assert "grid-template-columns:176px minmax(0,980px)" in template
     assert "<aside class=\"rail\"" not in template
     assert "WHY RECOMMENDED" in template
-    assert "查看完整线索" in template
+    assert "Evidence Detail" not in template
+    assert "EVIDENCE DETAIL" in template
+    assert "Back to Clue Detail" in template
+    assert "RELATED CLUE" in template
+    assert "Company Research Map" not in template
+    assert "COMPANY RESEARCH MAP" in template
     assert "AI COST GUARDRAILS" not in template
     assert "GOLDEN PASS" not in template
+    assert "RESEARCH_CASE" not in template
+    assert "DATABASE STATUS" not in template
     assert "TOP INVESTMENT OPPORTUNITIES" not in template
     audit_template = (ROOT / "scripts" / "dashboard" / "dashboard.template.html").read_text(encoding="utf-8")
     assert "LATEST RESEARCH CHANGES" in audit_template
+
+
+def test_v162_builds_all_product_routes(tmp_path):
+    build_module = load_module(ROOT / "scripts" / "dashboard" / "build_research_clue_preview.py", "clue_routes")
+    outputs = build_module.render_product_routes(
+        ROOT / "outputs" / "research_clue_desk_v16" / "research_clues.json",
+        ROOT / "scripts" / "dashboard" / "research_clue_preview.template.html",
+        tmp_path,
+    )
+    expected = {
+        tmp_path / "index.html",
+        tmp_path / "research-clues" / "index.html",
+        tmp_path / "research-changes" / "index.html",
+        tmp_path / "evidence" / "index.html",
+        tmp_path / "companies" / "index.html",
+    }
+    assert set(outputs) == expected
+    assert all(path.read_bytes() == outputs[0].read_bytes() for path in outputs)
 
 
 def test_synthesizer_has_no_openai_dependency():
@@ -124,5 +154,10 @@ def test_daily_production_build_reuses_approved_artifact_only():
     workflow = (ROOT / ".github" / "workflows" / "signalboard-daily.yml").read_text(encoding="utf-8")
     assert "python scripts/dashboard/build_research_clue_preview.py" in workflow
     assert "dashboard_deploy_dist/legacy/index.html" in workflow
+    assert "dashboard_deploy_dist/admin/index.html" in workflow
+    assert "--deploy-root dashboard_deploy_dist" in workflow
+    assert "dashboard_deploy_dist/evidence/index.html" in workflow
+    assert "dashboard_deploy_dist/companies/index.html" in workflow
+    assert "dashboard_deploy_dist/research-changes/index.html" in workflow
     assert "python scripts/intel_research_clue_preview.py" not in workflow
     assert 'ALLOW_EXPENSIVE_AI_JOB: "false"' in workflow
