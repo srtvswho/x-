@@ -1,35 +1,35 @@
 {
-  "attempted_calls": 6,
-  "successful_calls": 0,
-  "input_tokens": 0,
-  "cached_input_tokens": 0,
-  "output_tokens": 0,
-  "known_cost_usd": 0,
-  "risk_cost_usd": 1.50416,
+  "attempted_calls": 12,
+  "successful_calls": 12,
+  "input_tokens": 625156,
+  "cached_input_tokens": 28930,
+  "output_tokens": 97123,
+  "known_cost_usd": 2.423714,
+  "risk_cost_usd": 2.423714,
   "by_security": {
     "JBL": {
-      "calls": 1,
-      "risk_cost_usd": 0.250684
+      "calls": 2,
+      "risk_cost_usd": 0.376654
     },
     "KLIC": {
-      "calls": 1,
-      "risk_cost_usd": 0.250708
+      "calls": 2,
+      "risk_cost_usd": 0.4079572
     },
     "NVT": {
-      "calls": 1,
-      "risk_cost_usd": 0.250706
+      "calls": 2,
+      "risk_cost_usd": 0.3882052
     },
     "JCI": {
-      "calls": 1,
-      "risk_cost_usd": 0.25068
+      "calls": 2,
+      "risk_cost_usd": 0.4033072
     },
     "005930.KS": {
-      "calls": 1,
-      "risk_cost_usd": 0.250692
+      "calls": 2,
+      "risk_cost_usd": 0.4459952
     },
     "MU": {
-      "calls": 1,
-      "risk_cost_usd": 0.25069
+      "calls": 2,
+      "risk_cost_usd": 0.4015952
     }
   }
 }

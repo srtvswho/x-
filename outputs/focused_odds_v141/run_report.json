@@ -1,90 +1,1052 @@
 {
   "version": "focused-odds-v1.4.1",
   "as_of_date": "2026-09-01",
-  "status": "PARTIAL",
+  "status": "COMPLETED",
   "stop_state": "FOCUSED ODDS REVIEW READY",
   "production_changed": false,
   "universe_count": 6,
-  "completed_count": 0,
-  "ranking": [],
-  "best_business_vs_best_odds": {
-    "PHYSICAL_INFRA": {
-      "best_business": null,
-      "best_odds": null
-    },
-    "MEMORY": {
-      "best_business": null,
-      "best_odds": null
-    },
-    "PACKAGING": {
-      "best_business": null,
-      "best_odds": null
-    }
-  },
-  "errors": [
-    {
-      "ticker": "JBL",
-      "error_type": "HTTPError",
-      "message": "429 Client Error: Too Many Requests for url: https://api.openai.com/v1/responses | response={\n  \"error\": {\n    \"message\": \"You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.\",\n    \"type\": \"insufficient_quota\",\n    \"param\": null,\n    \"code\": \"credit_balance_exhausted\"\n  }\n}"
-    },
-    {
-      "ticker": "KLIC",
-      "error_type": "HTTPError",
-      "message": "429 Client Error: Too Many Requests for url: https://api.openai.com/v1/responses | response={\n  \"error\": {\n    \"message\": \"You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.\",\n    \"type\": \"insufficient_quota\",\n    \"param\": null,\n    \"code\": \"credit_balance_exhausted\"\n  }\n}"
-    },
+  "completed_count": 6,
+  "ranking": [
     {
       "ticker": "NVT",
-      "error_type": "HTTPError",
-      "message": "429 Client Error: Too Many Requests for url: https://api.openai.com/v1/responses | response={\n  \"error\": {\n    \"message\": \"You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.\",\n    \"type\": \"insufficient_quota\",\n    \"param\": null,\n    \"code\": \"credit_balance_exhausted\"\n  }\n}"
+      "company": "nVent Electric",
+      "currency": "USD",
+      "group": "PHYSICAL_INFRA",
+      "attractive_entry_high": 92.0769,
+      "attractive_entry_low": 80.75,
+      "base_fair_value": 119.7,
+      "base_upside": -0.20597,
+      "bear_downside": -0.464345,
+      "bear_fair_value": 80.75,
+      "bull_fair_value": 162.5,
+      "current_price": 150.75,
+      "eps_gap": null,
+      "expected_fair_value": 116.575,
+      "expected_return": -0.2267,
+      "fcf_gap": null,
+      "gate_blockers": [
+        "No Good Odds Path passes",
+        "Evidence/valuation confidence",
+        "Thesis/catalyst/invalidation quality",
+        "Critical data missing"
+      ],
+      "gate_paths": {
+        "A": false,
+        "B": false,
+        "C": false
+      },
+      "normalized_earnings_gate": true,
+      "normalized_eps": 5.7,
+      "normalized_pe": 26.4474,
+      "normalized_pe_ceiling": null,
+      "odds_score": 17.8,
+      "odds_status": "WATCH",
+      "reward_risk": -0.4436,
+      "expectations_gap": "NEGATIVE",
+      "exposure_purity": "HIGH",
+      "earnings_sensitivity": "HIGH",
+      "one_line_conclusion": "High-quality data-center infrastructure exposure, but $150.75 already discounts sustained execution closer to the bull case; risk-adjusted value is below price.",
+      "earnings_bridge": [
+        {
+          "driver": "Revenue is FY2025 sales multiplied by management's 37%-39% reported-growth guidance midpoint. EPS uses management adjusted-guidance midpoint. Base FCF applies a 13.5% conversion margin, near recent TTM/FY2025 conversion.",
+          "eps_base": 5.05,
+          "eps_consensus": 5.05,
+          "fcf_base": 725.3,
+          "fcf_consensus": null,
+          "fiscal_period": "FY2026E",
+          "margin_base": 21.5,
+          "margin_consensus": null,
+          "revenue_base": 5372.5,
+          "revenue_consensus": null
+        },
+        {
+          "driver": "Assumes 12% organic growth on FY2026 base plus a full-year $700m Maverick revenue contribution, subject to closing and integration. Modest margin expansion is offset partly by financing and integration costs.",
+          "eps_base": 5.9,
+          "eps_consensus": null,
+          "fcf_base": 940.5,
+          "fcf_consensus": null,
+          "fiscal_period": "FY2027E",
+          "margin_base": 21.7,
+          "margin_consensus": null,
+          "revenue_base": 6717.7,
+          "revenue_consensus": null
+        },
+        {
+          "driver": "Assumes 10% organic growth, continued data-center demand and backlog conversion, with modest operating leverage. FCF margin rises to 14.2%, below an assumption of unconstrained peak conversion.",
+          "eps_base": 6.35,
+          "eps_consensus": null,
+          "fcf_base": 1049.3,
+          "fcf_consensus": null,
+          "fiscal_period": "FY2028E",
+          "margin_base": 21.8,
+          "margin_consensus": null,
+          "revenue_base": 7389.5,
+          "revenue_consensus": null
+        }
+      ],
+      "catalysts": [
+        "Quantified data-center orders, backlog conversion and pricing disclosure.",
+        "Sustained gross-margin recovery despite mix and capacity investment.",
+        "Successful Maverick closing, financing and integration.",
+        "Evidence that data-center demand remains durable after current backlog converts."
+      ],
+      "invalidation": [
+        "Data-center demand and Systems Protection growth remain elevated for longer than modeled.",
+        "Margins expand materially above the base case despite tariff, mix and capacity costs.",
+        "Maverick adds revenue and synergies without meaningful leverage or dilution.",
+        "New disclosures show data-center profitability materially exceeds company-average returns."
+      ],
+      "why_not_buy_now": "At $150.75, the stock is above the probability-weighted scenario value of about $117 and near the bull-case value, while key consensus revenue, margin, FCF and data-center-profit evidence is unavailable.",
+      "what_changes_the_decision": "A more attractive entry price, or audited evidence of durable post-backlog growth, resilient margins, debt-funded Maverick accretion and stronger FCF conversion, would improve the odds.",
+      "scenarios": [
+        {
+          "assumptions": [
+            "Data-center growth decelerates sharply after backlog conversion.",
+            "Maverick contribution is delayed or below the stated target revenue estimate.",
+            "Mix, tariffs and capacity costs reduce operating margin.",
+            "FY2028 EPS is treated as mid-cycle, not a trough-to-peak recovery figure."
+          ],
+          "eps": 4.75,
+          "fair_multiple": 17.0,
+          "fair_value": 80.75,
+          "fcf": 750.0,
+          "fiscal_period": "FY2028E",
+          "margin": 19.5,
+          "multiple_reason": "Lower multiple reflects demand normalization, margin compression, leverage and acquisition-integration uncertainty.",
+          "name": "BEAR",
+          "probability": 0.3,
+          "revenue": 6300.0,
+          "valuation_basis": 4.75,
+          "valuation_method": "MID_CYCLE_PE"
+        },
+        {
+          "assumptions": [
+            "FY2026 sales grow 38%, followed by 12% organic growth plus full-year Maverick revenue in FY2027 and 10% growth in FY2028.",
+            "Margins recover modestly but remain constrained by investment and mix.",
+            "FY2028 reported EPS above normalized EPS is not fully capitalized."
+          ],
+          "eps": 6.35,
+          "fair_multiple": 21.0,
+          "fair_value": 119.7,
+          "fcf": 1049.3,
+          "fiscal_period": "FY2028E",
+          "margin": 21.8,
+          "multiple_reason": "Recognizes above-average growth and strong infrastructure positioning but discounts cyclicality, limited end-market profit disclosure and acquisition-financing risk.",
+          "name": "BASE",
+          "probability": 0.5,
+          "revenue": 7389.5,
+          "valuation_basis": 5.7,
+          "valuation_method": "MID_CYCLE_PE"
+        },
+        {
+          "assumptions": [
+            "Data-center demand remains strong beyond current backlog conversion.",
+            "Maverick closes on schedule, achieves revenue expectations and adds synergies.",
+            "Operating leverage overcomes tariff, inflation and capacity-investment pressure.",
+            "Only $6.50 of $7.50 FY2028 EPS is capitalized as normalized earnings."
+          ],
+          "eps": 7.5,
+          "fair_multiple": 25.0,
+          "fair_value": 162.5,
+          "fcf": 1200.0,
+          "fiscal_period": "FY2028E",
+          "margin": 23.0,
+          "multiple_reason": "A premium multiple is warranted only if data-center growth remains durable, Maverick integrates cleanly, and elevated margins prove more structural than cyclical.",
+          "name": "BULL",
+          "probability": 0.2,
+          "revenue": 8000.0,
+          "valuation_basis": 6.5,
+          "valuation_method": "MID_CYCLE_PE"
+        }
+      ],
+      "key_risks": [
+        "Data-center capital-spending normalization after backlog conversion.",
+        "Undisclosed concentration or end-market profitability risk.",
+        "Gross-margin pressure from mix, tariffs, inflation and capacity investment.",
+        "Maverick closing, integration, leverage, purchase-accounting and synergy risk.",
+        "Using GAAP EPS distorted by discontinued operations or disposal gains."
+      ],
+      "business_quality_score": 7.0,
+      "thesis_quality_score": 6.0,
+      "evidence_quality_score": 6.0,
+      "valuation_confidence": "MEDIUM",
+      "thesis_confidence": "MEDIUM"
+    },
+    {
+      "ticker": "JBL",
+      "company": "Jabil",
+      "currency": "USD",
+      "group": "PHYSICAL_INFRA",
+      "attractive_entry_high": 180.75,
+      "attractive_entry_low": 141.75,
+      "base_fair_value": 239.25,
+      "base_upside": -0.216242,
+      "bear_downside": -0.535642,
+      "bear_fair_value": 141.75,
+      "bull_fair_value": 323.0,
+      "current_price": 305.26,
+      "eps_gap": null,
+      "expected_fair_value": 226.75,
+      "expected_return": -0.257191,
+      "fcf_gap": null,
+      "gate_blockers": [
+        "No Good Odds Path passes",
+        "Evidence/valuation confidence",
+        "Thesis/catalyst/invalidation quality",
+        "Critical data missing"
+      ],
+      "gate_paths": {
+        "A": false,
+        "B": false,
+        "C": false
+      },
+      "normalized_earnings_gate": true,
+      "normalized_eps": 14.5,
+      "normalized_pe": 21.0524,
+      "normalized_pe_ceiling": null,
+      "odds_score": 15.2,
+      "odds_status": "WATCH",
+      "reward_risk": -0.4037,
+      "expectations_gap": "NEGATIVE",
+      "exposure_purity": "MEDIUM",
+      "earnings_sensitivity": "HIGH",
+      "one_line_conclusion": "JBL is a higher-quality AI-enabled EMS story, but $305 already prices sustained AI growth and margin expansion; base-case odds are unfavorable unless AI profitability or program durability is disclosed above current assumptions.",
+      "earnings_bridge": [
+        {
+          "driver": "Management outlook: AI revenue rises to $13.6bn from $9.0bn, contributing $4.6bn of incremental revenue; core operating margin is guided to 5.8%.",
+          "eps_base": 12.7,
+          "eps_consensus": 12.7,
+          "fcf_base": 1.4,
+          "fcf_consensus": 1.4,
+          "fiscal_period": "FY2026 ending 2026-08-31",
+          "margin_base": 5.8,
+          "margin_consensus": 5.8,
+          "revenue_base": 35.0,
+          "revenue_consensus": 35.0
+        },
+        {
+          "driver": "Base assumes management's indicated similar AI growth rate, taking AI revenue to about $20.4bn, while non-AI revenue is broadly stable to modestly lower. Margin moves just above management's 6% threshold. EPS holds the FY2026 implied core-EPS-to-core-operating-income relationship constant.",
+          "eps_base": 15.5,
+          "eps_consensus": null,
+          "fcf_base": 1.7,
+          "fcf_consensus": null,
+          "fiscal_period": "FY2027 ending 2027-08-31",
+          "margin_base": 6.05,
+          "margin_consensus": null,
+          "revenue_base": 41.0,
+          "revenue_consensus": null
+        },
+        {
+          "driver": "Base assumes AI growth decelerates after FY2027 but remains supported by the disclosed third-hyperscaler opportunity of at least $1bn, while legacy EMS remains cyclical. Margin gains are modest rather than a step-change; adjusted FCF scales conservatively with earnings.",
+          "eps_base": 17.7,
+          "eps_consensus": null,
+          "fcf_base": 1.95,
+          "fcf_consensus": null,
+          "fiscal_period": "FY2028 ending 2028-08-31",
+          "margin_base": 6.2,
+          "margin_consensus": null,
+          "revenue_base": 45.5,
+          "revenue_consensus": null
+        }
+      ],
+      "catalysts": [
+        "Audited FY2026 results validating $35.0bn revenue, 5.8% core margin, $12.70 core EPS and more than $1.4bn adjusted FCF.",
+        "Disclosure of AI-specific margin, profit contribution, backlog or customer concentration.",
+        "Evidence that FY2027 AI growth matches management's indicated similar percentage rate.",
+        "Third-hyperscaler program converting from opportunity to visible FY2028 revenue and earnings."
+      ],
+      "invalidation": [
+        "AI-related revenue fails to sustain the indicated FY2027 growth trajectory.",
+        "Core operating margin does not move above 6% despite AI mix growth.",
+        "A major customer or hyperscaler program is delayed, repriced or insourced.",
+        "Legacy EMS weakness offsets AI growth or drives underutilization.",
+        "Acquisitions and repurchases increase leverage without corresponding durable FCF growth."
+      ],
+      "why_not_buy_now": "The base normalized value of about $239 is below $305, while the current valuation already embeds the operational conditions needed for the bull case. AI revenue is quantified, but the crucial AI profit pool and customer concentration are not disclosed.",
+      "what_changes_the_decision": "A more favorable entry price, or audited evidence that AI carries superior and durable margins with visible multi-year hyperscaler demand, would improve the odds. Confirmation of FY2027 AI growth near 50%, margin above 6%, and stronger FCF without added balance-sheet strain is required to support a rerating.",
+      "scenarios": [
+        {
+          "assumptions": [
+            "AI growth slows materially after FY2026 as hyperscaler demand or program ramps weaken.",
+            "Non-AI revenue contracts through a cyclical downturn.",
+            "Core operating margin falls below FY2026 guidance as mix and utilization deteriorate.",
+            "Normalized EPS is below reported scenario EPS to avoid valuing a residual AI ramp as durable."
+          ],
+          "eps": 12.0,
+          "fair_multiple": 13.5,
+          "fair_value": 141.75,
+          "fcf": 1.25,
+          "fiscal_period": "FY2028 ending 2028-08-31",
+          "margin": 5.3,
+          "multiple_reason": "A discounted mid-cycle multiple reflects legacy EMS cyclicality, AI-program concentration risk, lower utilization and net debt.",
+          "name": "BEAR",
+          "probability": 0.3,
+          "revenue": 36.0,
+          "valuation_basis": 10.5,
+          "valuation_method": "MID_CYCLE_PE"
+        },
+        {
+          "assumptions": [
+            "FY2027 AI-related revenue reaches approximately $20.4bn, consistent with management's similar-growth indication.",
+            "FY2028 AI growth moderates, with the third-hyperscaler program contributing but not fully transforming total-company economics.",
+            "Core operating margin is just above 6% in FY2027 and reaches 6.2% in FY2028.",
+            "Legacy businesses are broadly stable to modestly cyclical rather than a second major growth engine."
+          ],
+          "eps": 17.7,
+          "fair_multiple": 16.5,
+          "fair_value": 239.25,
+          "fcf": 1.95,
+          "fiscal_period": "FY2028 ending 2028-08-31",
+          "margin": 6.2,
+          "multiple_reason": "A moderate premium to legacy EMS valuation is warranted for durable AI mix, but the multiple remains below the 23.66x provider forward P/E because normalized earnings, customer concentration and AI profit opacity constrain certainty.",
+          "name": "BASE",
+          "probability": 0.5,
+          "revenue": 45.5,
+          "valuation_basis": 14.5,
+          "valuation_method": "MID_CYCLE_PE"
+        },
+        {
+          "assumptions": [
+            "AI demand remains near the FY2026/FY2027 trajectory for longer than the base case.",
+            "The third-hyperscaler opportunity exceeds its disclosed $1bn FY2028 floor and ramps efficiently.",
+            "AI mix, execution and utilization lift core margin to 6.7%.",
+            "Legacy revenue remains stable and does not offset AI growth."
+          ],
+          "eps": 21.0,
+          "fair_multiple": 19.0,
+          "fair_value": 323.0,
+          "fcf": 2.4,
+          "fiscal_period": "FY2028 ending 2028-08-31",
+          "margin": 6.7,
+          "multiple_reason": "The premium multiple requires evidence that AI programs, including the third hyperscaler, are durable and structurally more profitable; valuation still uses normalized EPS below scenario EPS rather than capitalizing peak earnings.",
+          "name": "BULL",
+          "probability": 0.2,
+          "revenue": 50.0,
+          "valuation_basis": 17.0,
+          "valuation_method": "MID_CYCLE_PE"
+        }
+      ],
+      "key_risks": [
+        "Hyperscaler and customer concentration: the largest disclosed customer represented 16% of FY2025 revenue and the top five represented 36%.",
+        "AI revenue is not a reporting segment; its standalone profit, margin and capital intensity are unknown.",
+        "AI infrastructure demand and EMS utilization are cyclical, creating peak-earnings risk.",
+        "FY2024 and FY2025 GAAP comparability is distorted by Mobility divestiture effects.",
+        "Net debt of $2.018bn and substantial FY2026 acquisition and repurchase spending reduce balance-sheet conservatism."
+      ],
+      "business_quality_score": 7,
+      "thesis_quality_score": 6,
+      "evidence_quality_score": 6,
+      "valuation_confidence": "MEDIUM",
+      "thesis_confidence": "MEDIUM"
     },
     {
       "ticker": "JCI",
-      "error_type": "HTTPError",
-      "message": "429 Client Error: Too Many Requests for url: https://api.openai.com/v1/responses | response={\n  \"error\": {\n    \"message\": \"You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.\",\n    \"type\": \"insufficient_quota\",\n    \"param\": null,\n    \"code\": \"credit_balance_exhausted\"\n  }\n}"
+      "company": "Johnson Controls",
+      "currency": "USD",
+      "group": "PHYSICAL_INFRA",
+      "attractive_entry_high": 62.304,
+      "attractive_entry_low": 52.824,
+      "base_fair_value": 80.9952,
+      "base_upside": -0.414097,
+      "bear_downside": -0.617882,
+      "bear_fair_value": 52.824,
+      "bull_fair_value": 120.45,
+      "current_price": 138.24,
+      "eps_gap": null,
+      "expected_fair_value": 83.8161,
+      "expected_return": -0.393691,
+      "fcf_gap": null,
+      "gate_blockers": [
+        "No Good Odds Path passes",
+        "Evidence/valuation confidence",
+        "Thesis/catalyst/invalidation quality",
+        "Critical data missing"
+      ],
+      "gate_paths": {
+        "A": false,
+        "B": false,
+        "C": false
+      },
+      "normalized_earnings_gate": true,
+      "normalized_eps": 4.16,
+      "normalized_pe": 33.2308,
+      "normalized_pe_ceiling": null,
+      "odds_score": 0,
+      "odds_status": "WATCH",
+      "reward_risk": -0.6702,
+      "expectations_gap": "NEGATIVE",
+      "exposure_purity": "MEDIUM",
+      "earnings_sensitivity": "MEDIUM",
+      "one_line_conclusion": "JCI has meaningful but only medium-purity data-center exposure; the $138.24 price already discounts sustained execution beyond a conservative mid-cycle earnings framework.",
+      "earnings_bridge": [
+        {
+          "driver": "Our Base uses consensus revenue and management's approximately $5.05 adjusted-EPS guide. The 15.0% margin is the reported FY26 nine-month adjusted EBIT margin proxy, not a forward consensus margin. Management guided to approximately 100% adjusted FCF conversion, but no reliable dollar FCF estimate is supplied.",
+          "eps_base": 5.05,
+          "eps_consensus": 4.83,
+          "fcf_base": null,
+          "fcf_consensus": null,
+          "fiscal_period": "FY2026E ending 2026-09-30",
+          "margin_base": 15,
+          "margin_consensus": null,
+          "revenue_base": 26.71,
+          "revenue_consensus": 26.71
+        },
+        {
+          "driver": "Our Base adopts supplied consensus revenue and EPS; the bridge cannot separate margin, tax, share-count and mix effects because these inputs are unavailable. Margin is held at the FY26 nine-month adjusted EBIT proxy for a mechanical bridge.",
+          "eps_base": 6.2,
+          "eps_consensus": 6.2,
+          "fcf_base": null,
+          "fcf_consensus": null,
+          "fiscal_period": "FY2027E ending 2027-09-30",
+          "margin_base": 15,
+          "margin_consensus": null,
+          "revenue_base": 28.23,
+          "revenue_consensus": 28.23
+        },
+        {
+          "driver": "Mechanical extension only: FY27 revenue growth of 5.69% is repeated once, producing $29.84bn revenue; with flat margin and neutral per-share economics, EPS rises by the same rate from $6.20 to $6.55. No published FY28 consensus is supplied.",
+          "eps_base": 6.55,
+          "eps_consensus": null,
+          "fcf_base": null,
+          "fcf_consensus": null,
+          "fiscal_period": "FY2028E ending 2028-09-30",
+          "margin_base": 15,
+          "margin_consensus": null,
+          "revenue_base": 29.84,
+          "revenue_consensus": null
+        }
+      ],
+      "catalysts": [
+        "FY2026 adjusted EPS delivery near management's approximately $5.05 guidance versus $4.83 consensus.",
+        "Conversion of the $21.0bn Solutions & Services backlog.",
+        "Evidence that data-center mix and accretive economics translate into disclosed segment margin or cash-flow improvement.",
+        "Further CDU pipeline conversion from the stated $1.0bn pipeline into revenue or backlog."
+      ],
+      "invalidation": [
+        "Data-center demand, orders or backlog conversion weakens materially.",
+        "Adjusted margins fail to hold near the reported FY26 nine-month 15.0% level.",
+        "Data-center mix does not progress beyond the high-teens level.",
+        "Net debt remains elevated while cash conversion remains weak or non-comparable.",
+        "The vendor forward-P/E basis cannot be reconciled to consensus EPS, preventing reliable valuation comparison."
+      ],
+      "why_not_buy_now": "The stock trades above even the bull mid-cycle value of $120.45. At $138.24 it is approximately 33.2x the $4.16 normalized-EPS proxy, versus the supplied FY2024 historical forward P/E of 19.47x, while data-center profit and cash contribution remain unreported.",
+      "what_changes_the_decision": "A lower entry price closer to mid-cycle value, or audited evidence that data-center revenue carries sustainably higher margins and cash conversion sufficient to raise normalized earnings, would improve the odds.",
+      "scenarios": [
+        {
+          "assumptions": [
+            "FY2028 revenue is flat versus FY2027 consensus.",
+            "Margins revert to the FY2024-FY2025 average GAAP operating margin.",
+            "Adjusted EPS reverts to the FY2024-FY2025 average of $3.72.",
+            "Data-center demand or backlog conversion does not support a premium valuation."
+          ],
+          "eps": 3.72,
+          "fair_multiple": 14.2,
+          "fair_value": 52.824,
+          "fcf": null,
+          "fiscal_period": "FY2028E ending 2028-09-30",
+          "margin": 12.64,
+          "multiple_reason": "14.20x is the supplied FY2022 historical forward P/E and is used on the FY2024-FY2025 adjusted-EPS average, not on peak forecast EPS.",
+          "name": "BEAR",
+          "probability": 0.25,
+          "revenue": 28.23,
+          "valuation_basis": 3.72,
+          "valuation_method": "MID_CYCLE_PE"
+        },
+        {
+          "assumptions": [
+            "FY2027 consensus revenue growth of 5.69% repeats in FY2028.",
+            "Adjusted EBIT margin holds at the reported FY26 nine-month 15.0% proxy.",
+            "FY2028 EPS is a mechanical revenue-growth extension with neutral per-share economics.",
+            "No separately disclosed data-center profit pool is assumed."
+          ],
+          "eps": 6.55,
+          "fair_multiple": 19.47,
+          "fair_value": 80.9952,
+          "fcf": null,
+          "fiscal_period": "FY2028E ending 2028-09-30",
+          "margin": 15,
+          "multiple_reason": "19.47x is the supplied FY2024 forward P/E and is applied to the three-period normalized EPS proxy of $4.16 rather than FY2027-FY2028 forecast EPS.",
+          "name": "BASE",
+          "probability": 0.5,
+          "revenue": 29.84,
+          "valuation_basis": 4.16,
+          "valuation_method": "MID_CYCLE_PE"
+        },
+        {
+          "assumptions": [
+            "FY2028 revenue grows 8.0%, matching FY2026 management organic-growth guidance as a model assumption.",
+            "Margin holds at the FY26 nine-month adjusted EBIT proxy.",
+            "FY2027 consensus EPS of $6.20 is achieved and FY2028 EPS grows with revenue.",
+            "Backlog converts and data-center mix continues to improve, though undisclosed data-center profit is not assumed above the modeled floor."
+          ],
+          "eps": 6.7,
+          "fair_multiple": 24.09,
+          "fair_value": 120.45,
+          "fcf": null,
+          "fiscal_period": "FY2028E ending 2028-09-30",
+          "margin": 15,
+          "multiple_reason": "24.09x is the supplied current vendor forward P/E; it is retained only under sustained premium execution and applied to a three-period earnings average of FY2025 actual, FY2026 guidance and FY2027 consensus, rather than the $6.20-$6.70 forecast EPS.",
+          "name": "BULL",
+          "probability": 0.25,
+          "revenue": 30.49,
+          "valuation_basis": 5,
+          "valuation_method": "MID_CYCLE_PE"
+        }
+      ],
+      "key_risks": [
+        "Data-center exposure is modeled rather than filed and accounts for only about 18% of FY2026E revenue.",
+        "Forecast EPS growth may represent cycle-strength earnings rather than normalized profitability.",
+        "Net debt was $8.834bn at June 30, 2026.",
+        "FY2025 and TTM FCF include discontinued-operation effects and are not clean continuing-operations cash-flow measures.",
+        "The $1.0bn CDU figure is pipeline, not backlog or revenue.",
+        "The requested AAON/NVT comparison cannot be made from the JCI-only supplied snapshot."
+      ],
+      "business_quality_score": 7,
+      "thesis_quality_score": 4,
+      "evidence_quality_score": 5,
+      "valuation_confidence": "MEDIUM",
+      "thesis_confidence": "LOW"
+    },
+    {
+      "ticker": "KLIC",
+      "company": "Kulicke & Soffa",
+      "currency": "USD",
+      "group": "PACKAGING",
+      "attractive_entry_high": 36.8,
+      "attractive_entry_low": 13.0,
+      "base_fair_value": 36.8,
+      "base_upside": -0.540345,
+      "bear_downside": -0.837622,
+      "bear_fair_value": 13.0,
+      "bull_fair_value": 41.4,
+      "current_price": 80.06,
+      "eps_gap": null,
+      "expected_fair_value": 30.58,
+      "expected_return": -0.618036,
+      "fcf_gap": null,
+      "gate_blockers": [
+        "No Good Odds Path passes",
+        "Normalized PE exceeds 18x gate",
+        "Evidence/valuation confidence",
+        "Thesis/catalyst/invalidation quality",
+        "Critical data missing"
+      ],
+      "gate_paths": {
+        "A": false,
+        "B": false,
+        "C": false
+      },
+      "normalized_earnings_gate": false,
+      "normalized_eps": 2.3,
+      "normalized_pe": 34.8087,
+      "normalized_pe_ceiling": 18.0,
+      "odds_score": 0,
+      "odds_status": "WATCH",
+      "reward_risk": -0.6451,
+      "expectations_gap": "NEGATIVE",
+      "exposure_purity": "LOW",
+      "earnings_sensitivity": "HIGH",
+      "one_line_conclusion": "KLIC is a financially flexible but highly cyclical wire-bonder business; at $80.06, the price requires sustained upcycle earnings rather than normalized-cycle economics.",
+      "earnings_bridge": [
+        {
+          "driver": "Consensus assumes recovery continuation; Our Base uses the supplied normalized revenue and operating-margin model.",
+          "eps_base": 2.3,
+          "eps_consensus": 3.87,
+          "fcf_base": null,
+          "fcf_consensus": null,
+          "fiscal_period": "FY2026E",
+          "margin_base": 15,
+          "margin_consensus": null,
+          "revenue_base": 950,
+          "revenue_consensus": 1150
+        },
+        {
+          "driver": "Consensus requires sustained capacity and technology-led demand; Our Base assumes normalized rather than peak-cycle economics.",
+          "eps_base": 2.3,
+          "eps_consensus": 5.48,
+          "fcf_base": null,
+          "fcf_consensus": null,
+          "fiscal_period": "FY2027E",
+          "margin_base": 15,
+          "margin_consensus": null,
+          "revenue_base": 950,
+          "revenue_consensus": 1370
+        },
+        {
+          "driver": "No supplied consensus exists; Base holds the supplied normalized-cycle scenario rather than extrapolating the upcycle.",
+          "eps_base": 2.3,
+          "eps_consensus": null,
+          "fcf_base": null,
+          "fcf_consensus": null,
+          "fiscal_period": "FY2028E",
+          "margin_base": 15,
+          "margin_consensus": null,
+          "revenue_base": 950,
+          "revenue_consensus": null
+        }
+      ],
+      "catalysts": [
+        "Evidence that backlog, book-to-bill and utilization support sustained demand.",
+        "Improving cash conversion as receivables and inventory normalize.",
+        "Demonstrated advanced-packaging revenue and margin contribution beyond broad semiconductor recovery."
+      ],
+      "invalidation": [
+        "A utilization-driven wire-bonder correction toward the supplied $700m downcycle case.",
+        "Margin deterioration despite Ball Bonding volume growth.",
+        "Working-capital consumption persists and prevents earnings converting into free cash flow."
+      ],
+      "why_not_buy_now": "The current price exceeds even the $41.40 value produced by applying the supplied 18x cyclical ceiling to normalized EPS, while the apparent 14.6x forward P/E relies on limited-coverage, non-GAAP upcycle consensus.",
+      "what_changes_the_decision": "A materially lower entry price near normalized-cycle value, or disclosed evidence that backlog, utilization, AI/advanced-packaging exposure and cash conversion justify earnings durability above the supplied normalized case.",
+      "scenarios": [
+        {
+          "assumptions": [
+            "Wire-bonder demand corrects as utilization and customer spending weaken.",
+            "Supplied downcycle model: $700m revenue, 8% operating margin and $1.00 GAAP EPS.",
+            "Cash conversion remains pressured by inventory and receivables."
+          ],
+          "eps": 1,
+          "fair_multiple": 13,
+          "fair_value": 13.0,
+          "fcf": null,
+          "fiscal_period": "FY2027E",
+          "margin": 8,
+          "multiple_reason": "A renewed utilization-driven correction warrants a depressed trough multiple.",
+          "name": "BEAR",
+          "probability": 0.3,
+          "revenue": 700,
+          "valuation_basis": 1,
+          "valuation_method": "FORWARD_PE"
+        },
+        {
+          "assumptions": [
+            "Semiconductor recovery normalizes rather than persists at peak intensity.",
+            "Supplied normalized model: $950m revenue and 15% operating margin.",
+            "Advanced-packaging demand contributes, but general semiconductor revenue is not treated as AI revenue."
+          ],
+          "eps": 2.3,
+          "fair_multiple": 16,
+          "fair_value": 36.8,
+          "fcf": null,
+          "fiscal_period": "FY2027E",
+          "margin": 15,
+          "multiple_reason": "Below the supplied 18x cyclical normalized-P/E ceiling because AI revenue, backlog, ASPs and durable services revenue are not disclosed.",
+          "name": "BASE",
+          "probability": 0.5,
+          "revenue": 950,
+          "valuation_basis": 2.3,
+          "valuation_method": "NORMALIZED_PE"
+        },
+        {
+          "assumptions": [
+            "Supplied upcycle model: $1.37bn revenue, 25% operating margin and $5.32 GAAP EPS.",
+            "Capacity and technology-led demand remain sustained.",
+            "Ball Bonding margin remains resilient despite mix changes."
+          ],
+          "eps": 5.32,
+          "fair_multiple": 18,
+          "fair_value": 41.4,
+          "fcf": null,
+          "fiscal_period": "FY2027E",
+          "margin": 25,
+          "multiple_reason": "The supplied upcycle EPS is not capitalized at a normal P/E; value is capped at the 18x normalized/mid-cycle earnings ceiling.",
+          "name": "BULL",
+          "probability": 0.2,
+          "revenue": 1370,
+          "valuation_basis": 2.3,
+          "valuation_method": "MID_CYCLE_PE"
+        }
+      ],
+      "key_risks": [
+        "Semiconductor-capex and utilization cyclicality.",
+        "AI thesis is not directly measurable from disclosed revenue or profit.",
+        "No disclosed backlog, book-to-bill, ASP or numerical utilization measure.",
+        "Consensus EPS is non-GAAP and has limited published coverage.",
+        "Working-capital buildup may impair free-cash-flow conversion."
+      ],
+      "business_quality_score": 6,
+      "thesis_quality_score": 3,
+      "evidence_quality_score": 4,
+      "valuation_confidence": "MEDIUM",
+      "thesis_confidence": "LOW"
     },
     {
       "ticker": "005930.KS",
-      "error_type": "HTTPError",
-      "message": "429 Client Error: Too Many Requests for url: https://api.openai.com/v1/responses | response={\n  \"error\": {\n    \"message\": \"You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.\",\n    \"type\": \"insufficient_quota\",\n    \"param\": null,\n    \"code\": \"credit_balance_exhausted\"\n  }\n}"
+      "company": "Samsung Electronics",
+      "currency": "KRW",
+      "group": "MEMORY",
+      "attractive_entry_high": 321100.0,
+      "attractive_entry_low": 153000.0,
+      "base_fair_value": 321100.0,
+      "base_upside": 0.243369,
+      "bear_downside": -0.407551,
+      "bear_fair_value": 153000.0,
+      "bull_fair_value": 480000.0,
+      "current_price": 258250.0,
+      "eps_gap": -0.451347,
+      "expected_fair_value": 310395.0,
+      "expected_return": 0.201917,
+      "fcf_gap": null,
+      "gate_blockers": [
+        "No Good Odds Path passes",
+        "Evidence/valuation confidence",
+        "Thesis/catalyst/invalidation quality",
+        "Critical data missing"
+      ],
+      "gate_paths": {
+        "A": false,
+        "B": false,
+        "C": false
+      },
+      "normalized_earnings_gate": true,
+      "normalized_eps": 24700,
+      "normalized_pe": 10.4555,
+      "normalized_pe_ceiling": 16.0,
+      "odds_score": 56.8,
+      "odds_status": "VALUATION_INCOMPLETE",
+      "reward_risk": 0.5971,
+      "expectations_gap": "NEGATIVE",
+      "exposure_purity": "MEDIUM",
+      "earnings_sensitivity": "HIGH",
+      "one_line_conclusion": "At KRW258,250, Samsung trades at 5.34x FY2026E consensus EPS but the consensus embeds an unusually strong memory cycle; a cycle-normalized probability-weighted value is about KRW310,000, so the odds are positive but evidence quality is too weak for high conviction.",
+      "earnings_bridge": [
+        {
+          "driver": "Consensus relies on exceptional DRAM/NAND profitability, including broker-estimated HBM revenue of KRW33.8T and DRAM plus NAND operating profit of KRW364.5T. Our Base assumes strong HBM and server-memory demand but lower realized pricing and less complete conversion of the broker Memory profit bridge.",
+          "eps_base": 36000,
+          "eps_consensus": 48339,
+          "fcf_base": null,
+          "fcf_consensus": null,
+          "fiscal_period": "FY2026E",
+          "margin_base": 44,
+          "margin_consensus": 53.2,
+          "revenue_base": 680000000,
+          "revenue_consensus": 737750000
+        },
+        {
+          "driver": "Consensus assumes continued supercycle expansion, including broker-estimated HBM revenue of KRW63.5T and DS operating profit of KRW475.1T. Our Base assumes HBM growth continues but DRAM/NAND tightness moderates before consensus-level margin is sustained.",
+          "eps_base": 42000,
+          "eps_consensus": 67326,
+          "fcf_base": null,
+          "fcf_consensus": null,
+          "fiscal_period": "FY2027E",
+          "margin_base": 44.5,
+          "margin_consensus": 57.1,
+          "revenue_base": 790000000,
+          "revenue_consensus": 979350000
+        },
+        {
+          "driver": "Consensus already assumes some moderation, but standalone Memory operating-profit support is unavailable. Our Base assumes memory pricing and mix normalize, while non-memory and MX remain insufficient downside protection.",
+          "eps_base": 34000,
+          "eps_consensus": 61970,
+          "fcf_base": null,
+          "fcf_consensus": null,
+          "fiscal_period": "FY2028E",
+          "margin_base": 37,
+          "margin_consensus": 49.7,
+          "revenue_base": 770000000,
+          "revenue_consensus": 985740000
+        }
+      ],
+      "catalysts": [
+        "FY2026 results validating HBM revenue growth and DRAM/NAND profitability.",
+        "Evidence that HBM4 sales scaling and HBM4E sampling convert into sustained high-margin revenue.",
+        "Sustained server DRAM and enterprise SSD undersupply.",
+        "Narrowing non-memory DS losses or recovery in MX profitability."
+      ],
+      "invalidation": [
+        "Memory ASP or HBM-mix reversal causing margins to fall materially below the 44-45% Base peak.",
+        "HBM qualification, yield or customer-share setbacks.",
+        "Foundry/System LSI losses remain large enough to offset Memory profitability.",
+        "MX remains loss-making as component costs rise.",
+        "Capex absorbs operating cash flow, preventing FCF conversion despite reported earnings growth."
+      ],
+      "why_not_buy_now": "The apparent low P/E is attached to low-confidence and largely single-broker FY2026-28 revenue, margin and EPS forecasts. Our Base is well below consensus, FY2028 standalone Memory profit is unavailable, and no reliable forward FCF bridge can be audited.",
+      "what_changes_the_decision": "Increase conviction if reported results confirm HBM and Memory profit durability while operating margins track near the Base bridge without disproportionate capex. Reduce exposure if pricing, HBM execution, or non-memory losses push the earnings path toward the Bear case.",
+      "scenarios": [
+        {
+          "assumptions": [
+            "HBM growth disappoints relative to broker estimates or broad memory pricing reverses.",
+            "DRAM/NAND operating leverage compresses materially.",
+            "Non-memory DS losses and MX cost pressure persist.",
+            "FCF is not estimated because capex and working-capital conversion are not auditable in the supplied forward data."
+          ],
+          "eps": 18000,
+          "fair_multiple": 9,
+          "fair_value": 153000.0,
+          "fcf": null,
+          "fiscal_period": "FY2028E",
+          "margin": 25,
+          "multiple_reason": "A sub-historical-average multiple reflects a Memory downcycle, uncertain Foundry losses and volatile capital intensity; it does not apply a normal multiple to peak EPS.",
+          "name": "BEAR",
+          "probability": 0.3,
+          "revenue": 600000000,
+          "valuation_basis": 17000,
+          "valuation_method": "NORMALIZED_PE"
+        },
+        {
+          "assumptions": [
+            "HBM and server-memory demand remain strong but pricing normalizes before consensus margins are achieved.",
+            "Revenue reaches KRW680T in FY2026, KRW790T in FY2027 and KRW770T in FY2028.",
+            "Operating margin peaks at 44.5% in FY2027, materially below the single-broker consensus.",
+            "Net cash provides balance-sheet support, but the KRW15T repurchase is for employee compensation rather than cancellation."
+          ],
+          "eps": 34000,
+          "fair_multiple": 13,
+          "fair_value": 321100.0,
+          "fcf": null,
+          "fiscal_period": "FY2028E",
+          "margin": 37,
+          "multiple_reason": "13x is slightly below the supplied 2016-25 Samsung average P/E of 13.5x and values normalized, rather than FY2026-27 peak-cycle, earnings.",
+          "name": "BASE",
+          "probability": 0.45,
+          "revenue": 770000000,
+          "valuation_basis": 24700,
+          "valuation_method": "NORMALIZED_PE"
+        },
+        {
+          "assumptions": [
+            "HBM scaling, server DRAM tightness and enterprise SSD demand remain durable through FY2028.",
+            "Samsung captures a larger share of high-value HBM and maintains favorable mix.",
+            "Foundry and MX cease being material offsets to Memory earnings.",
+            "FCF remains unmodeled because no reliable forward FCF estimate is supplied."
+          ],
+          "eps": 50000,
+          "fair_multiple": 15,
+          "fair_value": 480000.0,
+          "fcf": null,
+          "fiscal_period": "FY2028E",
+          "margin": 45,
+          "multiple_reason": "15x remains below the supplied 16x cyclical normalized-P/E ceiling and is applied to a sustained, cycle-adjusted earnings basis below FY2027 consensus EPS.",
+          "name": "BULL",
+          "probability": 0.25,
+          "revenue": 900000000,
+          "valuation_basis": 32000,
+          "valuation_method": "NORMALIZED_PE"
+        }
+      ],
+      "key_risks": [
+        "Memory-cycle reversal after FY2026-27 peak profitability.",
+        "HBM execution and customer qualification risk.",
+        "Opaque standalone Memory, Foundry and HBM profitability.",
+        "High capital intensity and unavailable forward FCF estimates.",
+        "Mobile component-cost pressure and weak non-memory downside protection.",
+        "Common-share valuation excludes separately listed preferred shares, preventing a fully audited enterprise-value calculation."
+      ],
+      "business_quality_score": 7,
+      "thesis_quality_score": 5.5,
+      "evidence_quality_score": 4,
+      "valuation_confidence": "LOW",
+      "thesis_confidence": "MEDIUM"
     },
     {
       "ticker": "MU",
-      "error_type": "HTTPError",
-      "message": "429 Client Error: Too Many Requests for url: https://api.openai.com/v1/responses | response={\n  \"error\": {\n    \"message\": \"You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.\",\n    \"type\": \"insufficient_quota\",\n    \"param\": null,\n    \"code\": \"credit_balance_exhausted\"\n  }\n}"
+      "company": "Micron Technology",
+      "currency": "USD",
+      "group": "MEMORY",
+      "attractive_entry_high": 136.62,
+      "attractive_entry_low": 91.08,
+      "base_fair_value": 136.62,
+      "base_upside": -0.857499,
+      "bear_downside": -0.904999,
+      "bear_fair_value": 91.08,
+      "bull_fair_value": 1015.8,
+      "current_price": 958.73,
+      "eps_gap": -0.955168,
+      "expected_fair_value": 345.03,
+      "expected_return": -0.640118,
+      "fcf_gap": -0.988741,
+      "gate_blockers": [
+        "No Good Odds Path passes",
+        "Normalized PE exceeds 18x gate",
+        "Evidence/valuation confidence",
+        "Thesis/catalyst/invalidation quality",
+        "Critical data missing"
+      ],
+      "gate_paths": {
+        "A": false,
+        "B": false,
+        "C": false
+      },
+      "normalized_earnings_gate": false,
+      "normalized_eps": 7.59,
+      "normalized_pe": 126.3149,
+      "normalized_pe_ceiling": 18.0,
+      "odds_score": 0,
+      "odds_status": "VALUATION_INCOMPLETE",
+      "reward_risk": -0.9475,
+      "expectations_gap": "NEGATIVE",
+      "exposure_purity": "HIGH",
+      "earnings_sensitivity": "HIGH",
+      "one_line_conclusion": "Do not buy now: the $958.73 price is inexpensive only if exceptional FY2027-FY2028 earnings persist; the supplied evidence cannot substantiate that outcome as normalized economics.",
+      "earnings_bridge": [
+        {
+          "driver": "Consensus/base parity because FY2026 Q4 actual results were unavailable; Q4 gross-margin guidance midpoint was 86%, following FQ3 DRAM ASP growth of roughly 60% sequentially.",
+          "eps_base": 72.6,
+          "eps_consensus": 72.6,
+          "fcf_base": 49563,
+          "fcf_consensus": 49563,
+          "fiscal_period": "FY2026E ending 2026-09-03",
+          "margin_base": 75.62,
+          "margin_consensus": 75.62,
+          "revenue_base": 129715,
+          "revenue_consensus": 129715
+        },
+        {
+          "driver": "Consensus requires a further revenue step-up and exceptional operating margin. Our Base uses FY2025 reported revenue, operating margin, EPS and FCF only as the supplied reset/normalization proxy; no disclosed HBM economics or supply data supports a more precise independent bridge.",
+          "eps_base": 7.59,
+          "eps_consensus": 148.1,
+          "fcf_base": 1668,
+          "fcf_consensus": 124923,
+          "fiscal_period": "FY2027E ending 2027-09-02",
+          "margin_base": 26.14,
+          "margin_consensus": 82.83,
+          "revenue_base": 37378,
+          "revenue_consensus": 240323
+        },
+        {
+          "driver": "Consensus assumes elevated profitability persists. Our Base retains the FY2025 proxy because the snapshot lacks FY2027-FY2028 gross-margin consensus, HBM profitability, wafer allocation and quantified CXMT impact.",
+          "eps_base": 7.59,
+          "eps_consensus": 169.3,
+          "fcf_base": 1668,
+          "fcf_consensus": 148153,
+          "fiscal_period": "FY2028E ending 2028-08-31",
+          "margin_base": 26.14,
+          "margin_consensus": 78.62,
+          "revenue_base": 37378,
+          "revenue_consensus": 267375
+        }
+      ],
+      "catalysts": [
+        "FY2026 Q4 actual results validating the 86% gross-margin guidance midpoint.",
+        "Further HBM4 revenue execution and evidence that high wafer intensity sustains conventional-DRAM tightness.",
+        "Conversion of the $22bn strategic-customer commitments, including approximately $18bn of cash deposits, into durable demand and returns."
+      ],
+      "invalidation": [
+        "FY2027-FY2028 consensus revenue and EPS are achieved without margin deterioration.",
+        "Disclosed evidence shows HBM profitability and capacity allocation are sufficient to sustain the elevated margin structure.",
+        "DRAM supply remains constrained despite capacity additions and CXMT competition."
+      ],
+      "why_not_buy_now": "The valuation leaves little room for anything short of the bull case: the current price is already near the bull value based on FY2028 consensus EPS at only a 6.0x peak-cycle multiple.",
+      "what_changes_the_decision": "A purchase case would require auditable evidence that HBM economics, wafer allocation and durable supply discipline support earnings materially above the FY2025 reset proxy, while the share price offers a discount to a probability-weighted value.",
+      "scenarios": [
+        {
+          "assumptions": [
+            "HBM demand or allocation weakens and capacity returns to conventional DRAM.",
+            "DRAM ASP support fades and economics revert to the supplied FY2025 proxy.",
+            "Customer deposits do not prevent a broad pricing and margin reset."
+          ],
+          "eps": 7.59,
+          "fair_multiple": 12.0,
+          "fair_value": 91.08,
+          "fcf": 1668,
+          "fiscal_period": "FY2028E ending 2028-08-31",
+          "margin": 26.14,
+          "multiple_reason": "Below the 18.0x cyclical normalized-P/E ceiling because a conventional-memory reset, high capex and limited FCF visibility would warrant a depressed multiple.",
+          "name": "BEAR",
+          "probability": 0.25,
+          "revenue": 37378,
+          "valuation_basis": 7.59,
+          "valuation_method": "NORMALIZED_PE"
+        },
+        {
+          "assumptions": [
+            "DRAM and HBM remain strategically valuable, but exceptional pricing does not define normalized earnings.",
+            "FY2025 reported revenue, margin, EPS and FCF are the only supplied auditable reset reference.",
+            "Capital intensity and working-capital sensitivity constrain FCF confidence."
+          ],
+          "eps": 7.59,
+          "fair_multiple": 18.0,
+          "fair_value": 136.62,
+          "fcf": 1668,
+          "fiscal_period": "FY2028E ending 2028-08-31",
+          "margin": 26.14,
+          "multiple_reason": "Uses the supplied cyclical normalized-P/E ceiling on the FY2025 reset proxy; it does not apply a normal multiple to FY2027-FY2028 peak consensus EPS.",
+          "name": "BASE",
+          "probability": 0.5,
+          "revenue": 37378,
+          "valuation_basis": 7.59,
+          "valuation_method": "NORMALIZED_PE"
+        },
+        {
+          "assumptions": [
+            "Consensus revenue, EPS and FCF are achieved.",
+            "Tight DRAM supply, HBM ASP premiums and wafer-intensity constraints persist through FY2028.",
+            "CXMT and incremental industry capacity do not materially disrupt pricing."
+          ],
+          "eps": 169.3,
+          "fair_multiple": 6.0,
+          "fair_value": 1015.8,
+          "fcf": 148153,
+          "fiscal_period": "FY2028E ending 2028-08-31",
+          "margin": 78.62,
+          "multiple_reason": "Applies a deliberately low peak-cycle forward P/E, not a normal P/E, to FY2028 consensus EPS; this is the only supplied earnings case supporting value near the current price.",
+          "name": "BULL",
+          "probability": 0.25,
+          "revenue": 267375,
+          "valuation_basis": 169.3,
+          "valuation_method": "FORWARD_PE"
+        }
+      ],
+      "key_risks": [
+        "Conventional DRAM/NAND ASP reset after HBM demand, mix or allocation changes.",
+        "HBM wafer capacity released into conventional DRAM, increasing effective bit supply.",
+        "Unquantified CXMT capacity, market share and pricing impact.",
+        "Aggressive fab and packaging spending reduces FCF resilience.",
+        "Consensus operating-margin proxies may not translate into sustainable gross margins or cash conversion."
+      ],
+      "business_quality_score": 7.0,
+      "thesis_quality_score": 4.0,
+      "evidence_quality_score": 4.0,
+      "valuation_confidence": "LOW",
+      "thesis_confidence": "MEDIUM"
     }
   ],
+  "best_business_vs_best_odds": {
+    "PHYSICAL_INFRA": {
+      "best_business": "NVT",
+      "best_odds": "NVT"
+    },
+    "MEMORY": {
+      "best_business": "005930.KS",
+      "best_odds": "005930.KS"
+    },
+    "PACKAGING": {
+      "best_business": "KLIC",
+      "best_odds": "KLIC"
+    }
+  },
+  "errors": [],
   "cost": {
-    "attempted_calls": 6,
-    "successful_calls": 0,
-    "input_tokens": 0,
-    "cached_input_tokens": 0,
-    "output_tokens": 0,
-    "known_cost_usd": 0,
-    "risk_cost_usd": 1.50416,
+    "attempted_calls": 12,
+    "successful_calls": 12,
+    "input_tokens": 625156,
+    "cached_input_tokens": 28930,
+    "output_tokens": 97123,
+    "known_cost_usd": 2.423714,
+    "risk_cost_usd": 2.423714,
     "by_security": {
       "JBL": {
-        "calls": 1,
-        "risk_cost_usd": 0.250684
+        "calls": 2,
+        "risk_cost_usd": 0.376654
       },
       "KLIC": {
-        "calls": 1,
-        "risk_cost_usd": 0.250708
+        "calls": 2,
+        "risk_cost_usd": 0.4079572
       },
       "NVT": {
-        "calls": 1,
-        "risk_cost_usd": 0.250706
+        "calls": 2,
+        "risk_cost_usd": 0.3882052
       },
       "JCI": {
-        "calls": 1,
-        "risk_cost_usd": 0.25068
+        "calls": 2,
+        "risk_cost_usd": 0.4033072
       },
       "005930.KS": {
-        "calls": 1,
-        "risk_cost_usd": 0.250692
+        "calls": 2,
+        "risk_cost_usd": 0.4459952
       },
       "MU": {
-        "calls": 1,
-        "risk_cost_usd": 0.25069
+        "calls": 2,
+        "risk_cost_usd": 0.4015952
       }
     }
   }
