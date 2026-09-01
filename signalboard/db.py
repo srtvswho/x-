@@ -31,7 +31,7 @@ from typing import Iterator, Union
 
 DbPath = Union[str, Path]
 
-CURRENT_SCHEMA_VERSION = 11
+CURRENT_SCHEMA_VERSION = 12
 
 
 # ---------------------------------------------------------------------------
@@ -878,6 +878,76 @@ def _migrate_to_v11(conn: sqlite3.Connection) -> None:
     conn.executescript(V11_BROAD_OPPORTUNITY_SCAN_SQL)
 
 
+V12_FOCUSED_ODDS_SQL = """
+CREATE TABLE IF NOT EXISTS focused_financial_snapshots (
+    snapshot_id TEXT PRIMARY KEY,
+    ticker TEXT NOT NULL,
+    company TEXT NOT NULL,
+    exchange TEXT NOT NULL,
+    currency TEXT NOT NULL,
+    as_of_date TEXT NOT NULL,
+    snapshot_json TEXT NOT NULL,
+    source_digest TEXT NOT NULL,
+    model TEXT NOT NULL,
+    prompt_version TEXT NOT NULL,
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')),
+    UNIQUE(ticker,prompt_version)
+);
+
+CREATE TABLE IF NOT EXISTS focused_odds_reviews (
+    review_id TEXT PRIMARY KEY,
+    ticker TEXT NOT NULL,
+    company TEXT NOT NULL,
+    exchange TEXT NOT NULL,
+    currency TEXT NOT NULL,
+    as_of_date TEXT NOT NULL,
+    current_price REAL NOT NULL CHECK(current_price > 0),
+    bear_fair_value REAL NOT NULL CHECK(bear_fair_value >= 0),
+    base_fair_value REAL NOT NULL CHECK(base_fair_value >= bear_fair_value),
+    bull_fair_value REAL NOT NULL CHECK(bull_fair_value >= base_fair_value),
+    base_upside REAL NOT NULL,
+    bear_downside REAL NOT NULL,
+    reward_risk REAL,
+    expected_return REAL,
+    expectations_gap TEXT NOT NULL,
+    odds_status TEXT NOT NULL CHECK(odds_status IN (
+      'BUY_CANDIDATE','RESEARCH','WATCH','PASS','GOOD_COMPANY_BAD_ODDS','VALUATION_INCOMPLETE'
+    )),
+    actionability TEXT NOT NULL,
+    attractive_entry_low REAL,
+    attractive_entry_high REAL,
+    exposure_purity TEXT NOT NULL CHECK(exposure_purity IN ('LOW','MEDIUM','HIGH')),
+    earnings_sensitivity TEXT NOT NULL CHECK(earnings_sensitivity IN ('LOW','MEDIUM','HIGH')),
+    normalized_eps REAL,
+    normalized_pe REAL,
+    three_year_cagr REAL,
+    analysis_json TEXT NOT NULL,
+    source_digest TEXT NOT NULL,
+    model TEXT NOT NULL,
+    prompt_version TEXT NOT NULL,
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')),
+    UNIQUE(ticker,prompt_version)
+);
+CREATE INDEX IF NOT EXISTS idx_focused_odds_rank
+  ON focused_odds_reviews(odds_status,expected_return DESC,base_upside DESC);
+
+CREATE TABLE IF NOT EXISTS focused_odds_runs (
+    run_id TEXT PRIMARY KEY,
+    status TEXT NOT NULL CHECK(status IN ('PLANNED','RUNNING','COMPLETED','PARTIAL','FAILED')),
+    universe_json TEXT NOT NULL,
+    report_json TEXT NOT NULL,
+    ai_calls INTEGER NOT NULL DEFAULT 0,
+    known_cost_usd REAL NOT NULL DEFAULT 0,
+    risk_cost_usd REAL NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+);
+"""
+
+
+def _migrate_to_v12(conn: sqlite3.Connection) -> None:
+    conn.executescript(V12_FOCUSED_ODDS_SQL)
+
+
 def _migrate_v2_to_v3(conn: sqlite3.Connection) -> None:
     """对已有 v2 库:加 6 列(predictions)+ 建 4 个新表(都 IF NOT EXISTS)。
 
@@ -1129,6 +1199,7 @@ def _ensure_schema(conn: sqlite3.Connection) -> None:
     _migrate_to_v9(conn)
     _migrate_to_v10(conn)
     _migrate_to_v11(conn)
+    _migrate_to_v12(conn)
     conn.execute(f"PRAGMA user_version = {CURRENT_SCHEMA_VERSION}")
 
 

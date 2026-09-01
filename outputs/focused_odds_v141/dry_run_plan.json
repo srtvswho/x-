@@ -1,0 +1,175 @@
+{
+  "version": "focused-odds-v1.4.1",
+  "as_of_date": "2026-09-01",
+  "universe": [
+    {
+      "ticker": "JBL",
+      "company": "Jabil",
+      "exchange": "NYSE",
+      "currency": "USD",
+      "group": "PHYSICAL_INFRA",
+      "thesis": "Quantify AI/data-center exposure, AI growth, FY27/FY28 outlook, margins and customer concentration; separate legacy EMS valuation from AI rerating."
+    },
+    {
+      "ticker": "KLIC",
+      "company": "Kulicke & Soffa",
+      "exchange": "NASDAQ",
+      "currency": "USD",
+      "group": "PACKAGING",
+      "thesis": "Test whether wire-bonder demand is a valid AI/memory thesis using cycle, utilization, backlog, book-to-bill, ASP, margin and services; build downcycle/normalized/upcycle EPS."
+    },
+    {
+      "ticker": "NVT",
+      "company": "nVent Electric",
+      "exchange": "NYSE",
+      "currency": "USD",
+      "group": "PHYSICAL_INFRA",
+      "thesis": "Quantify data-center share, orders, organic growth, backlog, pricing, margins and acquisition effects; retest whether earlier ATTRACTIVE was caused by incomplete valuation."
+    },
+    {
+      "ticker": "JCI",
+      "company": "Johnson Controls",
+      "exchange": "NYSE",
+      "currency": "USD",
+      "group": "PHYSICAL_INFRA",
+      "thesis": "Quantify data-center exposure and earnings contribution, compare with AAON and NVT, and test lower-purity/lower-expectations odds."
+    },
+    {
+      "ticker": "005930.KS",
+      "company": "Samsung Electronics",
+      "exchange": "KRX",
+      "currency": "KRW",
+      "group": "MEMORY",
+      "thesis": "Cover HBM, DRAM, NAND, foundry and mobile; bridge 2026-28 memory operating profit, compare SK hynix/Micron, and test non-memory downside protection."
+    },
+    {
+      "ticker": "MU",
+      "company": "Micron Technology",
+      "exchange": "NASDAQ",
+      "currency": "USD",
+      "group": "MEMORY",
+      "thesis": "Bridge 2026-28 revenue, gross margin and EPS; test HBM price-in, DRAM tightness, wafer intensity, bit supply, CXMT and ASP; normalize cycle margin/EPS."
+    }
+  ],
+  "stages": [
+    {
+      "ticker": "JBL",
+      "stage": "focused_financial_snapshot",
+      "model": "gpt-5.6-terra",
+      "reasoning": "high",
+      "estimated_input_tokens": 9000,
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
+    },
+    {
+      "ticker": "JBL",
+      "stage": "focused_odds_analysis",
+      "model": "gpt-5.6-terra",
+      "reasoning": "high",
+      "estimated_input_tokens": 16000,
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
+    },
+    {
+      "ticker": "KLIC",
+      "stage": "focused_financial_snapshot",
+      "model": "gpt-5.6-terra",
+      "reasoning": "high",
+      "estimated_input_tokens": 9000,
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
+    },
+    {
+      "ticker": "KLIC",
+      "stage": "focused_odds_analysis",
+      "model": "gpt-5.6-terra",
+      "reasoning": "high",
+      "estimated_input_tokens": 16000,
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
+    },
+    {
+      "ticker": "NVT",
+      "stage": "focused_financial_snapshot",
+      "model": "gpt-5.6-terra",
+      "reasoning": "high",
+      "estimated_input_tokens": 9000,
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
+    },
+    {
+      "ticker": "NVT",
+      "stage": "focused_odds_analysis",
+      "model": "gpt-5.6-terra",
+      "reasoning": "high",
+      "estimated_input_tokens": 16000,
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
+    },
+    {
+      "ticker": "JCI",
+      "stage": "focused_financial_snapshot",
+      "model": "gpt-5.6-terra",
+      "reasoning": "high",
+      "estimated_input_tokens": 9000,
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
+    },
+    {
+      "ticker": "JCI",
+      "stage": "focused_odds_analysis",
+      "model": "gpt-5.6-terra",
+      "reasoning": "high",
+      "estimated_input_tokens": 16000,
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
+    },
+    {
+      "ticker": "005930.KS",
+      "stage": "focused_financial_snapshot",
+      "model": "gpt-5.6-terra",
+      "reasoning": "high",
+      "estimated_input_tokens": 9000,
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
+    },
+    {
+      "ticker": "005930.KS",
+      "stage": "focused_odds_analysis",
+      "model": "gpt-5.6-terra",
+      "reasoning": "high",
+      "estimated_input_tokens": 16000,
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
+    },
+    {
+      "ticker": "MU",
+      "stage": "focused_financial_snapshot",
+      "model": "gpt-5.6-terra",
+      "reasoning": "high",
+      "estimated_input_tokens": 9000,
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
+    },
+    {
+      "ticker": "MU",
+      "stage": "focused_odds_analysis",
+      "model": "gpt-5.6-terra",
+      "reasoning": "high",
+      "estimated_input_tokens": 16000,
+      "estimated_output_tokens": 18000,
+      "max_output_tokens": 20000
+    }
+  ],
+  "planned_calls": 12,
+  "actual_api_calls": 0,
+  "estimated_cost_usd": 2.952,
+  "hard_gates": {
+    "model": "gpt-5.6-terra",
+    "run_budget_usd": 30,
+    "daily_budget_usd": 35,
+    "call_limit": 18,
+    "expensive_jobs": false,
+    "retries": 0
+  }
+}
