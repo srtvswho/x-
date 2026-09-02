@@ -230,12 +230,24 @@ jobs:
           fi
 
       - name: Incremental extraction
-        if: env.AI_ENABLED == 'true'
+        if: env.SUMMARY_ENABLED == 'true'
+        env:
+          # Scheduled production summaries require fresh structured judgments,
+          # but do not authorize the OpenAI research stages below.
+          AI_ENABLED: "true"
+          AI_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.ai_dry_run || false }}
+          AI_RUN_ID: "${{ github.run_id }}-${{ github.run_attempt }}-extract"
+          AI_MAX_CALLS_PER_RUN: "500"
+          AI_MAX_COST_PER_RUN_USD: "2.00"
+          AI_MAX_DAILY_COST_USD: "3.00"
+          EXTRACT_MAX_COST_PER_RUN: "2.00"
         shell: bash
         run: |
           set -Eeuo pipefail
-          since=$(TZ=Asia/Shanghai date -d "7 days ago" +%Y-%m-%d)
-          python scripts/intel_extract.py --since "$since"
+          since=$(TZ=Asia/Shanghai date -d "3 days ago" +%Y-%m-%d)
+          python scripts/intel_extract.py \
+            --since "$since" \
+            --sources tw_jukan05,tw_aleabitoreddit,tw_zephyr_z9,tw_austinsemis,tw_DGretta_Author,tw_FeroceResearch,tw_TradexWhisperer,tw_gsmferrari
 
       - name: Build recursive Post Graph
         shell: bash
@@ -360,8 +372,10 @@ jobs:
           # remain gated by the job-level AI_ENABLED value.
           AI_ENABLED: "true"
           AI_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.ai_dry_run || false }}
+          AI_RUN_ID: "${{ github.run_id }}-${{ github.run_attempt }}-summary"
           AI_MAX_CALLS_PER_RUN: "50"
           AI_MAX_COST_PER_RUN_USD: "0.30"
+          AI_MAX_DAILY_COST_USD: "3.00"
           EXTRACT_MAX_COST_PER_RUN: "0.30"
         run: python scripts/dashboard/intel_gen_summaries.py
 

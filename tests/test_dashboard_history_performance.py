@@ -216,6 +216,13 @@ def test_scheduled_daily_run_refreshes_summaries_without_enabling_full_ai_pipeli
     assert 'AI_MAX_CALLS_PER_RUN: "50"' in workflow
     assert 'AI_MAX_COST_PER_RUN_USD: "0.30"' in workflow
     assert 'EXTRACT_MAX_COST_PER_RUN: "0.30"' in workflow
+    assert "if: env.SUMMARY_ENABLED == 'true'" in workflow
+    assert 'AI_MAX_CALLS_PER_RUN: "500"' in workflow
+    assert 'AI_MAX_COST_PER_RUN_USD: "2.00"' in workflow
+    assert 'EXTRACT_MAX_COST_PER_RUN: "2.00"' in workflow
+    assert 'AI_MAX_DAILY_COST_USD: "3.00"' in workflow
+    assert 'date -d "3 days ago"' in workflow
+    assert "--sources tw_jukan05,tw_aleabitoreddit,tw_zephyr_z9,tw_austinsemis,tw_DGretta_Author,tw_FeroceResearch,tw_TradexWhisperer,tw_gsmferrari" in workflow
 
 
 def test_zero_performance_price_coverage_blocks_publish(monkeypatch):
