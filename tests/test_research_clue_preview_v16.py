@@ -59,7 +59,7 @@ def test_clue_timeline_preserves_evidence_layers_and_author_evolution():
     assert any(any(event["quoted_posts"] for event in clue["timeline"]) for clue in clues)
 
 
-def test_preview_html_is_research_first_and_has_hash_routes(tmp_path):
+def test_preview_html_is_research_first_and_preserves_raw_intelligence(tmp_path):
     build_module = load_module(ROOT / "scripts" / "dashboard" / "build_research_clue_preview.py", "clue_preview_html")
     data_path = ROOT / "outputs" / "research_clue_desk_v16" / "research_clues.json"
     output = tmp_path / "index.html"
@@ -70,34 +70,37 @@ def test_preview_html_is_research_first_and_has_hash_routes(tmp_path):
     )
     html = output.read_text(encoding="utf-8")
     assert "TODAY'S RESEARCH CLUES" in html
-    assert "今日研究线索" in html
+    assert "今天有什么值得研究" in html
     assert "CLUE TIMELINE" in html
     assert "QUOTE CHAIN" in html
     assert "MEDIA EVIDENCE" in html
     assert "POSITIVE / NEGATIVE EXPOSURE" in html
-    assert "AUTHOR THESIS EVOLUTION" in html
     assert "AI RESEARCH VIEW" in html
     assert "/research-changes/" in html
     assert "/evidence/" in html
-    assert "/companies/" in html
+    assert "/posts/" in html
+    assert "/tracking/" in html
+    assert "/authors/" in html
+    assert "/themes/" in html
+    assert "/tickers/" in html
     assert "/admin/" in html
     assert "01&nbsp;&nbsp;今日线索" in html
     assert "02&nbsp;&nbsp;全部研究线" in html
     assert "05&nbsp;&nbsp;标的" in html
-    assert "function recommendedClues()" in html
-    assert "return rows.slice(0,7)" in html
-    assert "View Evidence" in html
-    assert "View Timeline" in html
-    assert "EVIDENCE DETAIL" in html
-    assert "ORIGINAL CONTENT" in html
-    assert "EXTRACTED FACTS" in html
+    assert "slice(0,7)" in html
+    assert "View Original Posts" in html
+    assert "View Original Post" in html
+    assert "EVIDENCE VIEW" in html
+    assert "ORIGINAL POST" in html
+    assert "EXTRACTED CLAIMS" in html
     assert "COMPANY RESEARCH MAP" in html
     assert "href=\"/legacy/#feed-section\"" not in html
     assert "href=\"/legacy/#ai-cost\"" not in html
     assert "VALUATION UNDER AUDIT" not in html
-    assert "#clue/" in html
-    assert "#author/" in html
-    assert "#theme/" in html
+    assert "/clues/" in html
+    assert "STRICT CHRONOLOGICAL" in html
+    assert "REPLY CONTEXT" in html
+    assert "Recent Raw Posts" in html
     assert "TOP INVESTMENT OPPORTUNITIES" not in html
     assert "FOCUSED ODDS REVIEW" not in html
     assert "BUY_CANDIDATE" not in html
@@ -106,12 +109,11 @@ def test_preview_html_is_research_first_and_has_hash_routes(tmp_path):
 
 def test_v162_product_home_and_evidence_are_integrated():
     template = (ROOT / "scripts" / "dashboard" / "research_clue_preview.template.html").read_text(encoding="utf-8")
-    assert "grid-template-columns:176px minmax(0,980px)" in template
+    assert "grid-template-columns:190px minmax(0,1000px)" in template
     assert "<aside class=\"rail\"" not in template
-    assert "WHY RECOMMENDED" in template
-    assert "Evidence Detail" not in template
-    assert "EVIDENCE DETAIL" in template
-    assert "Back to Clue Detail" in template
+    assert "WHY IT MATTERS" in template
+    assert "EVIDENCE VIEW" in template
+    assert "View Research Clue" in template
     assert "RELATED CLUE" in template
     assert "Company Research Map" not in template
     assert "COMPANY RESEARCH MAP" in template
@@ -126,14 +128,11 @@ def test_v162_product_home_and_evidence_are_integrated():
 
 def test_v163_evidence_routes_are_relevant_and_deduplicated():
     template = (ROOT / "scripts" / "dashboard" / "research_clue_preview.template.html").read_text(encoding="utf-8")
-    assert "function defaultEvidenceIndex(c)" in template
-    assert "const hasRelevantEvidence=c=>" in template
-    assert "const evidenceLabel=c=>" in template
-    assert "function evidenceScore(c,e,index=0)" in template
-    assert "function uniqueEvidenceRows()" in template
-    assert "new Set(rows.map(x=>x.c.clue_id)).size" in template
-    assert "同一原始来源只显示一次" in template
-    assert "Research Clue Desk v1.6.3" in template
+    assert "function evidenceIndex()" in template
+    assert "function evidenceDetail(c,index)" in template
+    assert "Evidence 回答“为什么这条证据重要”" in template
+    assert "Raw Post 回答“作者实际发了什么”" in template
+    assert "Research Clue Desk + Raw Intelligence" in template
 
 
 def test_v162_builds_all_product_routes(tmp_path):
@@ -149,9 +148,34 @@ def test_v162_builds_all_product_routes(tmp_path):
         tmp_path / "research-changes" / "index.html",
         tmp_path / "evidence" / "index.html",
         tmp_path / "companies" / "index.html",
+        tmp_path / "posts" / "index.html",
+        tmp_path / "authors" / "index.html",
+        tmp_path / "themes" / "index.html",
+        tmp_path / "tickers" / "index.html",
+        tmp_path / "tracking" / "index.html",
+        tmp_path / "ai-usage" / "index.html",
+        tmp_path / "admin" / "index.html",
     }
     assert set(outputs) == expected
     assert all(path.read_bytes() == outputs[0].read_bytes() for path in outputs)
+    redirects = (tmp_path / "_redirects").read_text(encoding="utf-8")
+    assert "/posts/* /posts/index.html 200" in redirects
+    assert "/clues/* /index.html 200" in redirects
+
+
+def test_unified_raw_exporter_is_zero_ai_and_preserves_old_features():
+    source = (ROOT / "scripts" / "dashboard" / "build_unified_research_data.py").read_text(encoding="utf-8")
+    assert "import openai" not in source
+    assert "from openai" not in source
+    assert '"openai_calls": 0' in source
+    for feature in (
+        "raw_posts", "author_posts", "quote_chain", "media", "research_changes",
+        "tracking", "ticker_tracking", "recent_detail",
+    ):
+        assert f'"{feature}": True' in source
+    assert "post_references" in source
+    assert "media_assets" in source
+    assert "raw_json" in source
 
 
 def test_synthesizer_has_no_openai_dependency():
@@ -171,5 +195,9 @@ def test_daily_production_build_reuses_approved_artifact_only():
     assert "dashboard_deploy_dist/evidence/index.html" in workflow
     assert "dashboard_deploy_dist/companies/index.html" in workflow
     assert "dashboard_deploy_dist/research-changes/index.html" in workflow
+    assert "python scripts/dashboard/build_unified_research_data.py" in workflow
+    assert "dashboard_deploy_dist/data/raw-intelligence.json.gz" in workflow
+    assert "dashboard_deploy_dist/posts/index.html" in workflow
+    assert "dashboard_deploy_dist/tracking/index.html" in workflow
     assert "python scripts/intel_research_clue_preview.py" not in workflow
     assert 'ALLOW_EXPENSIVE_AI_JOB: "false"' in workflow

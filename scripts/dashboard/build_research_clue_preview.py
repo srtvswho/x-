@@ -12,7 +12,29 @@ ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_DATA = ROOT / "outputs" / "research_clue_desk_v16" / "research_clues.json"
 DEFAULT_TEMPLATE = Path(__file__).with_name("research_clue_preview.template.html")
 DEFAULT_OUTPUT = ROOT / "dashboard_deploy_dist" / "research-clues" / "index.html"
-PRODUCT_ROUTES = ("", "research-clues", "research-changes", "evidence", "companies")
+PRODUCT_ROUTES = (
+    "",
+    "research-clues",
+    "research-changes",
+    "evidence",
+    "companies",
+    "posts",
+    "authors",
+    "themes",
+    "tickers",
+    "tracking",
+    "ai-usage",
+    "admin",
+)
+
+REDIRECTS = """\
+/clues/* /index.html 200
+/posts/* /posts/index.html 200
+/authors/* /authors/index.html 200
+/themes/* /themes/index.html 200
+/tickers/* /tickers/index.html 200
+/evidence/* /evidence/index.html 200
+"""
 
 
 def render(data_path: Path, template_path: Path, output_path: Path) -> Path:
@@ -40,6 +62,7 @@ def render_product_routes(data_path: Path, template_path: Path, deploy_root: Pat
     for route in PRODUCT_ROUTES:
         output = deploy_root / route / "index.html" if route else deploy_root / "index.html"
         outputs.append(render(data_path, template_path, output))
+    (deploy_root / "_redirects").write_text(REDIRECTS, encoding="utf-8")
     return outputs
 
 
