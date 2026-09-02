@@ -192,6 +192,26 @@ class TestPostLevelDedup:
         assert set(records[0]["ticker"]) == {"NVDA", "MU"}
         print(f"  ✓ long+short 混 → direction=long, ticker 合并")
 
+    def test_null_values_in_extracted_arrays_are_ignored(self, fresh_db, monkeypatch):
+        """LLM JSON 数组中的 null/空字符串不应让 dashboard 构建崩溃."""
+        fixed = datetime(2026, 7, 12, 22, 26, 0, tzinfo=timezone.utc)
+        monkeypatch.setattr("common.cn_now", lambda: fixed)
+        pub = datetime(2026, 7, 12, 12, 0, 0, tzinfo=timezone.utc).isoformat()
+        _insert_post(fresh_db, "p1", "tw_jukan05", pub, raw_text="Micron update")
+        _insert_extraction(
+            fresh_db,
+            "p1",
+            "tw_jukan05",
+            direction="long",
+            ticker=["MU", None, ""],
+            company=["Micron", None, "  "],
+        )
+
+        records = query_today_records(fresh_db)
+
+        assert records[0]["ticker"] == ["MU"]
+        assert records[0]["company"] == ["Micron"]
+
     def test_neutral_with_bottleneck_still_neutral(self, fresh_db, monkeypatch):
         """extraction direction=neutral, 有 bottleneck → direction 仍 neutral (按设计)."""
         from common import cn_now

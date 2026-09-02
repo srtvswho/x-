@@ -276,14 +276,26 @@ def query_today_records(conn) -> list[dict]:
             rec["_directions"].append(direction)
         if ticker:
             try:
-                rec["_tickers"].extend(_json.loads(ticker) if ticker.startswith("[") else [ticker])
+                parsed_tickers = _json.loads(ticker) if ticker.startswith("[") else [ticker]
             except Exception:
-                rec["_tickers"].append(ticker)
+                parsed_tickers = [ticker]
+            if not isinstance(parsed_tickers, list):
+                parsed_tickers = [parsed_tickers]
+            rec["_tickers"].extend(
+                value.strip() for value in parsed_tickers
+                if isinstance(value, str) and value.strip()
+            )
         if company:
             try:
-                rec["_companies"].extend(_json.loads(company) if company.startswith("[") else [company])
+                parsed_companies = _json.loads(company) if company.startswith("[") else [company]
             except Exception:
-                rec["_companies"].append(company)
+                parsed_companies = [company]
+            if not isinstance(parsed_companies, list):
+                parsed_companies = [parsed_companies]
+            rec["_companies"].extend(
+                value.strip() for value in parsed_companies
+                if isinstance(value, str) and value.strip()
+            )
         if bk: rec["_bottlenecks"].append(bk)
         if attr: rec["_attrs"].append(attr)
         if rebuts: rec["_rebuts"].append(rebuts)
