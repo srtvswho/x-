@@ -203,6 +203,15 @@ def test_daily_deepseek_calls_all_use_flash():
     assert 'DEEPSEEK_MODEL = "deepseek-v4-pro"' not in summaries
 
 
+def test_scheduled_daily_run_refreshes_summaries_without_enabling_full_ai_pipeline():
+    workflow = (ROOT / ".github" / "workflows" / "signalboard-daily.yml").read_text(encoding="utf-8")
+    assert "SUMMARY_ENABLED: ${{ github.event_name == 'schedule'" in workflow
+    assert "if: env.SUMMARY_ENABLED == 'true'" in workflow
+    assert "if: env.AI_ENABLED == 'true'" in workflow
+    assert "contains(github.event.head_commit.message, '[summary backfill]')" in workflow
+    assert "DEEPSEEK_API_KEY is required when scheduled summaries are enabled" in workflow
+
+
 def test_zero_performance_price_coverage_blocks_publish(monkeypatch):
     import sys
     import types

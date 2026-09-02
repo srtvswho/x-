@@ -99,9 +99,10 @@ jobs:
     timeout-minutes: 180
     env:
       APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
-      DEEPSEEK_API_KEY: ${{ github.event_name == 'workflow_dispatch' && inputs.ai_enabled && secrets.DEEPSEEK_API_KEY || '' }}
+      DEEPSEEK_API_KEY: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.ai_enabled) || contains(github.event.head_commit.message, '[summary backfill]')) && secrets.DEEPSEEK_API_KEY || '' }}
       OPENAI_API_KEY: ${{ github.event_name == 'workflow_dispatch' && inputs.ai_enabled && secrets.OPENAI_API_KEY || '' }}
       AI_ENABLED: ${{ github.event_name == 'workflow_dispatch' && inputs.ai_enabled || false }}
+      SUMMARY_ENABLED: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.ai_enabled) || contains(github.event.head_commit.message, '[summary backfill]') }}
       ALLOW_EXPENSIVE_AI_JOB: "false"
       AI_JOB_KIND: incremental_daily
       AI_WORKFLOW: signalboard_daily
@@ -168,6 +169,10 @@ jobs:
           fi
           if [ "$AI_ENABLED" = "true" ] && [ -z "${DEEPSEEK_API_KEY:-}" ]; then
             echo "::error::DEEPSEEK_API_KEY is required when ai_enabled is enabled"
+            exit 1
+          fi
+          if [ "$SUMMARY_ENABLED" = "true" ] && [ -z "${DEEPSEEK_API_KEY:-}" ]; then
+            echo "::error::DEEPSEEK_API_KEY is required when scheduled summaries are enabled"
             exit 1
           fi
 
@@ -347,7 +352,7 @@ jobs:
         run: python scripts/dashboard/refresh_prices_polygon.py
 
       - name: Generate summaries
-        if: env.AI_ENABLED == 'true'
+        if: env.SUMMARY_ENABLED == 'true'
         run: python scripts/dashboard/intel_gen_summaries.py
 
       - name: Build dashboard
