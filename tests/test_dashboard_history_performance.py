@@ -210,6 +210,9 @@ def test_scheduled_daily_run_refreshes_summaries_without_enabling_full_ai_pipeli
     assert "if: env.AI_ENABLED == 'true'" in workflow
     assert "contains(github.event.head_commit.message, '[summary backfill]')" in workflow
     assert "DEEPSEEK_API_KEY is required when scheduled summaries are enabled" in workflow
+    assert "if: ${{ !contains(github.event.head_commit.message, '[summary backfill]') }}" in workflow
+    assert 'AI_ENABLED: "true"' in workflow
+    assert "AI_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.ai_dry_run || false }}" in workflow
 
 
 def test_zero_performance_price_coverage_blocks_publish(monkeypatch):
