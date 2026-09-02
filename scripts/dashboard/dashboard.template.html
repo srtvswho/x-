@@ -678,7 +678,10 @@ function renderFeed(){
   for (const r of (RECORDS || [])) {
     if (!seen.has(r.post_id)) { seen.add(r.post_id); merged.push(r); }
   }
-  const sorted = merged.filter(r=>(feedKol==='all'||r.kol===feedKol)&&(feedLevel==='all'||signalStrength(r).level===feedLevel))
+  // Signal Desk is intentionally scoped to the configured 8-person system.
+  // New crawler sources must not abort the whole page before performance and
+  // people panels render.
+  const sorted = merged.filter(r=>KOLS[r.kol]&&(feedKol==='all'||r.kol===feedKol)&&(feedLevel==='all'||signalStrength(r).level===feedLevel))
     .sort((a,b)=>new Date(b.published_at)-new Date(a.published_at));
   // 顶部今日窗口横幅: 明确窗口跟计数
   const feedEmpty = document.getElementById('feed-empty');
