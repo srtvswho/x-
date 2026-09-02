@@ -18,6 +18,7 @@ def test_template_has_history_filters_pagination_and_performance():
     assert "__CALL_PERFORMANCE__" in html
     assert "directional_return" in html
     assert "综合等权方向收益" in html
+    assert "merged.filter(r=>KOLS[r.kol]&&" in html
 
 
 def test_query_call_performance_long_and_short(monkeypatch):
