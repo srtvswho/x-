@@ -75,6 +75,9 @@ jobs:
           mkdir -p dashboard_deploy_dist/legacy dashboard_deploy_dist/admin
           cp scripts/dashboard/dashboard.html dashboard_deploy_dist/legacy/index.html
           cp scripts/dashboard/admin.template.html dashboard_deploy_dist/admin/index.html
+          python scripts/dashboard/build_unified_research_data.py \
+            --database data/signalboard_full.db \
+            --output dashboard_deploy_dist/data/raw-intelligence.json.gz
           python scripts/dashboard/build_research_clue_preview.py \
             --deploy-root dashboard_deploy_dist
           cp dashboard_deploy_dist/index.html dashboard.html
@@ -87,7 +90,7 @@ jobs:
           git config user.name signalboard-bot
           git config user.email signalboard-bot@users.noreply.github.com
           git add data/signalboard.db.gz scripts/dashboard/dashboard.html dashboard.html
-          git add -f dashboard_deploy_dist/index.html dashboard_deploy_dist/research-clues/index.html dashboard_deploy_dist/research-changes/index.html dashboard_deploy_dist/evidence/index.html dashboard_deploy_dist/companies/index.html dashboard_deploy_dist/legacy/index.html dashboard_deploy_dist/admin/index.html outputs/thesis_engine_v11/golden_validation_report.* outputs/thesis_engine_v11/production_seed_run_*.json
+          git add -f dashboard_deploy_dist/index.html dashboard_deploy_dist/_redirects dashboard_deploy_dist/data/raw-intelligence.json.gz dashboard_deploy_dist/research-clues/index.html dashboard_deploy_dist/research-changes/index.html dashboard_deploy_dist/evidence/index.html dashboard_deploy_dist/companies/index.html dashboard_deploy_dist/posts/index.html dashboard_deploy_dist/authors/index.html dashboard_deploy_dist/themes/index.html dashboard_deploy_dist/tickers/index.html dashboard_deploy_dist/tracking/index.html dashboard_deploy_dist/ai-usage/index.html dashboard_deploy_dist/legacy/index.html dashboard_deploy_dist/admin/index.html outputs/thesis_engine_v11/golden_validation_report.* outputs/thesis_engine_v11/production_seed_run_*.json
           git commit -m "Productionize archived Golden cases with zero AI [skip daily]"
           git push origin HEAD:master
       - name: Upload final production audit
