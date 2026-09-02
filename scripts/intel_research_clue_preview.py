@@ -146,6 +146,27 @@ CLUE_SPECS = [
 ]
 
 
+# Deterministic terms used only to connect a research clue back to raw source
+# posts. These deliberately favor precision over recall: the complete corpus
+# remains available in /posts/, while a clue page should not claim that a
+# generic adjacent-theme post is direct support for that clue.
+CLUE_SOURCE_TERMS = {
+    "clue_ymtc_nand_wfe": ["ymtc", "nand", "flash memory", "star market", "100k wpm"],
+    "clue_abf_copos_cowop": ["feynman", "abf", "copos", "cowop", "substrate", "glass substrates", "ibiden", "innolux", "pcb", "ccl"],
+    "clue_datacenter_physical": ["data center", "datacenter", "cooling", "chiller", "liquid cooling", "power delivery", "transformer", "wiring", "water"],
+    "clue_memory_architecture": ["memory", "hbm", "dram", "cxl", "bandwidth", "context", "inference", "3d dram", "hbf"],
+    "clue_hbm_dram_crowdout": ["hbm", "dram", "wafer input", "memory trio", "ddr4", "ddr5"],
+    "clue_legacy_dram": ["legacy memory", "legacy dram", "ddr2", "ddr3", "esmt", "psmc"],
+    "clue_cpo_cw_laser": ["cpo", "1.6t", "cw laser", "laser", "sive", "sivers", "pluggable", "fau", "foci", "foundry allocation"],
+    "clue_socamm_lpddr": ["socamm", "lpddr", "data center lpddr", "dedicated to lpddr"],
+    "clue_cxl_interconnect": ["cxl", "memory interconnect", "100 tb/s", "6.4tb/s", "hbm5", "3d dram"],
+    "clue_gpu_server_price": ["server", "rack", "memory configurations", "rubin", "nvl72", "$8 million", "17%"],
+    "clue_traditional_packaging": ["traditional packaging", "wire bonder", "wire-bonder", "bonder", "packaging equipment", "emib"],
+    "clue_cxmt_hbm3e": ["cxmt", "hbm3e", "beijing fab", "china is still importing hbm"],
+    "clue_samsung_hbm4_broadcom": ["samsung", "hbm4", "broadcom", "custom asic", "16 gbps"],
+}
+
+
 def _json(value: Any, default: Any) -> Any:
     if value is None:
         return default
@@ -613,6 +634,7 @@ def build_clue(con: sqlite3.Connection, spec: dict[str, Any]) -> dict[str, Any]:
         "priority": spec["priority"],
         "title": spec["title"],
         "theme": spec["theme"],
+        "source_terms": CLUE_SOURCE_TERMS[spec["clue_id"]],
         "status": spec["status"],
         "current_state": "VALID THESIS" if spec["status"] not in {"CONTRADICTED", "NEW"} else "INVALID / UNPROVEN THESIS" if spec["status"] == "CONTRADICTED" else "INTERESTING CLUE",
         "first_seen": first_seen,

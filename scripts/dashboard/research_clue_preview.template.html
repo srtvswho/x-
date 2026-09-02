@@ -36,6 +36,14 @@
     function authors(c){return `<div class="authors">${arr(c.authors).map(a=>`<a class="author" href="/authors/${encodeURIComponent(authorKey(a))}"><i>${esc(authorKey(a)[0]?.toUpperCase())}</i>${esc(a)}</a>`).join('')}</div>`}
     function media(items,compact=false){return `<div class="media-grid">${arr(items).map(m=>`<div class="media">${m.video?`<video controls preload="metadata" poster="${esc(m.url)}"><source src="${esc(m.video)}"></video>`:m.url||m.thumbnail_url?`<img src="${esc(m.url||m.thumbnail_url)}" alt="${esc(m.alt||'Post media')}" loading="lazy">`:''}${compact?'':`<div>${esc(m.alt||m.analysis?.summary||m.summary||m.type||m.media_type||'Media')}</div>`}</div>`).join('')}</div>`}
     async function raw(){if(RAW)return RAW;const response=await fetch('/data/raw-intelligence.json.gz');if(!response.ok)throw new Error(`Raw Intelligence data unavailable (${response.status})`);const bytes=new Uint8Array(await response.arrayBuffer());let text;if(bytes[0]===0x1f&&bytes[1]===0x8b){if(!('DecompressionStream' in window))throw new Error('This browser cannot decompress the Raw Intelligence archive.');text=await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))).text()}else{text=new TextDecoder().decode(bytes)}RAW=JSON.parse(text);return RAW}
+    function sourceText(source){const post=String(source?.post||source?.text||'');const quoted=source?.quoted_posts||source?.quote?[...(source?.quoted_posts||[]),source?.quote].filter(Boolean):[];const reply=source?.reply?[source.reply]:[];const shortClaims=post.length<80?arr(source?.claims):[];return [post,...quoted.map(x=>x.text||''),...reply.map(x=>x.text||''),...shortClaims].join(' ').toLowerCase()}
+    function sourceRelevance(c,source){const hay=sourceText(source);return arr(c?.source_terms).reduce((score,term)=>hay.includes(String(term).toLowerCase())?score+Math.max(2,String(term).length):score,0)}
+    const isDirectClueSource=(c,source)=>sourceRelevance(c,source)>0;
+    function defaultEvidenceIndex(c){const events=arr(c?.timeline);let best=0,bestScore=-1;events.forEach((e,i)=>{const score=sourceRelevance(c,e)*100+(e.post_url?2:0)+arr(e.media).length+i/1000;if(score>bestScore){best=i;bestScore=score}});return best}
+    const clueEvidenceHref=c=>arr(c?.timeline).some(e=>isDirectClueSource(c,e))?`/evidence/${encodeURIComponent(c.clue_id)}/${defaultEvidenceIndex(c)}`:clueHref(c);
+    function relevantCluesForPost(p){return arr(p?.clue_ids).map(clueById).filter(c=>c&&isDirectClueSource(c,p))}
+    function evidenceKey(e){const id=postId(e?.post_url);return id?`post:${id}`:[e?.author,e?.date,e?.post].join('|').toLowerCase()}
+    function uniqueEvidenceRows(){const groups=new Map();CLUES.forEach(c=>arr(c.timeline).forEach((e,i)=>{if(!isDirectClueSource(c,e))return;const key=evidenceKey(e);if(!groups.has(key))groups.set(key,[]);groups.get(key).push({c,e,i})}));return [...groups.values()].map(group=>group.sort((a,b)=>sourceRelevance(b.c,b.e)-sourceRelevance(a.c,a.e))[0]).sort((a,b)=>b.e.date.localeCompare(a.e.date)||sourceRelevance(b.c,b.e)-sourceRelevance(a.c,a.e))}
     function card(c){return `<article class="card"><h2><a href="${clueHref(c)}" style="text-decoration:none">${esc(c.title)}</a></h2><div class="meta"><span class="status ${esc(c.status)}">${esc(c.status)}</span><span>First seen ${esc(c.first_seen)}</span><span>Updated ${esc(c.last_updated)}</span></div>${authors(c)}<p class="thesis">${esc(c.one_line_thesis)}</p><div class="briefs"><div class="brief"><span class="label">WHY IT MATTERS</span><p>${esc(short(c.why_this_matters,190))}</p></div><div class="brief"><span class="label">WHAT CHANGED</span><p>${esc(c.what_changed)}</p></div></div><div class="logic">${arr(c.short_logic_chain).slice(0,3).map((x,i)=>`${i?'<i>→</i>':''}<span>${esc(short(x,78))}</span>`).join('')}</div>${chips(arr(c.related_companies),'ticker')}<div class="brief" style="margin-top:14px"><span class="label">AI VIEW</span><p>${esc(short(c.ai_initial_view,180))}</p></div><div class="card-foot"><a class="btn" href="${clueHref(c)}">View Full Clue</a><a class="btn primary" href="${clueHref(c)}/posts">View Original Posts</a></div></article>`}
     function home(){nav('home');const rows=CLUES.slice().sort((a,b)=>a.priority-b.priority).slice(0,7);app.innerHTML=`<section class="hero"><div class="eyebrow">TODAY'S RESEARCH CLUES</div><h1>今天有什么值得研究？</h1><h2>AI Research Desk + Raw Intelligence Terminal</h2><p>AI 帮你找到值得看的研究线；原始 Feed 让你随时核对作者真实表达。两层数据互通，但互不替代。</p><div class="quick-links"><a href="/posts/">View Raw Posts</a><a href="/authors/">Authors</a><a href="/themes/">Themes</a><a href="/tracking/">Tracking</a></div><div class="stats"><span><b>${CLUES.length}</b> active research lines</span><span><b>${CLUES.filter(c=>c.status==='STRENGTHENING').length}</b> strengthening</span><span>Updated ${esc(REPORT.generated_at?.slice(0,10)||'')}</span></div></section><div class="section-head"><h2>今天优先看</h2><p>${rows.length} 条推荐 · 原文可一键核验</p></div><div class="list">${rows.map(card).join('')}</div>`}
     function allClues(){nav('clues');app.innerHTML=`<div class="page">${crumbs([['首页','/'],['全部研究线']])}<div class="page-head"><div class="eyebrow">ALL RESEARCH LINES</div><h1>全部研究线</h1><p>按当前优先级浏览完整 Research Clue 索引。</p></div><div class="list">${CLUES.slice().sort((a,b)=>a.priority-b.priority).map(card).join('')}</div></div>`}
@@ -63,6 +71,50 @@
     async function admin(){nav('admin');const d=await raw();app.innerHTML=`<div class="page">${crumbs([['首页','/'],['Audit / Admin']])}<div class="page-head"><div class="eyebrow">OPERATIONS</div><h1>Audit / Admin</h1><p>统一入口保留研究审计、AI 使用与旧系统回查能力。</p></div><div class="list"><article class="card"><h2><a href="/research-changes/">Latest Research Changes</a></h2><p>Thesis Change 审计、Previous View、New Evidence、New View 与 Exposure。</p></article><article class="card"><h2><a href="/ai-usage/">AI Usage</a></h2><p>OpenAI calls ${d.openai_calls} · cost $${Number(d.openai_cost_usd).toFixed(2)}。</p></article><article class="card"><h2><a href="/legacy/">Legacy Audit Snapshot</a></h2><p>仅用于历史回查；所有用户主流程均已进入统一 App Shell。</p></article></div></div>`}
     function notFound(message='Page not found'){app.innerHTML=`<div class="page"><div class="error">${esc(message)} · <a href="/">Back home</a></div></div>`}
     async function route(){document.getElementById('updated').textContent=`Updated ${REPORT.generated_at?.slice(0,10)||''}`;let path=location.pathname.replace(/\/+$/,'')||'/',s=path.split('/').filter(Boolean).map(decodeURIComponent),q=new URLSearchParams(location.search);if(location.hash.startsWith('#clue/')){const parts=location.hash.slice(1).split('/');return location.replace(`/clues/${parts[1]}${parts[2]==='posts'?'/posts':''}`)}try{if(path==='/')return home();if(s[0]==='research-clues'&&s.length===1)return allClues();if(s[0]==='clues'){const c=clueById(s[1]);return c?(s[2]==='posts'?await cluePosts(c):clueDetail(c)):notFound('Clue not found')}if(s[0]==='posts')return s[1]?await postDetail(s[1]):await rawFeed();if(s[0]==='authors')return s[1]?await authorPage(s[1]):await authorIndex();if(s[0]==='themes')return s[1]?await themePage(s.slice(1).join('/')):themeIndex();if(s[0]==='tickers')return s[1]?await tickerPage(s.slice(1).join('/')):await tickerIndex();if(s[0]==='companies'){const ticker=q.get('ticker');return ticker?await tickerPage(ticker):await tickerIndex()}if(s[0]==='research-changes')return await researchChanges();if(s[0]==='tracking')return await tracking();if(s[0]==='evidence')return s[1]?evidenceDetail(clueById(s[1]),s[2]):evidenceIndex();if(s[0]==='ai-usage')return await aiUsage();if(s[0]==='admin')return await admin();return notFound()}catch(error){console.error(error);app.innerHTML=`<div class="page"><div class="error">${esc(error.message||error)}</div></div>`}}
+    const baseClueDetail=clueDetail;
+    clueDetail=function(c){
+      baseClueDetail(c);
+      const evidenceLink=[...document.querySelectorAll('.quick-links a')].find(a=>a.textContent.trim()==='View Evidence');
+      if(evidenceLink){
+        const hasDirect=arr(c.timeline).some(e=>isDirectClueSource(c,e));
+        evidenceLink.href=clueEvidenceHref(c);
+        evidenceLink.textContent=hasDirect?'View Evidence':'Review Timeline';
+      }
+    };
+
+    partOf=function(p){
+      const related=relevantCluesForPost(p);
+      return related.length?`<div class="part-of">Part of: ${related.map(c=>`<a href="${clueHref(c)}">${esc(c.title)}</a>`).join(' · ')}</div>`:'';
+    };
+
+    cluePosts=async function(c){
+      nav('clues');app.innerHTML='<div class="loading">Loading original posts for this clue…</div>';
+      const d=await raw(),showContext=new URLSearchParams(location.search).get('context')==='all';
+      const ids=new Set(arr(c.timeline).map(e=>postId(e.post_url)).filter(Boolean));
+      const candidates=d.posts.filter(p=>arr(p.clue_ids).includes(c.clue_id)||ids.has(p.id)).sort((a,b)=>b.date.localeCompare(a.date));
+      const direct=candidates.filter(p=>isDirectClueSource(c,p));
+      const rows=showContext?candidates:(direct.length?direct:candidates),omitted=Math.max(0,candidates.length-direct.length);
+      app.innerHTML=`<div class="page">${crumbs([['今日线索','/'],[c.title,clueHref(c)],['Original Posts']])}<div class="page-head"><div class="eyebrow">CLUE → ORIGINAL POSTS</div><h1>${esc(c.title)}</h1><p>${showContext?'展示这条研究线保留的全部上下文 Post；其中可能包含相邻主题背景。':'默认只显示与该 Clue 直接匹配的原始 Post，完整 Raw Feed 与研究上下文仍全部保留。'}</p><div class="quick-links"><a class="btn" href="${clueHref(c)}">Back to Clue</a><a class="btn" href="${clueEvidenceHref(c)}">Evidence View</a>${omitted?`<a class="btn" href="${clueHref(c)}/posts?context=${showContext?'direct':'all'}">${showContext?'Show Direct Sources':`Show ${omitted} Context Posts`}</a>`:''}</div></div><div class="section-head"><h2>${showContext?'Research Context Posts':'Direct Source Posts'}</h2><p>${rows.length} source posts · chronological</p></div><div id="post-list"></div></div>`;
+      renderPostRows(rows);
+    };
+
+    evidenceIndex=function(){
+      nav('clues');const rows=uniqueEvidenceRows();
+      app.innerHTML=`<div class="page">${crumbs([['首页','/'],['Evidence']])}<div class="page-head"><div class="eyebrow">EVIDENCE INTERPRETATION</div><h1>Evidence</h1><p>同一原始来源只显示一次，并关联到最相关的 Research Clue。Evidence 解释“为什么重要”；Raw Post 保留“作者实际发了什么”。</p></div><div class="list">${rows.map(({c,e,i})=>`<article class="research-line"><div class="meta"><span>${esc(e.date)}</span><span>${esc(e.author)}</span></div><h3><a href="/evidence/${encodeURIComponent(c.clue_id)}/${i}">${esc(c.title)}</a></h3><p>${esc(short(e.ai_interpretation||e.what_changed))}</p><div class="card-foot"><a class="btn" href="/evidence/${encodeURIComponent(c.clue_id)}/${i}">Evidence View</a>${postId(e.post_url)?`<a class="btn primary" href="/posts/${postId(e.post_url)}">Raw Post</a>`:''}</div></article>`).join('')||'<div class="empty">No directly matched evidence.</div>'}</div></div>`;
+    };
+
+    const basePostDetail=postDetail;
+    postDetail=async function(id){
+      await basePostDetail(id);
+      const d=await raw(),p=d.posts.find(x=>x.id===id);if(!p)return;
+      const related=relevantCluesForPost(p),links=[...document.querySelectorAll('.quick-links a')];
+      const current=links.find(a=>a.textContent.trim()==='View Related Clue');
+      if(current&&!related.length)current.remove();
+      else if(current&&related[0])current.href=clueHref(related[0]);
+      const panel=[...document.querySelectorAll('.panel')].find(x=>x.querySelector('h2')?.textContent.trim()==='RELATED RESEARCH CLUES');
+      if(panel)panel.innerHTML=`<h2>RELATED RESEARCH CLUES</h2>${related.map(c=>`<div class="quote"><a href="${clueHref(c)}"><b>${esc(c.title)}</b></a><br>${esc(c.one_line_thesis)}</div>`).join('')||'<p>No directly related clue.</p>'}`;
+    };
+
     route();
   </script>
 </body>

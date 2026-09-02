@@ -38,6 +38,7 @@ def test_research_clue_contract_and_zero_ai():
     assert sum(x["independent_evidence_roots"] >= 2 for x in clues) >= 3
     assert any(x["status"] == "CONTRADICTED" for x in clues)
     assert all(x["additional_openai_calls"] == 0 for x in clues)
+    assert all(x["source_terms"] for x in clues)
 
 
 def test_clue_timeline_preserves_evidence_layers_and_author_evolution():
@@ -130,9 +131,43 @@ def test_v163_evidence_routes_are_relevant_and_deduplicated():
     template = (ROOT / "scripts" / "dashboard" / "research_clue_preview.template.html").read_text(encoding="utf-8")
     assert "function evidenceIndex()" in template
     assert "function evidenceDetail(c,index)" in template
+    assert "function sourceRelevance(c,source)" in template
+    assert "const isDirectClueSource=" in template
+    assert "function uniqueEvidenceRows()" in template
+    assert "if(!isDirectClueSource(c,e))return" in template
+    assert "Show ${omitted} Context Posts" in template
+    assert "No directly related clue." in template
     assert "Evidence 回答“为什么这条证据重要”" in template
     assert "Raw Post 回答“作者实际发了什么”" in template
     assert "Research Clue Desk + Raw Intelligence" in template
+
+
+def test_v163_direct_source_terms_reject_known_adjacent_theme_misroutes():
+    clues = {c["clue_id"]: c for c in approved_report()["clues"]}
+
+    def direct_ids(clue):
+        terms = [x.lower() for x in clue["source_terms"]]
+        result = []
+        for event in clue["timeline"]:
+            post = event.get("post", "")
+            quoted = " ".join(x.get("text", "") for x in event.get("quoted_posts", []))
+            claims = " ".join(event.get("claims", [])) if len(post) < 80 else ""
+            hay = f"{post} {quoted} {claims}".lower()
+            if any(term in hay for term in terms):
+                result.append(event["post_url"].rsplit("/", 1)[-1])
+        return result
+
+    ymtc = direct_ids(clues["clue_ymtc_nand_wfe"])
+    assert "2090779070523162841" in ymtc
+    assert "2091525999666287061" in ymtc
+    assert "2091327311882948875" not in ymtc  # generic AI-server / DRAM post
+    assert "2094206602253570455" not in ymtc  # generic Korean DRAM export post
+
+    legacy = direct_ids(clues["clue_legacy_dram"])
+    assert "2094083798204047577" in legacy
+    assert "2091707160162095210" not in legacy  # HBM4 pricing, not legacy DRAM
+
+    assert all(direct_ids(clue) for clue in clues.values())
 
 
 def test_v162_builds_all_product_routes(tmp_path):
