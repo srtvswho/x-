@@ -213,6 +213,9 @@ def test_scheduled_daily_run_refreshes_summaries_without_enabling_full_ai_pipeli
     assert "if: ${{ !contains(github.event.head_commit.message, '[summary backfill]') }}" in workflow
     assert 'AI_ENABLED: "true"' in workflow
     assert "AI_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.ai_dry_run || false }}" in workflow
+    assert 'AI_MAX_CALLS_PER_RUN: "50"' in workflow
+    assert 'AI_MAX_COST_PER_RUN_USD: "0.30"' in workflow
+    assert 'EXTRACT_MAX_COST_PER_RUN: "0.30"' in workflow
 
 
 def test_zero_performance_price_coverage_blocks_publish(monkeypatch):

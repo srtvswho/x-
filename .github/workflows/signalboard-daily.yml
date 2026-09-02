@@ -360,6 +360,9 @@ jobs:
           # remain gated by the job-level AI_ENABLED value.
           AI_ENABLED: "true"
           AI_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.ai_dry_run || false }}
+          AI_MAX_CALLS_PER_RUN: "50"
+          AI_MAX_COST_PER_RUN_USD: "0.30"
+          EXTRACT_MAX_COST_PER_RUN: "0.30"
         run: python scripts/dashboard/intel_gen_summaries.py
 
       - name: Build dashboard
