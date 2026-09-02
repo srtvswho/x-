@@ -375,6 +375,9 @@ jobs:
             --output dashboard_deploy_dist/data/raw-intelligence.json.gz
           python scripts/dashboard/build_research_clue_preview.py \
             --deploy-root dashboard_deploy_dist
+          # The original Signal Desk is the primary product. Research Clues stay
+          # available under their dedicated routes and must not replace the home page.
+          cp scripts/dashboard/dashboard.html dashboard_deploy_dist/index.html
           cp dashboard_deploy_dist/index.html dashboard.html
 
       - name: Save updated database

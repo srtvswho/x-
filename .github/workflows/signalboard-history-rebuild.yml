@@ -252,6 +252,8 @@ jobs:
             --output dashboard_deploy_dist/data/raw-intelligence.json.gz
           python scripts/dashboard/build_research_clue_preview.py \
             --deploy-root dashboard_deploy_dist
+          # Keep the original daily intelligence dashboard at the product root.
+          cp scripts/dashboard/dashboard.html dashboard_deploy_dist/index.html
           cp dashboard_deploy_dist/index.html dashboard.html
 
       - name: Save and publish rebuilt database

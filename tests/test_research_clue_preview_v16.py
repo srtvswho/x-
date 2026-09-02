@@ -236,3 +236,29 @@ def test_daily_production_build_reuses_approved_artifact_only():
     assert "dashboard_deploy_dist/tracking/index.html" in workflow
     assert "python scripts/intel_research_clue_preview.py" not in workflow
     assert 'ALLOW_EXPENSIVE_AI_JOB: "false"' in workflow
+
+
+def test_original_signal_desk_remains_the_production_home():
+    daily = (ROOT / ".github" / "workflows" / "signalboard-daily.yml").read_text(encoding="utf-8")
+    rebuild = (ROOT / ".github" / "workflows" / "signalboard-history-rebuild.yml").read_text(encoding="utf-8")
+
+    for workflow in (daily, rebuild):
+        clue_build = workflow.index("python scripts/dashboard/build_research_clue_preview.py")
+        restore_home = workflow.index(
+            "cp scripts/dashboard/dashboard.html dashboard_deploy_dist/index.html",
+            clue_build,
+        )
+        publish_home = workflow.index(
+            "cp dashboard_deploy_dist/index.html dashboard.html",
+            restore_home,
+        )
+        assert clue_build < restore_home < publish_home
+
+    home = (ROOT / "dashboard_deploy_dist" / "index.html").read_text(encoding="utf-8")
+    assert "SIGNAL DESK · 大V情报终端" in home
+    assert 'id="market"' in home
+    assert 'id="tracking"' in home
+    assert 'id="feed-section"' in home
+    assert 'id="people"' in home
+    assert "综合等权方向收益" in home
+    assert "SignalBoard · Unified Research Experience" not in home
