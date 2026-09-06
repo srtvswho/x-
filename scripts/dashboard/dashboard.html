@@ -269,18 +269,14 @@ a{color:inherit;text-decoration:none}
   <span class="live" id="live-meta"><span class="dot"></span><span id="live-text">loading...</span></span>
 </div>
 
-<div class="layout"><nav class="side-nav"><div class="nav-title">Research Tools</div><a href="#thesis-changes">01 Research Changes</a><a href="#ai-cost">02 AI Usage</a><a href="#market">03 市场态度</a><a href="#tracking">04 标的追踪</a><a href="#feed-section">05 近期明细</a><a href="#people">06 追踪对象</a></nav><div class="wrap">
+<div class="layout"><nav class="side-nav"><div class="nav-title">Research Tools</div><a href="#ai-cost">01 AI Usage</a><a href="#market">02 市场态度</a><a href="#tracking">03 标的追踪</a><a href="#feed-section">04 近期明细</a><a href="#people">05 追踪对象</a></nav><div class="wrap">
 
-  <div class="shead section-anchor" id="thesis-changes"><span class="num">01</span><h2>LATEST RESEARCH CHANGES</h2>
-    <span class="hint">新证据改变了什么 · 独立 AI 评估 · 非买卖建议</span><span class="rule"></span></div>
-  <div class="thesis-change-grid" id="thesis-change-grid"></div>
-
-  <div class="shead section-anchor" id="ai-cost"><span class="num">02</span><h2>AI COST GUARDRAILS</h2>
+  <div class="shead section-anchor" id="ai-cost"><span class="num">01</span><h2>AI COST GUARDRAILS</h2>
     <span class="hint">风险费用包含 Pending / Unknown · 管理员审计</span><span class="rule"></span></div>
   <div class="cost-panel" id="ai-cost-panel"></div>
 
   <!-- ===== 市场态度：今日总结与近期态度合并 ===== -->
-  <div class="shead section-anchor" id="market"><span class="num">03</span><h2>市场态度</h2>
+  <div class="shead section-anchor" id="market"><span class="num">02</span><h2>市场态度</h2>
     <span class="hint">共识结论 · 个人立场 · 每条判断可查看原文</span><span class="hint" id="summary-date"></span><span class="rule"></span></div>
   <div class="period-control"><label for="stance-window">时间范围</label><select id="stance-window">
     <option value="0" selected>今日</option><option value="0.25">近 1 周</option><option value="1">近 1 个月</option><option value="3">近 3 个月</option>
@@ -290,7 +286,7 @@ a{color:inherit;text-decoration:none}
   <div class="stance-grid" id="stancegrid"></div>
 
   <!-- ===== 标的追踪：优先于明细 ===== -->
-  <div class="shead section-anchor" id="tracking"><span class="num">04</span><h2>标的追踪</h2>
+  <div class="shead section-anchor" id="tracking"><span class="num">03</span><h2>标的追踪</h2>
     <span class="hint">首次明确方向计分 · 最近发言优先 · 点击查看首条原文</span><span class="rule"></span></div>
   <div class="filters"><label for="perf-kol">人物</label><select id="perf-kol"></select>
     <label for="perf-window">首次喊单</label><select id="perf-window"><option value="7">近 1 周</option><option value="30" selected>近 1 个月</option><option value="90">近 3 个月</option><option value="365">近 1 年</option></select><label for="perf-sort">排序</label><select id="perf-sort"><option value="return_desc">方向收益高 → 低</option><option value="return_asc">方向收益低 → 高</option><option value="latest">最近提及优先</option><option value="first">首次喊单最新</option></select></div>
@@ -302,14 +298,14 @@ a{color:inherit;text-decoration:none}
     <tbody id="tbody"></tbody></table></div>
 
   <!-- ===== 近期明细 ===== -->
-  <div class="shead section-anchor" id="feed-section"><span class="num">05</span><h2>近期明细</h2>
+  <div class="shead section-anchor" id="feed-section"><span class="num">04</span><h2>近期明细</h2>
     <span class="hint" id="feed-date"></span><span class="rule"></span></div>
   <div class="filters"><label for="feed-kol">人物</label><select id="feed-kol"></select><label for="feed-level">信号等级</label><select id="feed-level"><option value="all">全部</option><option value="focus">重点</option><option value="reference">参考</option><option value="general">一般</option></select>
     <label for="feed-size">每页</label><select id="feed-size"><option>20</option><option selected>30</option><option>50</option></select></div>
   <div class="feed-empty" id="feed-empty"></div><div class="feed" id="feed"></div><div class="pager" id="feed-pager"></div>
 
   <!-- ===== 追踪对象 (ref, bottom) ===== -->
-  <div class="shead section-anchor" id="people"><span class="num">06</span><h2>追踪对象</h2>
+  <div class="shead section-anchor" id="people"><span class="num">05</span><h2>追踪对象</h2>
     <span class="hint">能力圈备忘 · 信什么 / 略过什么</span><span class="rule"></span></div>
   <div class="kolgrid" id="kolgrid"></div>
 
@@ -845,7 +841,7 @@ document.addEventListener('click',e=>{
   });
 });
 document.getElementById('foot-sources').textContent=`${ORDER.length} sources`;
-renderLiveMeta();renderThesisChanges();renderAiCostPanel();renderStance();renderFeed();renderTickers();renderKols();
+renderLiveMeta();renderAiCostPanel();renderStance();renderFeed();renderTickers();renderKols();
 </script>
 </body>
 </html>
