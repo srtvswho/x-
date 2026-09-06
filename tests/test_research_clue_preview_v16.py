@@ -124,7 +124,12 @@ def test_v162_product_home_and_evidence_are_integrated():
     assert "DATABASE STATUS" not in template
     assert "TOP INVESTMENT OPPORTUNITIES" not in template
     audit_template = (ROOT / "scripts" / "dashboard" / "dashboard.template.html").read_text(encoding="utf-8")
-    assert "LATEST RESEARCH CHANGES" in audit_template
+    assert "LATEST RESEARCH CHANGES" not in audit_template
+    assert 'href="#thesis-changes"' not in audit_template
+    assert 'id="thesis-change-grid"' not in audit_template
+    assert "renderLiveMeta();renderAiCostPanel();renderStance();renderFeed();renderTickers();renderKols();" in audit_template
+    for section in ("market", "tracking", "feed-section", "people"):
+        assert f'id="{section}"' in audit_template
 
 
 def test_v163_evidence_routes_are_relevant_and_deduplicated():
