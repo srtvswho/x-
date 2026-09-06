@@ -466,6 +466,7 @@ def main():
 
     # 并发抽 (5 worker, 只抽不入库 — SQLite 不允许跨线程)
     results = []
+    persist_count = 0
     fail_count = 0
     short_count = 0
     short_skeptical_count = 0
@@ -482,6 +483,14 @@ def main():
                 fail_count += 1
                 print(f"  [{i}/{len(targets)}] ❌ {r['post_id'][:20]}... ERR: {r.get('error', '?')[:80]}")
             else:
+                # Persist on the main thread as each request completes. A later
+                # timeout must not discard successful requests already in the ledger.
+                if not args.dry_run:
+                    if persist_extraction(con, r["post_id"], r["source_id"], r["raw_response"], r["extraction"]):
+                        persist_count += 1
+                        record_usage(con, r["ai_result"], workload="bulk_post_processing",
+                                     object_type="post", object_id=r["post_id"])
+                        con.commit()
                 ext = r["extraction"]
                 d = ext.get("direction", "?")
                 direction_count[d] = direction_count.get(d, 0) + 1
@@ -495,22 +504,8 @@ def main():
                 if i <= 5 or not r["ok"]:
                     print(f"  [{i}/{len(targets)}] {r['source_id']:25s} {d:8s} ticker={ext.get('ticker')!r} attr={ext.get('attribution')!r} rebut={'Y' if ext.get('rebuts_narrative') else 'N'}")
 
-    # 串行入库 (main thread, SQLite 安全)
-    persist_count = 0
     if not args.dry_run:
-        print()
-        print("=== 串行入库 (main thread) ===")
-        for r in results:
-            if not r["ok"]:
-                continue
-            if persist_extraction(con, r["post_id"], r["source_id"], r["raw_response"], r["extraction"]):
-                persist_count += 1
-                record_usage(
-                    con, r["ai_result"], workload="bulk_post_processing",
-                    object_type="post", object_id=r["post_id"],
-                )
-                con.commit()
-        print(f"  落库: {persist_count}/{len(results) - fail_count}")
+        print(f"  已逐条落库: {persist_count}/{len(results) - fail_count}")
 
     elapsed = time.time() - start_time
     print()

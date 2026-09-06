@@ -518,9 +518,10 @@ def select_dashboard_ticker_targets(conn, limit: int = DASHBOARD_TICKER_LIMIT) -
     raw_cols = {row[1] for row in conn.execute("PRAGMA table_info(raw_posts)").fetchall()}
     raw_text_sql = "r.raw_text" if "raw_text" in raw_cols else "''"
     rows = conn.execute(f"""
+        WITH {latest_extractions_cte(conn)}
         SELECT e.source_id, e.ticker, e.direction, e.bottleneck, r.published_at,
                {attr_sql}, {company_sql}, {raw_text_sql}
-        FROM extractions_intel e
+        FROM latest_extractions e
         JOIN raw_posts r ON r.post_id = e.post_id
         WHERE e.direction IN ('long', 'short')
           AND e.is_retrospective = 0 AND e.is_disclosure = 0
@@ -599,12 +600,12 @@ def group_targets_by_ticker(targets: list[dict]) -> dict[str, list[dict]]:
     return by_tk
 
 
-def select_call_performance_targets(conn, days: int = 370) -> list[dict]:
+def select_call_performance_targets(conn, days: int | None = None) -> list[dict]:
     """返回人物×标的首次喊单所需的价格目标。
 
     与 ``select_dashboard_ticker_targets`` 不同，这里不能按 (kol, ticker)
     聚合、不能排除最近 5 天，也不能截断为 30 条；人物表现会展示窗口内的
-    同一人物重复提及同一标的不重复计分；以窗口内第一次明确方向与日期
+    同一人物重复提及同一标的不重复计分；以已存全历史最早明确方向与日期
     作为追踪起点。相同股票同一天的不同人物共享一条价格缓存记录。
     """
     events = query_call_performance_events(conn, days=days)
@@ -643,30 +644,41 @@ def _table_exists(conn, name: str) -> bool:
     ).fetchone() is not None
 
 
-def query_call_performance_events(conn, days: int = 370) -> list[dict]:
-    """返回人物表现的逐标的方向事件，并复用 Serenity 的旧结构化历史。
+def latest_extractions_cte(conn) -> str:
+    """One authoritative interpretation per post, before any direction/flag filter."""
+    cols = {row[1] for row in conn.execute("PRAGMA table_info(extractions_intel)")}
+    order = []
+    if "extracted_at" in cols:
+        order.append("julianday(extracted_at) DESC")
+    order.append("id DESC" if "id" in cols else "rowid DESC")
+    return "ranked_extractions AS (SELECT *, ROW_NUMBER() OVER (PARTITION BY post_id ORDER BY " + ", ".join(order) + ") AS version_rank FROM extractions_intel), latest_extractions AS (SELECT * FROM ranked_extractions WHERE version_rank=1)"
 
-    v2 ``extractions_intel`` 是主数据源。Serenity 在旧 ``predictions`` 表中已有
-    更早的逐标的结构化结果；只为 v2 已经验证过的 Serenity ticker 补回更早
-    日期，既恢复一年窗口，也不把旧表 500+ 个一次性标的重新灌入页面或价格链。
+
+def query_call_performance_events(conn, days: int | None = None) -> list[dict]:
+    """读取全历史方向事件；先选择每帖最新解读，再判断是否是作者信号。
+
+    显示窗口不能截断追踪起点。days 仅用于显式审计，不供生产页面选择首次。
+    旧 predictions 只补没有任何新版解读的原帖，不能推翻后来的中性/转述判断。
     """
-    cutoff = (datetime.now(timezone.utc) - timedelta(days=int(days))).isoformat()
+    cutoff = (datetime.now(timezone.utc) - timedelta(days=int(days))).isoformat() if days is not None else ""
     raw_cols = {row[1] for row in conn.execute("PRAGMA table_info(raw_posts)").fetchall()}
     raw_text_sql = "r.raw_text" if "raw_text" in raw_cols else "''"
     raw_url_sql = "r.raw_url" if "raw_url" in raw_cols else "''"
     extraction_cols = {row[1] for row in conn.execute("PRAGMA table_info(extractions_intel)").fetchall()}
     attr_sql = "e.attribution" if "attribution" in extraction_cols else "'ORIGINAL'"
     company_sql = "e.company" if "company" in extraction_cols else "''"
+    latest_cte = latest_extractions_cte(conn)
     rows = conn.execute(f"""
+        WITH {latest_cte}
         SELECT e.post_id, e.source_id, e.direction, e.ticker, e.bottleneck,
                r.published_at, {raw_text_sql}, {raw_url_sql}, {attr_sql}, {company_sql}
-        FROM extractions_intel e
+        FROM latest_extractions e
         JOIN raw_posts r ON r.post_id = e.post_id
         WHERE e.direction IN ('long', 'short')
           AND e.is_retrospective = 0 AND e.is_disclosure = 0
           AND e.ticker IS NOT NULL
           AND r.published_at >= ?
-        ORDER BY r.published_at ASC
+        ORDER BY julianday(r.published_at), e.post_id
     """, (cutoff,)).fetchall()
 
     events = []
@@ -679,6 +691,8 @@ def query_call_performance_events(conn, days: int = 370) -> list[dict]:
         context = f"{company or ''} {raw_text or ''}"
         for raw_ticker in parse_json_arr(ticker_json):
             ticker = normalize_ticker(raw_ticker, context)
+            if not ticker:
+                continue
             key = (src, post_id, ticker, direction)
             if key in seen:
                 continue
@@ -694,17 +708,20 @@ def query_call_performance_events(conn, days: int = 370) -> list[dict]:
 
     if _table_exists(conn, "predictions"):
         legacy = conn.execute(f"""
-            SELECT p.post_id, p.source_id, p.direction, p.ticker, p.published_at,
+            SELECT p.post_id, p.source_id, p.direction, p.ticker, r.published_at,
                    {raw_text_sql}, {raw_url_sql}
             FROM predictions p
-            LEFT JOIN raw_posts r ON r.post_id = p.post_id
-            WHERE p.source_id = 'tw_aleabitoreddit'
+            JOIN raw_posts r ON r.post_id = p.post_id
+            WHERE NOT EXISTS (SELECT 1 FROM extractions_intel newer WHERE newer.post_id=p.post_id)
+              AND p.source_id = 'tw_aleabitoreddit'
+              AND r.source_id = p.source_id
               AND p.direction IN ('long', 'short')
               AND p.ticker IS NOT NULL
-              AND p.published_at >= ?
+              AND r.published_at >= ?
             ORDER BY p.published_at ASC
         """, (cutoff,)).fetchall()
         for post_id, src, direction, ticker, published_at, raw_text, raw_url in legacy:
+            ticker = normalize_ticker(ticker, raw_text or "")
             # 旧表只用于把 v2 已确认过的标的向前延长，不扩张 ticker 宇宙。
             if (src, ticker) not in validated_pairs:
                 continue
@@ -720,7 +737,13 @@ def query_call_performance_events(conn, days: int = 370) -> list[dict]:
                 "history_source": "predictions_legacy",
             })
 
-    events.sort(key=lambda row: row["published_at"])
+    def event_order(row):
+        stamp = datetime.fromisoformat(row["published_at"].replace("Z", "+00:00"))
+        if stamp.tzinfo is None:
+            stamp = stamp.replace(tzinfo=timezone.utc)
+        return stamp, row["post_id"]
+
+    events.sort(key=event_order)
     return events
 
 

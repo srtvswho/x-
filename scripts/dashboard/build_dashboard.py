@@ -8,7 +8,7 @@ build_dashboard.py — 每日生成 dashboard.html
 
 价格查询优化: ticker_prices DB 缓存, 跨 cron 复用 (避免 Polygon 5 req/min 限速导致每次跑 12 分钟).
 """
-import json, sqlite3, datetime, pathlib, os, time
+import json, sqlite3, datetime, pathlib, os, time, re
 import sys
 from pathlib import Path
 
@@ -603,11 +603,12 @@ def query_call_performance(conn):
     """返回人物×标的首次喊单的方向收益，供前端汇总。
 
     一条推文包含多个 ticker 时拆开；同一人物重复提及同一 ticker 只计一次，
-    方向和起始价格取窗口内第一次明确喊单，后续仅累计提及次数。
+    方向和起始价格取已存全历史最早明确方向，后续仅累计提及次数。
+    历史覆盖未验证时不宣称真实首次；收益是最早方向固定持有的样本追踪。
     long 方向收益 = 标的涨跌幅，short 方向收益 = -标的涨跌幅。
     只读 ticker_prices 缓存，不在 build 阶段发起额外行情请求。
     """
-    events = query_call_performance_events(conn, days=370)
+    events = query_call_performance_events(conn)
     grouped = {}
     for event in events:
         post_id = event["post_id"]
@@ -622,8 +623,9 @@ def query_call_performance(conn):
         key = (kol, ticker)
         if key not in grouped:
             grouped[key] = {
-                "post_id": post_id, "kol": kol, "ticker": ticker,
-                "direction": direction, "published_at": published_at,
+                "post_id": post_id, "kol": kol, "ticker": ticker, "source_id": src,
+                "history_source": event["history_source"],
+                "direction": direction, "latest_direction": direction, "direction_changed": False, "published_at": published_at,
                 "latest_published_at": published_at, "bottleneck": bottleneck,
                 "n_mentions": 1,
                 "raw_text": raw_text or "",
@@ -632,6 +634,9 @@ def query_call_performance(conn):
         else:
             grouped[key]["latest_published_at"] = published_at
             grouped[key]["n_mentions"] += 1
+            grouped[key]["latest_direction"] = direction
+            grouped[key]["direction_changed"] |= direction != grouped[key]["direction"]
+    attach_call_history_evidence(conn, grouped.values())
     out = []
     for row in grouped.values():
             ticker = row["ticker"]
@@ -657,6 +662,52 @@ def query_call_performance(conn):
             })
             out.append(row)
     return out
+
+
+def _history_timestamp(value):
+    stamp = datetime.datetime.fromisoformat(value.replace("Z", "+00:00"))
+    if stamp.tzinfo is None:
+        stamp = stamp.replace(tzinfo=datetime.timezone.utc)
+    return stamp.timestamp()
+
+
+def attach_call_history_evidence(conn, rows):
+    """Expose known gaps and earlier mentions without reclassifying them as trades."""
+    rows = list(rows)
+    cols = {r[1] for r in conn.execute("PRAGMA table_info(raw_posts)")}
+    text_sql = "r.raw_text" if "raw_text" in cols else "''"
+    url_sql = "r.raw_url" if "raw_url" in cols else "''"
+    raw_by_source = {}
+    for pid, src, pub, text, url, analyzed in conn.execute(f"""
+        SELECT r.post_id, r.source_id, r.published_at, {text_sql}, {url_sql},
+               EXISTS(SELECT 1 FROM extractions_intel e WHERE e.post_id=r.post_id)
+        FROM raw_posts r ORDER BY julianday(r.published_at), r.post_id
+    """):
+        raw_by_source.setdefault(src, []).append((pid, pub, text or "", url, analyzed))
+    aliases = {"MU": ["Micron", "美光"], "SNDK": ["SanDisk", "闪迪"]}
+    for row in rows:
+        src = row["source_id"]
+        posts = raw_by_source.get(src, [])
+        start = _history_timestamp(row["published_at"])
+        prior = [p for p in posts if _history_timestamp(p[1]) < start]
+        ticker = row["ticker"]
+        # Plain symbols are case sensitive: e.g. ON/IT must not match prose on/it.
+        symbol = re.compile(r"(?<![\w])\$?" + re.escape(ticker) + r"(?![\w])")
+        names = re.compile("|".join(re.escape(n) for n in aliases[ticker]), re.I) if ticker in aliases else None
+        mentions = [p for p in prior if symbol.search(p[2]) or (names and names.search(p[2]))]
+        row["history_coverage"] = {
+            "status": "unverified", "raw_posts": len(posts),
+            "analyzed_posts": sum(p[4] for p in posts),
+            "unprocessed_before_start": sum(not p[4] for p in prior),
+            "raw_start": posts[0][1] if posts else None,
+            "raw_end": posts[-1][1] if posts else None,
+        }
+        row["earlier_mention_count"] = len(mentions)
+        row["earlier_mentions"] = [{
+            "post_id": p[0], "published_at": p[1], "raw_text": p[2],
+            "raw_url": p[3] or f"https://x.com/{src.replace('tw_', '')}/status/{p[0]}",
+            "analysis_status": "已有解读，未计入方向样本" if p[4] else "待解读",
+        } for p in mentions[:3]]
 
 
 def validate_call_performance_coverage(rows):

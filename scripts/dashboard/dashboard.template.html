@@ -289,13 +289,13 @@ a{color:inherit;text-decoration:none}
 
   <!-- ===== 标的追踪：优先于明细 ===== -->
   <div class="shead section-anchor" id="tracking"><span class="num">03</span><h2>标的追踪</h2>
-    <span class="hint">首次明确方向计分 · 最近发言优先 · 点击查看首条原文</span><span class="rule"></span></div>
+    <span class="hint">已存历史最早方向追踪 · 历史覆盖待核验 · 可查看更早原帖</span><span class="rule"></span></div>
   <div class="filters"><label for="perf-kol">人物</label><select id="perf-kol"></select>
-    <label for="perf-window">首次喊单</label><select id="perf-window"><option value="7">近 1 周</option><option value="30" selected>近 1 个月</option><option value="90">近 3 个月</option><option value="365">近 1 年</option></select><label for="perf-sort">排序</label><select id="perf-sort"><option value="return_desc">方向收益高 → 低</option><option value="return_asc">方向收益低 → 高</option><option value="latest">最近提及优先</option><option value="first">首次喊单最新</option></select></div>
+    <label for="perf-window">最近方向记录</label><select id="perf-window"><option value="7">近 1 周</option><option value="30" selected>近 1 个月</option><option value="90">近 3 个月</option><option value="365">近 1 年</option><option value="0">全部历史</option></select><label for="perf-sort">排序</label><select id="perf-sort"><option value="return_desc">方向收益高 → 低</option><option value="return_asc">方向收益低 → 高</option><option value="latest">最近提及优先</option><option value="first">追踪起点最新</option></select></div>
   <div class="filter-note" id="perf-note"></div>
   <div class="perfgrid" id="perf-summary"></div>
   <div class="tcard"><table class="ttable">
-    <thead><tr><th>标的</th><th>谁 · 首次方向</th><th>追踪周期</th><th>首次价</th>
+    <thead><tr><th>标的</th><th>谁 · 起点方向</th><th>追踪周期</th><th>起点价</th>
       <th>现价 / 方向收益</th><th>首条依据</th><th>能力圈</th><th>行情截至</th></tr></thead>
     <tbody id="tbody"></tbody></table></div>
 
@@ -765,14 +765,11 @@ function renderFeed(){
 /* ---- 04 标的 ---- */
 let perfKol='all',perfDays=30,perfSort='return_desc';
 function renderTickers(){
-  const cut=Date.now()-perfDays*86400000;
-  const rows=CALL_PERFORMANCE.filter(t=>(perfKol==='all'||t.kol===perfKol)&&new Date(t.published_at).getTime()>=cut);
+  const cut=perfDays?Date.now()-perfDays*86400000:-Infinity;
+  const rows=CALL_PERFORMANCE.filter(t=>(perfKol==='all'||t.kol===perfKol)&&new Date(t.latest_published_at||t.published_at).getTime()>=cut);
   const sorters={return_desc:(a,b)=>(b.directional_return??-Infinity)-(a.directional_return??-Infinity),return_asc:(a,b)=>(a.directional_return??Infinity)-(b.directional_return??Infinity),latest:(a,b)=>new Date(b.latest_published_at||b.published_at)-new Date(a.latest_published_at||a.published_at),first:(a,b)=>new Date(b.published_at)-new Date(a.published_at)};
   rows.sort(sorters[perfSort]);
-  const scoped=CALL_PERFORMANCE.filter(t=>perfKol==='all'||t.kol===perfKol),dates=scoped.map(t=>new Date(t.published_at)).filter(d=>!isNaN(d));
-  const minDate=dates.length?new Date(Math.min(...dates)):null,maxDate=dates.length?new Date(Math.max(...dates)):null;
-  const rows90=scoped.filter(t=>new Date(t.published_at).getTime()>=Date.now()-90*86400000).length;
-  document.getElementById('perf-note').textContent=`筛选后 ${rows.length} 个标的 · 当前样本实际覆盖 ${minDate?fmtFull(minDate.toISOString()):'—'} 至 ${maxDate?fmtFull(maxDate.toISOString()):'—'}${perfDays>90&&rows.length===rows90?' · 近一年与近三个月相同：更早没有额外首次喊单样本':''}`;
+  document.getElementById('perf-note').textContent=`筛选后 ${rows.length} 个作者×标的样本 · 按最近方向记录筛选，起点始终回溯已存全历史。历史抓取及解读尚未覆盖完整，最早记录不等于真实首次喊单；以下为样本固定方向追踪收益，并非完整交易胜率。`;
   const valid=rows.filter(t=>t.directional_return!=null);
   const avg=valid.length?valid.reduce((s,t)=>s+t.directional_return,0)/valid.length:null;
   const wins=valid.filter(t=>t.directional_return>0).length;
@@ -782,11 +779,11 @@ function renderTickers(){
   const best=valid.length?[...valid].sort((a,b)=>b.directional_return-a.directional_return)[0]:null;
   const maxAbs=Math.max(10,...valid.map(t=>Math.abs(t.directional_return)));
   document.getElementById('perf-summary').innerHTML=`
-    <div class="perfstat"><span class="v ${avg==null?'':(avg>=0?'pos':'neg')}">${fmt(avg)}</span><span class="k">综合等权方向收益</span></div>
-    <div class="perfstat"><span class="v">${valid.length?wins+'/'+valid.length:'—'}</span><span class="k">胜率 ${valid.length?(wins/valid.length*100).toFixed(0)+'%':'—'}</span></div>
-    <div class="perfstat"><span class="v">${fmt(mean(longRows))}</span><span class="k">Long 平均表现</span></div>
-    <div class="perfstat"><span class="v">${fmt(mean(shortRows))}</span><span class="k">Short 平均表现</span></div>
-    <div class="perfstat"><span class="v">${best?best.ticker+' '+fmt(best.directional_return):'—'}</span><span class="k">最佳喊单 · 行情覆盖 ${valid.length}/${rows.length}</span></div>`;
+    <div class="perfstat"><span class="v ${avg==null?'':(avg>=0?'pos':'neg')}">${fmt(avg)}</span><span class="k">样本综合等权方向收益</span></div>
+    <div class="perfstat"><span class="v">${valid.length?wins+'/'+valid.length:'—'}</span><span class="k">样本上涨比例 ${valid.length?(wins/valid.length*100).toFixed(0)+'%':'—'}</span></div>
+    <div class="perfstat"><span class="v">${fmt(mean(longRows))}</span><span class="k">Long 样本平均</span></div>
+    <div class="perfstat"><span class="v">${fmt(mean(shortRows))}</span><span class="k">Short 样本平均</span></div>
+    <div class="perfstat"><span class="v">${best?best.ticker+' '+fmt(best.directional_return):'—'}</span><span class="k">最高样本收益 · 行情覆盖 ${valid.length}/${rows.length}</span></div>`;
   document.getElementById('tbody').innerHTML=rows.map(t=>{
     const c=COLORS[t.kol];const k=KOLS[t.kol];
     const cp=t.call_price==null?'—':`$${Number(t.call_price).toFixed(2)}`;
@@ -798,12 +795,16 @@ function renderTickers(){
     const barWidth=t.directional_return==null?0:Math.max(4,Math.min(100,Math.abs(t.directional_return)/maxAbs*100));
     const bar=`<div class="return-wrap"><div class="return-track"><span class="return-zero"></span><span class="return-bar ${cls}" style="width:${barWidth/2}%"></span></div><span class="return-value ${cls}">${dirRet}</span></div>`;
     const source={raw_text:t.raw_text,raw_url:t.raw_url};
+    const earlier=(t.earlier_mentions||[]).map(p=>`<div class="meta">${fmtFull(p.published_at)} · ${p.analysis_status}${evidenceDetails(p,'更早提及原文')}</div>`).join('');
+    const history=t.history_coverage||{};
+    const gap=`<div class="meta">历史覆盖待核验${history.unprocessed_before_start?' · 起点前 '+history.unprocessed_before_start+' 条原帖待解读':''}</div>`;
+    const changed=t.direction_changed?`<div class="meta">期间出现相反方向 · 最近 ${t.latest_direction.toUpperCase()}<br>收益仅按起点方向固定追踪</div>`:'';
     return `<tr><td><span class="tk ${t.direction}">${t.ticker}</span>${newBadge}</td>
       <td><div class="by"><div class="av" style="background:${c}">${initials(k.name)}</div><span class="nm">${k.name}</span> <span class="dirpill2 ${t.direction}">${t.direction}</span></div></td>
-      <td><span class="when">首次 ${fmtFull(t.published_at)}<br>最近 ${fmtFull(t.latest_published_at||t.published_at)} · ${t.n_mentions||1} 次</span></td>
+      <td><span class="when">已识别最早 ${fmtFull(t.published_at)}<br>最近 ${fmtFull(t.latest_published_at||t.published_at)} · ${t.n_mentions||1} 次</span>${gap}${changed}</td>
       <td><span class="when">${cp}</span></td>
       <td><span class="when">${np}</span>${bar}</td>
-      <td>${evidenceDetails(source,'查看首条喊单')}</td>
+      <td>${evidenceDetails(source,'查看起点原文')}${earlier?'<div class="meta">更早提及 '+t.earlier_mention_count+' 条（不等于喊单，列最早 3 条）</div>'+earlier:''}</td>
       <td>${t.in_field?'<span class="tag strong">强项</span>':'<span class="tag weak">圈外</span>'}<div class="meta" style="margin-top:6px">${signalBadges({...t,summary:t.bottleneck||'',raw_text:t.raw_text||''})}</div></td>
       <td><span class="when">${t.now_date||'行情待补'}</span></td></tr>`;
   }).join('');

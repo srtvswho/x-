@@ -1,7 +1,18 @@
-name: Signalboard 1Y History Rebuild
+name: Signalboard Historical Extraction Repair
 
 on:
   workflow_dispatch:
+    inputs:
+      apply:
+        description: "Run a paid bounded historical batch (false only writes the plan)"
+        type: boolean
+        default: false
+        required: true
+      batch_limit:
+        description: "Posts in this batch, 1–500; resumable across all eight authors"
+        type: string
+        default: "400"
+        required: true
 
 permissions:
   contents: write
@@ -13,154 +24,54 @@ concurrency:
 jobs:
   rebuild:
     runs-on: ubuntu-latest
-    timeout-minutes: 300
+    timeout-minutes: 60
     env:
-      APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
-      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-      POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
+      DEEPSEEK_API_KEY: ${{ inputs.apply && secrets.DEEPSEEK_API_KEY || '' }}
+      POLYGON_API_KEY: ${{ inputs.apply && secrets.POLYGON_API_KEY || '' }}
+      AI_ENABLED: ${{ inputs.apply }}
+      AI_DRY_RUN: ${{ !inputs.apply }}
+      ALLOW_EXPENSIVE_AI_JOB: "false"
+      AI_JOB_KIND: historical_post_extraction
+      AI_WORKFLOW: signalboard_history_repair
+      AI_RUN_ID: "${{ github.run_id }}-${{ github.run_attempt }}"
+      AI_LEDGER_DB_PATH: /workspace/data/signalboard_full.db
+      AI_MAX_CALLS_PER_RUN: "500"
+      AI_MAX_COST_PER_RUN_USD: "2.00"
+      AI_MAX_DAILY_COST_USD: "3.00"
+      EXTRACT_MAX_COST_PER_RUN: "2.00"
+      AI_ROUTE_BULK_POST_PROCESSING_PROVIDER: deepseek
+      AI_ROUTE_BULK_POST_PROCESSING_MODEL: deepseek-v4-flash
+      FORCE_REANALYZE: "false"
       POLYGON_REQUEST_INTERVAL: "13"
-
+      POLYGON_MAX_API_REQUESTS: "60"
     steps:
-      - name: Checkout master
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v6
         with:
           ref: master
-          fetch-depth: 1
-
-      - name: Verify required secrets
-        shell: bash
-        run: |
-          set -Eeuo pipefail
-          for key in APIFY_TOKEN DEEPSEEK_API_KEY POLYGON_API_KEY; do
-            if [ -z "${!key:-}" ]; then
-              echo "::error::Required repository secret is missing: $key"
-              exit 1
-            fi
-          done
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-
-      - name: Install dependencies
-        run: python -m pip install --disable-pip-version-check requests apify-client
-
+      - run: python -m pip install --disable-pip-version-check requests
       - name: Restore database
-        shell: bash
         run: |
           set -Eeuo pipefail
           gzip -t data/signalboard.db.gz
           gzip -cd data/signalboard.db.gz > data/signalboard_full.db
           sudo ln -sfn "$GITHUB_WORKSPACE" /workspace
-
-      - name: Verify saved overlap for existing four
-        shell: bash
+      - name: Plan or apply a bounded full-history batch
+        env:
+          APPLY: ${{ inputs.apply }}
+          BATCH_LIMIT: ${{ inputs.batch_limit }}
         run: |
           set -Eeuo pipefail
-          python - <<'PY'
-          import sqlite3
-          con = sqlite3.connect("data/signalboard_full.db", timeout=30)
-          sources = ("tw_jukan05", "tw_aleabitoreddit", "tw_zephyr_z9", "tw_austinsemis")
-          missing = []
-          for source in sources:
-              count = con.execute(
-                  "SELECT COUNT(*) FROM raw_posts WHERE source_id=? "
-                  "AND datetime(published_at) >= datetime('now', '-30 days')",
-                  (source,),
-              ).fetchone()[0]
-              print(source, count)
-              if count == 0:
-                  missing.append(source)
-          con.close()
-          if missing:
-              raise SystemExit(f"30-day overlap missing: {missing}")
-          PY
-
-      - name: Backfill one year for new four
-        shell: bash
-        run: |
-          set -Eeuo pipefail
-          # 复用首次成功抓取的 actor datasets；只重新导入，不再产生抓取费用。
-          python scripts/intel_backfill_90d.py --kol DGretta_Author --since-days 370 \
-            --run-id eHzAhTk5bZiBrDzDD
-          python scripts/intel_backfill_90d.py --kol FeroceResearch --since-days 370 \
-            --run-id PeeVsMuLX75q2gUph
-          python scripts/intel_backfill_90d.py --kol TradexWhisperer --since-days 370 \
-            --run-id KLHVvrYw16h9c7iUV
-          python scripts/intel_backfill_90d.py --kol gsmferrari --since-days 370 \
-            --run-id aIleM6JgGwMNmKhc8
-
-      - name: Complete capped Tradex history by month
-        shell: bash
-        run: |
-          set -Eeuo pipefail
-          earliest=$(python - <<'PY'
-          import sqlite3
-          con = sqlite3.connect("data/signalboard_full.db", timeout=30)
-          print(con.execute(
-              "SELECT MIN(published_at) FROM raw_posts WHERE source_id='tw_TradexWhisperer'"
-          ).fetchone()[0] or "")
-          con.close()
-          PY
-          )
-          if [ -n "$earliest" ] && [ "${earliest:0:10}" \< "2025-08-16" ]; then
-            echo "Tradex 1Y raw coverage already complete from $earliest; skip paid monthly scrape."
-            exit 0
-          fi
-          while read -r since until; do
-            python scripts/intel_backfill_90d.py \
-              --kol TradexWhisperer \
-              --since-date "$since" \
-              --until-date "$until" \
-              --max-per-window 5000
-          done <<'WINDOWS'
-          2025-08-07 2025-09-01
-          2025-09-01 2025-10-01
-          2025-10-01 2025-11-01
-          2025-11-01 2025-12-01
-          2025-12-01 2026-01-01
-          2026-01-01 2026-02-01
-          2026-02-01 2026-03-01
-          2026-03-01 2026-04-01
-          2026-04-01 2026-05-16
-          WINDOWS
-
-      - name: Save raw backfill checkpoint
-        shell: bash
-        run: |
-          set -Eeuo pipefail
-          gzip -c data/signalboard_full.db > data/signalboard.db.gz.new
-          gzip -t data/signalboard.db.gz.new
-          mv data/signalboard.db.gz.new data/signalboard.db.gz
-          git config user.name "signalboard-bot"
-          git config user.email "signalboard-bot@users.noreply.github.com"
-          git add data/signalboard.db.gz
-          if ! git diff --cached --quiet; then
-            git commit -m "Checkpoint Signalboard 1Y raw history"
-            git push origin HEAD:master
-          fi
-
-      - name: Extract missing historical views
-        shell: bash
-        run: |
-          set -Eeuo pipefail
-          since_370=$(TZ=UTC date -d "370 days ago" +%Y-%m-%d)
-          since_30=$(TZ=UTC date -d "30 days ago" +%Y-%m-%d)
-          python scripts/intel_extract.py \
-            --since "$since_370" \
-            --sources tw_DGretta_Author,tw_FeroceResearch,tw_TradexWhisperer,tw_gsmferrari \
-            --ticker-clues-only \
-            --max-targets 6000
-          python scripts/intel_extract.py \
-            --since "$since_30" \
-            --sources tw_jukan05,tw_aleabitoreddit,tw_zephyr_z9,tw_austinsemis \
-            --max-targets 3000
-
+          args=()
+          if [ "$APPLY" = "true" ]; then args+=(--apply); fi
+          python scripts/intel_history_backfill.py --limit "$BATCH_LIMIT" "${args[@]}"
       - name: Save extraction checkpoint
-        shell: bash
+        if: always() && inputs.apply
         run: |
           set -Eeuo pipefail
+          test -s data/signalboard_full.db
           gzip -c data/signalboard_full.db > data/signalboard.db.gz.new
           gzip -t data/signalboard.db.gz.new
           mv data/signalboard.db.gz.new data/signalboard.db.gz
@@ -168,69 +79,20 @@ jobs:
           git config user.email "signalboard-bot@users.noreply.github.com"
           git add data/signalboard.db.gz
           if ! git diff --cached --quiet; then
-            git commit -m "Checkpoint Signalboard historical extractions"
+            git commit -m "Checkpoint historical extraction repair [skip daily]"
             git push origin HEAD:master
           fi
-
-      - name: Validate rebuilt coverage
-        shell: bash
+      - name: Upload coverage and pending batch report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: historical-extraction-coverage
+          path: outputs/signalboard_history_rebuild_latest.json
+      - name: Refresh prices and rebuild dashboard
+        if: inputs.apply
         run: |
           set -Eeuo pipefail
-          mkdir -p outputs
-          python - <<'PY'
-          import json
-          import sqlite3
-          from datetime import datetime, timezone
-
-          db = "data/signalboard_full.db"
-          con = sqlite3.connect(db, timeout=30)
-          sources = [
-              "tw_jukan05", "tw_aleabitoreddit", "tw_zephyr_z9", "tw_austinsemis",
-              "tw_DGretta_Author", "tw_FeroceResearch", "tw_TradexWhisperer", "tw_gsmferrari",
-          ]
-          rows = []
-          for source in sources:
-              raw = con.execute(
-                  "SELECT COUNT(*), MIN(published_at), MAX(published_at) FROM raw_posts WHERE source_id=?",
-                  (source,),
-              ).fetchone()
-              extracted = con.execute(
-                  "SELECT COUNT(DISTINCT e.post_id) FROM extractions_intel e "
-                  "JOIN raw_posts r ON r.post_id=e.post_id WHERE r.source_id=?",
-                  (source,),
-              ).fetchone()[0]
-              rows.append({
-                  "source_id": source,
-                  "raw_posts": raw[0],
-                  "first_post": raw[1],
-                  "last_post": raw[2],
-                  "extracted_posts": extracted,
-              })
-          con.close()
-          missing = [r["source_id"] for r in rows if r["raw_posts"] == 0 or r["extracted_posts"] == 0]
-          tradex = next(r for r in rows if r["source_id"] == "tw_TradexWhisperer")
-          if not tradex["first_post"] or tradex["first_post"][:10] > "2025-08-15":
-              missing.append("tw_TradexWhisperer:incomplete_1y")
-          report = {
-              "generated_at": datetime.now(timezone.utc).isoformat(),
-              "window_days": 370,
-              "sources": rows,
-              "missing_sources": missing,
-          }
-          with open("outputs/signalboard_history_rebuild_latest.json", "w", encoding="utf-8") as f:
-              json.dump(report, f, ensure_ascii=False, indent=2)
-          print(json.dumps(report, ensure_ascii=False, indent=2))
-          if missing:
-              raise SystemExit(f"History rebuild incomplete: {missing}")
-          PY
-
-      - name: Recompute health, prices, summaries and dashboard
-        shell: bash
-        run: |
-          set -Eeuo pipefail
-          python scripts/intel_daily_health.py
           python scripts/dashboard/refresh_prices_polygon.py
-          python scripts/dashboard/intel_gen_summaries.py
           python scripts/dashboard/build_dashboard.py
           test -s scripts/dashboard/dashboard.html
           test "$(stat -c%s scripts/dashboard/dashboard.html)" -ge 10000
@@ -256,17 +118,16 @@ jobs:
           cp scripts/dashboard/dashboard.html dashboard_deploy_dist/index.html
           cp dashboard_deploy_dist/index.html dashboard.html
 
-      - name: Save and publish rebuilt database
-        shell: bash
+      - name: Publish repaired history
+        if: inputs.apply
         run: |
           set -Eeuo pipefail
           gzip -c data/signalboard_full.db > data/signalboard.db.gz.new
           gzip -t data/signalboard.db.gz.new
           mv data/signalboard.db.gz.new data/signalboard.db.gz
-          git config user.name "signalboard-bot"
-          git config user.email "signalboard-bot@users.noreply.github.com"
-          git add data/signalboard.db.gz outputs/signalboard_history_rebuild_latest.json
-          git add scripts/dashboard/summaries.json scripts/dashboard/dashboard.html dashboard.html
-          git add -f dashboard_deploy_dist/index.html dashboard_deploy_dist/_redirects dashboard_deploy_dist/data/raw-intelligence.json.gz dashboard_deploy_dist/research-clues/index.html dashboard_deploy_dist/research-changes/index.html dashboard_deploy_dist/evidence/index.html dashboard_deploy_dist/companies/index.html dashboard_deploy_dist/posts/index.html dashboard_deploy_dist/authors/index.html dashboard_deploy_dist/themes/index.html dashboard_deploy_dist/tickers/index.html dashboard_deploy_dist/tracking/index.html dashboard_deploy_dist/ai-usage/index.html dashboard_deploy_dist/legacy/index.html dashboard_deploy_dist/admin/index.html
-          git commit -m "Rebuild Signalboard 1Y history for 8 KOLs"
-          git push origin HEAD:master
+          git add data/signalboard.db.gz outputs/signalboard_history_rebuild_latest.json scripts/dashboard/dashboard.html dashboard.html
+          git add -f dashboard_deploy_dist
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish historical extraction repair [skip daily]"
+            git push origin HEAD:master
+          fi
