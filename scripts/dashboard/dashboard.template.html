@@ -278,6 +278,8 @@ a{color:inherit;text-decoration:none}
   <!-- ===== 市场态度：今日总结与近期态度合并 ===== -->
   <div class="shead section-anchor" id="market"><span class="num">02</span><h2>市场态度</h2>
     <span class="hint">共识结论 · 个人立场 · 每条判断可查看原文</span><span class="hint" id="summary-date"></span><span class="rule"></span></div>
+  <div class="period-control"><label for="daily-archive-date">每日聚合与个人解读</label><select id="daily-archive-date"></select></div>
+  <div class="consensus" id="daily-archive"></div>
   <div class="period-control"><label for="stance-window">时间范围</label><select id="stance-window">
     <option value="0" selected>今日</option><option value="0.25">近 1 周</option><option value="1">近 1 个月</option><option value="3">近 3 个月</option>
     <option value="6">近 6 个月</option><option value="12">近 1 年</option></select></div>
@@ -823,6 +825,22 @@ function renderKols(){
       <div class="kgroup weak"><div class="glab">▸ 略过</div><div class="chips">${wk}</div></div></div>`;
   }).join('');
 }
+
+function renderDailyArchive(){
+  const day=document.getElementById('daily-archive-date').value;
+  const entry=(SUM.daily_history||{})[day];
+  const escapeSummary=value=>String(value||'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  if(!entry){document.getElementById('daily-archive').textContent='每日摘要待补；原始 Post 可在下方查看。';return;}
+  const pending=entry.complete===false;
+  const persons=entry.person||{};
+  document.getElementById('daily-archive').innerHTML=`<div class="ch"><span class="clabel">${escapeSummary(day)} · 每日信息聚合${pending?' · 部分解读待补':''}</span><span class="cwin">${entry.window_kind==='beijing_calendar_day'?'北京时间自然日':'历史存档'}</span></div>
+    <div class="ctext">${formatStructuredSummary(escapeSummary(entry.summary))}</div>
+    <details><summary>查看每个人当天的解读</summary>${ORDER.filter(k=>persons[k]).map(k=>`<div class="psum"><span class="lead">${escapeSummary(KOLS[k].name)}${entry.segment_errors&&entry.segment_errors[k]?' · 待补':''}</span>${formatStructuredSummary(escapeSummary(persons[k]))}</div>`).join('')||'<p>该历史日期尚无单独的人物摘要，请查看逐条 Post 解读。</p>'}</details>`;
+}
+const archiveDates=Object.keys(SUM.daily_history||{}).sort().reverse();
+document.getElementById('daily-archive-date').innerHTML=archiveDates.map(day=>`<option value="${day}">${day}</option>`).join('');
+document.getElementById('daily-archive-date').onchange=renderDailyArchive;
+renderDailyArchive();
 
 function tick(){const d=new Date();document.getElementById('clock').innerHTML=`<b>${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}</b> CST`;}
 setInterval(tick,1000);tick();

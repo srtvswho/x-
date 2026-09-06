@@ -21,6 +21,8 @@
 from __future__ import annotations
 
 import json
+import hashlib
+import tempfile
 import os
 import sqlite3
 import sys
@@ -40,13 +42,51 @@ from common import (  # noqa: E402
     is_author_signal, normalize_ticker, parse_json_arr,
 )
 
-DB_PATH = "/workspace/data/signalboard_full.db"
-OUT_PATH = "/workspace/scripts/dashboard/summaries.json"
+DB_PATH = os.getenv("SIGNALBOARD_DB_PATH", "/workspace/data/signalboard_full.db")
+OUT_PATH = os.getenv("SUMMARY_OUT_PATH", "/workspace/scripts/dashboard/summaries.json")
 DEEPSEEK_MODEL = resolve_route("daily_summary").model
 
 # 时间窗 (单位: 天) — "0" 跟 "1" 实际都是 1 (北京今日),
 # 但 "1M/3M/6M/12M" 是相对滑动窗口 (今天往前推 N 天)
 WINDOWS = {"0": 1, "1": 30, "3": 90, "6": 180, "12": 365}
+AS_OF = None
+ARCHIVE_DATE = None
+STATE = None
+
+
+def window_bounds(days):
+    now = AS_OF or datetime.now(timezone.utc)
+    if ARCHIVE_DATE:
+        start = datetime.fromisoformat(ARCHIVE_DATE).replace(tzinfo=CN_TZ)
+        end = min(start + timedelta(days=1), now)
+    else:
+        end = now
+        start = end - timedelta(days=days)
+    return start.astimezone(timezone.utc).isoformat(), end.astimezone(timezone.utc).isoformat()
+
+
+def atomic_save(data):
+    path = Path(OUT_PATH)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, temporary = tempfile.mkstemp(dir=path.parent, prefix=path.name + ".", suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(temporary, path)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
+
+
+def load_document():
+    try:
+        data = json.loads(Path(OUT_PATH).read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else {}
+    except (OSError, ValueError, TypeError):
+        return {}
+
 
 
 def get_data_for_window(con: sqlite3.Connection, days: int) -> list[dict]:
@@ -60,11 +100,7 @@ def get_data_for_window(con: sqlite3.Connection, days: int) -> list[dict]:
     - 北京自然日 [00:00, 06:20) 只覆盖 6h, 不是 "今日总结"
     - 24h 滚动 [昨日 06:20, 今日 06:20) 跟 cron 节奏对齐, 跟 "上次抓取" 边界对齐
     """
-    if days == 1:
-        start_iso, end_iso = cn_recent_24h_window_utc()
-    else:
-        # 近 N 天 (1M/3M/6M/12M): now 往前推 N 天
-        start_iso, end_iso = cn_window_long_utc(days)
+    start_iso, end_iso = window_bounds(days)
     rows = con.execute("""
         SELECT e.post_id, e.source_id, e.direction, e.ticker, e.company,
                e.bottleneck, e.attribution, e.rebuts_narrative, e.summary_100,
@@ -72,7 +108,7 @@ def get_data_for_window(con: sqlite3.Connection, days: int) -> list[dict]:
                r.published_at, substr(r.raw_text, 1, 300) as raw_text
         FROM extractions_intel e
         JOIN raw_posts r ON r.post_id = e.post_id
-        WHERE r.published_at >= ? AND r.published_at < ?
+        WHERE julianday(r.published_at) >= julianday(?) AND julianday(r.published_at) < julianday(?)
           AND (e.ticker IS NOT NULL OR e.bottleneck IS NOT NULL OR e.direction != 'neutral')
         ORDER BY r.published_at DESC
     """, (start_iso, end_iso)).fetchall()
@@ -132,25 +168,49 @@ def balanced_consensus_sample(data: list[dict], per_kol: int = 12) -> list[dict]
 
 
 def call_llm(system: str, user: str, max_retries: int = 2) -> str:
-    try:
-        result = call_text(
-            "daily_summary", system, user,
-            max_output_tokens=400, timeout=30, max_retries=max_retries,
-        )
-    except RuntimeError as exc:
-        if "DEEPSEEK_API_KEY not set" in str(exc):
-            raise SystemExit(
-                "DEEPSEEK_API_KEY 未设置 — 不可生成今日总结. "
-                "请设置 DEEPSEEK_API_KEY 环境变量，或使用 --graceful-degrade。"
-            ) from exc
-        raise
+    # Include the actual evidence period in the request. Historical summaries
+    # must never interpret subsequent posts as evidence available on that day.
+    period = ARCHIVE_DATE or (AS_OF or datetime.now(timezone.utc)).astimezone(CN_TZ).date().isoformat()
+    user = f"研究日期（北京时间）：{period}。仅解读提供的窗口内证据，不使用此后信息。\n" + user
+    route = resolve_route("daily_summary")
+    key = hashlib.sha256(json.dumps(
+        [route.provider, route.model, system, user, 400], ensure_ascii=False
+    ).encode()).hexdigest()
+    document = STATE if STATE is not None else load_document()
+    cache = document.setdefault("request_cache", {})
+    if cache.get(key, {}).get("text"):
+        print("  ↪ reuse successful summary", flush=True)
+        return cache[key]["text"]
+    result = call_text(
+        "daily_summary", system, user,
+        max_output_tokens=400, timeout=30, max_retries=max_retries,
+    )
+    if not result.text.strip():
+        raise ValueError("EMPTY_SUMMARY")
+    cache[key] = {"text": result.text, "generated_at": datetime.now(timezone.utc).isoformat()}
+    # Save successful output immediately, even if a later segment fails.
+    atomic_save(document)
     usage_con = sqlite3.connect(DB_PATH, timeout=30)
     try:
-        record_usage(usage_con, result, workload="daily_summary", object_type="dashboard", object_id="summary_segment")
+        record_usage(usage_con, result, workload="daily_summary", object_type="dashboard", object_id=key)
         usage_con.commit()
     finally:
         usage_con.close()
     return result.text
+
+
+def generate_segment(target, key, generator, errors, label):
+    previous = target.get(key)
+    try:
+        target[key] = generator()
+    except Exception as exc:
+        # A guardrail remains enforced: no forced duplicate call or budget bypass.
+        reason = getattr(exc, "reason", type(exc).__name__)
+        errors[label] = reason
+        target[key] = previous or "（摘要待补；请查看该日期的原始 Post 和逐条解读）"
+        print(f"::warning::Summary {label} pending: {reason}", flush=True)
+    if STATE is not None:
+        atomic_save(STATE)
 
 
 def gen_today_summary(con: sqlite3.Connection) -> str:
@@ -256,89 +316,79 @@ def load_daily_history() -> dict:
 
 def main():
     import argparse
+    global STATE, AS_OF, ARCHIVE_DATE
     parser = argparse.ArgumentParser()
-    parser.add_argument("--graceful-degrade", action="store_true",
-                        help="DEEPSEEK_API_KEY 缺失时, 不报错退出, 而是写一个 stale 标记的 summaries.json")
+    parser.add_argument("--graceful-degrade", action="store_true")
+    parser.add_argument("--backfill-days", type=int, default=2,
+                        help="Refresh daily archives for the last N Beijing dates (including today; max 7)")
     args = parser.parse_args()
-
-    if not os.environ.get("DEEPSEEK_API_KEY"):
-        if args.graceful_degrade:
-            print("⚠ DEEPSEEK_API_KEY 未设置, 但 --graceful-degrade 开启 — 写 stale 标记 summaries.json", flush=True)
-            stale = {
-                "generated_at": "1970-01-01T00:00:00Z",
-                "data_until": None,
-                "stale": True,
-                "stale_reason": "DEEPSEEK_API_KEY 未设置",
-                "today": "（今日总结缺失 — DEEPSEEK_API_KEY 未配置, 请联系管理员）",
-                "consensus": {w: "（缺失 — DEEPSEEK_API_KEY 未配置）" for w in WINDOWS},
-                "person": {k: {w: "（缺失 — DEEPSEEK_API_KEY 未配置）" for w in WINDOWS} for k in KOLS},
-                "daily_history": load_daily_history(),
-            }
-            with open(OUT_PATH, "w", encoding="utf-8") as f:
-                json.dump(stale, f, indent=2, ensure_ascii=False)
-            print(f"  ✓ stale summaries.json 写好: {OUT_PATH}")
-            return
-        print("✗ DEEPSEEK_API_KEY 未设置 — 不可生成今日总结", flush=True)
-        print("  (如要明确降级, 加 --graceful-degrade)", flush=True)
-        sys.exit(2)
-
-    total_segments = 1 + len(WINDOWS) + len(KOLS) * len(WINDOWS)
-    print(f"===== Dashboard Summaries 生成 (LLM 预生成 {total_segments} 段) =====\n")
+    if not 0 <= args.backfill_days <= 7:
+        parser.error("--backfill-days must be between 0 and 7")
+    AS_OF = datetime.now(timezone.utc)
+    STATE = summaries = load_document()
+    summaries.setdefault("daily_history", load_daily_history())
+    summaries.setdefault("consensus", {})
+    summaries.setdefault("person", {})
+    summaries["stale"] = True
+    summaries["stale_reason"] = "摘要更新中；未完成部分保留此前内容"
+    errors = {}
+    summaries["segment_errors"] = errors
     con = sqlite3.connect(DB_PATH, timeout=60)
-
-    data_until = get_data_until(con)
-    print(f"  data_until: {data_until}")
-
-    summaries = {
-        "today": "",
-        "consensus": {},
-        "person": {},
-        # metadata (供 build_dashboard.py / 前端判断是否过期)
-        "generated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
-        "data_until": data_until,
-        "stale": False,
-        "daily_history": load_daily_history(),
-    }
-    # 初始化 person
-    for kol in KOLS:
-        summaries["person"][kol] = {}
-
-    # === 1. today ===
-    print(f"[1/{total_segments}] 今日综合...")
-    summaries["today"] = gen_today_summary(con)
-    archive_date = datetime.now(timezone.utc).astimezone(CN_TZ).strftime("%Y-%m-%d")
-    summaries["daily_history"][archive_date] = {
-        "summary": summaries["today"],
-        "generated_at": summaries["generated_at"],
-        "data_until": data_until,
-    }
-    print(f"  ✓ {summaries['today'][:80]}...")
-
-    # === 2. consensus × 5 ===
-    for i, (win, days) in enumerate(WINDOWS.items(), 2):
-        print(f"[{i}/{total_segments}] 共识 {win}M ({days}d)...")
-        summaries["consensus"][win] = gen_consensus_summary(con, win, days)
-        print(f"  ✓ {summaries['consensus'][win][:80]}...")
-
-    # === 3. person × 当前人物 × 5 ===
-    idx = 7
-    for kol in KOLS:
-        for win, days in WINDOWS.items():
-            print(f"[{idx}/{total_segments}] {KOLS[kol]['name']} {win}M...")
-            summaries["person"][kol][win] = gen_person_summary(con, kol, win, days)
-            print(f"  ✓ {summaries['person'][kol][win][:80]}...")
-            idx += 1
-
-    con.close()
-
-    # === 写文件 ===
-    with open(OUT_PATH, "w", encoding="utf-8") as f:
-        json.dump(summaries, f, indent=2, ensure_ascii=False)
-
-    print(f"\n✅ summaries.json 写好: {OUT_PATH}")
-    print(f"   1 today + 5 consensus + {len(KOLS)*len(WINDOWS)} person = {1 + len(WINDOWS) + len(KOLS)*len(WINDOWS)} 段")
-    print(f"   generated_at: {summaries['generated_at']}")
-    print(f"   data_until:   {summaries['data_until']}")
+    try:
+        data_until = get_data_until(con)
+        print(f"Summary input data_until: {data_until}", flush=True)
+        summaries["source_data_until"] = data_until
+        generate_segment(summaries, "today", lambda: gen_today_summary(con), errors, "today")
+        # Prioritize the current daily view before optional long-window segments.
+        ordered_windows = list(WINDOWS.items())
+        for win, days in ordered_windows:
+            generate_segment(summaries["consensus"], win,
+                             lambda w=win, d=days: gen_consensus_summary(con, w, d), errors, f"consensus/{win}")
+            for kol in KOLS:
+                target = summaries["person"].setdefault(kol, {})
+                generate_segment(target, win,
+                                 lambda k=kol, w=win, d=days: gen_person_summary(con, k, w, d), errors, f"person/{kol}/{win}")
+        current_errors = dict(errors)
+        if not current_errors:
+            summaries.update(generated_at=AS_OF.isoformat(), data_until=data_until, stale=False)
+            summaries.pop("stale_reason", None)
+        else:
+            summaries["stale_reason"] = "部分摘要待补；旧内容保留，原始 Post 正常更新"
+        for offset in range(args.backfill_days - 1, -1, -1):
+            archive_date = (AS_OF.astimezone(CN_TZ).date() - timedelta(days=offset)).isoformat()
+            ARCHIVE_DATE = archive_date
+            start, end = window_bounds(1)
+            rows = con.execute("SELECT post_id,published_at,raw_text FROM raw_posts WHERE julianday(published_at)>=julianday(?) AND julianday(published_at)<julianday(?) ORDER BY post_id", (start, end)).fetchall()
+            judgments = get_data_for_window(con, 1)
+            source_hash = hashlib.sha256(json.dumps([rows, judgments, build_kols_prompt(), resolve_route("daily_summary").model], ensure_ascii=False, default=str).encode()).hexdigest()
+            existing = summaries["daily_history"].get(archive_date, {})
+            if existing.get("source_hash") == source_hash and existing.get("complete"):
+                continue
+            entry = summaries["daily_history"][archive_date] = dict(existing)
+            entry.update(window_start_utc=start, window_end_utc=end, window_kind="beijing_calendar_day",
+                         source_data_until=max((row[1] for row in rows), default=None), post_count=len(rows),
+                         complete=False)
+            entry.setdefault("person", {})
+            day_errors = {}
+            entry["segment_errors"] = day_errors
+            generate_segment(entry, "summary", lambda: gen_today_summary(con), day_errors, "summary")
+            generate_segment(entry, "consensus", lambda: gen_consensus_summary(con, "0", 1), day_errors, "consensus")
+            for kol in KOLS:
+                generate_segment(entry["person"], kol, lambda k=kol: gen_person_summary(con, k, "0", 1), day_errors, kol)
+            if not day_errors:
+                entry.update(complete=True, source_hash=source_hash, generated_at=AS_OF.isoformat(),
+                             data_until=entry["source_data_until"])
+            errors.update({f"daily/{archive_date}/{k}": v for k, v in day_errors.items()})
+            atomic_save(summaries)
+        ARCHIVE_DATE = None
+        summaries["last_attempt_at"] = AS_OF.isoformat()
+        summaries["refresh_complete"] = not errors
+        atomic_save(summaries)
+        print(f"Summary refresh: complete={not errors}, pending={len(errors)}, data_until={data_until}", flush=True)
+    finally:
+        con.close()
+        ARCHIVE_DATE = None
+        STATE = None
 
 
 if __name__ == "__main__":

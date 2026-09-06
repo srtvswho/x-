@@ -703,6 +703,7 @@ def load_summaries():
                 print(f"  ⚠ summaries.json 已生成 {age_h:.1f}h (>36h), 前端会标过期", flush=True)
         except Exception:
             pass
+    data.pop("request_cache", None)  # Internal resumable outputs are not part of the public page.
     return data
 
 

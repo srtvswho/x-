@@ -373,7 +373,7 @@ jobs:
           AI_ENABLED: "true"
           AI_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.ai_dry_run || false }}
           AI_RUN_ID: "${{ github.run_id }}-${{ github.run_attempt }}-summary"
-          AI_MAX_CALLS_PER_RUN: "50"
+          AI_MAX_CALLS_PER_RUN: "100"
           AI_MAX_COST_PER_RUN_USD: "0.30"
           AI_MAX_DAILY_COST_USD: "3.00"
           EXTRACT_MAX_COST_PER_RUN: "0.30"
@@ -429,7 +429,10 @@ jobs:
             echo "No changes to commit."
             exit 0
           fi
-          git commit -m "Daily Signalboard update $(TZ=Asia/Shanghai date +%Y-%m-%d) [skip daily]"
+          # Partial summaries still publish fresh Posts, but must not suppress
+          # the next scheduled fallback as a fully completed daily refresh.
+          prefix=$(python -c 'import json; s=json.load(open("scripts/dashboard/summaries.json")); print("Daily" if s.get("refresh_complete", not s.get("stale", True)) else "Partial")')
+          git commit -m "$prefix Signalboard update $(TZ=Asia/Shanghai date +%Y-%m-%d) [skip daily]"
           git stash push --include-untracked --message "workflow generated files before rebase" || true
           git pull --rebase origin master
           git push origin HEAD:master
