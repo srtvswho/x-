@@ -17,36 +17,19 @@ def test_backfill_registry_covers_all_production_kols_and_includes_today():
     assert "即使是幂等命中，也用本次数据修复状态水位" in source
 
 
-def test_one_year_rebuild_is_bounded_and_recomputes_all_derived_views():
-    workflow = (
-        ROOT / ".github" / "workflows" / "signalboard-history-rebuild.yml"
-    ).read_text(encoding="utf-8")
-    for handle in ("DGretta_Author", "FeroceResearch", "TradexWhisperer", "gsmferrari"):
-        assert handle in workflow
-    assert "--since-days 370" in workflow
-    assert "datetime('now', '-30 days')" in workflow
-    assert "--max-targets 6000" in workflow
-    assert "--ticker-clues-only" in workflow
-    assert "Save raw backfill checkpoint" in workflow
+def test_history_repair_is_manual_bounded_and_keeps_checkpoints():
+    workflow = (ROOT / ".github/workflows/signalboard-history-rebuild.yml").read_text()
+    assert "workflow_dispatch:" in workflow
+    assert "push:" not in workflow
+    assert "scripts/intel_history_backfill.py" in workflow
+    assert 'AI_MAX_CALLS_PER_RUN: "500"' in workflow
+    assert 'AI_MAX_COST_PER_RUN_USD: "2.00"' in workflow
     assert "Save extraction checkpoint" in workflow
-    assert "Verify saved overlap for existing four" in workflow
-    assert "Safety overlap for existing four" not in workflow
-    assert "Complete capped Tradex history by month" in workflow
-    assert "skip paid monthly scrape" in workflow
-    assert "2025-08-07 2025-09-01" in workflow
-    assert "2026-04-01 2026-05-16" in workflow
-    assert "tw_TradexWhisperer:incomplete_1y" in workflow
-    for run_id in (
-        "eHzAhTk5bZiBrDzDD",
-        "PeeVsMuLX75q2gUph",
-        "KLHVvrYw16h9c7iUV",
-        "aIleM6JgGwMNmKhc8",
-    ):
-        assert run_id in workflow
     assert "refresh_prices_polygon.py" in workflow
-    assert "intel_gen_summaries.py" in workflow
     assert "build_dashboard.py" in workflow
-    assert "signalboard_history_rebuild_latest.json" in workflow
+    assert "--ticker-clues-only" not in workflow
+    assert "--since" not in workflow
+    assert "history_complete" in (ROOT / "scripts/intel_history_backfill.py").read_text()
 
 
 def test_daily_and_rebuild_workflows_share_database_concurrency_lock():

@@ -68,9 +68,7 @@ def test_workflow_backfill_is_one_time_cost_capped_and_flash_only():
     extractor = (ROOT / "scripts" / "intel_extract.py").read_text()
     router = (ROOT / "signalboard" / "ai" / "router.py").read_text()
     assert "[backfill-calls-1y]" in workflow
-    assert "--sources tw_austinsemis,tw_jukan05,tw_zephyr_z9" in workflow
-    assert "--ticker-clues-only" in workflow
-    assert "--max-targets 650" in workflow
+    assert "scripts/intel_history_backfill.py --apply --limit 400" in workflow
     assert 'resolve_route("bulk_post_processing").model' in extractor
     assert '"bulk_post_processing": ("deepseek", "deepseek-v4-flash", "none")' in router
     assert 'DEEPSEEK_MODEL = "deepseek-v4-pro"' not in extractor

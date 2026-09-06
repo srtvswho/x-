@@ -350,12 +350,7 @@ jobs:
         shell: bash
         run: |
           set -Eeuo pipefail
-          python scripts/intel_extract.py \
-            --since 2025-08-11 \
-            --until 2026-05-28 \
-            --sources tw_austinsemis,tw_jukan05,tw_zephyr_z9 \
-            --ticker-clues-only \
-            --max-targets 650
+          python scripts/intel_history_backfill.py --apply --limit 400
 
       - name: Database health check
         run: python scripts/intel_daily_health.py

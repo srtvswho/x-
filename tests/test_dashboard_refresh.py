@@ -27,7 +27,7 @@ from unittest.mock import patch, MagicMock
 import pytest
 
 # 让 refresh_prices_polygon / build_dashboard 可 import
-DASH_DIR = Path("/workspace/scripts/dashboard")
+DASH_DIR = Path(__file__).resolve().parents[1] / "scripts" / "dashboard"
 sys.path.insert(0, str(DASH_DIR))
 import refresh_prices_polygon  # noqa: E402
 
