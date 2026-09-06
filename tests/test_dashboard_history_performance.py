@@ -213,7 +213,9 @@ def test_scheduled_daily_run_refreshes_summaries_without_enabling_full_ai_pipeli
     assert "if: ${{ !contains(github.event.head_commit.message, '[summary backfill]') }}" in workflow
     assert 'AI_ENABLED: "true"' in workflow
     assert "AI_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.ai_dry_run || false }}" in workflow
-    assert 'AI_MAX_CALLS_PER_RUN: "50"' in workflow
+    # 46 current segments plus two daily archives (20), with bounded retries.
+    assert 'AI_MAX_CALLS_PER_RUN: "100"' in workflow
+    assert '"Daily" if s.get("refresh_complete"' in workflow
     assert 'AI_MAX_COST_PER_RUN_USD: "0.30"' in workflow
     assert 'EXTRACT_MAX_COST_PER_RUN: "0.30"' in workflow
     assert "if: env.SUMMARY_ENABLED == 'true'" in workflow
