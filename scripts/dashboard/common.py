@@ -22,6 +22,12 @@
 """
 from __future__ import annotations
 import json
+import sys
+from pathlib import Path
+
+# Standalone dashboard/price entrypoints must resolve the shared repository package.
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
 from datetime import datetime, timedelta, timezone
 
 try:
