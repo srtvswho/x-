@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T19:04:39.134902+00:00",
+  "generated_at": "2026-09-07T19:08:52.222083+00:00",
   "pending_total": 0,
   "sources": {
     "tw_jukan05": {
@@ -1415,13 +1415,13 @@
       "earlier_mention_count": 0,
       "earlier_mentions": [],
       "call_date": "2025-07-02",
-      "call_price": null,
-      "now_price": null,
-      "now_date": null,
-      "raw_return": null,
+      "call_price": 63.42,
+      "now_price": 32.47,
+      "now_date": "2026-09-04",
+      "raw_return": -48.8,
       "currency": "USD",
-      "directional_return": null,
-      "price_unavailable_reason": "missing_price_data",
+      "directional_return": -48.8,
+      "price_unavailable_reason": null,
       "in_field": false
     },
     {
@@ -35675,13 +35675,13 @@
         }
       ],
       "call_date": "2026-05-18",
-      "call_price": null,
-      "now_price": null,
-      "now_date": null,
-      "raw_return": null,
+      "call_price": 24.36,
+      "now_price": 24.12,
+      "now_date": "2026-09-04",
+      "raw_return": -0.99,
       "currency": "USD",
-      "directional_return": null,
-      "price_unavailable_reason": "missing_price_data",
+      "directional_return": -0.99,
+      "price_unavailable_reason": null,
       "in_field": true
     },
     {
@@ -41026,13 +41026,13 @@
       "earlier_mention_count": 0,
       "earlier_mentions": [],
       "call_date": "2026-07-29",
-      "call_price": null,
-      "now_price": null,
-      "now_date": null,
-      "raw_return": null,
+      "call_price": 140.17,
+      "now_price": 154.46,
+      "now_date": "2026-09-04",
+      "raw_return": 10.19,
       "currency": "USD",
-      "directional_return": null,
-      "price_unavailable_reason": "missing_price_data",
+      "directional_return": 10.19,
+      "price_unavailable_reason": null,
       "in_field": true
     },
     {
@@ -52202,12 +52202,6 @@
     },
     {
       "source_id": "tw_aleabitoreddit",
-      "ticker": "ETOR",
-      "call_date": "2025-07-02",
-      "price_unavailable_reason": "missing_price_data"
-    },
-    {
-      "source_id": "tw_aleabitoreddit",
       "ticker": "BTC",
       "call_date": "2025-07-02",
       "price_unavailable_reason": "ambiguous_asset_identity"
@@ -52934,12 +52928,6 @@
     },
     {
       "source_id": "tw_gsmferrari",
-      "ticker": "FIG",
-      "call_date": "2026-05-18",
-      "price_unavailable_reason": "missing_price_data"
-    },
-    {
-      "source_id": "tw_gsmferrari",
       "ticker": "VUSION",
       "call_date": "2026-05-26",
       "price_unavailable_reason": "missing_price_data"
@@ -53032,12 +53020,6 @@
       "source_id": "tw_jukan05",
       "ticker": "MONT",
       "call_date": "2026-07-20",
-      "price_unavailable_reason": "missing_price_data"
-    },
-    {
-      "source_id": "tw_gsmferrari",
-      "ticker": "DUOL",
-      "call_date": "2026-07-29",
       "price_unavailable_reason": "missing_price_data"
     },
     {
