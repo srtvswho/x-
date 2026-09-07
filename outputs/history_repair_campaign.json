@@ -1,35 +1,35 @@
 {
-  "generated_at": "2026-09-07T04:27:59.279984+00:00",
+  "generated_at": "2026-09-07T06:09:59.105357+00:00",
   "prompt_version": "v2.0.2-intel-attribution",
   "sources": {
     "tw_jukan05": {
       "raw_posts": 2595,
       "raw_start": "2024-12-22T04:02:46+00:00",
       "raw_end": "2026-09-07T02:05:49+00:00",
-      "pending_current_version": 1811,
-      "pending_call_review": 665,
+      "pending_current_version": 1807,
+      "pending_call_review": 661,
       "reused_interpretations": 1146,
-      "never_extracted": 624,
+      "never_extracted": 620,
       "raw_coverage": "unverified"
     },
     "tw_aleabitoreddit": {
       "raw_posts": 7259,
       "raw_start": "2025-07-02T10:48:09+00:00",
       "raw_end": "2026-09-07T01:42:40+00:00",
-      "pending_current_version": 6722,
-      "pending_call_review": 1474,
+      "pending_current_version": 6718,
+      "pending_call_review": 1470,
       "reused_interpretations": 5248,
-      "never_extracted": 1317,
+      "never_extracted": 1313,
       "raw_coverage": "unverified"
     },
     "tw_zephyr_z9": {
       "raw_posts": 6437,
       "raw_start": "2024-12-26T11:42:47+00:00",
       "raw_end": "2026-09-07T02:15:22+00:00",
-      "pending_current_version": 5760,
-      "pending_call_review": 4213,
+      "pending_current_version": 5758,
+      "pending_call_review": 4211,
       "reused_interpretations": 1547,
-      "never_extracted": 4168,
+      "never_extracted": 4166,
       "raw_coverage": "unverified"
     },
     "tw_austinsemis": {
@@ -46,30 +46,30 @@
       "raw_posts": 3666,
       "raw_start": "2025-02-08T13:13:34+00:00",
       "raw_end": "2026-09-07T00:26:52+00:00",
-      "pending_current_version": 2642,
-      "pending_call_review": 1855,
+      "pending_current_version": 2641,
+      "pending_call_review": 1854,
       "reused_interpretations": 787,
-      "never_extracted": 1618,
+      "never_extracted": 1617,
       "raw_coverage": "unverified"
     },
     "tw_FeroceResearch": {
       "raw_posts": 3603,
       "raw_start": "2024-11-04T18:00:36+00:00",
       "raw_end": "2026-09-07T01:29:37+00:00",
-      "pending_current_version": 3100,
-      "pending_call_review": 2178,
+      "pending_current_version": 3099,
+      "pending_call_review": 2177,
       "reused_interpretations": 922,
-      "never_extracted": 1491,
+      "never_extracted": 1490,
       "raw_coverage": "unverified"
     },
     "tw_TradexWhisperer": {
-      "raw_posts": 11095,
+      "raw_posts": 11107,
       "raw_start": "2025-02-09T05:10:29+00:00",
-      "raw_end": "2026-09-07T02:04:08+00:00",
-      "pending_current_version": 9909,
-      "pending_call_review": 8012,
+      "raw_end": "2026-09-07T05:11:20+00:00",
+      "pending_current_version": 9902,
+      "pending_call_review": 8005,
       "reused_interpretations": 1897,
-      "never_extracted": 7287,
+      "never_extracted": 7280,
       "raw_coverage": "unverified"
     },
     "tw_gsmferrari": {
@@ -83,7 +83,7 @@
       "raw_coverage": "unverified"
     }
   },
-  "pending_total": 22186,
+  "pending_total": 22167,
   "selected_post_ids": [
     "1894674450374967455",
     "1968051910663118861",
@@ -509,5 +509,10 @@
     "1968051910663118861",
     "1894674450374967455",
     "1896757635984277607"
-  ]
+  ],
+  "acceptance": {
+    "changed_anchors": 338,
+    "prices_missing": 386,
+    "raw_history_coverage": "unverified"
+  }
 }

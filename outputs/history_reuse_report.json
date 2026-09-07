@@ -1,14 +1,14 @@
 {
   "review_version": "history-reuse-v1",
   "counts": {
-    "current": 5467,
-    "pending": 22982,
+    "current": 6294,
+    "pending": 22167,
     "already_reused": 13167
   },
   "reasons": {
-    "no_saved_interpretation": 19628,
-    "missing_semantic_fields": 2385,
-    "cache_ambiguous_prediction": 723,
+    "no_saved_interpretation": 19001,
+    "missing_semantic_fields": 2265,
+    "cache_ambiguous_prediction": 655,
     "missing_content_interpretation": 39,
     "cache_context_changed": 19,
     "ambiguous_ticker_direction": 132,
@@ -18,768 +18,13 @@
   "reused_by_source": {},
   "pending": [
     {
-      "post_id": "1853497590056202327",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1867613750699622472",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1873548413935182120",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1873549912920698884",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1873549915735158871",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1873573005898768543",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1873583730994151726",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1873587076547146109",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1873604945863467321",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1873660620450734086",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1873661167882891377",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1873661626567864540",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1873664304605798573",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1873664669728313439",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1873697554044702738",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1873709354769403926",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1873868344623063200",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1874358213011005628",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1874756484493717774",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1875785574579368167",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1877335025479463396",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1877904485059895419",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1878634306832396648",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1879296542869442587",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1879387737851334938",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1879470104523726979",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1879491218457166059",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1880459829153788079",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1880542625071333859",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1880828531023962370",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1881285372765978993",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1881894233252237482",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1883304958432624881",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1883671231565902077",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1884139534000234793",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1884475329911349285",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1884493419801891113",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1884882162937454791",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1885233025635803269",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1886032300959571997",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1886589568428003789",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1886753308586672585",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1887398860232020357",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1888109545966510451",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1888196601967198545",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1888197538953732249",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1888202011012935753",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1888214590112076053",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1888455408760864891",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1888805847620534647",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1889135300682932722",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1889239479120199815",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1889472582094823747",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1889848873209995325",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1889857817722626518",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1890186948100415818",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1890339148386476349",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1890542819229495423",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1890750137338933632",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1890988716006772897",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1891027028041777493",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1891249871749067236",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1892209892229787973",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1892424004952346920",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1893201168140247494",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1893585231489507511",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1893606080820736216",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1893657026393493843",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1894674450374967455",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1894683120328384830",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1895074387302457702",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1895452203592384563",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1896141327575982352",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1896182027260670209",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1896504691942703172",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1896545249067208713",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
     },
     {
       "post_id": "1896757635984277607",
       "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1897082398057357370",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1897083829577498877",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1897302455693820391",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1898016475744698444",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1898541559819456947",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1898678799673499912",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1899435432473231765",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1899620694276948390",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1900486765926043977",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1901590090214002955",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1901624368796766559",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1901796561459257481",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1901917116963643539",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902045089876103219",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902048199331770590",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902049983156617316",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902051095364419990",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902053360527692269",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902054016181301514",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902054860494606343",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902056075018322360",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902056645573636250",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902057768506552568",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902058122228732395",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902058849600770081",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902059772523811120",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902061125518471567",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902062561346121772",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902063884275724409",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902064344818655475",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902064880469102747",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902065136212570307",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902066204908646665",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902066747223818345",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902067149474296043",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902067755018580347",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902068975753896370",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902070141162307614",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902070799768703379",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902071663706960059",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902075103791174139",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902075627789803844",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902075750464770520",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902076915995017667",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902126077515882849",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902148679395430465",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902163468654117094",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902188495990616071",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902268225821536457",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902336437661401536",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902370100184805413",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902441483841782198",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902627719156044140",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902702809893482833",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1902711582347628544",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1903069142267375847",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1903145433419166099",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1903228795361898954",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1903285589904163252",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1903375343190454622",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1903416730333901024",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1903658461810000352",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1903796297678963072",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1903805621549330453",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1903969839716438302",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1904019260860682337",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1904055677603242410",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1904140433359290368",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1904220652183134351",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1904474411790426515",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1904527313523322971",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1904536360159269077",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1904777398274711910",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1904912747063615882",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1905043641212837938",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1905114559616340212",
-      "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
     },
     {
@@ -793,28 +38,8 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1905281477220184161",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1905290265624977795",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1905384817501634647",
       "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1905385682228707402",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1905394477721596159",
-      "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
     },
     {
@@ -823,28 +48,8 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1905685664726962331",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1905859215513833789",
       "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1905951868691316790",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1906129664650752047",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1906140126520234428",
-      "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
     },
     {
@@ -868,21 +73,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1906814690686357754",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1906821276255310134",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1906860572572016903",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1906868721706242256",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
@@ -903,28 +93,8 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1907112654411543021",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1907119017766371562",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1907120846013128717",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1907219486195036525",
       "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1907455747962908809",
-      "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
     },
     {
@@ -940,16 +110,6 @@
     {
       "post_id": "1907783850648023525",
       "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1907812381276704852",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1907878025909157919",
-      "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
     },
     {
@@ -978,33 +138,13 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1909262658567631057",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1909407639425147286",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1909409346594668649",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1909422396597309850",
       "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1909626666600526188",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1909633579237130710",
-      "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
     },
     {
@@ -1028,508 +168,8 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1910347027864510488",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910550717581971536",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910555749152960886",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910573498558194071",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910574197660684378",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910581291847999914",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910581600812671295",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910604836283822171",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910606056931082476",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910610527140671946",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910614106505085000",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910627223125504246",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910647918966472960",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910671456888832241",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910686651489153145",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910691667054670268",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910691901797290387",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910692218366460201",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910693286550847869",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910693508190548093",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910693927209808240",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910697590535991545",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910697884468572187",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910698261544845525",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910700240698552466",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910700531955462368",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910706033628000413",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910712441543016485",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910713142167879763",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910715972836589977",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910718348897165330",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910718852503138376",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910719257714757765",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910719831189475348",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910720881107575023",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910721274202251370",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910721620555014263",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910722382790094866",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910723571371893147",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910724159924994455",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910724925020688585",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910725531059839462",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910726376807706693",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910726524665311742",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910727584079294997",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910728743347188041",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910735412512915952",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910739123779821952",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910828675055911404",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910843499060077019",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910847385942495656",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910847820610887933",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910850661383655464",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910851480153706713",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910852041523478674",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910852731536892038",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910854042642768207",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1910855224270700646",
       "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910856077828104674",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910861835374346377",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910866502753857920",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910868339163091165",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910868891259294084",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910871175607034056",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910874090669236255",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910880486055989545",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910890878714917093",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910891282538373130",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910892348969459822",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910934111193039099",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910934247096885275",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910940034275962896",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910940591191474633",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910944181465366727",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910945602818425148",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910945973108437131",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910946938448458089",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910947075144966176",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910947238357987484",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910948064006668462",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910950426192511085",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910950930347893196",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910951335039586700",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910952037522485340",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910952489693700374",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910953597699006569",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910954609675215246",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910955409910673604",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910958319377711253",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910958887630499965",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910959610074182047",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910960047120605358",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910960368223977731",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910964230292930830",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910964373549437399",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910965073096429598",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910965260858630262",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910965798467760493",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910967462650061248",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910968722317070850",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1910969409117786491",
-      "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
     },
     {
@@ -2088,11 +728,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1911766039416709313",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1911766472260563009",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -2170,11 +805,6 @@
     {
       "post_id": "1911842356401144134",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1911917075209019619",
-      "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
     },
     {
@@ -2973,18 +1603,8 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1912856144583799084",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1912869094182838670",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1912871480397832388",
-      "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
     },
     {
@@ -3425,11 +2045,6 @@
     {
       "post_id": "1913314897288708405",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1913332591731654944",
-      "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
     },
     {
@@ -4818,11 +3433,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1915448821162643589",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1915450406140076107",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -5678,11 +4288,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1917249223193694395",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1917251013611790621",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -5690,11 +4295,6 @@
     {
       "post_id": "1917251404684501076",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1917251516588867702",
-      "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
     },
     {
@@ -5828,11 +4428,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1917339249692795282",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1917342892005154867",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -5898,11 +4493,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1918327029717512211",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1918595609604595800",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
@@ -5958,46 +4548,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1920151269429412221",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1920163581695570128",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1920165325288460294",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1920166797967568965",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1920168366058401908",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1920171909532299290",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1920251269257494562",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1920254693181436112",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1920344314523132131",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -6038,11 +4588,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1922296610056253611",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1922557035960533368",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
@@ -6050,11 +4595,6 @@
     {
       "post_id": "1922799707539341701",
       "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1923051126686875774",
-      "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
     },
     {
@@ -6118,63 +4658,13 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1924248568090829158",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1924302005595668799",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1924302347427254539",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1924309439966011725",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1924312905119641913",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1924492083437699376",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1924504614352867620",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1924505569706312072",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1924514741894185402",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1924622189376193013",
       "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1924865130631987686",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1924886351658549557",
-      "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
     },
     {
@@ -6248,11 +4738,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1927349904914964897",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1927405365194367114",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -6285,11 +4770,6 @@
     {
       "post_id": "1927789570285879482",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1927828860575567893",
-      "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
     },
     {
@@ -6328,33 +4808,8 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1928146874051219904",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1928151840790642867",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1928186039568310761",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1928192447437328722",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1928194986622808169",
-      "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1928197117098741891",
-      "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
     },
     {
@@ -6383,18 +4838,8 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1928947822478401551",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1929141100910149707",
       "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1929277731511959886",
-      "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
     },
     {
@@ -6445,11 +4890,6 @@
     {
       "post_id": "1929931744234316197",
       "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1930035765704048818",
-      "source_id": "tw_DGretta_Author",
       "reason": "no_saved_interpretation"
     },
     {
@@ -6568,11 +5008,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1932584829540864293",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1932614107469131937",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
@@ -6623,11 +5058,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1933223865192186326",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1933230755007869348",
       "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
@@ -6643,28 +5073,13 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1933393962976620753",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1933412354798334191",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1933545286410121553",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1933569062451212604",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1933887931795521988",
-      "source_id": "tw_DGretta_Author",
       "reason": "no_saved_interpretation"
     },
     {
@@ -6693,11 +5108,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1935049515129782447",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1935129780422385910",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
@@ -6705,16 +5115,6 @@
     {
       "post_id": "1935327193652998398",
       "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1935335102416044347",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1935423986449649806",
-      "source_id": "tw_DGretta_Author",
       "reason": "no_saved_interpretation"
     },
     {
@@ -6843,16 +5243,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1937784375967645999",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1937789173131583656",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1937892474543866109",
       "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
@@ -6895,11 +5285,6 @@
     {
       "post_id": "1938081662375760253",
       "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1938089806522892339",
-      "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
     },
     {
@@ -7103,16 +5488,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1940991461853745644",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1941167077433479545",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1941341340685697377",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -7203,11 +5578,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1942986612394152269",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1943009958548902101",
       "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
@@ -7230,11 +5600,6 @@
     {
       "post_id": "1943325670475436078",
       "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1943336744667013305",
-      "source_id": "tw_DGretta_Author",
       "reason": "no_saved_interpretation"
     },
     {
@@ -7338,11 +5703,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1944832361025229291",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1944853997095149809",
       "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
@@ -7350,11 +5710,6 @@
     {
       "post_id": "1944859140683083832",
       "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1944911456581087276",
-      "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
     },
     {
@@ -7523,11 +5878,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1946676470723563787",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1946700875604320498",
       "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
@@ -7648,11 +5998,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1948056610980434198",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1948104328692093220",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -7683,11 +6028,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1948367281626485006",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1948513061595480549",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
@@ -7700,11 +6040,6 @@
     {
       "post_id": "1948684753630364012",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1948709343748121011",
-      "source_id": "tw_DGretta_Author",
       "reason": "no_saved_interpretation"
     },
     {
@@ -8178,24 +6513,9 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1953847115576160649",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1953862582751617371",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1953895190453739763",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1954412397848080579",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1954559179651211551",
@@ -8208,11 +6528,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1954766587590013134",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "1955041158645874925",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
@@ -8223,23 +6538,8 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1955108433532948638",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1955132118817972565",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1955160444563492946",
       "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1955267063112515934",
-      "source_id": "tw_DGretta_Author",
       "reason": "no_saved_interpretation"
     },
     {
@@ -8258,16 +6558,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1955344969054687458",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1955368639772889275",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1955377522885136733",
       "source_id": "tw_austinsemis",
       "reason": "missing_semantic_fields"
@@ -8278,23 +6568,8 @@
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "1955455207363711310",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1955487718055842103",
       "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1955493601112363501",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1955498886308696454",
-      "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
     },
     {
@@ -8303,19 +6578,9 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1955624089508614546",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "1955669583290921313",
       "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1955751117142307254",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1955790909788041469",
@@ -8323,24 +6588,9 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1955796544915169626",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1955802755966361614",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1955808837258367336",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1955840480450896041",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1955855829095342286",
@@ -8358,33 +6608,8 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1955910803435217085",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1956020236114711021",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1956045300155429036",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1956106106897621351",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "1956126712330178880",
       "source_id": "tw_austinsemis",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1956166452165402778",
-      "source_id": "tw_FeroceResearch",
       "reason": "missing_semantic_fields"
     },
     {
@@ -8398,48 +6623,13 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1956228942874206389",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1956279813817159721",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1956365572259664381",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "1956366179091558884",
       "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1956369483284533338",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1956386348450926940",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1956418327821369846",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "1956462990972358931",
       "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1956575357458686146",
-      "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
     },
     {
@@ -8458,11 +6648,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1956948577508331855",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1957059265299939770",
       "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
@@ -8470,11 +6655,6 @@
     {
       "post_id": "1957099348585517352",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1957102628527014024",
-      "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
     },
     {
@@ -8491,11 +6671,6 @@
       "post_id": "1957207360226943252",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1957267230028361793",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1957283269671604602",
@@ -8515,11 +6690,6 @@
     {
       "post_id": "1957439978738155818",
       "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1957450045881827725",
-      "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
     },
     {
@@ -8573,11 +6743,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1957499199748207083",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1957500068866543833",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -8623,11 +6788,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1957517367245771259",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "1957518090381697049",
       "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
@@ -8653,11 +6813,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1957529959779741842",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "1957532207515390311",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -8668,19 +6823,9 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1957574664949231727",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "1957595105067495579",
       "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1957602839355609315",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1957606932346466544",
@@ -8733,11 +6878,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1957643722172113092",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "1957654326693818583",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -8750,11 +6890,6 @@
     {
       "post_id": "1957663680583397787",
       "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1957663942345674834",
-      "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
     },
     {
@@ -8785,11 +6920,6 @@
     {
       "post_id": "1957687307638829572",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1957687824318402845",
-      "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
     },
     {
@@ -8953,16 +7083,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1957807408912429562",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1957807492676649281",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1957808521468059783",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -9033,19 +7153,9 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1957841298100220389",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "1957847640487366770",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1957847724373549398",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1957848458162758026",
@@ -9073,19 +7183,9 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1957868236814389659",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "1957868804073025839",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1957871218171998218",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1957871428558078445",
@@ -9096,31 +7196,6 @@
       "post_id": "1957873185187111247",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1957878866459971919",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1957900558951674287",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1957912540773507080",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1957912786366878172",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1957932379588157905",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1957935794876002543",
@@ -9153,43 +7228,13 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1958009828808298971",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "1958017362650661043",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1958024984955351267",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1958025129629233252",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1958025210143101222",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1958027360608944385",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1958029963510075422",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1958030137087123625",
-      "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
     },
     {
@@ -9203,21 +7248,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1958032268540408081",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1958032336395599935",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1958036227149492251",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1958040121414152260",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
@@ -9228,18 +7258,8 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1958047689842557417",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1958050858265956622",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1958052793035743534",
-      "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
     },
     {
@@ -9443,11 +7463,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1958194506987131085",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "1958205264915780089",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -9498,21 +7513,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1958251057735467472",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1958272188441629044",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1958273493814170033",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "1958290882861629678",
       "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
@@ -9523,34 +7523,14 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1958329348437786668",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1958329440695697782",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1958337571920212250",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1958338654130377102",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "1958338986449195292",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1958339014228111847",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1958340087999279532",
@@ -9593,31 +7573,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1958365162387435720",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1958370799121056202",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1958372682141188175",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1958374371614994810",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1958374499751223753",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1958375291975258563",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -9636,16 +7591,6 @@
       "post_id": "1958378542154084524",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1958379986454474849",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1958381304707535127",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1958395572232331742",
@@ -9888,31 +7833,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1958525234128261370",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1958525309495497031",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1958525362629120502",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1958537638085865914",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1958538670396612916",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1958556790691377277",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -9928,43 +7848,13 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1958587248045384079",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1958594524533694781",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1958602138801901888",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1958609835525820587",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "1958663158362779989",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1958685820405391734",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1958689578833125795",
       "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1958690483376726405",
-      "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
     },
     {
@@ -9976,11 +7866,6 @@
       "post_id": "1958711200889589957",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1958714018878669178",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1958717019722805445",
@@ -10008,16 +7893,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1958729535748280774",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1958733644173861050",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "1958740813846127055",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -10030,11 +7905,6 @@
     {
       "post_id": "1958748289639317807",
       "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1958752853947789510",
-      "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
     },
     {
@@ -10058,11 +7928,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1958762986211852671",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1958764852047986688",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -10070,11 +7935,6 @@
     {
       "post_id": "1958765068562440662",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1958765192986415592",
-      "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
     },
     {
@@ -10328,11 +8188,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1958921427639574684",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1958925094002335982",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -10411,11 +8266,6 @@
       "post_id": "1958946335543140401",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1958947339277647999",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1958948030024978598",
@@ -10503,11 +8353,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1958979027038863667",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "1958980456529207788",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -10558,11 +8403,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1959001326613897716",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1959005959030006203",
       "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
@@ -10570,26 +8410,6 @@
     {
       "post_id": "1959007141379154381",
       "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1959025449503215696",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1959026907594309893",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1959061454864121862",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1959066831643119755",
-      "source_id": "tw_FeroceResearch",
       "reason": "no_saved_interpretation"
     },
     {
@@ -10616,11 +8436,6 @@
       "post_id": "1959113549399076941",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1959119083808698751",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1959121311558516841",
@@ -10768,21 +8583,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1959251133052211234",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1959251302023856364",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1959253516653875629",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "1959260566121267250",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -10806,11 +8606,6 @@
       "post_id": "1959290980017824016",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1959292473299103746",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1959293350407778464",
@@ -10868,11 +8663,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1959313616827470243",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1959317827141120111",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -10898,11 +8688,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1959334191885078594",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1959339961984966759",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -10911,11 +8696,6 @@
       "post_id": "1959342442483786153",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1959342817177677856",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1959343127795294663",
@@ -10953,23 +8733,8 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1959356107555561890",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1959387022990406117",
       "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1959402292874289262",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1959403331283046420",
-      "source_id": "tw_FeroceResearch",
       "reason": "no_saved_interpretation"
     },
     {
@@ -11015,11 +8780,6 @@
     {
       "post_id": "1959448127402074518",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1959449266444697919",
-      "source_id": "tw_FeroceResearch",
       "reason": "no_saved_interpretation"
     },
     {
@@ -11071,11 +8831,6 @@
       "post_id": "1959482987864641822",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1959489719504404762",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1959490543739945130",
@@ -11313,11 +9068,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1959646630539657338",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1959657038860161449",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -11468,11 +9218,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1959735684660658414",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1959743087074251156",
       "source_id": "tw_austinsemis",
       "reason": "missing_semantic_fields"
@@ -11535,11 +9280,6 @@
     {
       "post_id": "1959804377046163916",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1959819776529989852",
-      "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
     },
     {
@@ -11668,19 +9408,9 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1959976020041469984",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1959983563559875042",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1959986337500868749",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1959990757810716749",
@@ -11736,11 +9466,6 @@
       "post_id": "1960015713768513667",
       "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960015964247826891",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1960021939554275470",
@@ -11818,29 +9543,9 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1960115594025386481",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "1960118055440171496",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960119090770506148",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1960123779645948223",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1960125902765150462",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1960130067440508968",
@@ -11908,11 +9613,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1960201264484003920",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1960202114883359121",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -11953,11 +9653,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1960224637239075021",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "1960230894020722915",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
@@ -11971,16 +9666,6 @@
       "post_id": "1960231933843271955",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960232002692718772",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960236089865830476",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1960238534163316868",
@@ -12108,11 +9793,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1960326543168647497",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1960330083559784648",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -12168,11 +9848,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1960342210479522215",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1960345198749188191",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -12186,16 +9861,6 @@
       "post_id": "1960349308584153594",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960351184155525424",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1960357671711764982",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1960364465624662320",
@@ -12218,19 +9883,9 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1960366985281179868",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1960367703543202287",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960370751606779905",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1960371320295739873",
@@ -12333,46 +9988,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1960426150787998113",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1960427122360815902",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1960436934666543368",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1960440714648805760",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1960441238601015785",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960442029928013878",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1960448119927120140",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1960450698145108177",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1960453369203712355",
       "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
@@ -12393,11 +10008,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1960477070724882748",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1960482105663873158",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
@@ -12413,83 +10023,13 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1960508778836853169",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960512289238376664",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960513411487293474",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1960515021991264692",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1960519211501150376",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960526803749232833",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960527046012232008",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960527276430516640",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960527397792702691",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960528642473423013",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960528771104301364",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960528783926288670",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960528888523841576",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960529115892867469",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1960539931694260485",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960540586684891356",
-      "source_id": "tw_FeroceResearch",
       "reason": "no_saved_interpretation"
     },
     {
@@ -12818,11 +10358,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1960727174933307821",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1960736783458599256",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -12836,11 +10371,6 @@
       "post_id": "1960740331290341504",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960740596500377761",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1960744832248561994",
@@ -12858,26 +10388,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1960755706899894283",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960756229044887761",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960760850714690032",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960761252709290429",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1960762420475179492",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -12885,11 +10395,6 @@
     {
       "post_id": "1960770706435973336",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960772527866962063",
-      "source_id": "tw_FeroceResearch",
       "reason": "no_saved_interpretation"
     },
     {
@@ -12928,11 +10433,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1960801447919898855",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1960802372248330284",
       "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
@@ -12943,21 +10443,6 @@
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "1960802660929691821",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960803385101443343",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1960808461207306595",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1960813595140481260",
       "source_id": "tw_austinsemis",
       "reason": "missing_semantic_fields"
@@ -12966,11 +10451,6 @@
       "post_id": "1960815950418337891",
       "source_id": "tw_austinsemis",
       "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1960823233344655740",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
     },
     {
       "post_id": "1960840314941530363",
@@ -12995,11 +10475,6 @@
     {
       "post_id": "1960878050532581850",
       "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960878687102156904",
-      "source_id": "tw_DGretta_Author",
       "reason": "no_saved_interpretation"
     },
     {
@@ -13033,11 +10508,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1960898854208844231",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1960899093909397858",
       "source_id": "tw_TradexWhisperer",
       "reason": "missing_semantic_fields"
@@ -13056,16 +10526,6 @@
       "post_id": "1960902436375421017",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960903146651189317",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1960910714865877240",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1960912495260131648",
@@ -13438,11 +10898,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1961065990113894594",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1961067255317639381",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -13468,11 +10923,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1961079125638017474",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1961082564921393238",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -13485,16 +10935,6 @@
     {
       "post_id": "1961086006788276434",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1961087412114759749",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1961087675223425427",
-      "source_id": "tw_FeroceResearch",
       "reason": "no_saved_interpretation"
     },
     {
@@ -13543,11 +10983,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1961125314987245938",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1961135606861631834",
       "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
@@ -13563,34 +10998,14 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1961139300780654904",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1961140127951937580",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1961142562971881672",
-      "source_id": "tw_FeroceResearch",
       "reason": "no_saved_interpretation"
     },
     {
       "post_id": "1961142894057984307",
       "source_id": "tw_TradexWhisperer",
       "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1961143887767962060",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1961147223187526000",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
     },
     {
       "post_id": "1961150359214461413",
@@ -13605,11 +11020,6 @@
     {
       "post_id": "1961153533719498763",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1961154883408507022",
-      "source_id": "tw_FeroceResearch",
       "reason": "no_saved_interpretation"
     },
     {
@@ -13633,11 +11043,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1961169024534102142",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "1961170312105804011",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -13658,16 +11063,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1961182574622933059",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1961183608414319041",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1961199164253245496",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
@@ -13678,24 +11073,9 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1961218418289283540",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1961219265480024551",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1961237369287512486",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1961252074185736383",
-      "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "1961253354631491635",
@@ -14773,11 +12153,6 @@
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "1962118385845588252",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1962171831655583987",
       "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
@@ -15413,11 +12788,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1963898675526078859",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1963993353722188240",
       "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
@@ -15598,11 +12968,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1965057842274332719",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1965083244938018912",
       "source_id": "tw_FeroceResearch",
       "reason": "missing_semantic_fields"
@@ -15616,11 +12981,6 @@
       "post_id": "1965116501289246749",
       "source_id": "tw_TradexWhisperer",
       "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1965149630767005812",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
     },
     {
       "post_id": "1965155020761936269",
@@ -15680,11 +13040,6 @@
     {
       "post_id": "1965338744506253429",
       "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1965370778012320152",
-      "source_id": "tw_DGretta_Author",
       "reason": "no_saved_interpretation"
     },
     {
@@ -15763,29 +13118,9 @@
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "1965680350690156864",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1965741499070751032",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1965774785943888031",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1965777858988761382",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1965780291018166563",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
     },
     {
       "post_id": "1965784154001621121",
@@ -15798,19 +13133,9 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1965785067915203048",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1965799034674958407",
       "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1965807638832468462",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
     },
     {
       "post_id": "1965811868519248152",
@@ -15998,16 +13323,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1966163514369962236",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1966171568968708422",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
       "post_id": "1966172392277102741",
       "source_id": "tw_FeroceResearch",
       "reason": "missing_semantic_fields"
@@ -16016,16 +13331,6 @@
       "post_id": "1966176772841455846",
       "source_id": "tw_FeroceResearch",
       "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1966178036828741883",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1966185091467718795",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
     },
     {
       "post_id": "1966186650226287085",
@@ -16078,16 +13383,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1966299022429401402",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1966328160905289766",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
       "post_id": "1966361486911222126",
       "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
@@ -16128,11 +13423,6 @@
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "1966520849160126653",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1966522817744093693",
       "source_id": "tw_FeroceResearch",
       "reason": "missing_semantic_fields"
@@ -16141,11 +13431,6 @@
       "post_id": "1966527371864891409",
       "source_id": "tw_FeroceResearch",
       "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1966528879113167340",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
     },
     {
       "post_id": "1966560779894956288",
@@ -16191,11 +13476,6 @@
       "post_id": "1966785896705126458",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1966800117555691903",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
     },
     {
       "post_id": "1966800432380141647",
@@ -16323,38 +13603,13 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1967226669296672956",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1967242375824347297",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1967248037732102488",
       "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1967280754263732358",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
       "post_id": "1967281087547346970",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1967298258671489326",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1967306525967581231",
-      "source_id": "tw_aleabitoreddit",
       "reason": "no_saved_interpretation"
     },
     {
@@ -16381,11 +13636,6 @@
       "post_id": "1967412543087108351",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1967414161597755466",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
     },
     {
       "post_id": "1967441912274755636",
@@ -16423,11 +13673,6 @@
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "1967448919467864526",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
       "post_id": "1967451474805534807",
       "source_id": "tw_TradexWhisperer",
       "reason": "missing_semantic_fields"
@@ -16436,11 +13681,6 @@
       "post_id": "1967458188179177559",
       "source_id": "tw_TradexWhisperer",
       "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1967479026068660614",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
     },
     {
       "post_id": "1967516992828502434",
@@ -16490,11 +13730,6 @@
     {
       "post_id": "1967697710376685894",
       "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1967711320410927515",
-      "source_id": "tw_DGretta_Author",
       "reason": "no_saved_interpretation"
     },
     {
@@ -16568,58 +13803,13 @@
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "1967994245362630899",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1967994813065859212",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1967998198498333134",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1968004912916361242",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1968008602121388492",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1968012441838817569",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
       "post_id": "1968013636783452589",
       "source_id": "tw_FeroceResearch",
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "1968018552822370394",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
       "post_id": "1968021163042644088",
       "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1968024941112275406",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1968025336828121471",
-      "source_id": "tw_aleabitoreddit",
       "reason": "no_saved_interpretation"
     },
     {
@@ -16628,24 +13818,9 @@
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "1968036785440927843",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1968038944337170830",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1968051910663118861",
       "source_id": "tw_aleabitoreddit",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1968055497933922327",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
     },
     {
       "post_id": "1968158161614827748",
@@ -16703,16 +13878,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1968427635890913694",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1968431919105966479",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
       "post_id": "1968504418539626813",
       "source_id": "tw_FeroceResearch",
       "reason": "no_saved_interpretation"
@@ -16738,24 +13903,9 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1968600241093099849",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
       "post_id": "1968674506156769746",
       "source_id": "tw_FeroceResearch",
       "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1968690627190681865",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1968722193581248705",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
     },
     {
       "post_id": "1968723766541730235",
@@ -16768,39 +13918,9 @@
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "1968740332708745471",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1968742195805978770",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1968745847052501109",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1968750496929452139",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1968778093427921174",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1968810504954015894",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1968813225186893857",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
     },
     {
       "post_id": "1968826928581759019",
@@ -16853,48 +13973,13 @@
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "1969115361736896720",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
       "post_id": "1969127828806308019",
       "source_id": "tw_FeroceResearch",
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1969133349563204045",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1969151544320016527",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1969153486890668522",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1969157740900860220",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
       "post_id": "1969214391792124049",
       "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1969227395929641349",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1969231399967137910",
-      "source_id": "tw_aleabitoreddit",
       "reason": "no_saved_interpretation"
     },
     {
@@ -16906,11 +13991,6 @@
       "post_id": "1969379221224243382",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1969475920521281899",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
     },
     {
       "post_id": "1969482853160534205",
@@ -16936,11 +14016,6 @@
       "post_id": "1969850227365658664",
       "source_id": "tw_TradexWhisperer",
       "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1969858558574670206",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
     },
     {
       "post_id": "1969892842668515715",
@@ -16983,21 +14058,6 @@
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "1970165804311388542",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1970219870399967691",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1970222671431639091",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
       "post_id": "1970254513195098319",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
@@ -17018,11 +14078,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1970301102743765143",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1970317006529503505",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
@@ -17038,24 +14093,9 @@
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "1970369278177321426",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
       "post_id": "1970435473027076568",
       "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1970445881959920086",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1970496881349546218",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
     },
     {
       "post_id": "1970511139483390121",
@@ -17066,16 +14106,6 @@
       "post_id": "1970513899134054847",
       "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1970537640996020352",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1970559386050605381",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
     },
     {
       "post_id": "1970587657421156622",
@@ -17148,31 +14178,6 @@
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "1970876755067261415",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1970880728994107816",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1970883359627993438",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1970885701307891755",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1970891703080161537",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
       "post_id": "1970895830342303859",
       "source_id": "tw_FeroceResearch",
       "reason": "missing_semantic_fields"
@@ -17193,11 +14198,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1970907311012184390",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1970946322233688425",
       "source_id": "tw_FeroceResearch",
       "reason": "missing_semantic_fields"
@@ -17213,24 +14213,9 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1970992161790517673",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1971000822281777304",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1971005481335599188",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1971010037649920488",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
     },
     {
       "post_id": "1971015493923504617",
@@ -17245,11 +14230,6 @@
     {
       "post_id": "1971030959089910213",
       "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1971034455839330393",
-      "source_id": "tw_aleabitoreddit",
       "reason": "no_saved_interpretation"
     },
     {
@@ -17318,11 +14298,6 @@
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "1971262617512775864",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1971268535809634535",
       "source_id": "tw_FeroceResearch",
       "reason": "missing_semantic_fields"
@@ -17336,16 +14311,6 @@
       "post_id": "1971292735475941710",
       "source_id": "tw_FeroceResearch",
       "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1971303655031930912",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1971320000851083607",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
     },
     {
       "post_id": "1971323694548123668",
@@ -17368,64 +14333,14 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1971367512945328618",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1971371769392136480",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1971430130280169590",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1971445693861724497",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1971448905490628987",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1971611556489404729",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1971614101102334278",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1971617950982721970",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
       "post_id": "1971620779545817233",
       "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1971625314490241415",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
       "post_id": "1971654679408095690",
       "source_id": "tw_FeroceResearch",
       "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1971671030247924170",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
     },
     {
       "post_id": "1971688645116436962",
@@ -17463,54 +14378,14 @@
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "1972001264126115981",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1972025960951435702",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1972041153605189898",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1972058425111859325",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1972089217410126279",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1972100561224061354",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
       "post_id": "1972121921316966459",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1972139608793334241",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1972146204311163321",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1972150087817351182",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
     },
     {
       "post_id": "1972150965563543695",
@@ -17525,21 +14400,6 @@
     {
       "post_id": "1972265357860847730",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1972339422277615780",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1972342414066262110",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "1972424323031027763",
-      "source_id": "tw_aleabitoreddit",
       "reason": "no_saved_interpretation"
     },
     {
@@ -17566,16 +14426,6 @@
       "post_id": "1972482163259130311",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1972498862364614804",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1972502603167846835",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
     },
     {
       "post_id": "1972525708821070040",
@@ -17608,16 +14458,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "1972658016722817396",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1972658471502807269",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1972700809529118918",
       "source_id": "tw_FeroceResearch",
       "reason": "no_saved_interpretation"
@@ -17626,16 +14466,6 @@
       "post_id": "1972704517037621346",
       "source_id": "tw_FeroceResearch",
       "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1972715201578647695",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1972730230424174650",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "cache_ambiguous_prediction"
     },
     {
       "post_id": "1972741030593302574",
@@ -17745,11 +14575,6 @@
     {
       "post_id": "1972930769552371781",
       "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1972936476217483673",
-      "source_id": "tw_DGretta_Author",
       "reason": "no_saved_interpretation"
     },
     {
@@ -19378,11 +16203,6 @@
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "1978183390286184864",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "1978225443816743405",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -20526,16 +17346,6 @@
       "post_id": "1983534128612900998",
       "source_id": "tw_FeroceResearch",
       "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "1983540753952645365",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "1983547185535881703",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
     },
     {
       "post_id": "1983551931298562267",
@@ -25958,11 +22768,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2001710963553120598",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2001712145969656270",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -29608,11 +26413,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2008130653771141278",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2008225511869477246",
       "source_id": "tw_aleabitoreddit",
       "reason": "no_saved_interpretation"
@@ -30658,11 +27458,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2010757873454960933",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2010785123277685169",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -31348,33 +28143,8 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2013571088421155251",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2013584371320533164",
       "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2013590982281900346",
-      "source_id": "tw_gsmferrari",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2013605263903789262",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2013607734491406400",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2013613557905060062",
-      "source_id": "tw_gsmferrari",
       "reason": "no_saved_interpretation"
     },
     {
@@ -31388,43 +28158,13 @@
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "2013628073959174584",
-      "source_id": "tw_gsmferrari",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2013628907556106729",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2013643370971738621",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2013647538457399794",
-      "source_id": "tw_gsmferrari",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2013650485220081774",
-      "source_id": "tw_gsmferrari",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "2013652216976937212",
       "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2013655206559371389",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2013659303396118669",
-      "source_id": "tw_gsmferrari",
       "reason": "no_saved_interpretation"
     },
     {
@@ -31443,23 +28183,8 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2013677771566817697",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2013680713560707121",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2013681936074465355",
       "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2013683070600151359",
-      "source_id": "tw_gsmferrari",
       "reason": "no_saved_interpretation"
     },
     {
@@ -31468,33 +28193,8 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2013695756041867271",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2013728722222714899",
-      "source_id": "tw_gsmferrari",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "2013731276646183170",
       "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2013742548678791279",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2013744300010377511",
-      "source_id": "tw_gsmferrari",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2013759513371828653",
-      "source_id": "tw_gsmferrari",
       "reason": "missing_semantic_fields"
     },
     {
@@ -31513,29 +28213,9 @@
       "reason": "cache_ambiguous_prediction"
     },
     {
-      "post_id": "2013894591699615851",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2013895541277762034",
       "source_id": "tw_aleabitoreddit",
       "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "2013916571630960932",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2013917959610155477",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2013919310343819532",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
     },
     {
       "post_id": "2013960878350020774",
@@ -31568,28 +28248,13 @@
       "reason": "cache_ambiguous_prediction"
     },
     {
-      "post_id": "2014055965071495270",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2014068207087395197",
       "source_id": "tw_aleabitoreddit",
       "reason": "cache_ambiguous_prediction"
     },
     {
-      "post_id": "2014095288772800799",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2014101724923891796",
       "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2014106079890706714",
-      "source_id": "tw_gsmferrari",
       "reason": "missing_semantic_fields"
     },
     {
@@ -31683,26 +28348,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2014245099358560526",
-      "source_id": "tw_gsmferrari",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2014250743163728383",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2014255407523307955",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2014314143675716095",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2014341551443382405",
       "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
@@ -31710,11 +28355,6 @@
     {
       "post_id": "2014347998096928859",
       "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2014356006554231125",
-      "source_id": "tw_gsmferrari",
       "reason": "no_saved_interpretation"
     },
     {
@@ -31730,11 +28370,6 @@
     {
       "post_id": "2014376405937643600",
       "source_id": "tw_FeroceResearch",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2014379453917392940",
-      "source_id": "tw_gsmferrari",
       "reason": "missing_semantic_fields"
     },
     {
@@ -31773,11 +28408,6 @@
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "2014428833567387790",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2014432110032179592",
       "source_id": "tw_FeroceResearch",
       "reason": "no_saved_interpretation"
@@ -31813,11 +28443,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2014465492430225597",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2014469057114755207",
       "source_id": "tw_austinsemis",
       "reason": "missing_semantic_fields"
@@ -31833,18 +28458,8 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2014475413578227902",
-      "source_id": "tw_gsmferrari",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "2014478964027260930",
       "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2014480341898068024",
-      "source_id": "tw_gsmferrari",
       "reason": "no_saved_interpretation"
     },
     {
@@ -31913,69 +28528,9 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2014605415804211267",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2014613690494878131",
-      "source_id": "tw_gsmferrari",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2014621443863056832",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2014630698259292347",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2014631687347413012",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2014646861898912157",
-      "source_id": "tw_gsmferrari",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2014653572009316594",
-      "source_id": "tw_gsmferrari",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2014655460301824220",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2014656429546996161",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2014656917751071028",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2014685505783292209",
-      "source_id": "tw_gsmferrari",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2014709342583341114",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2014719305321947275",
-      "source_id": "tw_gsmferrari",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "2014720487989846211",
@@ -32003,11 +28558,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2014741343168303108",
-      "source_id": "tw_gsmferrari",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "2014741458071310505",
       "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
@@ -32025,11 +28575,6 @@
     {
       "post_id": "2014744724523933964",
       "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2014757157862883353",
-      "source_id": "tw_gsmferrari",
       "reason": "no_saved_interpretation"
     },
     {
@@ -32076,11 +28621,6 @@
       "post_id": "2014808195014001018",
       "source_id": "tw_aleabitoreddit",
       "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "2014827649042874806",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
     },
     {
       "post_id": "2014831503101075597",
@@ -32273,38 +28813,13 @@
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "2015701066520658278",
-      "source_id": "tw_gsmferrari",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "2015762985378316743",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2015764181983613381",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2015767277023678603",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2015769916478046229",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2015773164937027878",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2015774439011467667",
-      "source_id": "tw_gsmferrari",
       "reason": "no_saved_interpretation"
     },
     {
@@ -32341,11 +28856,6 @@
       "post_id": "2015815035713688047",
       "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2015834392862539898",
-      "source_id": "tw_gsmferrari",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "2015842119597072846",
@@ -32396,11 +28906,6 @@
       "post_id": "2015872657128923194",
       "source_id": "tw_FeroceResearch",
       "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2015878392973795414",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
     },
     {
       "post_id": "2015891699940172220",
@@ -32485,51 +28990,6 @@
     {
       "post_id": "2016046783399657579",
       "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2016069394531570025",
-      "source_id": "tw_gsmferrari",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2016083078934827375",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2016086650615472292",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2016090811495059604",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2016092532103434536",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2016126146430021971",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2016129219013550584",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2016161727079973353",
-      "source_id": "tw_gsmferrari",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2016168943371640885",
-      "source_id": "tw_gsmferrari",
       "reason": "no_saved_interpretation"
     },
     {
@@ -32673,18 +29133,8 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2016447368816636411",
-      "source_id": "tw_gsmferrari",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "2016501928931311649",
       "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2016525088615498112",
-      "source_id": "tw_gsmferrari",
       "reason": "no_saved_interpretation"
     },
     {
@@ -32706,11 +29156,6 @@
       "post_id": "2016579133313036616",
       "source_id": "tw_FeroceResearch",
       "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2016586068775112876",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
     },
     {
       "post_id": "2016586857270956398",
@@ -32743,18 +29188,8 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2016609036762808676",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2016609517794934841",
       "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2016612694481137980",
-      "source_id": "tw_gsmferrari",
       "reason": "no_saved_interpretation"
     },
     {
@@ -32766,11 +29201,6 @@
       "post_id": "2016623163820388791",
       "source_id": "tw_FeroceResearch",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2016656870937686184",
-      "source_id": "tw_gsmferrari",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "2016671918863392868",
@@ -32948,18 +29378,8 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2016823745655017794",
-      "source_id": "tw_gsmferrari",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "2016865180190179358",
       "source_id": "tw_austinsemis",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2016872958518612034",
-      "source_id": "tw_gsmferrari",
       "reason": "no_saved_interpretation"
     },
     {
@@ -32971,11 +29391,6 @@
       "post_id": "2016885874072736154",
       "source_id": "tw_aleabitoreddit",
       "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "2016889850994065544",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
     },
     {
       "post_id": "2016911958436696521",
@@ -33050,11 +29465,6 @@
     {
       "post_id": "2016946576388698437",
       "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2016958742969901461",
-      "source_id": "tw_gsmferrari",
       "reason": "no_saved_interpretation"
     },
     {
@@ -33253,11 +29663,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2017188941116346445",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2017211199872815154",
       "source_id": "tw_jukan05",
       "reason": "no_saved_interpretation"
@@ -33288,43 +29693,13 @@
       "reason": "cache_ambiguous_prediction"
     },
     {
-      "post_id": "2017276035461464468",
-      "source_id": "tw_gsmferrari",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2017290092117733650",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2017290890247840117",
       "source_id": "tw_aleabitoreddit",
       "reason": "cache_ambiguous_prediction"
     },
     {
-      "post_id": "2017291139389263945",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2017294636750958975",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2017309572474581450",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2017314187597201856",
       "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2017325936178331881",
-      "source_id": "tw_gsmferrari",
       "reason": "no_saved_interpretation"
     },
     {
@@ -33350,16 +29725,6 @@
     {
       "post_id": "2017332263378198680",
       "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2017354070692897062",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2017360149006979109",
-      "source_id": "tw_gsmferrari",
       "reason": "no_saved_interpretation"
     },
     {
@@ -33578,16 +29943,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2017880617078214942",
-      "source_id": "tw_gsmferrari",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2017908815346184336",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2017910490501165356",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
@@ -33613,11 +29968,6 @@
       "reason": "cache_ambiguous_prediction"
     },
     {
-      "post_id": "2017944298306556033",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2017957152103841854",
       "source_id": "tw_TradexWhisperer",
       "reason": "no_saved_interpretation"
@@ -33628,18 +29978,8 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2018016008435343471",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2018046526002540688",
       "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2018053795519864957",
-      "source_id": "tw_gsmferrari",
       "reason": "no_saved_interpretation"
     },
     {
@@ -33661,26 +30001,6 @@
       "post_id": "2018070521364242685",
       "source_id": "tw_TradexWhisperer",
       "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2018088599955055056",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2018090183485165731",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2018091649444848035",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2018093753357992276",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
     },
     {
       "post_id": "2018094361737896177",
@@ -33733,19 +30053,9 @@
       "reason": "cache_ambiguous_prediction"
     },
     {
-      "post_id": "2018235223851311116",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2018238476303626710",
       "source_id": "tw_aleabitoreddit",
       "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "2018265463411634421",
-      "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
     },
     {
       "post_id": "2018333363317223670",
@@ -60768,11 +57078,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2049525538071462129",
-      "source_id": "tw_DGretta_Author",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "2049527819286229491",
       "source_id": "tw_gsmferrari",
       "reason": "no_saved_interpretation"
@@ -60928,19 +57233,9 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2049612943071867116",
-      "source_id": "tw_DGretta_Author",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "2049613520455733664",
       "source_id": "tw_aleabitoreddit",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2049613623891292341",
-      "source_id": "tw_DGretta_Author",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "2049614640020119726",
@@ -60956,11 +57251,6 @@
       "post_id": "2049615710788145446",
       "source_id": "tw_austinsemis",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2049635053022380380",
-      "source_id": "tw_DGretta_Author",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "2049645612719550669",
@@ -61158,16 +57448,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2049797622433480939",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2049799782428754342",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2049820660583588314",
       "source_id": "tw_gsmferrari",
       "reason": "no_saved_interpretation"
@@ -61203,11 +57483,6 @@
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "2049835310301761759",
-      "source_id": "tw_DGretta_Author",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "2049836678307528777",
       "source_id": "tw_gsmferrari",
       "reason": "missing_semantic_fields"
@@ -61225,11 +57500,6 @@
     {
       "post_id": "2049840559489974651",
       "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2049841245233500394",
-      "source_id": "tw_DGretta_Author",
       "reason": "no_saved_interpretation"
     },
     {
@@ -61258,23 +57528,8 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2049861757280170465",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2049862986316259653",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2049868199336857966",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2049868998695673858",
-      "source_id": "tw_DGretta_Author",
       "reason": "no_saved_interpretation"
     },
     {
@@ -61308,26 +57563,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2049875790150369625",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2049876172050153839",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2049877563611185397",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2049881650360664359",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2049884034894086462",
       "source_id": "tw_aleabitoreddit",
       "reason": "no_saved_interpretation"
@@ -61338,29 +57573,14 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2049886672087646260",
-      "source_id": "tw_DGretta_Author",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "2049896246480097542",
       "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2049896492601684182",
-      "source_id": "tw_DGretta_Author",
       "reason": "no_saved_interpretation"
     },
     {
       "post_id": "2049896806616555569",
       "source_id": "tw_gsmferrari",
       "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2049898955220124081",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
     },
     {
       "post_id": "2049901624676749398",
@@ -61388,18 +57608,8 @@
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "2049907023223869663",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2049907097236918538",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2049907254950760879",
-      "source_id": "tw_DGretta_Author",
       "reason": "no_saved_interpretation"
     },
     {
@@ -61498,34 +57708,9 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2049915693450059897",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2049918050930188291",
       "source_id": "tw_TradexWhisperer",
       "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2049918603646931250",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2049921288332874204",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2049921562925559828",
-      "source_id": "tw_DGretta_Author",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2049925918022373524",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
     },
     {
       "post_id": "2049927642049286316",
@@ -61563,49 +57748,9 @@
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "2049970373442011267",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2049973985002058027",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2049974582673588713",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2049979360120131870",
-      "source_id": "tw_DGretta_Author",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2049980679555854448",
-      "source_id": "tw_DGretta_Author",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2049982416119337300",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2049987665525666212",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2049990714218762686",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2049997238252794274",
-      "source_id": "tw_DGretta_Author",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "2049998574809915612",
@@ -61618,49 +57763,14 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2050007344281424191",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2050014071898902730",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2050015687071113239",
       "source_id": "tw_TradexWhisperer",
       "reason": "missing_semantic_fields"
     },
     {
-      "post_id": "2050017050270003361",
-      "source_id": "tw_DGretta_Author",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2050019883975397855",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2050022703235547458",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2050025738913403083",
       "source_id": "tw_FeroceResearch",
       "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2050027430241337733",
-      "source_id": "tw_DGretta_Author",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2050027863932379559",
-      "source_id": "tw_DGretta_Author",
-      "reason": "missing_semantic_fields"
     },
     {
       "post_id": "2050031092116132162",
@@ -61671,11 +57781,6 @@
       "post_id": "2050032080265040243",
       "source_id": "tw_aleabitoreddit",
       "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "2050035556793438336",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
     },
     {
       "post_id": "2050040294205448401",
@@ -61823,38 +57928,13 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2050136875873026516",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2050138935171662056",
       "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2050141768499216851",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2050147978338513360",
       "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2050176436485431503",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2050191593957724623",
-      "source_id": "tw_DGretta_Author",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2050194743020187648",
-      "source_id": "tw_DGretta_Author",
       "reason": "no_saved_interpretation"
     },
     {
@@ -62098,11 +58178,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2050262795438985281",
-      "source_id": "tw_DGretta_Author",
-      "reason": "missing_semantic_fields"
-    },
-    {
       "post_id": "2050263170661462054",
       "source_id": "tw_FeroceResearch",
       "reason": "no_saved_interpretation"
@@ -62118,11 +58193,6 @@
       "reason": "no_saved_interpretation"
     },
     {
-      "post_id": "2050266211007488460",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
       "post_id": "2050269046017266113",
       "source_id": "tw_gsmferrari",
       "reason": "missing_semantic_fields"
@@ -62131,16 +58201,6 @@
       "post_id": "2050272539851821157",
       "source_id": "tw_aleabitoreddit",
       "reason": "cache_ambiguous_prediction"
-    },
-    {
-      "post_id": "2050299731625046461",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2050303094383149103",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
     },
     {
       "post_id": "2050304868233994387",
@@ -62155,46 +58215,6 @@
     {
       "post_id": "2050309620497879336",
       "source_id": "tw_gsmferrari",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2050339690855677975",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2050342300601975158",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2050342524091260945",
-      "source_id": "tw_DGretta_Author",
-      "reason": "missing_semantic_fields"
-    },
-    {
-      "post_id": "2050342974375055687",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2050344300223852789",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2050345507403239758",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2050345766351155547",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2050364475430088898",
-      "source_id": "tw_DGretta_Author",
       "reason": "no_saved_interpretation"
     },
     {
@@ -114830,101 +110850,6 @@
     {
       "post_id": "2094704372831920324",
       "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2096749796023538032",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2096752349792620733",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2096753298313552110",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2096753462038138969",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2096754567971328391",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2096756362026066399",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2096757056539943303",
-      "source_id": "tw_DGretta_Author",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2096757963570692540",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2096767641151299932",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2096772847225995396",
-      "source_id": "tw_FeroceResearch",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2096775195721912384",
-      "source_id": "tw_zephyr_z9",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2096776128967143620",
-      "source_id": "tw_aleabitoreddit",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2096781164803764451",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2096781241504944351",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2096781336594030623",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2096781472065880451",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2096781532652544082",
-      "source_id": "tw_TradexWhisperer",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2096781957934076397",
-      "source_id": "tw_jukan05",
-      "reason": "no_saved_interpretation"
-    },
-    {
-      "post_id": "2096784359378637271",
-      "source_id": "tw_zephyr_z9",
       "reason": "no_saved_interpretation"
     }
   ],
