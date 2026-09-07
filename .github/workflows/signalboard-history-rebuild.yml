@@ -78,6 +78,9 @@ jobs:
           git config user.name "signalboard-bot"
           git config user.email "signalboard-bot@users.noreply.github.com"
           git add data/signalboard.db.gz
+          if [ -f outputs/signalboard_history_rebuild_latest.json ]; then
+            git add outputs/signalboard_history_rebuild_latest.json
+          fi
           if ! git diff --cached --quiet; then
             git commit -m "Checkpoint historical extraction repair [skip daily]"
             git push origin HEAD:master

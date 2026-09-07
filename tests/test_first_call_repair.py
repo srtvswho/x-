@@ -84,6 +84,21 @@ def test_earlier_mentions_and_missing_analysis_are_not_promoted_to_calls():
     assert row['history_coverage']['status'] == 'unverified'
 
 
+def test_old_interpretations_remain_visible_as_pending_review():
+    con = database()
+    post(con, 'old', '2024-01-01T00:00:00Z', direction='neutral')
+    post(con, 'missing', '2025-01-01T00:00:00Z', direction=None)
+    post(con, 'call', '2026-01-01T00:00:00Z')
+    con.execute('UPDATE extractions_intel SET prompt_version=? WHERE post_id=?',
+                (build_dashboard.PROMPT_VERSION, 'call'))
+    row, = build_dashboard.query_call_performance(con)
+    assert row['history_coverage']['unprocessed_before_start'] == 1
+    assert row['history_coverage']['outdated_before_start'] == 1
+    assert row['history_coverage']['pending_current_version'] == 2
+    assert row['earlier_mentions'][0]['analysis_status'] == '旧版解读，待复核'
+    assert row['post_id'] == 'call'
+
+
 def test_backfill_plan_spans_all_authors_and_no_ticker_or_date_filter():
     spec = importlib.util.spec_from_file_location('history_repair', ROOT / 'scripts' / 'intel_history_backfill.py')
     mod = importlib.util.module_from_spec(spec)

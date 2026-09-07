@@ -797,7 +797,7 @@ function renderTickers(){
     const source={raw_text:t.raw_text,raw_url:t.raw_url};
     const earlier=(t.earlier_mentions||[]).map(p=>`<div class="meta">${fmtFull(p.published_at)} · ${p.analysis_status}${evidenceDetails(p,'更早提及原文')}</div>`).join('');
     const history=t.history_coverage||{};
-    const gap=`<div class="meta">历史覆盖待核验${history.unprocessed_before_start?' · 起点前 '+history.unprocessed_before_start+' 条原帖待解读':''}</div>`;
+    const gap=`<div class="meta">历史覆盖待核验${history.unprocessed_before_start?' · 起点前 '+history.unprocessed_before_start+' 条原帖待解读':''}${history.outdated_before_start?' · 起点前 '+history.outdated_before_start+' 条旧解读待复核':''}</div>`;
     const changed=t.direction_changed?`<div class="meta">期间出现相反方向 · 最近 ${t.latest_direction.toUpperCase()}<br>收益仅按起点方向固定追踪</div>`:'';
     return `<tr><td><span class="tk ${t.direction}">${t.ticker}</span>${newBadge}</td>
       <td><div class="by"><div class="av" style="background:${c}">${initials(k.name)}</div><span class="nm">${k.name}</span> <span class="dirpill2 ${t.direction}">${t.direction}</span></div></td>
