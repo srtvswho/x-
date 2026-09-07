@@ -786,8 +786,8 @@ function renderTickers(){
     <div class="perfstat"><span class="v">${best?best.ticker+' '+fmt(best.directional_return):'—'}</span><span class="k">最高样本收益 · 行情覆盖 ${valid.length}/${rows.length}</span></div>`;
   document.getElementById('tbody').innerHTML=rows.map(t=>{
     const c=COLORS[t.kol];const k=KOLS[t.kol];
-    const cp=t.call_price==null?'—':`$${Number(t.call_price).toFixed(2)}`;
-    const np=t.now_price==null?'—':`$${Number(t.now_price).toFixed(2)}`;
+    const cp=t.call_price==null?'—':`${t.currency || 'USD'} ${Number(t.call_price).toFixed(2)}`;
+    const np=t.now_price==null?'—':`${t.currency || 'USD'} ${Number(t.now_price).toFixed(2)}`;
     const dirRet=fmt(t.directional_return);
     const cls=t.directional_return==null?'':(t.directional_return>=0?'in':'out');
     const ageDays=Math.floor((Date.now()-new Date(t.published_at).getTime())/86400000);

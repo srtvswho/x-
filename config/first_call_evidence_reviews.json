@@ -65,6 +65,79 @@
       "raw_url": "https://x.com/jukan05/status/1938183627545973006",
       "events": [],
       "reason": "Entire post attributed to Korea Daishin Securities; institutional first-person commentary is not Jukan own call."
+    },
+    {
+      "post_id": "1945263024098697624",
+      "source_id": "tw_jukan05",
+      "published_at": "2025-07-15T23:23:40+00:00",
+      "raw_text": "NVIDIA and AMD are expected to resume GPU exports to China, correct? Currently, SK Hynix is the primary supplier of HBM for H20.\n\n1. Regarding H20: I believe SK Hynix will benefit from the resumption of H20 exports. The absorption of HBM volume supplied for H20 in 1Q25 could accelerate with this export resumption, and given its proven quality stability, SK Hynix products are expected to be supplied predominantly. \n\nThe next likely beneficiary appears to be Samsung Electronics. Micron, from what I understand, is not currently addressing NVIDIA's H20 demand. \n\nFor Samsung, a pre-production and then sales strategy might even help resolve the accumulated HBM inventory issues. I understand Samsung currently holds approximately 1 trillion KRW worth of HBM3E inventory.\n\n2. Regarding B30 (RTX Pro 6000D): This product will feature GDDR7, and Samsung is estimated to supply most of it this year.\n\n3. Regarding MI308: Samsung Electronics is also estimated to largely handle this.",
+      "raw_url": "https://x.com/jukan05/status/1945263024098697624",
+      "raw_hash": "301a8b745c22895d5e4907b5569ce90bb946563e44e8bf1a1551b944ed4cd024",
+      "reviewed_extraction_hash": "94e6def1e142a9e3c82f3c014608695eba347f3817eb2ccae2c2b9a26e271e1e",
+      "events": [
+        {
+          "ticker": "000660.KS",
+          "direction": "long",
+          "reason": "Author explicitly identifies Hynix and Samsung as beneficiaries; Micron is not supplying H20. Mentioned GPU vendors are not separately recommended."
+        },
+        {
+          "ticker": "005930.KS",
+          "direction": "long",
+          "reason": "Author explicitly identifies Hynix and Samsung as beneficiaries; Micron is not supplying H20. Mentioned GPU vendors are not separately recommended."
+        }
+      ],
+      "reason": "Author explicitly identifies Hynix and Samsung as beneficiaries; Micron is not supplying H20. Mentioned GPU vendors are not separately recommended."
+    },
+    {
+      "post_id": "1951089623234650248",
+      "source_id": "tw_jukan05",
+      "published_at": "2025-08-01T01:16:30+00:00",
+      "raw_text": "What We Can Glean from Samsung Electronics' Earnings Release\n\nThe increase in DRAM's ASP (Average Selling Price) was lower than expected. The company announced a 30% increase in bit growth. Since Q1's bit growth was 600 million Gb, Q2's was nearly 800 million Gb. This suggests that the ASP movement was not significant compared to the volume increase. Another interpretation is that the company lowered HBM prices significantly, resulting in no mix improvement.\n\nRegarding the Q3 outlook, it's estimated that there will be considerable noise in the semiconductor sector.\nFirst, DRAM bit growth is projected to be around 7%. The key issue is pricing, and it seems that an overall price increase is a plausible scenario. Considering that Samsung tried to maximize shipments in Q2 to clear out DDR4 inventory before prices rose in Q3, a potential price increase for DDR4 in Q3 might be suppressed.\n\nAs for HBM, the company aims for a 100% quarter-on-quarter increase in Q3, which amounts to roughly 1.5 billion Gb. Not all suppliers have to meet all demand, but this year, SK Hynix and Micron combined are at around 16 billion Gb, while market demand is 20-22 billion Gb. This indicates a significant supply shortage compared to demand.\nIn the conference call, Samsung mentioned something that could be interpreted as a potential HBM oversupply. This statement seems to be somewhat disconnected from the current market sentiment. If we are to interpret it, it might be related to the recent price cuts for 12-stack HBM in the second half of the year. It could also be interpreted that with Micron's entry, prices are falling, and the supply situation is not as tight as before, and will fall further when Samsung enters. Conversely, it could also mean that we will enter the market at a lower price than before.\n\nIn order for Samsung to ship 1.5 billion Gb, they will need to supply NVIDIA. There are rumors that the 12-stack HBM qualification will proceed in August. There are also rumors that HBM3E still has thermal issues. From NVIDIA's perspective, which continues to push for lower prices, they need to bring in as many suppliers as possible, so there is a possibility that NVIDIA might lower their standards.\n\nFinally, Samsung stated that Q2 was not the last quarter for inventory valuation losses. While they did not disclose the exact scale of the Q2 losses, they did mention that the losses would be significantly reduced in Q3. Based on this, I conclude that Samsung's earnings bottomed out in Q2 and project a bullish outlook for Samsung.",
+      "raw_url": "https://x.com/jukan05/status/1951089623234650248",
+      "raw_hash": "6a9bcd31fcf0e8e071a1ec5b9feea68345706ee1ae27ed8e755501f190ff3c15",
+      "reviewed_extraction_hash": "16ef6aee7b1ef367f2388f929946c116ecb82aae9c30415d1b39f1aa06a35127",
+      "events": [
+        {
+          "ticker": "005930.KS",
+          "direction": "long",
+          "reason": "Conclusion explicitly bullish Samsung; Micron and Hynix are supply comparisons."
+        }
+      ],
+      "reason": "Conclusion explicitly bullish Samsung; Micron and Hynix are supply comparisons."
+    },
+    {
+      "post_id": "1965681856214696110",
+      "source_id": "tw_aleabitoreddit",
+      "published_at": "2025-09-10T07:40:49+00:00",
+      "raw_text": "$TSM is a screaming buy.\n\nLook at $NVDA rally -> $AVGO rally -> this will flow into TSM.\n\n$1.3T -> $1.8T given all the backlogs from Oracle/NBIS, etc. after reading all earnings.\n\nI almost never buy calls aside from $GOOG back at $150. But IV is decent ~32 and it’s such a great company.\n\n(Emphasis on dip if you’re copy trading, eg. PCI on 11th into recovery for rate cut).",
+      "raw_url": "https://x.com/aleabitoreddit/status/1965681856214696110",
+      "raw_hash": "140458f54868f0a40c10f7f470d59e4cb93e24f744e33f4891143648097ea566",
+      "reviewed_extraction_hash": "f4ffb84aa2fbb623ea2c79b9dcb82b4c85a000d2289c0a67514eae2659b12716",
+      "events": [
+        {
+          "ticker": "TSM",
+          "direction": "long",
+          "reason": "Buy recommendation and valuation target refer to TSM only; other stocks are comparators."
+        }
+      ],
+      "reason": "Buy recommendation and valuation target refer to TSM only; other stocks are comparators."
+    },
+    {
+      "post_id": "1966185091467718795",
+      "source_id": "tw_aleabitoreddit",
+      "published_at": "2025-09-11T17:00:30+00:00",
+      "raw_text": "If you're debating $ORCL vs. $AMZN | $GOOGL, $AMD | $AVGO vs. $NVDA, $NBIS vs. $IREN vs. $WYFI vs. $CRWV\n\nIt's easy. Just buy $TSM, everything above is dependent on it. \n\nUndervalued and a monopoly, will likely run from $1.3T -&gt; $1.8T MC based on forward growth + capex from ERs.",
+      "raw_url": "https://x.com/aleabitoreddit/status/1966185091467718795",
+      "raw_hash": "e4aa17f24c3e5d62e9b2ed4b4491e469b62a2a1cc01cc8df8f8892b1196a6c37",
+      "reviewed_extraction_hash": "3b0579e3807f53c5fa8f83d5cc26c143d4d182f092a48cfc1cea6c489e5bc101",
+      "events": [
+        {
+          "ticker": "TSM",
+          "direction": "long",
+          "reason": "Just buy TSM explicitly chooses TSM over the other named stocks."
+        }
+      ],
+      "reason": "Just buy TSM explicitly chooses TSM over the other named stocks."
     }
   ],
   "ticker_references": {

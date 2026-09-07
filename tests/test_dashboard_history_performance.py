@@ -75,10 +75,12 @@ def test_performance_price_targets_include_recent_calls(monkeypatch):
         );
         INSERT INTO raw_posts VALUES
             ('p1', 'tw_jukan05', datetime('now')),
-            ('p2', 'tw_jukan05', datetime('now', '-10 days'));
+            ('p2', 'tw_jukan05', datetime('now', '-10 days')),
+            ('p3', 'tw_jukan05', datetime('now'));
         INSERT INTO extractions_intel VALUES
-            ('p1', 'tw_jukan05', 'long', '["MU","NVDA"]', NULL, 0, 0),
-            ('p2', 'tw_jukan05', 'short', '["MU"]', NULL, 0, 0);
+            ('p1', 'tw_jukan05', 'long', '["NVDA"]', NULL, 0, 0),
+            ('p2', 'tw_jukan05', 'short', '["MU"]', NULL, 0, 0),
+            ('p3', 'tw_jukan05', 'long', '["MU"]', NULL, 0, 0);
     """)
     targets = common.select_call_performance_targets(con)
     keys = {(row["ticker"], row["call_date"]) for row in targets}

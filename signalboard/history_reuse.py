@@ -243,7 +243,7 @@ def save_review(con, post, events, *, origin, version, payload, extraction_id=No
 
 
 def apply_evidence_reviews(db, path):
-    """Apply reviewed exact-text evidence; never overwrite a model interpretation."""
+    """Apply exact evidence, pinning any model override to its reviewed payload."""
     con = sqlite3.connect(db)
     con.row_factory = sqlite3.Row
     con.executescript(DDL)
@@ -253,13 +253,18 @@ def apply_evidence_reviews(db, path):
         post = con.execute('SELECT * FROM raw_posts WHERE post_id=?', (evidence['post_id'],)).fetchone()
         if not post or raw_hash(post) != evidence['raw_hash']:
             raise ValueError('Reviewed evidence does not match stored raw post: ' + evidence['post_id'])
-        if con.execute('SELECT 1 FROM extractions_intel WHERE post_id=?', (post['post_id'],)).fetchone():
+        cols = {r[1] for r in con.execute('PRAGMA table_info(extractions_intel)')}
+        response_col = 'raw_response' if 'raw_response' in cols else 'NULL AS raw_response'
+        latest = con.execute(f'SELECT id,{response_col} FROM extractions_intel WHERE post_id=? ORDER BY julianday(extracted_at) DESC,id DESC LIMIT 1', (post['post_id'],)).fetchone()
+        if evidence.get('reviewed_extraction_hash') and not latest:
+            continue
+        if latest and evidence.get('reviewed_extraction_hash') != hashlib.sha256((latest['raw_response'] or '').encode()).hexdigest():
             continue
         if post['post_id'] in load_reviews(con):
             continue
         save_review(con, post, evidence['events'], origin='reviewed_raw_evidence',
                     version=data['version'], payload=json.dumps(evidence, ensure_ascii=False),
-                    reason=evidence['reason'])
+                    extraction_id=latest['id'] if latest else None, reason=evidence['reason'])
         applied += 1
     con.commit()
     con.close()
