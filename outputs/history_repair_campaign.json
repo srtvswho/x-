@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T14:20:29.604488+00:00",
+  "generated_at": "2026-09-07T14:22:02.428649+00:00",
   "prompt_version": "v2.0.2-intel-attribution",
   "sources": {
     "tw_jukan05": {
@@ -97,10 +97,10 @@
   "resolved_this_job": 0,
   "batches_this_job": 0,
   "ledger": {
-    "attempts": 23409,
-    "accounted_usd": 11.15658393,
-    "usage_cost_usd": 10.83201529,
-    "initial_estimated_usd": 101.17403296
+    "attempts": 23611,
+    "accounted_usd": 11.27052221,
+    "usage_cost_usd": 10.93680069,
+    "initial_estimated_usd": 101.69669928
   },
   "failed_post_attempts": {},
   "deferred_post_ids": [],
