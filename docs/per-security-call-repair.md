@@ -90,3 +90,16 @@ provide deterministic evidence: the saved quote includes the literal heading
 through that ticker, with all intervening tickers intact. A direction must match
 that ticker's heading, conflicting labels are rejected, and prose/separators
 terminate the list. This does not transfer one company's recommendation to peers.
+
+## Final four exact-raw adjudications
+
+After v4, only four posts remained after two bounded review attempts. They were
+read directly and pinned to their exact raw and extraction hashes, with zero new
+AI calls: Serenity 1993327956585070661 is bullish NBIS only (other names are
+comparators/partners); TradexWhisperer 2054266085889982497 and
+2055007237207453843 explicitly argue for MU/SNDK rerating, without making WDC/STX
+short calls. FeroceResearch 2016725956002537717 recommends broad portfolio themes;
+appended tags alone are not promoted into individual securities' calls. This
+sector view remains available in raw intelligence. No first-date overrides were
+introduced. The new campaign revision applies these four reviews and resumes
+final price/publication stages, retaining the original cumulative cost ledger.

@@ -91,6 +91,34 @@ def test_good_canary_then_drain_without_repeating_successes(environment, monkeyp
     assert len(requests) == len(set(requests)) == 10
     with sqlite3.connect(db) as con:
         assert con.execute('SELECT COUNT(*) FROM extractions_intel').fetchone()[0] == 10
+    report['failed_attempts']={'comparison':2}
+    (root / 'outputs/call_attribution_review.json').write_text(json.dumps(report))
+    runner.main()
+    report=json.loads((root / 'outputs/call_attribution_review.json').read_text())
+    assert report['failed_attempts']=={} and len(requests)==10
+
+
+def test_final_manual_evidence_hashes_quotes_and_security_scope():
+    from signalboard.history_reuse import raw_hash
+    config=Path(__file__).resolve().parents[1]/'config/first_call_evidence_reviews.json'
+    rows={r['post_id']:r for r in json.loads(config.read_text())['reviews']}
+    expected={
+        '1993327956585070661':{'NBIS'},
+        '2016725956002537717':set(),
+        '2054266085889982497':{'MU','SNDK'},
+        '2055007237207453843':{'MU','SNDK'},
+        '1945263024098697624':{'000660.KS','005930.KS'},
+        '1951089623234650248':{'005930.KS'},
+        '1965681856214696110':{'TSM'},
+        '1966185091467718795':{'TSM'},
+    }
+    for pid,tickers in expected.items():
+        row=rows[pid]
+        assert raw_hash(row)==row['raw_hash']
+        assert len(row['reviewed_extraction_hash'])==64
+        assert {e['ticker'] for e in row['events']}==tickers
+        for event in row['events']:
+            if 'quote' in event:assert event['quote'] in row['raw_text']
 
 
 def test_new_contract_keeps_accepted_old_reviews(environment, monkeypatch):

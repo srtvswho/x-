@@ -71,7 +71,8 @@ def main():
     previous=json.loads(Path(args.report).read_text()) if Path(args.report).exists() else {}
     if previous.get('version')!=VERSION:
         previous={}
-    attempts=dict(previous.get('failed_attempts',{}))
+    pending_ids={p['post_id'] for p in pending}
+    attempts={pid:n for pid,n in previous.get('failed_attempts',{}).items() if pid in pending_ids}
     untouched=[p for p in pending if not attempts.get(p['post_id'])]
     limit=args.limit if previous.get('canary_passed') else min(args.limit,6)
     selected=(untouched or [p for p in pending if attempts.get(p['post_id'],0)<2])[:limit]
