@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T15:52:17.521090+00:00",
+  "generated_at": "2026-09-07T16:04:10.146135+00:00",
   "pending_total": 0,
   "sources": {
     "tw_jukan05": {
@@ -87,7 +87,7 @@
   "stored_history_call_review_complete": false,
   "raw_history_coverage": "unverified",
   "structural_errors": [],
-  "per_security_review_pending": 1071,
+  "per_security_review_pending": 1069,
   "rows": [
     {
       "post_id": "1769862140741976356",
@@ -149,8 +149,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 0,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -838,8 +838,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 1,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -1383,8 +1383,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 2,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -1429,8 +1429,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 2,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -1467,8 +1467,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 4,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -1861,8 +1861,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 12,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -1959,8 +1959,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 13,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -2019,8 +2019,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 14,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -2178,8 +2178,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 18,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -2238,8 +2238,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 18,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -3166,8 +3166,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 33,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -4145,8 +4145,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 42,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -5641,8 +5641,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 52,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -5927,8 +5927,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 55,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -6100,8 +6100,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 55,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -7527,8 +7527,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 63,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -8918,8 +8918,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 71,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -9198,8 +9198,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 86,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -11819,8 +11819,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 120,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -13748,8 +13748,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 126,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -13808,8 +13808,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 127,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -13868,8 +13868,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 128,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -13921,8 +13921,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 129,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -16187,8 +16187,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 139,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -19142,8 +19142,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 170,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -19813,8 +19813,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 181,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -20806,8 +20806,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 182,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -21360,9 +21360,9 @@
       "latest_direction": "long",
       "direction_changed": false,
       "published_at": "2026-03-23T14:43:38+00:00",
-      "latest_published_at": "2026-03-26T03:25:11+00:00",
+      "latest_published_at": "2026-04-22T02:09:46+00:00",
       "bottleneck": null,
-      "n_mentions": 2,
+      "n_mentions": 3,
       "raw_text": "Anyone buying crude oil over $SILVER the last few days was paying one of the most expensive ratios in history \n\nVery little logic to get scared of metals and flock towards oil at recent ratios \n\nMetals will make new ATHs this year",
       "raw_url": "https://x.com/FeroceResearch/status/2036091504368705791",
       "history_coverage": {
@@ -21372,8 +21372,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 186,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -21789,11 +21789,11 @@
       "earlier_mentions": [],
       "call_date": "2026-03-27",
       "call_price": 382.5,
-      "now_price": 450.5,
-      "now_date": "2026-09-07",
-      "raw_return": 17.78,
+      "now_price": 449.5,
+      "now_date": "2026-09-04",
+      "raw_return": 17.52,
       "currency": "TWD",
-      "directional_return": 17.78,
+      "directional_return": 17.52,
       "in_field": false
     },
     {
@@ -24158,11 +24158,11 @@
       "earlier_mentions": [],
       "call_date": "2026-04-13",
       "call_price": 475.0,
-      "now_price": 448.5,
-      "now_date": "2026-09-07",
-      "raw_return": -5.58,
+      "now_price": 449.0,
+      "now_date": "2026-09-04",
+      "raw_return": -5.47,
       "currency": "TWD",
-      "directional_return": -5.58,
+      "directional_return": -5.47,
       "in_field": false
     },
     {
@@ -24323,8 +24323,8 @@
         "unprocessed_before_start": 0,
         "outdated_before_start": 199,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -24953,6 +24953,66 @@
       "in_field": false
     },
     {
+      "post_id": "2046773427005010303",
+      "kol": "feroce",
+      "ticker": "GOLD",
+      "source_id": "tw_FeroceResearch",
+      "history_source": "per_security_review",
+      "direction": "long",
+      "latest_direction": "long",
+      "direction_changed": false,
+      "published_at": "2026-04-22T02:09:46+00:00",
+      "latest_published_at": "2026-04-22T02:09:46+00:00",
+      "bottleneck": null,
+      "n_mentions": 1,
+      "raw_text": "I have initiated an upgrade from equal-weight to SUPER OVERWEIGHT on $SILVER and $GOLD \n\nSee you at the top in a couple weeks, especially silver!",
+      "raw_url": "https://x.com/FeroceResearch/status/2046773427005010303",
+      "history_coverage": {
+        "status": "unverified",
+        "raw_posts": 3603,
+        "analyzed_posts": 3603,
+        "unprocessed_before_start": 0,
+        "outdated_before_start": 203,
+        "pending_current_version": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
+        "raw_start": "2024-11-04T18:00:36+00:00",
+        "raw_end": "2026-09-07T01:29:37+00:00"
+      },
+      "earlier_mention_count": 33,
+      "earlier_mentions": [
+        {
+          "post_id": "1970160231670743526",
+          "published_at": "2025-09-22T16:16:17+00:00",
+          "raw_text": "$SLV | Silver\nThe grim reaper of Silver is knocking on the door of all time highs. What can we expect if the door opens?\n\nSpooky szn is here for the commodity bears\n\n$SILJ $AG $GOLD $GLD $SILVER https://t.co/dnDZc6cBnF",
+          "raw_url": "https://x.com/FeroceResearch/status/1970160231670743526",
+          "analysis_status": "已复用历史解读，未计入方向样本"
+        },
+        {
+          "post_id": "1971639602680394128",
+          "published_at": "2025-09-26T18:14:47+00:00",
+          "raw_text": "$SLV | SILVER HITS $46 PER OZ FOR THE FIRST TIME SINCE 2011\n\n$AG $SILJ $SILVER $GLD $GOLD",
+          "raw_url": "https://x.com/FeroceResearch/status/1971639602680394128",
+          "analysis_status": "已复用历史解读，未计入方向样本"
+        },
+        {
+          "post_id": "1977810947122008124",
+          "published_at": "2025-10-13T18:57:30+00:00",
+          "raw_text": "Understand that the more “headlines” reactive the market becomes, $SLV will continue to be seen as a safe-haven \n\nRed or green market for equities, there is even a higher demand for silver than there already fundamentally was \n\nMany of you need to learn the difference between “overbought” vs freshly breaking out with strong reasoning and volume behind it \n\n$AG $SILJ $SILVER $GOLD $GLD",
+          "raw_url": "https://x.com/FeroceResearch/status/1977810947122008124",
+          "analysis_status": "旧版解读，待复核"
+        }
+      ],
+      "call_date": "2026-04-22",
+      "call_price": null,
+      "now_price": null,
+      "now_date": null,
+      "raw_return": null,
+      "currency": "USD",
+      "directional_return": null,
+      "in_field": true
+    },
+    {
       "post_id": "2047019381637677061",
       "kol": "serenity",
       "ticker": "NVTS",
@@ -25465,7 +25525,7 @@
       "published_at": "2026-04-26T22:18:38+00:00",
       "latest_published_at": "2026-08-12T01:36:13+00:00",
       "bottleneck": "interconnect",
-      "n_mentions": 11,
+      "n_mentions": 12,
       "raw_text": "Astera Labs $ALAB is becoming a critical scaling bottleneck for AI memory + interconnect, \n\nThink of it similarly to how ASML became a bottleneck for chip manufacturing\n\nCan ALAB really be the next 5x play from the mid-cap basket? I believe so \n\nAfter all, already up nearly 2x in just few weeks of talking about it",
       "raw_url": "https://x.com/FeroceResearch/status/2048527198424793100",
       "history_coverage": {
@@ -25473,10 +25533,10 @@
         "raw_posts": 3603,
         "analyzed_posts": 3603,
         "unprocessed_before_start": 0,
-        "outdated_before_start": 206,
+        "outdated_before_start": 205,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -25934,10 +25994,10 @@
         "raw_posts": 3603,
         "analyzed_posts": 3603,
         "unprocessed_before_start": 0,
-        "outdated_before_start": 213,
+        "outdated_before_start": 212,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -26644,10 +26704,10 @@
         "raw_posts": 3603,
         "analyzed_posts": 3603,
         "unprocessed_before_start": 0,
-        "outdated_before_start": 216,
+        "outdated_before_start": 215,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -28466,10 +28526,10 @@
         "raw_posts": 3603,
         "analyzed_posts": 3603,
         "unprocessed_before_start": 0,
-        "outdated_before_start": 229,
+        "outdated_before_start": 228,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -28663,10 +28723,10 @@
         "raw_posts": 3603,
         "analyzed_posts": 3603,
         "unprocessed_before_start": 0,
-        "outdated_before_start": 231,
+        "outdated_before_start": 230,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -29291,10 +29351,10 @@
         "raw_posts": 3603,
         "analyzed_posts": 3603,
         "unprocessed_before_start": 0,
-        "outdated_before_start": 234,
+        "outdated_before_start": 233,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -29368,6 +29428,66 @@
       "currency": "USD",
       "directional_return": null,
       "in_field": false
+    },
+    {
+      "post_id": "2064008767272780243",
+      "kol": "feroce",
+      "ticker": "LABX",
+      "source_id": "tw_FeroceResearch",
+      "history_source": "per_security_review",
+      "direction": "long",
+      "latest_direction": "long",
+      "direction_changed": false,
+      "published_at": "2026-06-08T15:36:52+00:00",
+      "latest_published_at": "2026-06-08T15:36:52+00:00",
+      "bottleneck": null,
+      "n_mentions": 1,
+      "raw_text": "This is not an exaggeration, \n\n$LABX has been averaging 35% gains on a week to week basis over the past 2 months \n\nAstera Labs $ALAB is literally on a historical run and people are still not understanding the CXL + Memory Pooling importance",
+      "raw_url": "https://x.com/FeroceResearch/status/2064008767272780243",
+      "history_coverage": {
+        "status": "unverified",
+        "raw_posts": 3603,
+        "analyzed_posts": 3603,
+        "unprocessed_before_start": 0,
+        "outdated_before_start": 238,
+        "pending_current_version": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
+        "raw_start": "2024-11-04T18:00:36+00:00",
+        "raw_end": "2026-09-07T01:29:37+00:00"
+      },
+      "earlier_mention_count": 8,
+      "earlier_mentions": [
+        {
+          "post_id": "2043791796249960770",
+          "published_at": "2026-04-13T20:41:50+00:00",
+          "raw_text": "Did you know that both Astera Labs $ALAB and Credo $CRDO have 2x ETFs as well? \n\nBoth are holdings of Feroce Research’s mid-cap basket \n\n$CRDU and $LABX each nearly up 100% in the past week alone https://t.co/bEjojvJDkq",
+          "raw_url": "https://x.com/FeroceResearch/status/2043791796249960770",
+          "analysis_status": "已复用历史解读，未计入方向样本"
+        },
+        {
+          "post_id": "2047694308204027965",
+          "published_at": "2026-04-24T15:09:02+00:00",
+          "raw_text": "The 2x ETFs for $ALAB and $CRDO are the 2 largest holdings of my mid-caps baskets which can be tracked in real-time within the service\n\nDid you tag along? \n\n*2x etfs are LABX and CRDU, both pushing 150% just within 4 weeks https://t.co/TjJr6zuYyZ",
+          "raw_url": "https://x.com/FeroceResearch/status/2047694308204027965",
+          "analysis_status": "已复用历史解读，未计入方向样本"
+        },
+        {
+          "post_id": "2052797142360584513",
+          "published_at": "2026-05-08T17:05:52+00:00",
+          "raw_text": "Buy Astera Labs $ALAB , or the 2x etf $LABX",
+          "raw_url": "https://x.com/FeroceResearch/status/2052797142360584513",
+          "analysis_status": "旧版解读，待复核"
+        }
+      ],
+      "call_date": "2026-06-08",
+      "call_price": null,
+      "now_price": null,
+      "now_date": null,
+      "raw_return": null,
+      "currency": "USD",
+      "directional_return": null,
+      "in_field": true
     },
     {
       "post_id": "2064090723570311175",
@@ -29753,10 +29873,10 @@
         "raw_posts": 3603,
         "analyzed_posts": 3603,
         "unprocessed_before_start": 0,
-        "outdated_before_start": 247,
+        "outdated_before_start": 245,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -29813,10 +29933,10 @@
         "raw_posts": 3603,
         "analyzed_posts": 3603,
         "unprocessed_before_start": 0,
-        "outdated_before_start": 247,
+        "outdated_before_start": 245,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -30771,10 +30891,10 @@
         "raw_posts": 3603,
         "analyzed_posts": 3603,
         "unprocessed_before_start": 0,
-        "outdated_before_start": 255,
+        "outdated_before_start": 253,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -30877,10 +30997,10 @@
         "raw_posts": 3603,
         "analyzed_posts": 3603,
         "unprocessed_before_start": 0,
-        "outdated_before_start": 256,
+        "outdated_before_start": 254,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -31172,10 +31292,10 @@
         "raw_posts": 3603,
         "analyzed_posts": 3603,
         "unprocessed_before_start": 0,
-        "outdated_before_start": 258,
+        "outdated_before_start": 256,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -34221,10 +34341,10 @@
         "raw_posts": 3603,
         "analyzed_posts": 3603,
         "unprocessed_before_start": 0,
-        "outdated_before_start": 269,
+        "outdated_before_start": 267,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -34655,11 +34775,11 @@
       "earlier_mentions": [],
       "call_date": "2026-08-31",
       "call_price": 292.5,
-      "now_price": 297.0,
-      "now_date": "2026-09-07",
-      "raw_return": 1.54,
+      "now_price": 278.5,
+      "now_date": "2026-09-04",
+      "raw_return": -4.79,
       "currency": "TWD",
-      "directional_return": 1.54,
+      "directional_return": -4.79,
       "in_field": false
     },
     {
@@ -34850,10 +34970,10 @@
         "raw_posts": 3603,
         "analyzed_posts": 3603,
         "unprocessed_before_start": 0,
-        "outdated_before_start": 272,
+        "outdated_before_start": 270,
         "pending_current_version": 922,
-        "pending_call_review": 273,
-        "reused_interpretations": 922,
+        "pending_call_review": 271,
+        "reused_interpretations": 924,
         "raw_start": "2024-11-04T18:00:36+00:00",
         "raw_end": "2026-09-07T01:29:37+00:00"
       },
@@ -40333,6 +40453,22 @@
       }
     },
     {
+      "source_id": "tw_FeroceResearch",
+      "ticker": "GOLD",
+      "before": {
+        "call_date": "2025-10-13",
+        "post_id": "1977810947122008124",
+        "direction": "long"
+      },
+      "after": {
+        "call_date": "2026-04-22",
+        "post_id": "2046773427005010303",
+        "direction": "long",
+        "raw_url": "https://x.com/FeroceResearch/status/2046773427005010303",
+        "raw_text": "I have initiated an upgrade from equal-weight to SUPER OVERWEIGHT on $SILVER and $GOLD \n\nSee you at the top in a couple weeks, especially silver!"
+      }
+    },
+    {
       "source_id": "tw_aleabitoreddit",
       "ticker": "AMSC",
       "before": null,
@@ -41046,6 +41182,22 @@
         "direction": "long",
         "raw_url": "https://x.com/FeroceResearch/status/2062207160411451494",
         "raw_text": "Qualcomm $QCOM 25-30% surge this month I think is very doable"
+      }
+    },
+    {
+      "source_id": "tw_FeroceResearch",
+      "ticker": "LABX",
+      "before": {
+        "call_date": "2026-05-08",
+        "post_id": "2052797142360584513",
+        "direction": "long"
+      },
+      "after": {
+        "call_date": "2026-06-08",
+        "post_id": "2064008767272780243",
+        "direction": "long",
+        "raw_url": "https://x.com/FeroceResearch/status/2064008767272780243",
+        "raw_text": "This is not an exaggeration, \n\n$LABX has been averaging 35% gains on a week to week basis over the past 2 months \n\nAstera Labs $ALAB is literally on a historical run and people are still not understanding the CXL + Memory Pooling importance"
       }
     },
     {
@@ -41986,12 +42138,6 @@
     },
     {
       "source_id": "tw_FeroceResearch",
-      "ticker": "GOLD",
-      "post_id": "1977810947122008124",
-      "call_date": "2025-10-13"
-    },
-    {
-      "source_id": "tw_FeroceResearch",
       "ticker": "RR",
       "post_id": "1978124428492828927",
       "call_date": "2025-10-14"
@@ -42504,12 +42650,6 @@
       "source_id": "tw_TradexWhisperer",
       "ticker": "KLAC",
       "post_id": "2052716895715926400",
-      "call_date": "2026-05-08"
-    },
-    {
-      "source_id": "tw_FeroceResearch",
-      "ticker": "LABX",
-      "post_id": "2052797142360584513",
       "call_date": "2026-05-08"
     },
     {
@@ -43756,6 +43896,11 @@
       "call_date": "2026-04-21"
     },
     {
+      "source_id": "tw_FeroceResearch",
+      "ticker": "GOLD",
+      "call_date": "2026-04-22"
+    },
+    {
       "source_id": "tw_aleabitoreddit",
       "ticker": "ALMU",
       "call_date": "2026-04-25"
@@ -43909,6 +44054,11 @@
       "source_id": "tw_aleabitoreddit",
       "ticker": "688017",
       "call_date": "2026-06-05"
+    },
+    {
+      "source_id": "tw_FeroceResearch",
+      "ticker": "LABX",
+      "call_date": "2026-06-08"
     },
     {
       "source_id": "tw_TradexWhisperer",

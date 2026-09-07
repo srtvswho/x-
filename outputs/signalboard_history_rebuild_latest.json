@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T15:57:42.578957+00:00",
+  "generated_at": "2026-09-07T16:04:38.636331+00:00",
   "prompt_version": "v2.0.2-intel-attribution",
   "sources": {
     "tw_jukan05": {
@@ -86,8 +86,9 @@
   "pending_total": 0,
   "selected_post_ids": [],
   "batch_limit": 400,
-  "stored_history_call_review_complete": true,
+  "stored_history_call_review_complete": false,
   "stored_history_extraction_complete": false,
   "history_complete": false,
-  "scope": "all_stored_history"
+  "scope": "all_stored_history",
+  "per_security_review_pending": 1069
 }
