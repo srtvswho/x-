@@ -5,5 +5,5 @@
   "max_seconds_per_job": 14400,
   "description": "User-authorized first-call repair: restore saved results and exact-text evidence first, then continue only missing or materially ambiguous posts. Original campaign ID and cumulative $30 cap retained.",
   "recovery_version": "history-reuse-v1",
-  "repair_revision": "json-output-recovery-v1"
+  "repair_revision": "per-security-attribution-v1"
 }

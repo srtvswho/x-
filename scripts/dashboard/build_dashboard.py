@@ -20,6 +20,7 @@ import requests
 sys.path.insert(0, str(Path(__file__).parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from signalboard.extract.prompts_intel import PROMPT_VERSION
+from common import price_currency
 from common import (  # noqa: E402
     build_metadata, query_today_stats, query_today_records, cn_recent_24h_window_utc,
     KOL_TICKERS, KOLS, SRC2KOL, is_in_field, parse_json_arr,
@@ -576,6 +577,7 @@ def query_tickers(conn):
             "earliest_call": t["earliest_pub"],
             "days_since": t["days_since"],
             "call_price": call_price, "now_price": now_price,
+            "currency": price_currency(t["ticker"]),
             "raw_pct": raw_pct, "excess_pct": excess_pct,
             "in_field": in_field,
             "has_price": has_price,
@@ -658,7 +660,7 @@ def query_call_performance(conn):
             row.update({
                 "call_date": call_date,
                 "call_price": call_price, "now_price": now_price,
-                "now_date": now_date, "raw_return": raw_return,
+                "now_date": now_date, "raw_return": raw_return, "currency": price_currency(ticker),
                 "directional_return": directional_return,
                 "in_field": is_in_field(row["kol"], ticker, row["bottleneck"]),
             })
@@ -683,6 +685,8 @@ def attach_call_history_evidence(conn, rows):
     current_sql = "AND e.prompt_version=?" if "prompt_version" in extraction_cols else ""
     from signalboard.history_reuse import load_reviews
     reviews = load_reviews(conn)
+    from signalboard.call_attribution import candidates
+    attribution_pending = {p["post_id"] for p in candidates(conn)}
     raw_by_source = {}
     for pid, src, pub, text, url, analyzed, current in conn.execute(f"""
         SELECT r.post_id, r.source_id, r.published_at, {text_sql}, {url_sql},
@@ -691,7 +695,7 @@ def attach_call_history_evidence(conn, rows):
         FROM raw_posts r ORDER BY julianday(r.published_at), r.post_id
     """, (PROMPT_VERSION,) if current_sql else ()):
         raw_by_source.setdefault(src, []).append((pid, pub, text or "", url,
-            analyzed or pid in reviews, current or pid in reviews, bool(current), pid in reviews))
+            analyzed or pid in reviews, (current or pid in reviews) and pid not in attribution_pending, bool(current), pid in reviews))
     aliases = {"MU": ["Micron", "美光"], "SNDK": ["SanDisk", "闪迪"]}
     for row in rows:
         src = row["source_id"]

@@ -61,7 +61,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from common import (  # noqa: E402
     select_dashboard_ticker_targets, select_call_performance_targets,
     merge_price_targets, group_targets_by_ticker,
-    DASHBOARD_TICKER_LIMIT, DASHBOARD_MIN_DAYS,
+    DASHBOARD_TICKER_LIMIT, DASHBOARD_MIN_DAYS, price_currency,
 )
 
 POLYGON_BASE = "https://api.polygon.io"
@@ -108,7 +108,7 @@ def is_us_ticker(t) -> bool:
         return False
     if not US_TICKER_RE.match(s):
         return False
-    if s.upper().endswith((".SH", ".SZ", ".TW", ".HK")):
+    if price_currency(s.upper()) != "USD" or s.upper().endswith((".SH", ".SZ", ".TW", ".HK", ".L", ".TO", ".V")):
         return False
     return True
 

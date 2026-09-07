@@ -82,7 +82,7 @@ def test_reviewed_jukan_evidence_moves_both_anchors_and_is_idempotent(tmp_path):
     evidence = json.loads(path.read_text())
     con = database()
     for r in evidence['reviews']:
-        post(con, r['post_id'], r['published_at'], text=r['raw_text'], direction=None)
+        post(con, r['post_id'], r['published_at'], source=r['source_id'], text=r['raw_text'], direction=None)
     con.commit()
     db = tmp_path / 'evidence.db'
     with sqlite3.connect(db) as out:

@@ -68,6 +68,7 @@ def checkpoint(db, paths):
         shutil.copyfileobj(src, dst)
     temporary.replace(compressed)
     snapshot.unlink()
+    paths = [*paths, ROOT / 'outputs/call_attribution_review.json', ROOT / 'outputs/international_price_refresh.json']
     tracked = [str(compressed.relative_to(ROOT))]
     tracked.extend(str(Path(p).resolve().relative_to(ROOT)) for p in paths if Path(p).exists())
     subprocess.run(['git', 'add', '--', *tracked], cwd=ROOT, check=True)
@@ -162,6 +163,8 @@ def make_audit(db, baseline=BASELINE):
         rows = query_call_performance(con)
         targets = {(r['source_id'], r['ticker']): r for r in select_call_performance_targets(con)}
         plan = read_plan(db, 400)
+        from signalboard.call_attribution import candidates
+        per_security_pending = candidates(con)
         issues = []
         for row in rows:
             target = targets.get((row['source_id'], row['ticker']))
@@ -185,8 +188,9 @@ def make_audit(db, baseline=BASELINE):
     return {'generated_at': datetime.now(timezone.utc).isoformat(),
             'pending_total': plan['pending_total'], 'sources': plan['sources'],
             'stored_history_extraction_complete': plan['stored_history_extraction_complete'],
-            'stored_history_call_review_complete': plan['stored_history_call_review_complete'],
+            'stored_history_call_review_complete': plan['stored_history_call_review_complete'] and not per_security_pending,
             'raw_history_coverage': 'unverified', 'structural_errors': issues,
+            'per_security_review_pending': len(per_security_pending),
             'rows': rows, 'changed_anchors': changes,
             'removed_anchors': [{k: r[k] for k in ('source_id', 'ticker', 'post_id', 'call_date')} for r in removed],
             'prices_missing': [{k: r[k] for k in ('source_id', 'ticker', 'call_date')} for r in rows
@@ -202,6 +206,8 @@ def gate(config, report, now=None):
         return True
     if report.get('campaign_status') == 'completed':
         return False
+    if report.get('campaign_status') == 'price_gaps':
+        return bool(config.get('repair_revision') and config['repair_revision'] != report.get('repair_revision'))
     if report.get('campaign_status') == 'blocked':
         # A tracked code repair may retry a blocked campaign, without a new budget.
         return bool(config.get('repair_revision') and
@@ -245,9 +251,12 @@ def main():
             report = json.loads(REPORT.read_text())
             report['acceptance'] = {'changed_anchors': len(audit['changed_anchors']),
                                     'prices_missing': len(audit['prices_missing']),
+                                    'per_security_review_pending': audit['per_security_review_pending'],
                                     'raw_history_coverage': 'unverified'}
             if not audit['pending_total']:
-                report['campaign_status'] = 'completed' if not audit['prices_missing'] else 'price_gaps'
+                report['campaign_status'] = ('attribution_pending' if audit['per_security_review_pending'] else
+                    'completed' if not audit['prices_missing'] else 'price_gaps')
+                report['repair_revision'] = config.get('repair_revision')
             write_report(REPORT, report)
         print(json.dumps({k: v for k, v in audit.items() if k in
                           ('pending_total', 'stored_history_extraction_complete', 'structural_errors')}, ensure_ascii=False))

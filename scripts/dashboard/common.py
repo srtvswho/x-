@@ -67,7 +67,26 @@ def normalize_ticker(ticker: str, context: str = "") -> str:
     context_upper = str(context or "").upper()
     if value == "NV" and "NVIDIA" in context_upper:
         return "NVDA"
-    return value
+    aliases = {
+        'MICRON':'MU', 'CREDO':'CRDO', 'INTEL':'INTC', 'TSMC':'TSM',
+        'KIOXIA':'285A.T', '285A':'285A.T',
+        'SAMSUNG':'005930.KS', 'SAMSUNG ELECTRONICS':'005930.KS', '005930':'005930.KS',
+        'SK HYNIX':'000660.KS', 'HYNIX':'000660.KS', '000660':'000660.KS',
+    }
+    # Preserve explicit ADR/listing symbols: never splice ADR and local-share prices.
+    if value in {'PTLR','QLCM','LCRX'}:
+        for typo, name, correct in [('PTLR','PALANTIR','PLTR'),('QLCM','QUALCOMM','QCOM'),('LCRX','LAM RESEARCH','LRCX')]:
+            if value==typo and name in context_upper:
+                return correct
+    return aliases.get(value,value)
+
+
+
+def price_currency(ticker):
+    for suffix,currency in {'.KS':'KRW','.KQ':'KRW','.T':'JPY','.TW':'TWD','.TWO':'TWD',
+                            '.HK':'HKD','.AX':'AUD','.PA':'EUR','.AS':'EUR','.DE':'EUR'}.items():
+        if ticker.endswith(suffix):return currency
+    return 'USD'
 
 
 def cn_now() -> datetime:
@@ -518,22 +537,10 @@ def select_dashboard_ticker_targets(conn, limit: int = DASHBOARD_TICKER_LIMIT) -
     }
     """
     print("  select_dashboard_ticker_targets: 开始", flush=True)
-    extraction_cols = {row[1] for row in conn.execute("PRAGMA table_info(extractions_intel)").fetchall()}
-    attr_sql = "e.attribution" if "attribution" in extraction_cols else "'ORIGINAL'"
-    company_sql = "e.company" if "company" in extraction_cols else "''"
-    raw_cols = {row[1] for row in conn.execute("PRAGMA table_info(raw_posts)").fetchall()}
-    raw_text_sql = "r.raw_text" if "raw_text" in raw_cols else "''"
-    rows = conn.execute(f"""
-        WITH {latest_extractions_cte(conn)}
-        SELECT e.source_id, e.ticker, e.direction, e.bottleneck, r.published_at,
-               {attr_sql}, {company_sql}, {raw_text_sql}
-        FROM latest_extractions e
-        JOIN raw_posts r ON r.post_id = e.post_id
-        WHERE e.direction IN ('long', 'short')
-          AND e.is_retrospective = 0 AND e.is_disclosure = 0
-          AND e.ticker IS NOT NULL
-        ORDER BY r.published_at DESC
-    """).fetchall()
+    # Both dashboard and first-call performance use the same per-security evidence.
+    rows = [(e['source_id'], json.dumps([e['ticker']]), e['direction'], e['bottleneck'],
+             e['published_at'], 'ORIGINAL', '', e['raw_text'])
+            for e in reversed(query_call_performance_events(conn))]
 
     # (kol, ticker) 维度聚合
     by_kol_tk: dict = {}
@@ -687,12 +694,18 @@ def query_call_performance_events(conn, days: int | None = None) -> list[dict]:
         ORDER BY julianday(r.published_at), e.post_id
     """, (cutoff,)).fetchall()
 
+    from signalboard.history_reuse import load_reviews
+    reviews = load_reviews(conn)
     events = []
     seen = set()
     validated_pairs = set()
     for (post_id, src, direction, ticker_json, bottleneck, published_at,
          raw_text, raw_url, attribution, company) in rows:
         if not is_author_signal(attribution):
+            continue
+        # A post-wide direction cannot be spread across all mentioned companies.
+        # Reviewed per-security events are appended below; unresolved posts remain debt.
+        if len(parse_json_arr(ticker_json)) > 1:
             continue
         context = f"{company or ''} {raw_text or ''}"
         for raw_ticker in parse_json_arr(ticker_json):

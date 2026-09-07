@@ -92,6 +92,7 @@ jobs:
           set -Eeuo pipefail
           python scripts/intel_history_campaign.py --recover-only
           python scripts/dashboard/refresh_prices_polygon.py
+          python scripts/dashboard/refresh_prices_international.py
           python scripts/intel_history_campaign.py --audit
           python scripts/dashboard/build_dashboard.py
           test -s scripts/dashboard/dashboard.html
@@ -148,6 +149,18 @@ jobs:
           with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
               out.write(f"complete={str(plan['pending_total'] == 0).lower()}\n")
           PYOUT
+      - name: Resolve per-security call attribution
+        if: steps.campaign.outputs.run == 'true' && (github.event_name != 'workflow_dispatch' || inputs.apply)
+        run: |
+          set -Eeuo pipefail
+          # Reuse all post interpretations; only adjudicate unresolved multi-stock calls.
+          for batch in $(seq 1 30); do
+            python scripts/intel_call_attribution.py --apply --limit 200
+            python scripts/intel_history_campaign.py --checkpoint-only
+            pending=$(python -c "import json; print(json.load(open('outputs/call_attribution_review.json'))['pending'])")
+            if [ "$pending" = "0" ]; then break; fi
+          done
+          test "$pending" = "0"
       - name: Save extraction checkpoint
         if: always() && steps.campaign.outputs.run == 'true' && (github.event_name != 'workflow_dispatch' || inputs.apply)
         run: |
@@ -194,6 +207,7 @@ jobs:
         run: |
           set -Eeuo pipefail
           python scripts/dashboard/refresh_prices_polygon.py
+          python scripts/dashboard/refresh_prices_international.py
           python scripts/intel_history_campaign.py --audit
           python scripts/dashboard/build_dashboard.py
           test -s scripts/dashboard/dashboard.html
