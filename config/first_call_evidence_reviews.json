@@ -1,0 +1,73 @@
+{
+  "version": "first-call-evidence-review-20260907-v1",
+  "reviewer": "Codex reading exact saved raw posts",
+  "scope": "These reviewed posts only; earlier missing history remains unverified.",
+  "reviews": [
+    {
+      "post_id": "1963883771910070654",
+      "source_id": "tw_jukan05",
+      "published_at": "2025-09-05T08:35:53+00:00",
+      "raw_hash": "ac680e6abb8c0711f011fadfff840e22d766830e679aeb7a6f122ebc4bbb6fb4",
+      "raw_text": "@efekarhanli I think the outlook is good for Micron.\n\nSamsung doesn’t seem like it will do as well as expected.",
+      "raw_url": "https://x.com/jukan05/status/1963883771910070654",
+      "events": [
+        {
+          "ticker": "MU",
+          "direction": "long",
+          "reason": "I think the outlook is good for Micron."
+        }
+      ],
+      "reason": "Author explicitly expresses positive Micron outlook; separate Samsung comparison is not a short position."
+    },
+    {
+      "post_id": "1968838703058669977",
+      "source_id": "tw_jukan05",
+      "published_at": "2025-09-19T00:45:00+00:00",
+      "raw_hash": "d2d8f36c6a010a4454b4ee9d183ac84274805c75660d5b9621fefae73979357e",
+      "raw_text": "Recently, after I covered some negative aspects about Micron, I received inquiries from several hedge funds and research firms.\n\nThey asked me whether they should short Micron.\n\nMeanwhile, some passionate Micron fanboys began labeling me as a Micron short-seller.\n\nBut in fact, despite the noise around Micron’s HBM4, I believe one should actually take a long position on the company.\n\nLet me explain why by quoting the perspective of Mr. Peter Lee, Managing Director at Citigroup, whom I personally respect.\n\nLast year, NVIDIA accounted for 80% of total HBM demand, this year it will be 70%, by 2026 it will fall to 60%, and by 2027 to 50%. In other words, ASICs will take up an increasingly larger share.\n\nThat’s why, even if Micron fails to qualify its HBM4 at NVIDIA, I don’t think the financial impact will be nearly as severe as what Samsung faced in the past.\n\nWhen Samsung failed its HBM3E qualification last year and this year, commodity memory prices were also weak, and HBM demand from ASIC players (whose qualification standards are far looser than NVIDIA’s) was not very strong either. Today, however, the situation is the complete opposite. Demand for HBM from CSP-targeted ASICs is extremely strong, and commodity memory prices are soaring.\n\nThis is why Micron’s stock has remained resilient despite rumors about its HBM4 performance.\n\nFurthermore, the HBM market going forward will become increasingly segmented—on one end, ultra-high-performance, high-priced products for NVIDIA-like customers, and on the other, lower-priced, lower-performance products. The rise of custom HBM will accelerate this segmentation trend even further.\n\nFinally, the fact that NVIDIA’s share of HBM demand is steadily declining means that suppliers will gain more bargaining power in HBM pricing.\n\nIn other words, even if you can’t sell to NVIDIA, there are plenty of other customers to sell HBM to.\n\nThat’s why I think shorting Micron is extremely risky.\n\n$MU",
+      "raw_url": "https://x.com/jukan05/status/1968838703058669977",
+      "events": [
+        {
+          "ticker": "MU",
+          "direction": "long",
+          "reason": "I believe one should actually take a long position on the company."
+        }
+      ],
+      "reason": "Author explicitly endorses long MU before citing Citi supporting evidence; not a pure report relay."
+    },
+    {
+      "post_id": "1972905654890471697",
+      "source_id": "tw_jukan05",
+      "published_at": "2025-09-30T06:05:37+00:00",
+      "raw_hash": "cc95cae56614602e99abb6caf86eeae069d83c7849e159209f44cf3a3729430d",
+      "raw_text": "Fuck, it’s not too late to buy SanDisk and Kioxia yet, right? I should buy them now. https://t.co/7rHeZIrHG8",
+      "raw_url": "https://x.com/jukan05/status/1972905654890471697",
+      "events": [
+        {
+          "ticker": "SNDK",
+          "direction": "long",
+          "reason": "I should buy them now."
+        },
+        {
+          "ticker": "285A.T",
+          "direction": "long",
+          "reason": "buy SanDisk and Kioxia"
+        }
+      ],
+      "reason": "Immediate first-person intent to buy SanDisk and Kioxia; subsequent assertion resolves the opening rhetorical question."
+    },
+    {
+      "post_id": "1938183627545973006",
+      "source_id": "tw_jukan05",
+      "published_at": "2025-06-26T10:32:41+00:00",
+      "raw_hash": "b0494cbc5cedba6864ab8aa38d5840537143a38cde946cafb93a5ba294282cd5",
+      "raw_text": "Why did Micron's stock price turn downward despite strong earnings? - Korea Daishin Securities\n\nIf there's market concern, I believe it's because Micron's stock price turned downward after its earnings announcement. I judge that the stock price's downward turn stemmed from three main factors.\n\n1. Decline in DRAM Blended ASP\n\nWhile DRAM sales significantly exceeded expectations, the Blended ASP (Average Selling Price) slightly decreased from the previous quarter (ASP: estimated to decline 1-2% QoQ). The market seems to be questioning this ASP decline, despite HBM revenue, which has a higher ASP than general-purpose products, increasing by 50%.However, I don't believe the decline in Blended ASP was due to weakness in the ASP of leading-edge products like HBM and high-value DDR5. It is estimated that leading-edge products continue to see strong ASPs amidst a tight supply-demand environment. I judge that the Blended ASP decline this quarter was largely due to changes in product mix (accelerated sales growth of mobile and industrial products, which have lower ASPs compared to servers).\n\n2. When will the 2026 HBM volume lock-in occur?\n\nI believe that in this earnings announcement, Micron Technology provided sufficient outlook on the direction of HBM demand growth, related technology and product competitiveness, and market share expansion. However, there was no mention of the 2026 Nvidia-bound volume lock-in, which the market is focused on, and I judge that this partly served as a catalyst for profit-taking.I believe it would have been difficult to materialize the 2026 volume lock-in in this earnings announcement. I judge that the volume lock-in will become concrete after priority negotiations with leading companies are completed. As HBM4, a new product for 2026, is a leading-edge product that can contribute to AI technology innovation, related demand will be sufficiently strong, and I believe that market expectations can be met during this process. If so, I judge that the related concerns are unfounded.\n\n$MU",
+      "raw_url": "https://x.com/jukan05/status/1938183627545973006",
+      "events": [],
+      "reason": "Entire post attributed to Korea Daishin Securities; institutional first-person commentary is not Jukan own call."
+    }
+  ],
+  "ticker_references": {
+    "285A.T": "https://www2.jpx.co.jp/tseHpFront/StockSearch.do?callJorEFlg=1&method=&topSearchStr=285A"
+  }
+}

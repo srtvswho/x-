@@ -36,6 +36,8 @@ jobs:
   rebuild:
     runs-on: ubuntu-latest
     timeout-minutes: 360
+    outputs:
+      complete: ${{ steps.extraction.outputs.complete }}
     env:
       DEEPSEEK_API_KEY: ${{ (github.event_name != 'workflow_dispatch' || inputs.apply) && secrets.DEEPSEEK_API_KEY || '' }}
       POLYGON_API_KEY: ${{ (github.event_name != 'workflow_dispatch' || inputs.apply) && secrets.POLYGON_API_KEY || '' }}
@@ -81,6 +83,48 @@ jobs:
           gzip -t data/signalboard.db.gz
           gzip -cd data/signalboard.db.gz > data/signalboard_full.db
           sudo ln -sfn "$GITHUB_WORKSPACE" /workspace
+      - name: Restore and publish reviewed evidence before paid work
+        if: steps.campaign.outputs.run == 'true' && (github.event_name != 'workflow_dispatch' || inputs.apply)
+        env:
+          POLYGON_PRIORITY_TICKERS: MU,SNDK
+          POLYGON_MAX_API_REQUESTS: "2"
+        run: |
+          set -Eeuo pipefail
+          python scripts/intel_history_campaign.py --recover-only
+          python scripts/dashboard/refresh_prices_polygon.py
+          python scripts/intel_history_campaign.py --audit
+          python scripts/dashboard/build_dashboard.py
+          test -s scripts/dashboard/dashboard.html
+          test "$(stat -c%s scripts/dashboard/dashboard.html)" -ge 10000
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("scripts/dashboard/dashboard.html")
+          data = path.read_bytes()
+          if not data.startswith(b"<!doctype html>"):
+              raise SystemExit("dashboard artifact is not HTML")
+          text = data.decode("utf-8")
+          if "<html" not in text or "</html>" not in text:
+              raise SystemExit("dashboard artifact is incomplete")
+          PY
+          mkdir -p dashboard_deploy_dist/legacy dashboard_deploy_dist/admin
+          cp scripts/dashboard/dashboard.html dashboard_deploy_dist/legacy/index.html
+          cp scripts/dashboard/admin.template.html dashboard_deploy_dist/admin/index.html
+          python scripts/dashboard/build_unified_research_data.py \
+            --database data/signalboard_full.db \
+            --output dashboard_deploy_dist/data/raw-intelligence.json.gz
+          python scripts/dashboard/build_research_clue_preview.py \
+            --deploy-root dashboard_deploy_dist
+          # Keep the original daily intelligence dashboard at the product root.
+          cp scripts/dashboard/dashboard.html dashboard_deploy_dist/index.html
+          cp dashboard_deploy_dist/index.html dashboard.html
+
+          python scripts/intel_history_campaign.py --checkpoint-only
+          git add scripts/dashboard/dashboard.html dashboard.html
+          git add -f dashboard_deploy_dist
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish restored first-call evidence before paid continuation [skip daily]"
+            git push origin HEAD:master
+          fi
       - name: Plan or drain full historical extraction
         id: extraction
         if: steps.campaign.outputs.run == 'true'
@@ -97,7 +141,10 @@ jobs:
           python - <<'PYOUT'
           import json, os
           from pathlib import Path
-          plan = json.loads(Path('outputs/signalboard_history_rebuild_latest.json').read_text())
+          import sys
+          sys.path.insert(0, 'scripts')
+          from intel_history_backfill import read_plan
+          plan = read_plan('/workspace/data/signalboard_full.db', 400)
           with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
               out.write(f"complete={str(plan['pending_total'] == 0).lower()}\n")
           PYOUT
@@ -105,23 +152,7 @@ jobs:
         if: always() && steps.campaign.outputs.run == 'true' && (github.event_name != 'workflow_dispatch' || inputs.apply)
         run: |
           set -Eeuo pipefail
-          test -s data/signalboard_full.db
-          gzip -c data/signalboard_full.db > data/signalboard.db.gz.new
-          gzip -t data/signalboard.db.gz.new
-          mv data/signalboard.db.gz.new data/signalboard.db.gz
-          git config user.name "signalboard-bot"
-          git config user.email "signalboard-bot@users.noreply.github.com"
-          git add data/signalboard.db.gz
-          for report in outputs/history_repair_campaign.json outputs/first_call_campaign_*.json; do
-            if [ -f "$report" ]; then git add "$report"; fi
-          done
-          if [ -f outputs/signalboard_history_rebuild_latest.json ]; then
-            git add outputs/signalboard_history_rebuild_latest.json
-          fi
-          if ! git diff --cached --quiet; then
-            git commit -m "Checkpoint historical extraction repair [skip daily]"
-            git push origin HEAD:master
-          fi
+          python scripts/intel_history_campaign.py --checkpoint-only
       - name: Upload coverage and pending batch report
         if: always() && steps.campaign.outputs.run == 'true'
         uses: actions/upload-artifact@v4
@@ -130,9 +161,36 @@ jobs:
           path: |
             outputs/signalboard_history_rebuild_latest.json
             outputs/history_repair_campaign.json
+            outputs/history_reuse_report.json
             outputs/first_call_campaign_*.json
+
+  publish:
+    needs: rebuild
+    if: needs.rebuild.outputs.complete == 'true' && (github.event_name != 'workflow_dispatch' || inputs.apply)
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
+      POLYGON_REQUEST_INTERVAL: "13"
+      POLYGON_MAX_API_REQUESTS: "0"
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: master
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check requests
+      - name: Restore completed extraction checkpoint
+        run: |
+          set -Eeuo pipefail
+          gzip -t data/signalboard.db.gz
+          gzip -cd data/signalboard.db.gz > data/signalboard_full.db
+          sudo ln -sfn "$GITHUB_WORKSPACE" /workspace
+          git config user.name "signalboard-bot"
+          git config user.email "signalboard-bot@users.noreply.github.com"
       - name: Refresh prices and rebuild dashboard
-        if: steps.extraction.outputs.complete == 'true' && steps.campaign.outputs.run == 'true' && (github.event_name != 'workflow_dispatch' || inputs.apply)
         run: |
           set -Eeuo pipefail
           python scripts/dashboard/refresh_prices_polygon.py
@@ -163,17 +221,29 @@ jobs:
           cp dashboard_deploy_dist/index.html dashboard.html
 
       - name: Publish repaired history
-        if: steps.extraction.outputs.complete == 'true' && steps.campaign.outputs.run == 'true' && (github.event_name != 'workflow_dispatch' || inputs.apply)
         run: |
           set -Eeuo pipefail
           gzip -c data/signalboard_full.db > data/signalboard.db.gz.new
           gzip -t data/signalboard.db.gz.new
           mv data/signalboard.db.gz.new data/signalboard.db.gz
           git add data/signalboard.db.gz outputs/signalboard_history_rebuild_latest.json scripts/dashboard/dashboard.html dashboard.html
-          git add outputs/first_call_campaign_*.json
+          git add outputs/first_call_campaign_*.json outputs/history_reuse_report.json
           if [ -f outputs/history_repair_campaign.json ]; then git add outputs/history_repair_campaign.json; fi
           git add -f dashboard_deploy_dist
           if ! git diff --cached --quiet; then
             git commit -m "Publish historical extraction repair [skip daily]"
             git push origin HEAD:master
           fi
+
+      - name: Preserve final price and acceptance progress
+        if: always()
+        run: python scripts/intel_history_campaign.py --checkpoint-only
+      - name: Upload first-call acceptance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: first-call-acceptance
+          path: |
+            outputs/first_call_campaign_*.json
+            outputs/history_reuse_report.json
+            outputs/history_repair_campaign.json

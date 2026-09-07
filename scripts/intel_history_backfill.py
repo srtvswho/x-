@@ -21,11 +21,13 @@ sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "scripts" / "dashboard"))
 from common import SRC2KOL
 from signalboard.extract.prompts_intel import PROMPT_VERSION
+from signalboard.history_reuse import load_reviews
 
 
 def plan_backfill(con, limit=400):
     if not 1 <= limit <= 500:
         raise ValueError("batch limit must be between 1 and 500")
+    reviews = load_reviews(con)
     buckets = defaultdict(deque)
     counts = {}
     for source in SRC2KOL:
@@ -40,10 +42,14 @@ def plan_backfill(con, limit=400):
                 SELECT 1 FROM extractions_intel e WHERE e.post_id=r.post_id AND e.prompt_version=?)
             ORDER BY julianday(r.published_at), r.post_id
         """, (source, PROMPT_VERSION)).fetchall()
+        outdated_count = len(missing)
+        reused = sum(p[0] in reviews for p in missing)
+        missing = [p for p in missing if p[0] not in reviews]
         buckets[source].extend(p[0] for p in missing)
         counts[source] = {
             "raw_posts": raw_count, "raw_start": first, "raw_end": last,
-            "pending_current_version": len(missing),
+            "pending_current_version": outdated_count,
+            "pending_call_review": len(missing), "reused_interpretations": reused,
             "never_extracted": sum(not p[2] for p in missing),
             "raw_coverage": "unverified",  # Endpoints alone cannot prove continuity.
         }
@@ -55,9 +61,10 @@ def plan_backfill(con, limit=400):
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "prompt_version": PROMPT_VERSION, "sources": counts,
-        "pending_total": sum(c["pending_current_version"] for c in counts.values()),
+        "pending_total": sum(c["pending_call_review"] for c in counts.values()),
         "selected_post_ids": selected, "batch_limit": limit,
-        "stored_history_extraction_complete": not any(buckets.values()) and not selected,
+        "stored_history_call_review_complete": not any(buckets.values()) and not selected,
+        "stored_history_extraction_complete": not any(c["pending_current_version"] for c in counts.values()),
         "history_complete": False, "scope": "all_stored_history",
     }
 
