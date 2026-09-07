@@ -38,7 +38,7 @@ def plan_backfill(con, limit=400):
                    EXISTS(SELECT 1 FROM extractions_intel old WHERE old.post_id=r.post_id) AS had_old
             FROM raw_posts r WHERE r.source_id=? AND NOT EXISTS (
                 SELECT 1 FROM extractions_intel e WHERE e.post_id=r.post_id AND e.prompt_version=?)
-            ORDER BY had_old, julianday(r.published_at), r.post_id
+            ORDER BY julianday(r.published_at), r.post_id
         """, (source, PROMPT_VERSION)).fetchall()
         buckets[source].extend(p[0] for p in missing)
         counts[source] = {
@@ -75,7 +75,7 @@ def write_report(output, report):
     temporary.replace(output)
 
 
-def run_backfill(db, limit, apply, output):
+def run_backfill(db, limit, apply, output, timeout=None):
     before = read_plan(db, limit)
     ids = before["selected_post_ids"]
     report = dict(before, applied=apply, resolved_this_run=0,
@@ -92,10 +92,10 @@ def run_backfill(db, limit, apply, output):
             returncode = subprocess.run([
                 sys.executable, str(ROOT / "scripts" / "intel_extract.py"),
                 "--db", str(db), "--post-ids", ",".join(ids), "--max-targets", str(limit),
-            ], check=False).returncode
-    except (OSError, KeyboardInterrupt) as exc:
+            ], check=False, **({"timeout": timeout} if timeout is not None else {})).returncode
+    except (OSError, KeyboardInterrupt, subprocess.TimeoutExpired) as exc:
         error = type(exc).__name__
-        returncode = 130 if isinstance(exc, KeyboardInterrupt) else 1
+        returncode = 130 if isinstance(exc, KeyboardInterrupt) else 124 if isinstance(exc, subprocess.TimeoutExpired) else 1
     finally:
         after = read_plan(db, limit)
         unresolved = []

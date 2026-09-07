@@ -89,3 +89,36 @@ def test_full_golden_requires_expensive_job_gate(guarded_env, monkeypatch):
     with pytest.raises(AIGuardrailBlocked, match="EXPENSIVE_JOB_BLOCKED"):
         _attempt()
     assert _events(guarded_env)[-1][0] == "SKIPPED"
+
+
+@pytest.mark.parametrize('scope', ['AI_MAX_COST_PER_RUN_USD', 'AI_MAX_DAILY_COST_USD', 'MEDIA_MAX_COST_PER_RUN'])
+def test_settled_usage_releases_reservation_for_all_budgets(guarded_env, monkeypatch, scope):
+    from signalboard.ai.guardrails import preflight, finish_success
+    monkeypatch.setenv('AI_ENABLED', 'true')
+    monkeypatch.setenv(scope, '0.0015')
+    def reserve(key):
+        return preflight(workload='media_understanding', provider='openai', model='test',
+                         system='s', user='u', image_count=0, max_output_tokens=1000,
+                         prices_per_million=(1, 1, 1), input_hash=key, prompt_version='test')
+    first = reserve('first')
+    with pytest.raises(AIGuardrailBlocked):
+        reserve('pending-would-overrun')
+    finish_success(first, input_tokens=1, cached_input_tokens=0, output_tokens=99, actual_cost=0.0001)
+    assert reserve('settled-fits').ledger_id
+
+
+@pytest.mark.parametrize('status,actual', [('SUCCESS', None), ('FAILED', 0), ('PENDING', 0)])
+def test_unknown_or_unfinished_cost_keeps_full_reservation(guarded_env, monkeypatch, status, actual):
+    from signalboard.ai.guardrails import preflight
+    monkeypatch.setenv('AI_ENABLED', 'true')
+    monkeypatch.setenv('AI_MAX_COST_PER_RUN_USD', '0.0015')
+    def reserve(key):
+        return preflight(workload='media_understanding', provider='openai', model='test',
+                         system='s', user='u', image_count=0, max_output_tokens=1000,
+                         prices_per_million=(1, 1, 1), input_hash=key, prompt_version='test')
+    first = reserve('first')
+    with sqlite3.connect(guarded_env) as con:
+        con.execute('UPDATE ai_usage_ledger SET status=?,actual_cost_if_available=? WHERE ledger_id=?',
+                    (status, actual, first.ledger_id))
+    with pytest.raises(AIGuardrailBlocked, match='RUN_BUDGET_EXCEEDED'):
+        reserve('second')
