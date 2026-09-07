@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T19:05:41.923373+00:00",
+  "generated_at": "2026-09-07T19:06:03.902263+00:00",
   "prompt_version": "v2.0.2-intel-attribution",
   "sources": {
     "tw_jukan05": {
@@ -92,7 +92,7 @@
   "scope": "all_stored_history",
   "campaign_id": "first-call-full-history-20260907",
   "repair_revision": "price-identity-acceptance-v6",
-  "workflow_run_id": "34144577857",
+  "workflow_run_id": "34154055287",
   "initial_pending_this_job": 0,
   "resolved_this_job": 0,
   "batches_this_job": 0,
@@ -104,13 +104,7 @@
   },
   "failed_post_attempts": {},
   "deferred_post_ids": [],
-  "elapsed_seconds": 0.8,
-  "campaign_status": "price_gaps",
-  "per_security_review_pending": 0,
-  "acceptance": {
-    "changed_anchors": 547,
-    "prices_missing": 156,
-    "per_security_review_pending": 0,
-    "raw_history_coverage": "unverified"
-  }
+  "elapsed_seconds": 0.7,
+  "campaign_status": "extraction_complete",
+  "per_security_review_pending": 0
 }
