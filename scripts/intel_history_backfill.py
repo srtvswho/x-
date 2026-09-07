@@ -24,10 +24,11 @@ from signalboard.extract.prompts_intel import PROMPT_VERSION
 from signalboard.history_reuse import load_reviews
 
 
-def plan_backfill(con, limit=400):
+def plan_backfill(con, limit=400, excluded_post_ids=()):
     if not 1 <= limit <= 500:
         raise ValueError("batch limit must be between 1 and 500")
     reviews = load_reviews(con)
+    excluded = set(excluded_post_ids)
     buckets = defaultdict(deque)
     counts = {}
     for source in SRC2KOL:
@@ -45,7 +46,7 @@ def plan_backfill(con, limit=400):
         outdated_count = len(missing)
         reused = sum(p[0] in reviews for p in missing)
         missing = [p for p in missing if p[0] not in reviews]
-        buckets[source].extend(p[0] for p in missing)
+        buckets[source].extend(p[0] for p in missing if p[0] not in excluded)
         counts[source] = {
             "raw_posts": raw_count, "raw_start": first, "raw_end": last,
             "pending_current_version": outdated_count,
@@ -63,15 +64,15 @@ def plan_backfill(con, limit=400):
         "prompt_version": PROMPT_VERSION, "sources": counts,
         "pending_total": sum(c["pending_call_review"] for c in counts.values()),
         "selected_post_ids": selected, "batch_limit": limit,
-        "stored_history_call_review_complete": not any(buckets.values()) and not selected,
+        "stored_history_call_review_complete": not any(c["pending_call_review"] for c in counts.values()),
         "stored_history_extraction_complete": not any(c["pending_current_version"] for c in counts.values()),
         "history_complete": False, "scope": "all_stored_history",
     }
 
 
-def read_plan(db, limit):
+def read_plan(db, limit, excluded_post_ids=()):
     with sqlite3.connect(f"file:{Path(db).resolve()}?mode=ro", uri=True) as con:
-        return plan_backfill(con, limit)
+        return plan_backfill(con, limit, excluded_post_ids)
 
 
 def write_report(output, report):
@@ -82,8 +83,8 @@ def write_report(output, report):
     temporary.replace(output)
 
 
-def run_backfill(db, limit, apply, output, timeout=None):
-    before = read_plan(db, limit)
+def run_backfill(db, limit, apply, output, timeout=None, excluded_post_ids=()):
+    before = read_plan(db, limit, excluded_post_ids)
     ids = before["selected_post_ids"]
     report = dict(before, applied=apply, resolved_this_run=0,
                   attempted_post_ids=ids if apply else [],

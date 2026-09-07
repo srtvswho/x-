@@ -98,3 +98,65 @@ def test_audit_matches_anchors_and_keeps_prices_missing_explicit(tmp_path):
     assert audit['jukan_focus'][0]['post_id'] == 'old'
     assert audit['prices_missing'][0]['call_date'] == '2024-01-01'
     assert audit['stored_history_extraction_complete'] is False
+
+
+def test_partial_failures_defer_until_healthy_posts_finish(db, tmp_path, monkeypatch):
+    attempted = []
+    def batch(db, limit, apply, output, timeout, excluded_post_ids=()):
+        plan = campaign.read_plan(db, limit, excluded_post_ids)
+        ids = plan['selected_post_ids']
+        attempted.append(ids)
+        failed = ['a'] if 'a' in ids and len(attempted) == 1 else []
+        with sqlite3.connect(db) as con:
+            con.executemany('INSERT INTO extractions_intel VALUES (?,?)',
+                [(p, plan['prompt_version']) for p in ids if p not in failed])
+        return {'batch_status': 'incomplete' if failed else 'completed',
+                'resolved_this_run': len(ids) - len(failed),
+                'unresolved_attempted_post_ids': failed}
+    report = campaign.drain(db, 2, tmp_path / 'r.json', batch_fn=batch)
+    assert attempted == [['a', 'b'], ['c'], ['a']]
+    assert report['campaign_status'] == 'extraction_complete'
+    assert report['failed_post_attempts'] == {}
+
+
+def test_deferred_posts_stay_in_coverage_and_retry_counts_survive_resume(db, tmp_path):
+    output = tmp_path / 'r.json'
+    output.write_text(json.dumps({'campaign_id': os.getenv('AI_RUN_ID', 'local-history-plan'),
+        'repair_revision': 'v1', 'failed_post_attempts': {'a': 2, 'b': 2, 'c': 2}}))
+    report = campaign.drain(db, 2, output, repair_revision='v1',
+        batch_fn=lambda *a, **kw: pytest.fail('Exhausted posts must not be retried'))
+    assert report['selected_post_ids'] == []
+    assert report['pending_total'] == 3
+    assert report['stored_history_call_review_complete'] is False
+    assert report['campaign_status'] == 'blocked'
+    assert report['blocked_reason'] == 'unresolved_posts'
+
+
+def test_two_partially_failed_batches_do_not_stop_campaign(db, tmp_path):
+    with sqlite3.connect(db) as con:
+        con.executemany('INSERT INTO raw_posts VALUES (?, ?, ?)',
+            [(p, 'tw_jukan05', '2025-02-01') for p in ('d', 'e', 'f')])
+    attempted = []
+    def batch(db, limit, apply, output, timeout, excluded_post_ids=()):
+        plan = campaign.read_plan(db, limit, excluded_post_ids)
+        ids = plan['selected_post_ids']
+        attempted.append(ids)
+        failed = [ids[0]] if len(attempted) <= 2 else []
+        with sqlite3.connect(db) as con:
+            con.executemany('INSERT INTO extractions_intel VALUES (?,?)',
+                [(p, plan['prompt_version']) for p in ids if p not in failed])
+        return {'batch_status': 'incomplete' if failed else 'completed',
+                'resolved_this_run': len(ids) - len(failed), 'unresolved_attempted_post_ids': failed}
+    report = campaign.drain(db, 2, tmp_path / 'r.json', batch_fn=batch)
+    assert attempted == [['a', 'b'], ['c', 'd'], ['e', 'f'], ['a', 'c']]
+    assert report['pending_total'] == 0
+
+
+def test_only_new_repair_revision_reopens_blocked_campaign():
+    config = {'enabled': True, 'expires_at': '2026-09-10T00:00:00Z',
+              'campaign_id': 'same-budget', 'repair_revision': 'json-v1'}
+    now = datetime(2026, 9, 7, tzinfo=timezone.utc)
+    report = {'campaign_id': 'same-budget', 'campaign_status': 'blocked'}
+    assert campaign.gate(config, report, now)
+    assert not campaign.gate(config, dict(report, repair_revision='json-v1'), now)
+    assert not campaign.gate(config, dict(report, campaign_status='completed'), now)

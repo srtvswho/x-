@@ -305,7 +305,7 @@ def call_deepseek(post_id: str, raw_text: str) -> dict:
         result = call_json(
             "bulk_post_processing", sys_p, usr_p, EXTRACTION_SCHEMA,
             schema_name="signalboard_post_extraction", max_output_tokens=1500,
-            timeout=30, max_retries=MAX_RETRIES,
+            max_output_tokens_ceiling=6000, timeout=90, max_retries=MAX_RETRIES,
         )
         return {
             "ok": True, "extraction": result.data, "raw": result.text,
@@ -317,7 +317,7 @@ def call_deepseek(post_id: str, raw_text: str) -> dict:
             "ai_result": result,
         }
     except Exception as e:
-        return {"ok": False, "error": str(e)}
+        return {"ok": False, "error": f'{type(e).__name__}: {e}'}
 
 
 def persist_extraction(con: sqlite3.Connection, post_id: str, source_id: str,
