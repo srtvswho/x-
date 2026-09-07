@@ -259,6 +259,7 @@ def prioritize_price_targets(conn, by_ticker: dict[str, list[dict]],
                              max_api_requests: int = 0) -> dict[str, list[dict]]:
     """首页优先，再按价格缓存缺口排序，并限制单次 API 请求量。"""
     dashboard_tickers = {target["ticker"] for target in dashboard_targets}
+    priority_tickers = {s.strip().upper() for s in os.getenv("POLYGON_PRIORITY_TICKERS", "").split(",") if s.strip()}
     ranked = []
     for ticker, items in by_ticker.items():
         missing = 0
@@ -273,9 +274,9 @@ def prioritize_price_targets(conn, by_ticker: dict[str, list[dict]],
             elif row[0]:
                 fetched.append(row[0])
         oldest = min(fetched) if fetched else ""
-        ranked.append((0 if ticker in dashboard_tickers else 1,
+        ranked.append((0 if ticker in priority_tickers else 1, 0 if ticker in dashboard_tickers else 1,
                        0 if missing else 1, -missing, oldest, ticker, items))
-    ranked.sort(key=lambda row: row[:5])
+    ranked.sort(key=lambda row: row[:6])
     if max_api_requests > 0:
         ranked = ranked[:max_api_requests]
     return {ticker: items for *_, ticker, items in ranked}

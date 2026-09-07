@@ -706,6 +706,25 @@ def query_call_performance_events(conn, days: int | None = None) -> list[dict]:
                 "history_source": "extractions_intel",
             })
 
+    from signalboard.history_reuse import load_reviews, candidate_events
+    reviews = load_reviews(conn)
+    # A review supersedes the saved version it examined, including an explicit
+    # no-call decision. A newer extraction invalidates the review automatically.
+    events = [e for e in events if e["post_id"] not in reviews]
+    for review in reviews.values():
+        if review["published_at"] < cutoff:
+            continue
+        for event in json.loads(review["events_json"]):
+            ticker = normalize_ticker(event["ticker"], review["raw_text"])
+            if not ticker:
+                continue
+            events.append({"post_id": review["post_id"], "source_id": review["source_id"],
+                "direction": event["direction"], "ticker": ticker, "bottleneck": None,
+                "published_at": review["published_at"], "raw_text": review["raw_text"],
+                "raw_url": f"https://x.com/{review['source_id'].replace('tw_', '')}/status/{review['post_id']}",
+                "history_source": review["origin"], "review_reason": review["reason"],
+                "evidence_reason": event.get("reason", "")})
+
     if _table_exists(conn, "predictions"):
         legacy = conn.execute(f"""
             SELECT p.post_id, p.source_id, p.direction, p.ticker, r.published_at,
@@ -721,6 +740,8 @@ def query_call_performance_events(conn, days: int | None = None) -> list[dict]:
             ORDER BY p.published_at ASC
         """, (cutoff,)).fetchall()
         for post_id, src, direction, ticker, published_at, raw_text, raw_url in legacy:
+            if post_id in reviews:
+                continue
             ticker = normalize_ticker(ticker, raw_text or "")
             # 旧表只用于把 v2 已确认过的标的向前延长，不扩张 ticker 宇宙。
             if (src, ticker) not in validated_pairs:
@@ -736,6 +757,14 @@ def query_call_performance_events(conn, days: int | None = None) -> list[dict]:
                 "raw_url": raw_url or f"https://x.com/{src.replace('tw_', '')}/status/{post_id}",
                 "history_source": "predictions_legacy",
             })
+
+    for event in candidate_events(conn):
+        if event['post_id'] not in reviews and event['published_at'] >= cutoff:
+            ticker = normalize_ticker(event['ticker'], event['raw_text'])
+            if ticker:
+                events.append({**event, 'ticker': ticker})
+    # An archived result can be present in several reports.
+    events = list({(e['source_id'], e['post_id'], e['ticker'], e['direction']): e for e in events}.values())
 
     def event_order(row):
         stamp = datetime.fromisoformat(row["published_at"].replace("Z", "+00:00"))

@@ -125,3 +125,70 @@ on master, set apply=true and batch_limit=400 (maximum 500). Existing limits rem
 $2 per run, $3 per day, 500 API attempts including retries. Inspect batch_status,
 resolved_this_run and pending_total; a completed batch is not a completed repair.
 The September 7 verification report is outputs/history_repair_status_20260907.json.
+
+
+## 2026-09-07: reuse saved work before paid continuation
+
+Run #9 was cancelled by the user. Its scheduled continuation was paused at
+176c1be before preparing this change. The campaign ID and cumulative $30 cap
+remain unchanged; resumption does not reset the budget.
+
+The old queue conflated missing current prompt versions with missing work.
+The replacement restores owned raw-post archives and validates saved v2.0.1
+interpretations and Serenity v1.4.1 caches before selecting paid targets:
+
+- Original payload, origin, prompt version, and raw-post hash are preserved in
+  historical_call_reviews. No record is relabelled as a new model extraction.
+- v1 caches require an exact reconstructed input/context hash. Their per-ticker
+  directions remain separate. Unresolved, hedged, or mixed historical decisions
+  remain in the review queue.
+- Old neutral decisions do not require a new Claim/Theme response to answer the
+  first-call question. Old directional results without historical/disclosure
+  flags, uncertain attribution, or mixed ticker direction require review.
+- Changed raw text or a later extraction invalidates reuse. A later neutral or
+  relay result cannot be overridden by an old bullish cache.
+- Prior candidate reports only retain selected examples. Their saved evidence
+  is restored, but partial examples never count as full-post extraction coverage.
+- Coverage distinguishes pending_call_review from pending_current_version.
+  Completing the call repair does not claim that all Claims/Themes were upgraded
+  or that the original scrape contains every historical post on X.
+- SQLite backup, including committed WAL contents, replaces raw-file gzip for
+  cancellation checkpoints. Coverage and ledger reports are read from the exact
+  snapshot that is saved. Prices/publication run in a separate job under the same
+  workflow-wide data-write lock, with their own time limit and final checkpoint.
+
+Read-only/local snapshot validation (before resumed paid work):
+
+| Category | Posts |
+|---|---:|
+| Current-version interpretations | 5,467 |
+| Prior interpretations reused at zero API calls | 13,163 |
+| No saved interpretation found, including restored archives | 19,632 |
+| Prior interpretation requiring material review | 3,354 |
+| Additional raw posts recovered from owned archives | 386 |
+
+These are snapshot counts, not final completion claims. The restored raw posts
+are included in the pending categories. Twenty-four partial candidate evidence
+records were also recovered. Forty-seven targeted tests and a full dashboard build
+passed. The build retained original posts and summaries. First-call evidence and
+price anchors are compared for every author/ticker in first_call_campaign_audit.json.
+
+Reproduce with zero network/model calls:
+
+```sh
+PYTHONPATH=. python scripts/intel_history_campaign.py --db data/signalboard_full.db --recover-only
+PYTHONPATH=. python -m pytest tests/test_history_reuse.py tests/test_first_call_repair.py tests/test_history_campaign.py tests/test_signalboard_history_rebuild.py tests/test_history_repair_execution.py tests/test_dashboard_history_performance.py tests/test_intel_history_backfill.py -q
+```
+
+
+Four exact-text evidence reviews are tracked in config/first_call_evidence_reviews.json:
+MU author outlook on 2025-09-05 and explicit long recommendation on 2025-09-19;
+SNDK/Kioxia buying intent on 2025-09-30; and a 2025-06-26 Daishin report relay
+that must not become Jukan's call. Local tracking now anchors MU at 2025-09-05
+and SNDK at 2025-09-30. These are earliest currently identified evidence dates,
+not proof that the author's complete historical timeline has been retrieved.
+
+The workflow first publishes restored evidence and refreshes MU/SNDK prices,
+then drains only the remaining missing/ambiguous interpretations. Final price
+refresh and acceptance run in a separate job. No manual batch-by-batch dispatch
+is required. An unavailable price remains a visible gap; it is never made up.

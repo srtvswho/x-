@@ -23,12 +23,16 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / 'scripts'))
 from intel_history_backfill import read_plan, run_backfill, write_report
+from signalboard.history_reuse import recover, restore_archives, apply_evidence_reviews
+from signalboard.extract.prompts_intel import PROMPT_VERSION
+from common import SRC2KOL
 from signalboard.ai.guardrails import ACCOUNTED_COST_SQL, ATTEMPTED_STATUSES
 
 CONFIG = ROOT / 'config/history_repair_campaign.json'
 REPORT = ROOT / 'outputs/history_repair_campaign.json'
 BASELINE = ROOT / 'outputs/first_call_campaign_before.json'
 AUDIT = ROOT / 'outputs/first_call_campaign_audit.json'
+REUSE = ROOT / 'outputs/history_reuse_report.json'
 
 
 def ledger_summary(db, run_id):
@@ -48,6 +52,16 @@ def checkpoint(db, paths):
     snapshot = ROOT / 'data/history_checkpoint.db'
     with sqlite3.connect(db) as source, sqlite3.connect(snapshot) as target:
         source.backup(target)
+    # Cancellation can interrupt a batch between its report writes. Derive
+    # coverage from the exact backed-up database, never from a stale green log.
+    actual = read_plan(snapshot, 400)
+    write_report(ROOT / 'outputs/signalboard_history_rebuild_latest.json', actual)
+    if REPORT.exists():
+        report = json.loads(REPORT.read_text())
+        report.update(actual)
+        if report.get('campaign_id'):
+            report['ledger'] = ledger_summary(snapshot, report['campaign_id'])
+        write_report(REPORT, report)
     compressed = ROOT / 'data/signalboard.db.gz'
     temporary = compressed.with_suffix('.gz.tmp')
     with snapshot.open('rb') as src, gzip.open(temporary, 'wb') as dst:
@@ -152,6 +166,7 @@ def make_audit(db, baseline=BASELINE):
     return {'generated_at': datetime.now(timezone.utc).isoformat(),
             'pending_total': plan['pending_total'], 'sources': plan['sources'],
             'stored_history_extraction_complete': plan['stored_history_extraction_complete'],
+            'stored_history_call_review_complete': plan['stored_history_call_review_complete'],
             'raw_history_coverage': 'unverified', 'structural_errors': issues,
             'rows': rows, 'changed_anchors': changes,
             'removed_anchors': [{k: r[k] for k in ('source_id', 'ticker', 'post_id', 'call_date')} for r in removed],
@@ -175,9 +190,14 @@ def main():
     parser.add_argument('--continuous', action='store_true')
     parser.add_argument('--checkpoint-git', action='store_true')
     parser.add_argument('--gate', action='store_true')
+    parser.add_argument('--checkpoint-only', action='store_true')
+    parser.add_argument('--recover-only', action='store_true', help='Restore saved results with zero API calls')
     parser.add_argument('--audit', action='store_true')
     args = parser.parse_args()
     config = json.loads(CONFIG.read_text())
+    if args.checkpoint_only:
+        checkpoint(args.db, [REPORT, BASELINE, AUDIT, REUSE, ROOT / 'outputs/signalboard_history_rebuild_latest.json'])
+        return
     if args.gate:
         previous = json.loads(REPORT.read_text()) if REPORT.exists() else {}
         enabled = gate(config, previous)
@@ -200,7 +220,7 @@ def main():
                                     'prices_missing': len(audit['prices_missing']),
                                     'raw_history_coverage': 'unverified'}
             if not audit['pending_total']:
-                report['campaign_status'] = 'completed'
+                report['campaign_status'] = 'completed' if not audit['prices_missing'] else 'price_gaps'
             write_report(REPORT, report)
         print(json.dumps({k: v for k, v in audit.items() if k in
                           ('pending_total', 'stored_history_extraction_complete', 'structural_errors')}, ensure_ascii=False))
@@ -209,8 +229,24 @@ def main():
         raise SystemExit('AI_RUN_ID must use the stable campaign id; budget resets are forbidden')
     if args.apply and not BASELINE.exists():
         write_report(BASELINE, make_audit(args.db))
+    if args.apply or args.recover_only:
+        if not BASELINE.exists():
+            write_report(BASELINE, make_audit(args.db))
+        archives = restore_archives(args.db, ROOT, SRC2KOL)
+        evidence_count = apply_evidence_reviews(args.db, ROOT / 'config/first_call_evidence_reviews.json')
+        reuse = recover(args.db, SRC2KOL, PROMPT_VERSION)
+        reuse['reviewed_evidence_applied'] = evidence_count
+        reuse['archives'] = archives
+        write_report(REUSE, reuse)
+        print(json.dumps({k: v for k, v in reuse.items() if k != 'pending'}, ensure_ascii=False), flush=True)
+        if args.recover_only:
+            write_report(AUDIT, make_audit(args.db))
+            write_report(ROOT / 'outputs/signalboard_history_rebuild_latest.json', read_plan(args.db, args.limit))
+            return
     if args.apply and args.continuous:
-        hook = (lambda: checkpoint(args.db, [REPORT, BASELINE, AUDIT, ROOT / 'outputs/signalboard_history_rebuild_latest.json'])) if args.checkpoint_git else None
+        hook = (lambda: checkpoint(args.db, [REPORT, BASELINE, AUDIT, REUSE, ROOT / 'outputs/signalboard_history_rebuild_latest.json'])) if args.checkpoint_git else None
+        if hook:
+            hook()
         report = drain(args.db, args.limit, REPORT, max_seconds=config['max_seconds_per_job'], checkpoint_fn=hook)
     else:
         report = run_backfill(args.db, args.limit, args.apply, ROOT / 'outputs/signalboard_history_rebuild_latest.json')
