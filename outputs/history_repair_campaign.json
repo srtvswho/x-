@@ -105,6 +105,12 @@
   "failed_post_attempts": {},
   "deferred_post_ids": [],
   "elapsed_seconds": 0.8,
-  "campaign_status": "extraction_complete",
-  "per_security_review_pending": 0
+  "campaign_status": "price_gaps",
+  "per_security_review_pending": 0,
+  "acceptance": {
+    "changed_anchors": 545,
+    "prices_missing": 144,
+    "per_security_review_pending": 0,
+    "raw_history_coverage": "unverified"
+  }
 }
