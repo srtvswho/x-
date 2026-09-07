@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T14:23:46.331624+00:00",
+  "generated_at": "2026-09-07T15:52:41.608673+00:00",
   "prompt_version": "v2.0.2-intel-attribution",
   "sources": {
     "tw_jukan05": {
@@ -105,5 +105,11 @@
   "failed_post_attempts": {},
   "deferred_post_ids": [],
   "elapsed_seconds": 0.8,
-  "campaign_status": "extraction_complete"
+  "campaign_status": "attribution_pending",
+  "acceptance": {
+    "changed_anchors": 471,
+    "prices_missing": 219,
+    "per_security_review_pending": 1071,
+    "raw_history_coverage": "unverified"
+  }
 }
