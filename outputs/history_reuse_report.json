@@ -3,33 +3,19 @@
   "counts": {
     "current": 5467,
     "pending": 22982,
-    "already_reused": 4,
-    "reused": 13163
+    "already_reused": 13167
   },
   "reasons": {
     "no_saved_interpretation": 19628,
     "missing_semantic_fields": 2385,
-    "saved_neutral_or_historical": 8666,
     "cache_ambiguous_prediction": 723,
-    "saved_per_ticker_predictions": 4464,
     "missing_content_interpretation": 39,
     "cache_context_changed": 19,
     "ambiguous_ticker_direction": 132,
     "needs_author_evidence": 53,
-    "saved_direct_author_signal": 10,
-    "saved_pure_relay": 23,
     "possible_external_judgment": 3
   },
-  "reused_by_source": {
-    "tw_TradexWhisperer": 1897,
-    "tw_austinsemis": 534,
-    "tw_jukan05": 1142,
-    "tw_FeroceResearch": 922,
-    "tw_zephyr_z9": 1547,
-    "tw_aleabitoreddit": 5248,
-    "tw_gsmferrari": 1086,
-    "tw_DGretta_Author": 787
-  },
+  "reused_by_source": {},
   "pending": [
     {
       "post_id": "1853497590056202327",
@@ -114943,10 +114929,9 @@
     }
   ],
   "additional_api_calls": 0,
-  "reviewed_evidence_applied": 4,
+  "reviewed_evidence_applied": 0,
   "archives": {
     "counts": {
-      "restored_raw_posts": 386,
       "candidate_evidence_records": 24
     },
     "conflicts": [],

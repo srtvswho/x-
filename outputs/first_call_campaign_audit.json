@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T04:17:38.093112+00:00",
+  "generated_at": "2026-09-07T04:20:10.939804+00:00",
   "pending_total": 22982,
   "sources": {
     "tw_jukan05": {
@@ -6279,11 +6279,11 @@
         }
       ],
       "call_date": "2025-09-05",
-      "call_price": null,
-      "now_price": null,
-      "now_date": null,
-      "raw_return": null,
-      "directional_return": null,
+      "call_price": 131.37,
+      "now_price": 1016.59,
+      "now_date": "2026-09-04",
+      "raw_return": 673.84,
+      "directional_return": 673.84,
       "in_field": true
     },
     {
@@ -9760,11 +9760,11 @@
         }
       ],
       "call_date": "2025-09-30",
-      "call_price": null,
-      "now_price": null,
-      "now_date": null,
-      "raw_return": null,
-      "directional_return": null,
+      "call_price": 112.2,
+      "now_price": 1740.0,
+      "now_date": "2026-09-04",
+      "raw_return": 1450.8,
+      "directional_return": 1450.8,
       "in_field": true
     },
     {
@@ -12684,10 +12684,10 @@
       "earlier_mentions": [],
       "call_date": "2025-10-30",
       "call_price": 195.82,
-      "now_price": 1271.05,
-      "now_date": "2026-08-11",
-      "raw_return": 549.09,
-      "directional_return": 549.09,
+      "now_price": 1740.0,
+      "now_date": "2026-09-04",
+      "raw_return": 788.57,
+      "directional_return": 788.57,
       "in_field": true
     },
     {
@@ -14049,10 +14049,10 @@
       "earlier_mentions": [],
       "call_date": "2025-11-25",
       "call_price": 220.5,
-      "now_price": 1271.05,
-      "now_date": "2026-08-11",
-      "raw_return": 476.44,
-      "directional_return": 476.44,
+      "now_price": 1740.0,
+      "now_date": "2026-09-04",
+      "raw_return": 689.12,
+      "directional_return": 689.12,
       "in_field": false
     },
     {
@@ -14873,10 +14873,10 @@
       ],
       "call_date": "2025-12-28",
       "call_price": 250.05,
-      "now_price": 1271.05,
-      "now_date": "2026-08-11",
-      "raw_return": 408.32,
-      "directional_return": 408.32,
+      "now_price": 1740.0,
+      "now_date": "2026-09-04",
+      "raw_return": 595.86,
+      "directional_return": 595.86,
       "in_field": true
     },
     {
@@ -31751,10 +31751,10 @@
       ],
       "call_date": "2026-05-03",
       "call_price": 1187.0,
-      "now_price": 1271.05,
-      "now_date": "2026-08-11",
-      "raw_return": 7.08,
-      "directional_return": 7.08,
+      "now_price": 1740.0,
+      "now_date": "2026-09-04",
+      "raw_return": 46.59,
+      "directional_return": 46.59,
       "in_field": true
     },
     {
@@ -34767,10 +34767,10 @@
       ],
       "call_date": "2026-06-02",
       "call_price": 1716.36,
-      "now_price": 2090.71,
-      "now_date": "2026-06-26",
-      "raw_return": 21.81,
-      "directional_return": 21.81,
+      "now_price": 1740.0,
+      "now_date": "2026-09-04",
+      "raw_return": 1.38,
+      "directional_return": 1.38,
       "in_field": true
     },
     {
@@ -38458,10 +38458,10 @@
       "earlier_mentions": [],
       "call_date": "2026-07-21",
       "call_price": 1589.4,
-      "now_price": 1271.05,
-      "now_date": "2026-08-11",
-      "raw_return": -20.03,
-      "directional_return": 20.03,
+      "now_price": 1740.0,
+      "now_date": "2026-09-04",
+      "raw_return": 9.48,
+      "directional_return": -9.48,
       "in_field": true
     },
     {
@@ -46556,11 +46556,6 @@
       "call_date": "2025-09-03"
     },
     {
-      "source_id": "tw_jukan05",
-      "ticker": "MU",
-      "call_date": "2025-09-05"
-    },
-    {
       "source_id": "tw_aleabitoreddit",
       "ticker": "ORCL",
       "call_date": "2025-09-10"
@@ -46733,11 +46728,6 @@
     {
       "source_id": "tw_FeroceResearch",
       "ticker": "CSU",
-      "call_date": "2025-09-30"
-    },
-    {
-      "source_id": "tw_jukan05",
-      "ticker": "SNDK",
       "call_date": "2025-09-30"
     },
     {
@@ -48594,11 +48584,11 @@
         }
       ],
       "call_date": "2025-09-05",
-      "call_price": null,
-      "now_price": null,
-      "now_date": null,
-      "raw_return": null,
-      "directional_return": null,
+      "call_price": 131.37,
+      "now_price": 1016.59,
+      "now_date": "2026-09-04",
+      "raw_return": 673.84,
+      "directional_return": 673.84,
       "in_field": true
     },
     {
@@ -48653,11 +48643,11 @@
         }
       ],
       "call_date": "2025-09-30",
-      "call_price": null,
-      "now_price": null,
-      "now_date": null,
-      "raw_return": null,
-      "directional_return": null,
+      "call_price": 112.2,
+      "now_price": 1740.0,
+      "now_date": "2026-09-04",
+      "raw_return": 1450.8,
+      "directional_return": 1450.8,
       "in_field": true
     }
   ]
