@@ -20,7 +20,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "scripts" / "dashboard"))
 from common import SRC2KOL
-from intel_extract import PROMPT_VERSION
+from signalboard.extract.prompts_intel import PROMPT_VERSION
 
 
 def plan_backfill(con, limit=400):
@@ -57,8 +57,65 @@ def plan_backfill(con, limit=400):
         "prompt_version": PROMPT_VERSION, "sources": counts,
         "pending_total": sum(c["pending_current_version"] for c in counts.values()),
         "selected_post_ids": selected, "batch_limit": limit,
+        "stored_history_extraction_complete": not any(buckets.values()) and not selected,
         "history_complete": False, "scope": "all_stored_history",
     }
+
+
+def read_plan(db, limit):
+    with sqlite3.connect(f"file:{Path(db).resolve()}?mode=ro", uri=True) as con:
+        return plan_backfill(con, limit)
+
+
+def write_report(output, report):
+    output = Path(output)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    temporary = output.with_suffix(output.suffix + ".tmp")
+    temporary.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
+    temporary.replace(output)
+
+
+def run_backfill(db, limit, apply, output):
+    before = read_plan(db, limit)
+    ids = before["selected_post_ids"]
+    report = dict(before, applied=apply, resolved_this_run=0,
+                  attempted_post_ids=ids if apply else [],
+                  unresolved_attempted_post_ids=ids if apply else [],
+                  batch_status="running" if apply and ids else "planned" if not apply else "no_work",
+                  extractor_returncode=None)
+    # Preserve the plan even if the runner is killed while the extractor is working.
+    write_report(output, report)
+    returncode = None
+    error = None
+    try:
+        if apply and ids:
+            returncode = subprocess.run([
+                sys.executable, str(ROOT / "scripts" / "intel_extract.py"),
+                "--db", str(db), "--post-ids", ",".join(ids), "--max-targets", str(limit),
+            ], check=False).returncode
+    except (OSError, KeyboardInterrupt) as exc:
+        error = type(exc).__name__
+        returncode = 130 if isinstance(exc, KeyboardInterrupt) else 1
+    finally:
+        after = read_plan(db, limit)
+        unresolved = []
+        if apply and ids:
+            with sqlite3.connect(f"file:{Path(db).resolve()}?mode=ro", uri=True) as con:
+                unresolved = [pid for pid in ids if not con.execute(
+                    "SELECT 1 FROM extractions_intel WHERE post_id=? AND prompt_version=?",
+                    (pid, PROMPT_VERSION),
+                ).fetchone()]
+        report = dict(after, applied=apply,
+                      resolved_this_run=len(ids) - len(unresolved) if apply else 0,
+                      attempted_post_ids=ids if apply else [],
+                      unresolved_attempted_post_ids=unresolved,
+                      extractor_returncode=returncode,
+                      batch_status=("planned" if not apply else "no_work" if not ids else
+                                    "incomplete" if unresolved or returncode else "completed"))
+        if error:
+            report["runner_error"] = error
+        write_report(output, report)
+    return report
 
 
 def main():
@@ -68,23 +125,10 @@ def main():
     parser.add_argument("--apply", action="store_true")
     parser.add_argument("--report", default="outputs/signalboard_history_rebuild_latest.json")
     args = parser.parse_args()
-    with sqlite3.connect(f"file:{Path(args.db).resolve()}?mode=ro", uri=True) as con:
-        before = plan_backfill(con, args.limit)
-    ids = before["selected_post_ids"]
-    if args.apply and ids:
-        subprocess.run([
-            sys.executable, str(ROOT / "scripts" / "intel_extract.py"),
-            "--db", args.db, "--post-ids", ",".join(ids), "--max-targets", str(args.limit),
-        ], check=True)
-    with sqlite3.connect(f"file:{Path(args.db).resolve()}?mode=ro", uri=True) as con:
-        report = plan_backfill(con, args.limit)
-    report["applied"] = args.apply
-    report["resolved_this_run"] = before["pending_total"] - report["pending_total"]
-    report["attempted_post_ids"] = ids if args.apply else []
-    output = Path(args.report)
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
+    report = run_backfill(args.db, args.limit, args.apply, args.report)
     print(json.dumps({k: v for k, v in report.items() if not k.endswith("post_ids")}, ensure_ascii=False, indent=2))
+    if report["batch_status"] == "incomplete":
+        raise SystemExit("Historical extraction batch incomplete; checkpoint saved. See report and extractor errors.")
 
 
 if __name__ == "__main__":

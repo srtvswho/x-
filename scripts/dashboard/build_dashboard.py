@@ -18,6 +18,8 @@ import requests
 # 24h 滚动 (不是北京自然日, 跟生产 06:00 抓取 → 06:20 Dashboard 节奏对齐)
 # 同时: 标的筛选逻辑共享 (common.select_dashboard_ticker_targets / is_in_field / KOL_TICKERS / KOLS)
 sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from signalboard.extract.prompts_intel import PROMPT_VERSION
 from common import (  # noqa: E402
     build_metadata, query_today_stats, query_today_records, cn_recent_24h_window_utc,
     KOL_TICKERS, KOLS, SRC2KOL, is_in_field, parse_json_arr,
@@ -677,13 +679,16 @@ def attach_call_history_evidence(conn, rows):
     cols = {r[1] for r in conn.execute("PRAGMA table_info(raw_posts)")}
     text_sql = "r.raw_text" if "raw_text" in cols else "''"
     url_sql = "r.raw_url" if "raw_url" in cols else "''"
+    extraction_cols = {r[1] for r in conn.execute("PRAGMA table_info(extractions_intel)")}
+    current_sql = "AND e.prompt_version=?" if "prompt_version" in extraction_cols else ""
     raw_by_source = {}
-    for pid, src, pub, text, url, analyzed in conn.execute(f"""
+    for pid, src, pub, text, url, analyzed, current in conn.execute(f"""
         SELECT r.post_id, r.source_id, r.published_at, {text_sql}, {url_sql},
-               EXISTS(SELECT 1 FROM extractions_intel e WHERE e.post_id=r.post_id)
+               EXISTS(SELECT 1 FROM extractions_intel e WHERE e.post_id=r.post_id),
+               EXISTS(SELECT 1 FROM extractions_intel e WHERE e.post_id=r.post_id {current_sql})
         FROM raw_posts r ORDER BY julianday(r.published_at), r.post_id
-    """):
-        raw_by_source.setdefault(src, []).append((pid, pub, text or "", url, analyzed))
+    """, (PROMPT_VERSION,) if current_sql else ()):
+        raw_by_source.setdefault(src, []).append((pid, pub, text or "", url, analyzed, current))
     aliases = {"MU": ["Micron", "美光"], "SNDK": ["SanDisk", "闪迪"]}
     for row in rows:
         src = row["source_id"]
@@ -699,6 +704,8 @@ def attach_call_history_evidence(conn, rows):
             "status": "unverified", "raw_posts": len(posts),
             "analyzed_posts": sum(p[4] for p in posts),
             "unprocessed_before_start": sum(not p[4] for p in prior),
+            "outdated_before_start": sum(p[4] and not p[5] for p in prior),
+            "pending_current_version": sum(not p[5] for p in posts),
             "raw_start": posts[0][1] if posts else None,
             "raw_end": posts[-1][1] if posts else None,
         }
@@ -706,7 +713,8 @@ def attach_call_history_evidence(conn, rows):
         row["earlier_mentions"] = [{
             "post_id": p[0], "published_at": p[1], "raw_text": p[2],
             "raw_url": p[3] or f"https://x.com/{src.replace('tw_', '')}/status/{p[0]}",
-            "analysis_status": "已有解读，未计入方向样本" if p[4] else "待解读",
+            "analysis_status": ("已有解读，未计入方向样本" if p[5] else
+                                "旧版解读，待复核" if p[4] else "待解读"),
         } for p in mentions[:3]]
 
 
