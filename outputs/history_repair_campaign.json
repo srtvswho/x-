@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T16:32:32.470551+00:00",
+  "generated_at": "2026-09-07T16:32:58.729358+00:00",
   "prompt_version": "v2.0.2-intel-attribution",
   "sources": {
     "tw_jukan05": {
@@ -105,6 +105,7 @@
   "failed_post_attempts": {},
   "deferred_post_ids": [],
   "elapsed_seconds": 0.9,
-  "campaign_status": "extraction_complete",
-  "per_security_review_pending": 4
+  "campaign_status": "blocked",
+  "per_security_review_pending": 4,
+  "blocked_reason": "per_security_review_validation_failed"
 }
