@@ -1,17 +1,17 @@
 {
-  "version": "per-security-calls-v3-exact-format",
-  "pending": 36,
+  "version": "per-security-calls-v4-labeled-evidence",
+  "pending": 31,
   "resolved": 4,
-  "recovered_from_paid_responses": 103,
+  "recovered_from_paid_responses": 1,
   "selected_count": 6,
-  "canary_passed": false,
-  "status": "blocked",
+  "canary_passed": true,
+  "status": "pending",
   "errors": {
-    "1978365814941384882": "ValueError: Directional decision lacks exact raw evidence",
-    "1977079938835718513": "ValueError: Directional decision lacks exact raw evidence"
+    "1993327956585070661": "ValueError: Directional decision lacks exact raw evidence",
+    "2016725956002537717": "ValueError: Directional decision lacks exact raw evidence"
   },
   "failed_attempts": {
-    "1978365814941384882": 1,
-    "1977079938835718513": 1
+    "1993327956585070661": 1,
+    "2016725956002537717": 1
   }
 }
