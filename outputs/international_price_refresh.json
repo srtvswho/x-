@@ -4,13 +4,13 @@
     "000660.KS": {
       "currency": "KRW",
       "latest_date": "2026-09-04",
-      "rows": 2,
+      "rows": 4,
       "status": "saved"
     },
     "005930.KS": {
       "currency": "KRW",
       "latest_date": "2026-09-04",
-      "rows": 2,
+      "rows": 4,
       "status": "saved"
     },
     "285A.T": {
@@ -32,6 +32,12 @@
       "status": "saved"
     },
     "6451.TW": {
+      "currency": "TWD",
+      "latest_date": "2026-09-04",
+      "rows": 1,
+      "status": "saved"
+    },
+    "2454.TW": {
       "currency": "TWD",
       "latest_date": "2026-09-04",
       "rows": 1,
