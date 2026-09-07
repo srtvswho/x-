@@ -1,8 +1,58 @@
 {
-  "version": "first-call-evidence-review-20260907-v1",
+  "version": "first-call-evidence-review-20260907-v2",
   "reviewer": "Codex reading exact saved raw posts",
   "scope": "These reviewed posts only; earlier missing history remains unverified.",
   "reviews": [
+    {
+      "post_id": "1993327956585070661",
+      "source_id": "tw_aleabitoreddit",
+      "published_at": "2025-11-25T14:36:33+00:00",
+      "raw_hash": "e9b02a70d7c60e4550e3fa71e675083377f1e097d62c63615bfc5e0aa8ab0846",
+      "reviewed_extraction_hash": "d9dc3570d33c05fdb08700eb6eda30befeed3cecd807de58534428396ce4d7aa",
+      "raw_text": "$NBIS core business is insane. \n\nBut what's even more insane is that potential for their subsidiaries to be worth more than their main business in a year lol. There's no public robotaxi companies right now. The only way to get exposure is $TSLA for their robotaxis and $GOOGL for Waymo. \n\nAnd $NBIS has AVride ~$6B valuation 83% ownership, which they partnered with $UBER (also an investor) to compete vs Waymo.Elon's been shilling Robotaxi's as a trillion dollar market. \n\nWould not be surprised if this is a $40B company not too far in the future. \n\nThat being said, $NBIS is hilariously valued at $21 now.",
+      "raw_url": "https://x.com/aleabitoreddit/status/1993327956585070661",
+      "events": [{"ticker":"NBIS","direction":"long","quote":"That being said, $NBIS is hilariously valued at $21 now.","reason":"Author explicitly argues NBIS is undervalued; TSLA/GOOGL are comparators and UBER is a partner, not separate recommendations."}],
+      "reason": "Exact-raw manual adjudication of exhausted quote-format retry: bullish NBIS only."
+    },
+    {
+      "post_id": "2016725956002537717",
+      "source_id": "tw_FeroceResearch",
+      "published_at": "2026-01-29T04:11:51+00:00",
+      "raw_hash": "f985038b13aac81a9c693f6ad3c7fea50fc805d9bbe84ec0a2b97bb7405f7f6b",
+      "reviewed_extraction_hash": "8dea5224659572561aadf87fa9c303de535409f994932424993efdfec1326635",
+      "raw_text": "Silver\nSilver Miners\nUranium\nCopper \nMemory\nEmerging Markets\nHousing\n\nYou do everything you possibly can to curate your portfolio around these themes in 2026. IGNORE any noise.\n\nI have posted absurd amount of details on all of these over the past weeks/months. \n\nThese themes will run much longer than what the naysayers have to say\n$RKT $UUUU $MU $COPX $AG $SLV",
+      "raw_url": "https://x.com/FeroceResearch/status/2016725956002537717",
+      "events": [],
+      "reason": "Theme-level portfolio advice with appended ticker tags, not independently expressed per-security recommendations. Preserve the bullish sector view in raw intelligence; do not manufacture individual calls from it."
+    },
+    {
+      "post_id": "2054266085889982497",
+      "source_id": "tw_TradexWhisperer",
+      "published_at": "2026-05-12T18:22:55+00:00",
+      "raw_hash": "b12be24b7a3f56877f91acb26013abd881c6f31c9debb5446a88ad839de2acbb",
+      "reviewed_extraction_hash": "7d25b6754314dd37f3cc9e6caec787c27b412fd8cec0c81a8f81e36ed1782d71",
+      "raw_text": "Same sector. Completely different multiples.\n\n$MU 8x Forward P/E\n$SNDK 10x Forward P/E\n$WDC 28x Forward P/E\n$STX 30x Forward P/E\n\nA 16x re-rate gets\n$MU at $1600 \n$SNDK at $2500\n\nAnd they would still be the two cheapest names in the group by a mile. https://t.co/lzvJ30dS5J",
+      "raw_url": "https://x.com/TradexWhisperer/status/2054266085889982497",
+      "events": [
+        {"ticker":"MU","direction":"long","quote":"A 16x re-rate gets\n$MU at $1600 \n$SNDK at $2500\n\nAnd they would still be the two cheapest names in the group by a mile.","reason":"Explicit positive rerating thesis for MU; WDC/STX are valuation comparators, not shorts."},
+        {"ticker":"SNDK","direction":"long","quote":"A 16x re-rate gets\n$MU at $1600 \n$SNDK at $2500\n\nAnd they would still be the two cheapest names in the group by a mile.","reason":"Explicit positive rerating thesis for SNDK; WDC/STX are valuation comparators, not shorts."}
+      ],
+      "reason": "Manual review preserves the exact multiline joint MU/SNDK thesis, without splicing separate ticker-specific fragments. Conditional valuation outlook, not a recorded trade execution."
+    },
+    {
+      "post_id": "2055007237207453843",
+      "source_id": "tw_TradexWhisperer",
+      "published_at": "2026-05-14T19:28:00+00:00",
+      "raw_hash": "f49568172794657591dc64a3d3204d30ab56d8962d2a034e628884534164d39a",
+      "reviewed_extraction_hash": "c56884e6eb05e9f6279bd7ec80b42791ef2d338b4d84bf4803015b55b72c4165",
+      "raw_text": "If you re-rate $MU and $SNDK to 16x forward PE\n\n$MU is $1,600\n$SNDK is $2,500\n\nAnd that is still an embarrassment of a multiple for what these companies are becoming. AI Cognitive Capacity Infrastructure.\n\nThe semiconductor sector average is 34x.\n\n16x is less than half. $DRAM",
+      "raw_url": "https://x.com/TradexWhisperer/status/2055007237207453843",
+      "events": [
+        {"ticker":"MU","direction":"long","quote":"If you re-rate $MU and $SNDK to 16x forward PE\n\n$MU is $1,600\n$SNDK is $2,500\n\nAnd that is still an embarrassment of a multiple for what these companies are becoming.","reason":"Author explicitly argues for higher valuation of MU and SNDK; a conditional bullish outlook, not an executed trade."},
+        {"ticker":"SNDK","direction":"long","quote":"If you re-rate $MU and $SNDK to 16x forward PE\n\n$MU is $1,600\n$SNDK is $2,500\n\nAnd that is still an embarrassment of a multiple for what these companies are becoming.","reason":"Author explicitly argues for higher valuation of MU and SNDK; a conditional bullish outlook, not an executed trade."}
+      ],
+      "reason": "Exact multiline shared evidence supports both named securities; DRAM is an industry term, not an extra security."
+    },
     {
       "post_id": "1963883771910070654",
       "source_id": "tw_jukan05",
