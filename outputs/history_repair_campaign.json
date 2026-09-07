@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T16:32:58.729358+00:00",
+  "generated_at": "2026-09-07T16:45:54.411241+00:00",
   "prompt_version": "v2.0.2-intel-attribution",
   "sources": {
     "tw_jukan05": {
@@ -86,12 +86,12 @@
   "pending_total": 0,
   "selected_post_ids": [],
   "batch_limit": 400,
-  "stored_history_call_review_complete": false,
+  "stored_history_call_review_complete": true,
   "stored_history_extraction_complete": false,
   "history_complete": false,
   "scope": "all_stored_history",
   "campaign_id": "first-call-full-history-20260907",
-  "repair_revision": "per-security-labeled-evidence-v4",
+  "repair_revision": "per-security-final-reviewed-evidence-v5",
   "workflow_run_id": "34143371191",
   "initial_pending_this_job": 0,
   "resolved_this_job": 0,
@@ -105,7 +105,13 @@
   "failed_post_attempts": {},
   "deferred_post_ids": [],
   "elapsed_seconds": 0.9,
-  "campaign_status": "blocked",
-  "per_security_review_pending": 4,
-  "blocked_reason": "per_security_review_validation_failed"
+  "campaign_status": "price_gaps",
+  "per_security_review_pending": 0,
+  "blocked_reason": "per_security_review_validation_failed",
+  "acceptance": {
+    "changed_anchors": 545,
+    "prices_missing": 196,
+    "per_security_review_pending": 0,
+    "raw_history_coverage": "unverified"
+  }
 }
