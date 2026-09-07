@@ -130,3 +130,9 @@ def test_semantic_retry_has_new_request_input():
 ])
 def test_failure_circuit(previous, count, successes, remaining, blocked):
     assert runner.batch_status(previous, count, successes, remaining)[1] is blocked
+
+
+def test_evidence_debt_does_not_block_unattempted_records():
+    assert runner.batch_status({},6,4,36,evidence_failures=2)==(True,False)
+    assert runner.batch_status({'canary_passed':True},2,0,2,evidence_failures=2)==(True,False)
+    assert runner.batch_status({'canary_passed':True},0,0,2)==(True,True)

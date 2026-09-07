@@ -39,12 +39,15 @@ def remember_response(db, post, payload, error):
             json.dumps(payload,ensure_ascii=False),error))
 
 
-def batch_status(previous, selected_count, successes, remaining):
+def batch_status(previous, selected_count, successes, remaining, evidence_failures=0):
+    # A record with unsupported evidence stays pending, but is not a broken
+    # JSON/provider contract. Defer it and let untouched records proceed.
+    contract_successes=successes+evidence_failures
     canary_passed=previous.get('canary_passed',False)
     if not canary_passed and selected_count:
-        canary_passed=successes / selected_count >= 0.8
-    blocked=bool(remaining and (not successes or not canary_passed or
-                 (selected_count and successes / selected_count < 0.5)))
+        canary_passed=contract_successes / selected_count >= 0.8
+    blocked=bool(remaining and (not contract_successes or not canary_passed or
+                 (selected_count and contract_successes / selected_count < 0.5)))
     return canary_passed, blocked
 
 
@@ -102,7 +105,8 @@ def main():
                 errors[post['post_id']]=f'{type(e).__name__}: {e}'
                 attempts[post['post_id']]=attempts.get(post['post_id'],0)+1
     with sqlite3.connect(args.db) as con: remaining=len(candidates(con))
-    canary_passed,blocked=batch_status(previous,len(selected),len(successes),remaining)
+    evidence_failures=sum(e=='ValueError: Directional decision lacks exact raw evidence' for e in errors.values())
+    canary_passed,blocked=batch_status(previous,len(selected),len(successes),remaining,evidence_failures)
     report={'version':VERSION,'pending':remaining,'resolved':len(successes),
             'recovered_from_paid_responses':recovered,
             'selected_count':len(selected),'canary_passed':canary_passed,
