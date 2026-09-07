@@ -38,3 +38,27 @@ The database regression restores Jukan MU to 2025-09-05 and leaves SNDK at
 2025-09-30, pending any earlier independently supported evidence. Stored raw
 history continuity remains unverified; these are earliest identified calls,
 not proof of first-ever X posts or actual executions.
+
+## Production JSON-contract recovery
+
+The first targeted run revealed a provider-boundary defect: DeepSeek receives
+`response_format=json_object`, not the Python schema. The prompt described the
+meaning of a decision but did not specify the `decisions` envelope, exact field
+names, or direction enum. Responses were valid JSON but mostly unusable by the
+strict validator (399 of the first 400 attempted records failed; one succeeded).
+This was not a failure of the original historical post extraction.
+
+The v2 request includes the exact schema and a compact example in the system
+message. Evidence validation stays strict. Existing valid/manual reviews remain
+valid; only unresolved records receive the corrected request. Semantic retries
+include the prior validation error to avoid replaying a completed request hash.
+Paid structured responses, including invalid ones, are retained in a separate
+`call_attribution_attempts` table without modifying original interpretations.
+
+A six-post canary must reach 80% validation success before 200-post batches are
+allowed. A majority-failing batch or exhausted retry debt blocks the campaign
+and persists a blocked gate, preventing repeated scheduled spending without a
+new code-repair revision. Checkpoints include per-security pending debt rather
+than reporting complete merely because post extraction is complete. The stable
+campaign ID, original ledger, and cumulative $30 cap are unchanged. Production
+acceptance still requires final attribution, price-gap, and live-page checks.

@@ -55,6 +55,11 @@ def checkpoint(db, paths):
     # Cancellation can interrupt a batch between its report writes. Derive
     # coverage from the exact backed-up database, never from a stale green log.
     actual = read_plan(snapshot, 400)
+    from signalboard.call_attribution import candidates
+    with sqlite3.connect(f'file:{snapshot}?mode=ro', uri=True) as con:
+        actual['per_security_review_pending'] = len(candidates(con))
+    actual['stored_history_call_review_complete'] = (
+        actual['stored_history_call_review_complete'] and not actual['per_security_review_pending'])
     write_report(ROOT / 'outputs/signalboard_history_rebuild_latest.json', actual)
     if REPORT.exists():
         report = json.loads(REPORT.read_text())
