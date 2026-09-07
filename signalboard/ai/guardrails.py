@@ -13,6 +13,9 @@ from typing import Any
 
 
 ATTEMPTED_STATUSES = ("PENDING", "SUCCESS", "FAILED", "CANCELLED", "UNKNOWN_COST")
+# Keep reservations for unfinished/unknown requests; settle successful requests
+# using token usage once available. The original estimate remains in the ledger.
+ACCOUNTED_COST_SQL = "CASE WHEN status='SUCCESS' AND actual_cost_if_available >= 0 THEN actual_cost_if_available ELSE estimated_cost END"
 EXPENSIVE_JOB_KINDS = {
     "golden_full",
     "historical_media_backfill",
@@ -232,6 +235,8 @@ def preflight(
     except Exception as exc:
         raise AIGuardrailBlocked(f"LEDGER_UNAVAILABLE:{type(exc).__name__}", status="SKIPPED") from exc
     try:
+        # Serialize budget checks and reservations across extraction workers.
+        con.execute("BEGIN IMMEDIATE")
         if not _truthy("FORCE_REANALYZE"):
             duplicate = con.execute(
                 """SELECT 1 FROM ai_usage_ledger
@@ -253,7 +258,7 @@ def preflight(
             raise AIGuardrailBlocked("CALL_LIMIT_EXCEEDED")
 
         run_cost = float(con.execute(
-            f"SELECT COALESCE(SUM(estimated_cost),0) FROM ai_usage_ledger WHERE run_id=? AND status IN ({placeholders})",
+            f"SELECT COALESCE(SUM({ACCOUNTED_COST_SQL}),0) FROM ai_usage_ledger WHERE run_id=? AND status IN ({placeholders})",
             (run_id, *ATTEMPTED_STATUSES),
         ).fetchone()[0])
         if run_cost + estimated_cost > _number("AI_MAX_COST_PER_RUN_USD", 0.50):
@@ -261,7 +266,7 @@ def preflight(
             raise AIGuardrailBlocked("RUN_BUDGET_EXCEEDED")
 
         daily_cost = float(con.execute(
-            f"""SELECT COALESCE(SUM(estimated_cost),0) FROM ai_usage_ledger
+            f"""SELECT COALESCE(SUM({ACCOUNTED_COST_SQL}),0) FROM ai_usage_ledger
                 WHERE substr(request_started_at,1,10)=substr(?,1,10) AND status IN ({placeholders})""",
             (_now(), *ATTEMPTED_STATUSES),
         ).fetchone()[0])
@@ -272,7 +277,7 @@ def preflight(
         stage_env = STAGE_BUDGET_ENV.get(stage, f"{stage.upper()}_MAX_COST_PER_RUN")
         stage_limit = _number(stage_env, STAGE_BUDGET_DEFAULT.get(stage, 0.0))
         stage_cost = float(con.execute(
-            f"""SELECT COALESCE(SUM(estimated_cost),0) FROM ai_usage_ledger
+            f"""SELECT COALESCE(SUM({ACCOUNTED_COST_SQL}),0) FROM ai_usage_ledger
                 WHERE run_id=? AND stage=? AND status IN ({placeholders})""",
             (run_id, stage, *ATTEMPTED_STATUSES),
         ).fetchone()[0])

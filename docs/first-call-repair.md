@@ -1,5 +1,44 @@
 # Historical call tracking repair — 2026-09-06
 
+## Full campaign — September 7 (supersedes manual 400-post instructions below)
+
+The user authorized completing the entire stored-history repair without manual
+per-batch starts. The first production batch persisted 400/400 posts in 191 seconds;
+its token-based usage cost was $0.18811748, versus a $1.72429884 initial reservation.
+The remaining queue was 36,144 posts. This implies roughly $17 and five hours of
+extraction at the first batch's mix; actual workloads and retries can differ.
+
+`config/history_repair_campaign.json` explicitly activates this bounded campaign.
+Its change on master starts the workflow; the two-hour schedule resumes unfinished
+work after a runner time slice. It expires September 10 and stops after completion
+or a blocked report. Ordinary code/data commits do not launch another paid repair.
+Manual read-only plans remain available. `continuous=true` is now the default.
+
+- Each 400-post internal batch automatically advances to the next, oldest first
+  across all eight authors, including previous interpretations awaiting upgrade.
+- A stable campaign AI_RUN_ID spans all batches and workflow restarts: $30 total
+  and 50,000 attempted requests. Restarting does not reset the budget. The campaign
+  workflow's daily ceiling is $35; other workflows keep their own configured limits.
+- Successful requests settle against token-derived usage costs; pending, failed
+  and unknown-cost requests retain conservative reservations. Budget reservations
+  are serialized across workers. The pre-call estimates remain in the ledger.
+- Successful extractions commit individually; every five batches the database and
+  campaign report are pushed as a durable checkpoint. A four-hour time slice yields
+  to other database writers and resumes automatically. Persistent failures stop
+  with unresolved post IDs, rather than spinning or claiming success.
+- Prices and pages are rebuilt once extraction is complete, not after each batch.
+  The final price pass visits all eligible tickers rather than the daily 60 limit.
+- `first_call_campaign_before.json` preserves the initial tracking rows.
+  `first_call_campaign_audit.json` lists each changed/removed anchor, its original
+  post and text, all eight authors' pending counts, and explicit missing prices.
+  It checks tracking/price target date and direction agreement and return arithmetic.
+  Jukan MU and SNDK have a dedicated evidence section.
+
+Campaign completion means all stored text extractions and the final build pass
+completed. It does not certify raw X history is exhaustive or that every ticker is
+supported by Polygon. Missing quotes stay null and are listed for review. Earlier
+mentions are never promoted to directional calls just to move the displayed date.
+
 The tracking table previously chose its first call after cutting events to 370 days.
 It also mixed multiple interpretations of a post, allowing an obsolete long/short
 classification to survive a newer neutral, disclosure, retrospective or relayed view.

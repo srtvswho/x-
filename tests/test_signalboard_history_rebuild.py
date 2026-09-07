@@ -17,13 +17,15 @@ def test_backfill_registry_covers_all_production_kols_and_includes_today():
     assert "即使是幂等命中，也用本次数据修复状态水位" in source
 
 
-def test_history_repair_is_manual_bounded_and_keeps_checkpoints():
+def test_history_repair_campaign_continues_with_stable_budget_and_checkpoints():
     workflow = (ROOT / ".github/workflows/signalboard-history-rebuild.yml").read_text()
     assert "workflow_dispatch:" in workflow
-    assert "push:" not in workflow
-    assert "scripts/intel_history_backfill.py" in workflow
-    assert 'AI_MAX_CALLS_PER_RUN: "500"' in workflow
-    assert 'AI_MAX_COST_PER_RUN_USD: "2.00"' in workflow
+    assert 'paths: [config/history_repair_campaign.json]' in workflow
+    assert "scripts/intel_history_campaign.py" in workflow
+    assert '--continuous --checkpoint-git' in workflow
+    assert 'AI_MAX_CALLS_PER_RUN: "50000"' in workflow
+    assert 'AI_MAX_COST_PER_RUN_USD: "30.00"' in workflow
+    assert 'AI_RUN_ID: first-call-full-history-20260907' in workflow
     assert "Save extraction checkpoint" in workflow
     assert "refresh_prices_polygon.py" in workflow
     assert "build_dashboard.py" in workflow
