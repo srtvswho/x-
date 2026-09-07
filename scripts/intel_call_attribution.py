@@ -8,7 +8,7 @@ import os
 import sqlite3
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from signalboard.call_attribution import candidates,save,SYSTEM,SCHEMA,VERSION,validate
+from signalboard.call_attribution import candidates,save,SYSTEM,SCHEMA,VERSION,validate,recover_saved_responses
 from signalboard.history_reuse import raw_hash
 from signalboard.ai.router import call_json
 from intel_history_backfill import write_report
@@ -56,14 +56,15 @@ def main():
     p.add_argument('--limit',type=int,default=200)
     p.add_argument('--report',default='outputs/call_attribution_review.json')
     args=p.parse_args()
+    config=json.loads(Path('config/history_repair_campaign.json').read_text())
+    if args.apply and not args.daily and os.getenv('AI_RUN_ID')!=config['campaign_id']:
+        raise SystemExit('Stable campaign budget ID required')
     with sqlite3.connect(args.db) as con:
+        recovered=recover_saved_responses(con) if args.apply else 0
         pending=candidates(con)
     if not args.apply:
         write_report(args.report,{'version':VERSION,'pending':len(pending),'selected':[p['post_id'] for p in pending[:args.limit]]})
         return
-    config=json.loads(Path('config/history_repair_campaign.json').read_text())
-    if not args.daily and os.getenv('AI_RUN_ID')!=config['campaign_id']:
-        raise SystemExit('Stable campaign budget ID required')
     previous=json.loads(Path(args.report).read_text()) if Path(args.report).exists() else {}
     if previous.get('version')!=VERSION:
         previous={}
@@ -103,6 +104,7 @@ def main():
     with sqlite3.connect(args.db) as con: remaining=len(candidates(con))
     canary_passed,blocked=batch_status(previous,len(selected),len(successes),remaining)
     report={'version':VERSION,'pending':remaining,'resolved':len(successes),
+            'recovered_from_paid_responses':recovered,
             'selected_count':len(selected),'canary_passed':canary_passed,
             'status':'blocked' if blocked else 'pending' if remaining else 'completed',
             'errors':errors,'failed_attempts':attempts}

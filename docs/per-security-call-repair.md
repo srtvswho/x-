@@ -62,3 +62,20 @@ new code-repair revision. Checkpoints include per-security pending debt rather
 than reporting complete merely because post extraction is complete. The stable
 campaign ID, original ledger, and cumulative $30 cap are unchanged. Production
 acceptance still requires final attribution, price-gap, and live-page checks.
+
+## Exact evidence display-format recovery
+
+The corrected contract resolved most records, but production paused with 143
+remaining validation failures. Inspection of the retained paid responses found
+many quotes differed only by collapsed newlines/spaces or decoded `&amp;`.
+The v3 validator maps only those reversible display differences back to an exact
+contiguous substring of the stored raw post and saves that original substring.
+It does not fuzzy-match, ignore case, remove words, alter punctuation, splice
+sentences, or accept ellipses in place of text.
+
+Before any new paid requests, v3 revalidates saved v2/v3 responses against the
+same extraction ID and raw-post hash. Valid/manual reviews remain untouched;
+only remaining unresolved posts can receive new reviews under the same budget.
+Original model payloads remain in the attempts table for audit. The canary and
+failure gate still apply. Tests cover whitespace/entities, raw-offset fidelity,
+stale inputs, paraphrases, negation, changed tickers and invented quotations.
