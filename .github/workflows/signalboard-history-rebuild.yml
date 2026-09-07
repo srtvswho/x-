@@ -206,6 +206,7 @@ jobs:
       - name: Refresh prices and rebuild dashboard
         run: |
           set -Eeuo pipefail
+          export POLYGON_ONLY_TICKERS="$(python -c "import json; print(','.join(json.load(open('config/history_repair_campaign.json')).get('price_refresh_tickers', [])))")"
           python scripts/dashboard/refresh_prices_polygon.py
           python scripts/dashboard/refresh_prices_international.py
           python scripts/intel_history_campaign.py --audit

@@ -48,7 +48,7 @@ def main():
                 for row in rows:
                     earlier=[b for b in bars if b[0]<=row['call_date']]
                     call=earlier[-1][1] if earlier else None
-                    upsert_price(con,ticker,row['call_date'],call,bars[-1][1],bars[-1][0])
+                    upsert_price(con,ticker,row['call_date'],call,bars[-1][1],bars[-1][0],authoritative_call=True)
                 con.commit()
                 report['listings'][ticker]={'currency':price_currency(ticker),'latest_date':bars[-1][0],'rows':len(rows),'status':'saved'}
             except Exception as exc:
