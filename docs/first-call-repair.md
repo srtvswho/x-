@@ -192,3 +192,25 @@ The workflow first publishes restored evidence and refreshes MU/SNDK prices,
 then drains only the remaining missing/ambiguous interpretations. Final price
 refresh and acceptance run in a separate job. No manual batch-by-batch dispatch
 is required. An unavailable price remains a visible gap; it is never made up.
+
+### 2026-09-07: recover from truncated historical JSON
+
+Run #11 (34082502226, attempt 2) saved 796 of 800 attempted records, then
+stopped because two partially failed batches were treated as a campaign block.
+Three long posts repeatedly returned incomplete JSON at the fixed 1,500-token
+output limit: 1968051910663118861, 1894674450374967455, 1896757635984277607.
+
+The extractor now retries truncated/malformed JSON with output limits of
+1,500 / 3,000 / 6,000 tokens. Every attempt requires a fresh budget permit;
+provider length termination is rejected even if the JSON happens to parse.
+Other router callers keep their existing output limit unless they opt in.
+Failed posts are deferred while untouched records drain, then retried within a
+persisted per-post limit. Deferred records remain in coverage debt and prevent
+completion. Checkpoints now persist after each batch. A tracked repair revision
+reopens this blocked campaign while retaining its original campaign ID, ledger,
+and cumulative $30 cap. Existing recovered interpretations remain reusable.
+
+Validation: 57 focused tests passed (router output recovery, accounting guards,
+partial-batch continuation, durable failures, history reuse, and first-call
+anchor/price consistency). Full historical acceptance remains pending until the
+remaining stored posts and final price/evidence audit complete.

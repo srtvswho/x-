@@ -80,55 +80,74 @@ def checkpoint(db, paths):
         raise RuntimeError('Could not inspect checkpoint changes')
 
 
-def drain(db, limit, output, *, max_seconds=16800, checkpoint_every=5,
-          checkpoint_fn=None, batch_fn=run_backfill, clock=time.monotonic):
+def drain(db, limit, output, *, max_seconds=16800, checkpoint_every=1,
+          checkpoint_fn=None, batch_fn=run_backfill, clock=time.monotonic,
+          repair_revision=None):
     started = clock()
     initial = read_plan(db, limit)
     run_id = os.environ.get('AI_RUN_ID', 'local-history-plan')
     batch_output = Path(output).with_name('signalboard_history_rebuild_latest.json')
+    previous = json.loads(Path(output).read_text()) if Path(output).exists() else {}
+    failures = dict(previous.get('failed_post_attempts', {})) if (
+        previous.get('campaign_id') == run_id and
+        previous.get('repair_revision') == repair_revision) else {}
     batches = 0
-    consecutive_failures = 0
-    report = {}
+    no_progress = 0
     while True:
-        plan = read_plan(db, limit)
-        report = dict(plan, campaign_id=run_id, workflow_run_id=os.getenv('GITHUB_RUN_ID'),
+        # Failed posts wait until untouched posts have drained. Two batch attempts
+        # per post/revision are allowed, each still subject to the shared AI ledger.
+        excluded = set(failures)
+        plan = read_plan(db, limit, excluded)
+        if plan['pending_total'] and not plan['selected_post_ids']:
+            excluded = {pid for pid, attempts in failures.items() if attempts >= 2}
+            plan = read_plan(db, limit, excluded)
+        report = dict(plan, campaign_id=run_id, repair_revision=repair_revision,
+                      workflow_run_id=os.getenv('GITHUB_RUN_ID'),
                       initial_pending_this_job=initial['pending_total'],
                       resolved_this_job=initial['pending_total'] - plan['pending_total'],
                       batches_this_job=batches, ledger=ledger_summary(db, run_id),
+                      failed_post_attempts=dict(failures), deferred_post_ids=sorted(failures),
                       elapsed_seconds=round(clock() - started, 1),
                       campaign_status='running')
         if not plan['pending_total']:
-            # Price refresh, evidence audit and publication still have to pass.
             report['campaign_status'] = 'extraction_complete'
         elif clock() - started >= max_seconds:
             report['campaign_status'] = 'checkpointed_for_resume'
+        elif not plan['selected_post_ids']:
+            report.update(campaign_status='blocked', blocked_reason='unresolved_posts',
+                          unresolved_attempted_post_ids=sorted(failures))
         write_report(output, report)
         if report['campaign_status'] != 'running':
             break
         before_attempts = report['ledger']['attempts']
         batch = batch_fn(db, limit, True, batch_output,
-                         timeout=min(1200, max(1, max_seconds - (clock() - started))))
+                        timeout=min(1200, max(1, max_seconds - (clock() - started))),
+                        **({'excluded_post_ids': excluded} if excluded else {}))
         batches += 1
-        consecutive_failures = consecutive_failures + 1 if batch['batch_status'] == 'incomplete' else 0
+        unresolved = set(batch.get('unresolved_attempted_post_ids', []))
+        for pid in plan['selected_post_ids']:
+            if pid in unresolved:
+                failures[pid] = failures.get(pid, 0) + 1
+            else:
+                failures.pop(pid, None)
+        no_progress = no_progress + 1 if not batch['resolved_this_run'] else 0
+        report.update(read_plan(db, limit))
+        report.update(batches_this_job=batches, ledger=ledger_summary(db, run_id),
+                      resolved_this_job=initial['pending_total'] - report['pending_total'],
+                      failed_post_attempts=dict(failures), deferred_post_ids=sorted(failures),
+                      last_batch_status=batch['batch_status'])
         print(json.dumps({'batch': batches, 'resolved': batch['resolved_this_run'],
-                          'pending': batch['pending_total'],
-                          'ledger': ledger_summary(db, run_id)}), flush=True)
-        # Retry transient incomplete batches once; never spin on bad posts or budgets.
-        if consecutive_failures >= 2 or (batch['batch_status'] == 'incomplete' and
-                ledger_summary(db, run_id)['attempts'] == before_attempts):
-            report.update(read_plan(db, limit))
-            report.update(campaign_status='blocked', last_batch_status=batch['batch_status'],
-                          unresolved_attempted_post_ids=batch['unresolved_attempted_post_ids'],
-                          resolved_this_job=initial['pending_total'] - report['pending_total'],
-                          batches_this_job=batches, ledger=ledger_summary(db, run_id))
-            write_report(output, report)
+                          'pending': report['pending_total'], 'deferred': len(failures),
+                          'ledger': report['ledger']}), flush=True)
+        # A partial success is progress. Stop only on a global failure/budget block,
+        # or after two batches with no persisted results; never spin without API work.
+        if no_progress >= 2 or (no_progress and report['ledger']['attempts'] == before_attempts):
+            report.update(campaign_status='blocked', blocked_reason='no_progress',
+                          unresolved_attempted_post_ids=sorted(failures))
+        write_report(output, report)
+        if report['campaign_status'] == 'blocked':
             break
         if checkpoint_fn and batches % checkpoint_every == 0:
-            # Update the campaign report to the same database checkpoint.
-            report.update(read_plan(db, limit))
-            report.update(batches_this_job=batches, ledger=ledger_summary(db, run_id),
-                          resolved_this_job=initial['pending_total'] - report['pending_total'])
-            write_report(output, report)
             checkpoint_fn()
     if checkpoint_fn:
         checkpoint_fn()
@@ -179,7 +198,15 @@ def gate(config, report, now=None):
     now = now or datetime.now(timezone.utc)
     if not config['enabled'] or now >= datetime.fromisoformat(config['expires_at'].replace('Z', '+00:00')):
         return False
-    return report.get('campaign_id') != config['campaign_id'] or report.get('campaign_status') not in ('completed', 'blocked')
+    if report.get('campaign_id') != config['campaign_id']:
+        return True
+    if report.get('campaign_status') == 'completed':
+        return False
+    if report.get('campaign_status') == 'blocked':
+        # A tracked code repair may retry a blocked campaign, without a new budget.
+        return bool(config.get('repair_revision') and
+                    config['repair_revision'] != report.get('repair_revision'))
+    return True
 
 
 def main():
@@ -247,7 +274,8 @@ def main():
         hook = (lambda: checkpoint(args.db, [REPORT, BASELINE, AUDIT, REUSE, ROOT / 'outputs/signalboard_history_rebuild_latest.json'])) if args.checkpoint_git else None
         if hook:
             hook()
-        report = drain(args.db, args.limit, REPORT, max_seconds=config['max_seconds_per_job'], checkpoint_fn=hook)
+        report = drain(args.db, args.limit, REPORT, max_seconds=config['max_seconds_per_job'], checkpoint_fn=hook,
+                       repair_revision=config.get('repair_revision'))
     else:
         report = run_backfill(args.db, args.limit, args.apply, ROOT / 'outputs/signalboard_history_rebuild_latest.json')
     print(json.dumps({k: v for k, v in report.items() if not k.endswith('post_ids')}, ensure_ascii=False, indent=2))

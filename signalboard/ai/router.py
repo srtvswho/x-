@@ -26,6 +26,10 @@ OPENAI_RESPONSES_URL = "https://api.openai.com/v1/responses"
 OPENAI_EMBEDDINGS_URL = "https://api.openai.com/v1/embeddings"
 DEEPSEEK_CHAT_URL = "https://api.deepseek.com/v1/chat/completions"
 
+
+class AIOutputTruncatedError(ValueError):
+    """The provider stopped at its output limit; partial JSON is not a result."""
+
 DEFAULT_ROUTES: dict[str, tuple[str, str, str]] = {
     "bulk_post_processing": ("deepseek", "deepseek-v4-flash", "none"),
     "daily_summary": ("deepseek", "deepseek-v4-flash", "none"),
@@ -256,6 +260,7 @@ def _call(
     schema_name: str = "signalboard_output",
     image_urls: list[str] | None = None,
     max_output_tokens: int = 1800,
+    max_output_tokens_ceiling: int | None = None,
     timeout: int = 90,
     max_retries: int = 2,
     web_search: bool = False,
@@ -268,12 +273,15 @@ def _call(
         raise ValueError(f"Configured provider {route.provider} does not support this router's image path")
     started = time.monotonic()
     last_error: Exception | None = None
-    request_hash = stable_input_hash(
-        workload, route.provider, route.model, prompt_version or schema_name,
-        system, user, json.dumps(schema, ensure_ascii=False, sort_keys=True) if schema else "",
-        json.dumps(image_urls or [], ensure_ascii=False), str(max_output_tokens), str(web_search),
-    )
+    ceiling = max_output_tokens if max_output_tokens_ceiling is None else max_output_tokens_ceiling
+    if ceiling < max_output_tokens:
+        raise ValueError('Output ceiling must be at least the initial output limit')
     for attempt in range(max_retries + 1):
+        request_hash = stable_input_hash(
+            workload, route.provider, route.model, prompt_version or schema_name,
+            system, user, json.dumps(schema, ensure_ascii=False, sort_keys=True) if schema else "",
+            json.dumps(image_urls or [], ensure_ascii=False), str(max_output_tokens), str(web_search),
+        )
         permit = preflight(
             workload=workload,
             provider=route.provider,
@@ -301,6 +309,11 @@ def _call(
                     max_output_tokens=max_output_tokens, timeout=timeout,
                 )
             in_tok, cached_tok, out_tok, cost = _usage(route.provider, route.model, payload)
+            if schema is not None and (
+                (route.provider == 'deepseek' and any(c.get('finish_reason') == 'length' for c in payload.get('choices', [])))
+                or (route.provider == 'openai' and (payload.get('incomplete_details') or {}).get('reason') == 'max_output_tokens')
+            ):
+                raise AIOutputTruncatedError(f'Provider truncated structured output at {max_output_tokens} tokens')
             result = AIResult(
                 text=text,
                 data=json.loads(text) if schema is not None else text,
@@ -329,6 +342,11 @@ def _call(
             if isinstance(exc, AIGuardrailBlocked):
                 raise
             if attempt < max_retries:
+                if isinstance(exc, (AIOutputTruncatedError, json.JSONDecodeError)) and max_output_tokens < ceiling:
+                    previous_limit = max_output_tokens
+                    max_output_tokens = min(ceiling, max_output_tokens * 2)
+                    print(f'AI structured output retry: {type(exc).__name__}; '
+                          f'output limit {previous_limit} -> {max_output_tokens}', flush=True)
                 time.sleep(1 + 2 * attempt)
     assert last_error is not None
     raise last_error
@@ -343,6 +361,7 @@ def call_json(
     schema_name: str = "signalboard_output",
     image_urls: list[str] | None = None,
     max_output_tokens: int = 1800,
+    max_output_tokens_ceiling: int | None = None,
     timeout: int = 90,
     max_retries: int = 2,
     prompt_version: str | None = None,
@@ -352,6 +371,7 @@ def call_json(
     return _call(
         workload, system, user, schema=schema, schema_name=schema_name,
         image_urls=image_urls, max_output_tokens=max_output_tokens,
+        max_output_tokens_ceiling=max_output_tokens_ceiling,
         timeout=timeout, max_retries=max_retries, prompt_version=prompt_version,
         entity_type=entity_type, entity_id=entity_id,
     )
