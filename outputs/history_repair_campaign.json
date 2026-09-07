@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T16:22:52.850163+00:00",
+  "generated_at": "2026-09-07T16:29:52.732659+00:00",
   "prompt_version": "v2.0.2-intel-attribution",
   "sources": {
     "tw_jukan05": {
@@ -91,7 +91,7 @@
   "history_complete": false,
   "scope": "all_stored_history",
   "campaign_id": "first-call-full-history-20260907",
-  "repair_revision": "per-security-exact-evidence-format-v3",
+  "repair_revision": "per-security-labeled-evidence-v4",
   "workflow_run_id": "34142686257",
   "initial_pending_this_job": 0,
   "resolved_this_job": 0,
@@ -105,7 +105,13 @@
   "failed_post_attempts": {},
   "deferred_post_ids": [],
   "elapsed_seconds": 0.8,
-  "campaign_status": "blocked",
+  "campaign_status": "attribution_pending",
   "per_security_review_pending": 36,
-  "blocked_reason": "per_security_review_validation_failed"
+  "blocked_reason": "per_security_review_validation_failed",
+  "acceptance": {
+    "changed_anchors": 543,
+    "prices_missing": 202,
+    "per_security_review_pending": 36,
+    "raw_history_coverage": "unverified"
+  }
 }
