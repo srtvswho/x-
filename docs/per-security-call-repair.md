@@ -79,3 +79,14 @@ only remaining unresolved posts can receive new reviews under the same budget.
 Original model payloads remain in the attempts table for audit. The canary and
 failure gate still apply. Tests cover whitespace/entities, raw-offset fidelity,
 stale inputs, paraphrases, negation, changed tickers and invented quotations.
+
+The v3 production recovery restored 103 paid responses without API calls. Its
+six-record canary then accepted four and deferred two long recommendation lists.
+The v4 follow-up distinguishes valid JSON with per-record evidence debt from a
+broken provider contract: evidence failures remain pending and get bounded
+retries, while untouched records can continue. Exhausted debt still blocks final
+publication. Strict standalone Buy/Strong Buy/Hold/Sell/Strong Sell lists can
+provide deterministic evidence: the saved quote includes the literal heading
+through that ticker, with all intervening tickers intact. A direction must match
+that ticker's heading, conflicting labels are rejected, and prose/separators
+terminate the list. This does not transfer one company's recommendation to peers.

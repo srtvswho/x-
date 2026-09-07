@@ -9,7 +9,7 @@ from signalboard.history_reuse import DDL, load_reviews
 from common import query_call_performance_events, normalize_ticker, price_currency
 from test_first_call_repair import database,post
 from refresh_prices_international import parse_chart
-from signalboard.call_attribution import exact_raw_quote, recover_saved_responses
+from signalboard.call_attribution import exact_raw_quote, recover_saved_responses, labeled_recommendation_quote
 
 
 def fixture():
@@ -138,3 +138,30 @@ def test_recovery_rejects_stale_inputs_and_fabricated_evidence(change):
         'per-security-calls-v2-json-contract',json.dumps(data)))
     assert recover_saved_responses(con)==0
     assert len(candidates(con))==1
+
+
+def test_explicit_list_heading_binds_only_its_own_tickers():
+    raw='Friday notes\n\nStrong Buy\n$AMD\n$TSM\n\nHold\n$MU\n\nSell\n$NVDA\n_\nExplanations\nBuy\n$MU'
+    assert labeled_recommendation_quote(raw,'TSM','long')=='Strong Buy\n$AMD\n$TSM'
+    assert labeled_recommendation_quote(raw,'NVDA','short')=='Sell\n$NVDA'
+    assert labeled_recommendation_quote(raw,'MU','long') is None
+    assert labeled_recommendation_quote(raw,'AMD','short') is None
+    assert labeled_recommendation_quote(raw,'MSFT','long') is None
+
+
+def test_conflicting_list_labels_are_not_resolved_by_guessing():
+    raw='Buy\n$TSM\nSell\n$TSM'
+    assert labeled_recommendation_quote(raw,'TSM','long') is None
+    assert labeled_recommendation_quote(raw,'TSM','short') is None
+
+
+def test_list_recovery_saves_complete_contiguous_heading_span():
+    con=fixture()
+    con.execute('UPDATE raw_posts SET raw_text=?',('Buy\n$AMD\n$NVDA\n$TSM',))
+    candidate=candidates(con)[0]
+    data=payload()
+    data['decisions'][2]['quote']='Buy $TSM'  # Not contiguous in the stored list.
+    events=validate(data,candidate)
+    assert events[0]['quote']=='Buy\n$AMD\n$NVDA\n$TSM'
+    assert events[0]['quote'] in candidate['raw_text']
+    assert events[0]['reason']=='Explicit raw recommendation-list heading'
