@@ -68,6 +68,7 @@ def normalize_ticker(ticker: str, context: str = "") -> str:
     if value == "NV" and "NVIDIA" in context_upper:
         return "NVDA"
     aliases = {
+        'ETORO':'ETOR', 'FIGMA':'FIG', 'DUOLINGO':'DUOL',
         'MICRON':'MU', 'CREDO':'CRDO', 'INTEL':'INTC', 'TSMC':'TSM',
         'KIOXIA':'285A.T', '285A':'285A.T',
         'SAMSUNG':'005930.KS', 'SAMSUNG ELECTRONICS':'005930.KS', '005930':'005930.KS',
@@ -80,6 +81,10 @@ def normalize_ticker(ticker: str, context: str = "") -> str:
                 return correct
     return aliases.get(value,value)
 
+
+def ambiguous_price_identity(ticker):
+    """Bare crypto/commodity labels must not inherit a same-named equity quote."""
+    return ticker in {'SOL', 'BTC', 'ETH', 'XRP', 'GOLD', 'SILVER'}
 
 
 def price_currency(ticker):

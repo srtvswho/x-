@@ -65,6 +65,9 @@ def test_newer_extraction_invalidates_per_security_review():
 
 
 def test_listing_identity_preserves_explicit_adr():
+    assert normalize_ticker('ETORO')=='ETOR'
+    assert normalize_ticker('FIGMA')=='FIG'
+    assert normalize_ticker('DUOLINGO')=='DUOL'
     assert normalize_ticker('MICRON')=='MU'
     assert normalize_ticker('CREDO')=='CRDO'
     assert normalize_ticker('SAMSUNG')=='005930.KS'
@@ -73,6 +76,37 @@ def test_listing_identity_preserves_explicit_adr():
     assert normalize_ticker('NV','Nova Minerals')=='NV'
     assert price_currency('005930.KS')=='KRW'
     assert price_currency('285A.T')=='JPY'
+
+
+def test_ambiguous_assets_do_not_use_cached_equity_returns():
+    from build_dashboard import query_call_performance
+    from refresh_prices_polygon import is_us_ticker
+    con=database()
+    for ticker in ['SOL','BTC','ETH','XRP','GOLD','SILVER']:
+        post(con,ticker,'2026-01-01',ticker=ticker,text=ticker+' bullish')
+        con.execute('INSERT INTO ticker_prices VALUES(?,?,?,?,?)',(ticker,'2026-01-01',1,2,'2026-09-04'))
+        assert not is_us_ticker(ticker)
+    for row in query_call_performance(con):
+        assert row['directional_return'] is None
+        assert row['price_unavailable_reason']=='ambiguous_asset_identity'
+
+
+def test_price_snapshot_before_call_is_not_a_current_return():
+    from build_dashboard import query_call_performance
+    con=database();post(con,'stale','2026-01-01')
+    con.execute("INSERT INTO ticker_prices VALUES('MU','2026-01-01',10,20,'2025-12-01')")
+    row,=query_call_performance(con)
+    assert row['directional_return'] is None
+    assert row['price_unavailable_reason']=='latest_price_precedes_call'
+
+
+def test_future_only_bars_clear_unverifiable_call_price():
+    from refresh_prices_polygon import lookup_call_price,upsert_price,ensure_tables
+    con=sqlite3.connect(':memory:');ensure_tables(con)
+    assert lookup_call_price([{'t':1767312000000,'c':10}],'2025-01-01') is None
+    upsert_price(con,'FIG','2025-01-01',10,20,'2026-09-04')
+    upsert_price(con,'FIG','2025-01-01',None,20,'2026-09-04',authoritative_call=True)
+    assert con.execute('SELECT call_price FROM ticker_prices').fetchone()[0] is None
 
 
 def test_foreign_chart_rejects_wrong_currency_and_uses_exchange_date():

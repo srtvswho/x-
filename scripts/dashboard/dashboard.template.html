@@ -789,6 +789,7 @@ function renderTickers(){
     const cp=t.call_price==null?'—':`${t.currency || 'USD'} ${Number(t.call_price).toFixed(2)}`;
     const np=t.now_price==null?'—':`${t.currency || 'USD'} ${Number(t.now_price).toFixed(2)}`;
     const dirRet=fmt(t.directional_return);
+    const priceNote={ambiguous_asset_identity:'资产身份有歧义，暂不计算收益',latest_price_precedes_call:'报价早于喊单，暂不计算收益',missing_price_data:'行情缺失或代码待核实'}[t.price_unavailable_reason]||'';
     const cls=t.directional_return==null?'':(t.directional_return>=0?'in':'out');
     const ageDays=Math.floor((Date.now()-new Date(t.published_at).getTime())/86400000);
     const newBadge=ageDays<=7?'<span class="new-badge">NEW · 7D</span>':'';
@@ -803,7 +804,7 @@ function renderTickers(){
       <td><div class="by"><div class="av" style="background:${c}">${initials(k.name)}</div><span class="nm">${k.name}</span> <span class="dirpill2 ${t.direction}">${t.direction}</span></div></td>
       <td><span class="when">已识别最早 ${fmtFull(t.published_at)}<br>最近 ${fmtFull(t.latest_published_at||t.published_at)} · ${t.n_mentions||1} 次</span>${gap}${changed}</td>
       <td><span class="when">${cp}</span></td>
-      <td><span class="when">${np}</span>${bar}</td>
+      <td><span class="when">${np}</span>${bar}${priceNote?'<div class="meta">'+priceNote+'</div>':''}</td>
       <td>${evidenceDetails(source,'查看起点原文')}${earlier?'<div class="meta">更早提及 '+t.earlier_mention_count+' 条（不等于喊单，列最早 3 条）</div>'+earlier:''}</td>
       <td>${t.in_field?'<span class="tag strong">强项</span>':'<span class="tag weak">圈外</span>'}<div class="meta" style="margin-top:6px">${signalBadges({...t,summary:t.bottleneck||'',raw_text:t.raw_text||''})}</div></td>
       <td><span class="when">${t.now_date||'行情待补'}</span></td></tr>`;

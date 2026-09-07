@@ -103,3 +103,21 @@ appended tags alone are not promoted into individual securities' calls. This
 sector view remains available in raw intelligence. No first-date overrides were
 introduced. The new campaign revision applies these four reviews and resumes
 final price/publication stages, retaining the original cumulative cost ledger.
+
+## Price identity acceptance
+
+The full price refresh finished with 574 requests (481 returned bars, 93 empty;
+zero transport failures), but this is not 100% price acceptance. Bare SOL/BTC/ETH/
+XRP/GOLD/SILVER labels can collide with equities or ETFs; their raw evidence stays
+visible, while cached equity returns are withheld pending instrument identity.
+Snapshots preceding the call date are also withheld. Future-only bars cannot
+substitute for a historical entry price; authoritative refresh clears that old
+entry instead of preserving an unverified fallback.
+
+Three company-name aliases are verified: [eToro → ETOR](https://investors.etoro.com/investor-relations/),
+[Figma → FIG](https://investor.figma.com/overview/default.aspx), and
+[Duolingo → DUOL](https://www.nasdaq.com/market-activity/stocks/duol).
+This also permits real earlier evidence under a company name to become the
+earliest canonical security call. No date is hardcoded. The follow-up refresh is
+limited to these three securities plus MU/SNDK; other previously refreshed quotes
+are retained, overseas listings are refreshed, and remaining gaps are audited.

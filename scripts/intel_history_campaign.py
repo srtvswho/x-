@@ -198,7 +198,7 @@ def make_audit(db, baseline=BASELINE):
             'per_security_review_pending': len(per_security_pending),
             'rows': rows, 'changed_anchors': changes,
             'removed_anchors': [{k: r[k] for k in ('source_id', 'ticker', 'post_id', 'call_date')} for r in removed],
-            'prices_missing': [{k: r[k] for k in ('source_id', 'ticker', 'call_date')} for r in rows
+            'prices_missing': [{k: r[k] for k in ('source_id', 'ticker', 'call_date', 'price_unavailable_reason')} for r in rows
                                if r['call_price'] in (None, 0) or r['now_price'] is None],
             'jukan_focus': [r for r in rows if r['source_id'] == 'tw_jukan05' and r['ticker'] in ('MU', 'SNDK')]}
 

@@ -20,7 +20,7 @@ import requests
 sys.path.insert(0, str(Path(__file__).parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from signalboard.extract.prompts_intel import PROMPT_VERSION
-from common import price_currency
+from common import price_currency, ambiguous_price_identity
 from common import (  # noqa: E402
     build_metadata, query_today_stats, query_today_records, cn_recent_24h_window_utc,
     KOL_TICKERS, KOLS, SRC2KOL, is_in_field, parse_json_arr,
@@ -229,7 +229,7 @@ def get_prices(con, ticker, pub_date):
     返回: (call_price, now_price, raw_pct, excess_pct)
     缓存命中 → 0 API call; 缓存 miss → 2 call (call/now).
     """
-    if not POLYGON_API_KEY:
+    if ambiguous_price_identity(ticker) or not POLYGON_API_KEY:
         return None, None, None, None
     pub_date = pub_date[:10]
     cached = get_cached_price(con, ticker, pub_date)
@@ -649,6 +649,10 @@ def query_call_performance(conn):
                 SELECT call_price, now_price, now_date
                 FROM ticker_prices WHERE ticker=? AND pub_date=?
             """, (ticker, call_date)).fetchone()
+            identity_issue = ambiguous_price_identity(ticker)
+            stale_before_call = bool(cached and cached[2] and cached[2] < call_date)
+            if identity_issue or stale_before_call:
+                cached = None
             call_price = cached[0] if cached else None
             now_price = cached[1] if cached else None
             now_date = cached[2] if cached else None
@@ -662,6 +666,9 @@ def query_call_performance(conn):
                 "call_price": call_price, "now_price": now_price,
                 "now_date": now_date, "raw_return": raw_return, "currency": price_currency(ticker),
                 "directional_return": directional_return,
+                "price_unavailable_reason": ('ambiguous_asset_identity' if identity_issue else
+                    'latest_price_precedes_call' if stale_before_call else
+                    'missing_price_data' if call_price in (None, 0) or now_price is None else None),
                 "in_field": is_in_field(row["kol"], ticker, row["bottleneck"]),
             })
             out.append(row)

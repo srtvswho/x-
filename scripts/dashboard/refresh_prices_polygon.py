@@ -61,7 +61,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from common import (  # noqa: E402
     select_dashboard_ticker_targets, select_call_performance_targets,
     merge_price_targets, group_targets_by_ticker,
-    DASHBOARD_TICKER_LIMIT, DASHBOARD_MIN_DAYS, price_currency,
+    DASHBOARD_TICKER_LIMIT, DASHBOARD_MIN_DAYS, price_currency, ambiguous_price_identity,
 )
 
 POLYGON_BASE = "https://api.polygon.io"
@@ -104,6 +104,8 @@ def is_us_ticker(t) -> bool:
     if t is None:
         return False
     s = str(t).strip()
+    if ambiguous_price_identity(s.upper()):
+        return False
     if not s or s.upper() in US_TICKER_EXCLUDE:
         return False
     if not US_TICKER_RE.match(s):
@@ -214,8 +216,6 @@ def lookup_call_price(bars: list[dict], call_date: str) -> float | None:
         bd = bar_date(bar)
         if bd and bd <= call_date:
             return bar.get("c")
-    if bars:
-        return bars[0].get("c")  # 全是 call_date 之后, fallback 第一根
     return None
 
 
@@ -226,7 +226,7 @@ def ensure_tables(conn):
     conn.commit()
 
 
-def upsert_price(conn, ticker, pub_date, call_price, now_price, now_date, sector_pct=None):
+def upsert_price(conn, ticker, pub_date, call_price, now_price, now_date, sector_pct=None, *, authoritative_call=False):
     """upsert ticker_prices. call_price + now_price 都 None 时不写."""
     if call_price is None and now_price is None:
         return False
@@ -241,6 +241,8 @@ def upsert_price(conn, ticker, pub_date, call_price, now_price, now_date, sector
             sector_pct=COALESCE(excluded.sector_pct, ticker_prices.sector_pct),
             fetched_at=excluded.fetched_at
     """, (ticker, pub_date, call_price, now_price, now_date, sector_pct, fetched_at))
+    if authoritative_call and call_price is None:
+        conn.execute('UPDATE ticker_prices SET call_price=NULL WHERE ticker=? AND pub_date=?', (ticker, pub_date))
     return True
 
 
@@ -363,6 +365,9 @@ def main():
               f"performance={len(performance_targets)}, merged={len(targets)}",
               flush=True)
         by_ticker = group_targets_by_ticker(targets)
+        only = {t.strip().upper() for t in os.environ.get('POLYGON_ONLY_TICKERS', '').split(',') if t.strip()}
+        if only:
+            by_ticker = {t: rows for t, rows in by_ticker.items() if t in only}
         n_unique_tickers = len(by_ticker)
         n_unique_call_dates = sum(len(v) for v in by_ticker.values())
         print_target_summary(targets, n_unique_tickers, n_unique_call_dates, n_unique_tickers)
@@ -416,7 +421,7 @@ def main():
                 row_written = 0
                 for t in items:
                     call_p = lookup_call_price(bars, t["call_date"])
-                    written = upsert_price(conn, ticker, t["call_date"], call_p, now_p, now_d)
+                    written = upsert_price(conn, ticker, t["call_date"], call_p, now_p, now_d, authoritative_call=True)
                     if written:
                         row_written += 1
                         n_written += 1
