@@ -1,0 +1,47 @@
+{
+  "source": "Yahoo Finance chart",
+  "listings": {
+    "000660.KS": {
+      "currency": "KRW",
+      "latest_date": "2026-09-07",
+      "rows": 2,
+      "status": "saved"
+    },
+    "005930.KS": {
+      "currency": "KRW",
+      "latest_date": "2026-09-07",
+      "rows": 2,
+      "status": "saved"
+    },
+    "285A.T": {
+      "currency": "JPY",
+      "latest_date": "2026-09-07",
+      "rows": 1,
+      "status": "saved"
+    },
+    "LYC.AX": {
+      "currency": "AUD",
+      "latest_date": "2026-09-07",
+      "rows": 1,
+      "status": "saved"
+    },
+    "3105.TWO": {
+      "currency": "TWD",
+      "latest_date": "2026-09-07",
+      "rows": 1,
+      "status": "saved"
+    },
+    "6451.TW": {
+      "currency": "TWD",
+      "latest_date": "2026-09-07",
+      "rows": 1,
+      "status": "saved"
+    },
+    "3006.TW": {
+      "currency": "TWD",
+      "latest_date": "2026-09-07",
+      "rows": 1,
+      "status": "saved"
+    }
+  }
+}

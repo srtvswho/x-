@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T13:59:00.656304+00:00",
+  "generated_at": "2026-09-07T14:19:40.986559+00:00",
   "prompt_version": "v2.0.2-intel-attribution",
   "sources": {
     "tw_jukan05": {
@@ -91,7 +91,7 @@
   "history_complete": false,
   "scope": "all_stored_history",
   "campaign_id": "first-call-full-history-20260907",
-  "repair_revision": "json-output-recovery-v1",
+  "repair_revision": "per-security-attribution-v1",
   "workflow_run_id": "34105460157",
   "initial_pending_this_job": 0,
   "resolved_this_job": 0,
@@ -105,10 +105,11 @@
   "failed_post_attempts": {},
   "deferred_post_ids": [],
   "elapsed_seconds": 0.5,
-  "campaign_status": "price_gaps",
+  "campaign_status": "attribution_pending",
   "acceptance": {
-    "changed_anchors": 567,
-    "prices_missing": 187,
+    "changed_anchors": 469,
+    "prices_missing": 219,
+    "per_security_review_pending": 1072,
     "raw_history_coverage": "unverified"
   }
 }
