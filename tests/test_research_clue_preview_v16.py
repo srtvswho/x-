@@ -99,7 +99,7 @@ def test_preview_html_is_research_first_and_preserves_raw_intelligence(tmp_path)
     assert "href=\"/legacy/#ai-cost\"" not in html
     assert "VALUATION UNDER AUDIT" not in html
     assert "/clues/" in html
-    assert "STRICT CHRONOLOGICAL" in html
+    assert "POSTS & PERSPECTIVES" in html
     assert "REPLY CONTEXT" in html
     assert "Recent Raw Posts" in html
     assert "TOP INVESTMENT OPPORTUNITIES" not in html
