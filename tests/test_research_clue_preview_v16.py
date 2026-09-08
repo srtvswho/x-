@@ -199,8 +199,8 @@ def test_v162_builds_all_product_routes(tmp_path):
     assert set(outputs) == expected
     assert all(path.read_bytes() == outputs[0].read_bytes() for path in outputs)
     redirects = (tmp_path / "_redirects").read_text(encoding="utf-8")
-    assert "/posts/* /posts/index.html 200" in redirects
-    assert "/clues/* /index.html 200" in redirects
+    assert "/posts/* /posts/ 200" in redirects
+    assert "/clues/* /research-clues/ 200" in redirects
 
 
 def test_unified_raw_exporter_is_zero_ai_and_preserves_old_features():

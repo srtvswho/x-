@@ -28,12 +28,12 @@ PRODUCT_ROUTES = (
 )
 
 REDIRECTS = """\
-/clues/* /index.html 200
-/posts/* /posts/index.html 200
-/authors/* /authors/index.html 200
-/themes/* /themes/index.html 200
-/tickers/* /tickers/index.html 200
-/evidence/* /evidence/index.html 200
+/clues/* /research-clues/ 200
+/posts/* /posts/ 200
+/authors/* /authors/ 200
+/themes/* /themes/ 200
+/tickers/* /tickers/ 200
+/evidence/* /evidence/ 200
 """
 
 
