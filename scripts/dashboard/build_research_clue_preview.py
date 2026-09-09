@@ -58,10 +58,17 @@ def render(data_path: Path, template_path: Path, output_path: Path) -> Path:
 
 
 def render_product_routes(data_path: Path, template_path: Path, deploy_root: Path) -> list[Path]:
+    from build_unified_app import build
+    html = build(deploy_root, data_path)
     outputs = []
-    for route in PRODUCT_ROUTES:
+    for route in (*PRODUCT_ROUTES, 'market', 'legacy'):
         output = deploy_root / route / "index.html" if route else deploy_root / "index.html"
-        outputs.append(render(data_path, template_path, output))
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(html, encoding='utf-8')
+        outputs.append(output)
+    assets = deploy_root / 'assets'
+    assets.mkdir(exist_ok=True)
+    (assets / 'unified-navigation.js').write_text(Path(__file__).with_name('unified_navigation.js').read_text())
     (deploy_root / "_redirects").write_text(REDIRECTS, encoding="utf-8")
     return outputs
 

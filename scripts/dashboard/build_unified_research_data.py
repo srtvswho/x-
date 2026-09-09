@@ -183,7 +183,7 @@ def build(database: Path, legacy_dashboard: Path, clues_path: Path) -> dict:
     for row in con.execute(
         """SELECT post_id,ticker,company,bottleneck,attribution,summary_100,
                   is_retrospective,is_disclosure,is_self_reported_returns
-             FROM extractions_intel ORDER BY id"""
+             FROM extractions_intel ORDER BY id DESC"""
     ):
         item = extracted.setdefault(str(row["post_id"]), {
             "tickers": [], "companies": [], "themes": [], "summary": "",
