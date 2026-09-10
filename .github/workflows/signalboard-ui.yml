@@ -4,6 +4,9 @@ on:
     branches: [master, codex/unified-navigation-timeline]
     paths:
       - 'scripts/dashboard/**'
+      - 'signalboard/focus_signals.py'
+      - 'data/focus_evidence.json.gz'
+      - 'outputs/focus_backtest_20260910/summary.json'
       - '.github/workflows/signalboard-ui.yml'
   workflow_dispatch:
 permissions:
@@ -31,6 +34,7 @@ jobs:
         env:
           SIGNALBOARD_DB: ${{ github.workspace }}/data/signalboard_full.db
         run: |
+          python tests/test_focus_signals.py
           python scripts/dashboard/build_dashboard.py
           python scripts/dashboard/build_unified_research_data.py --database data/signalboard_full.db --output dashboard_deploy_dist/data/raw-intelligence.json.gz
           python scripts/dashboard/build_research_clue_preview.py --deploy-root dashboard_deploy_dist

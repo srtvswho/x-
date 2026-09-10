@@ -14,6 +14,8 @@ DEFAULT_TEMPLATE = Path(__file__).with_name("research_clue_preview.template.html
 DEFAULT_OUTPUT = ROOT / "dashboard_deploy_dist" / "research-clues" / "index.html"
 PRODUCT_ROUTES = (
     "",
+    "focus",
+    "focus/backtest",
     "research-clues",
     "research-changes",
     "evidence",

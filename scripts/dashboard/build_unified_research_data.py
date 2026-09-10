@@ -13,12 +13,14 @@ import html
 import json
 import re
 import sqlite3
+import sys
 from collections import defaultdict
 from pathlib import Path
 from urllib.parse import urlparse
 
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
 DEFAULT_DB = ROOT / "data" / "signalboard_full.db"
 DEFAULT_LEGACY = Path(__file__).with_name("dashboard.html")
 DEFAULT_CLUES = ROOT / "outputs" / "research_clue_desk_v16" / "research_clues.json"
@@ -295,6 +297,9 @@ def build(database: Path, legacy_dashboard: Path, clues_path: Path) -> dict:
         })
 
     latest = posts[0]["date"] if posts else clues_doc.get("generated_at")
+    from signalboard.focus_signals import build_from_database
+    focus = build_from_database(con)
+    con.close()
     return {
         "version": "unified-research-experience-v1.6.3",
         "generated_at": latest,
@@ -302,6 +307,7 @@ def build(database: Path, legacy_dashboard: Path, clues_path: Path) -> dict:
         "openai_cost_usd": 0,
         "posts": posts,
         "authors": sorted(authors.values(), key=lambda x: x["name"].lower()),
+        "focus_signals": focus,
         "tracking": {
             "tickers": embedded_json(legacy_dashboard, "TICKERS", []),
             "call_performance": embedded_json(legacy_dashboard, "CALL_PERFORMANCE", []),
