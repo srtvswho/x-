@@ -19,19 +19,13 @@ raw = async function(mode='full') {
   return data;
 };
 const fullFeedRows = renderFeedRows;
-renderFeedRows = function(rows, limit=30) {
-  fullFeedRows(rows, limit);
-  if (!RAW?.partial) return;
-  const count = document.querySelector('.feed-count');
-  if (count) count.textContent = `已展示 ${Math.min(limit, rows.length)} 条 · 最近 ${rows.length} 条已载入 · 历史共 ${RAW.total_posts.toLocaleString()} 条`;
-  if (limit < rows.length) return;
-  const loader = document.querySelector('.feed-load');
-  loader.innerHTML += '<button class="btn" id="load-history">继续查看更早的推文</button>';
-  document.getElementById('load-history').onclick = async e => {
-    e.target.disabled = true; e.target.textContent = '正在读取历史推文…';
-    try { const d = await raw(); renderFeedRows(filterFeed(d.posts, new URLSearchParams(location.search)), limit+30); }
-    catch(error) { e.target.disabled=false; e.target.textContent='读取失败，点击重试'; }
-  };
+renderFeedRows = async function(rows,page=1,size=30) {
+  size=feedSize(size);
+  if (RAW?.partial && feedPage(page)*size>rows.length) {
+    const data=await raw();
+    rows=filterFeed(data.posts,new URLSearchParams(location.search));
+  }
+  fullFeedRows(rows,page,size);
 };
 function setFreshness() {
   document.getElementById('updated').textContent = `数据截至 ${fmtDate(REPORT.data_until)} · 北京时间`;
