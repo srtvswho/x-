@@ -239,6 +239,9 @@ def build_from_database(conn, now=None):
     reviews = load_reviews(conn)
     current = {str(r[0]) for r in conn.execute('SELECT DISTINCT post_id FROM extractions_intel WHERE prompt_version=?', (PROMPT_VERSION,))}
     pending = {str(p['post_id']) for p in candidates(conn)}
+    for e in events:
+        pid = str(e['post_id'])
+        e['interpretation_current'] = (pid in reviews or pid in current) and pid not in pending
     # Unreviewed posts do not establish full semantic coverage. This gate can
     # only enable priority when the saved review pass has completed.
     coverage = {}
@@ -253,4 +256,7 @@ def build_from_database(conn, now=None):
     evidence = bootstrap()
     valid = {fingerprint(e) for e in events}
     evidence['events'] = [e for e in evidence['events'] if (e['source_id'], str(e['post_id']), ticker(e['ticker']), e['raw_hash']) in valid]
-    return assess(events, evidence, coverage, now)
+    result = assess(events, evidence, coverage, now)
+    from signalboard.focus_labels import build_labels
+    result['research_labels'] = build_labels(events, evidence, coverage, now)
+    return result

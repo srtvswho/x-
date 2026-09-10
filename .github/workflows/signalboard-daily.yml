@@ -376,6 +376,7 @@ jobs:
         if: ${{ !contains(github.event.head_commit.message, '[summary backfill]') }}
         run: |
           python tests/test_focus_signals.py
+          python tests/test_focus_labels.py
           python scripts/refresh_focus_evidence.py --database data/signalboard_full.db --max-requests 24
 
       - name: Generate summaries

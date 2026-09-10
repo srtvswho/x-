@@ -1,0 +1,55 @@
+{
+  "version": "incremental-value-diagnostic-v2",
+  "as_of": "2026-09-09",
+  "input_sha256": "35e002ff2552343167d7cb727043fcc8ab8ac90f26853d6f82b8be9319eefaea",
+  "frozen_at_utc": "2026-09-10T08:52:07.583331+00:00",
+  "primary_horizon_sessions": 60,
+  "sensitivity_horizons": [
+    20,
+    120
+  ],
+  "main_windows": [
+    [
+      "2025-10-01",
+      "2026-01-01"
+    ],
+    [
+      "2026-01-01",
+      "2026-04-01"
+    ],
+    [
+      "2026-04-01",
+      "2026-07-01"
+    ],
+    [
+      "2026-07-01",
+      "2026-09-10"
+    ]
+  ],
+  "main_mode": "frozen_quarter",
+  "sensitivity_mode": "rolling_at_post",
+  "baseline": "all first eligible own-long records in stored history, all eight authors; US equity and designated equity ETFs only in return tables",
+  "first_means": "first audited directional call, either direction; earlier short excludes later long from novelty",
+  "semantic_rule": "reuse frozen event-level adjudication; remove secondary whole-post keyword veto; manually reviewed preset-field first calls; quarantine four ambiguous texts",
+  "missing_first_price": "retain first identity and report missing; never replace with a later priced/winning call",
+  "training": "first directional-long records from same author and fixed first matching field; candidate issuer excluded; only fully matured 60-session outcomes before cutoff",
+  "research_positive": "at least 2 distinct tickers and 2 distinct posts; median SOXX excess > 0 and SOXX beat fraction >= 0.60; no calibrated win probability",
+  "research_other": "enough samples but historical result condition not met",
+  "unknown": "fewer than 2 tickers or 2 posts; remains in discovery baseline",
+  "conservative_sensitivity": "at least 3 tickers, 3 posts, 2 starting quarters, positive-return fraction >= .60, SOXX beat fraction >= .60, median excess > 0 (old supported tier)",
+  "controlled_ablation": "old broad keyword gate + old evidence; corrected semantics + old evidence; corrected semantics + research-positive grouping",
+  "reporting": "event median, beat fraction, post-equal and ticker-equal means; all groups and every quarterly window; matched field-window controls; no portfolio P&L",
+  "peer_control": "same-field currently defined basket, excluding candidate; only prices available on exact entry/exit dates; ex-post static universe, diagnostic only",
+  "lookback": "pre-October-2025 first calls reported separately as descriptive discovery history, not validation of October rule",
+  "price_policy": "frozen Yahoo OHLC, first regular open strictly after post, nth session close, no dividends/costs; incomplete windows excluded and counted",
+  "not_blind": true,
+  "limitations": [
+    "v2 is a diagnostic revision after seeing v1 failures, not preregistered out-of-sample evidence",
+    "authors, field memberships and saved semantic labels were assembled retrospectively",
+    "correlated stocks, posts and overlapping horizons are not independent trades",
+    "global baseline labels have not all been manually certified; narrow field first calls were read",
+    "quarantined first calls keep novelty uncertain; later calls are not silently substituted",
+    "same-field mapping is inherited and broad; SOXX is an imperfect benchmark for optical/power subindustries"
+  ],
+  "paid_calls": 0
+}
