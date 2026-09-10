@@ -89,14 +89,37 @@ postDetail = async function(id) {
   document.title=`${p.author_name} 的推文 · SignalBoard`;
   app.innerHTML=`<div class="page">${crumbs([['推文','/posts/'],['推文详情']])}${postCard(p)}${p.links?.length?`<section class="panel"><h2>外部来源</h2>${p.links.filter(x=>/^https?:\/\//.test(x)).map(x=>`<p><a href="${esc(x)}" target="_blank" rel="noreferrer">${esc(x)}</a></p>`).join('')}</section>`:''}</div>`;
 };
+const focusPriority = {priority:'重点关注',field_watch:'领域观察',review:'待核实'};
+const evidenceTier = {strong:'较强',supported:'有支持，样本仍少',insufficient:'证据不足'};
+const focusPercent = x => x == null ? '—' : `${(x*100).toFixed(1)}%`;
+const focusPP = x => x == null ? '—' : `${x>=0?'+':''}${(x*100).toFixed(1)} 个百分点`;
+function focusRead(){try{return new Set(JSON.parse(localStorage.getItem('signalboard-focus-read-v1')||'[]'));}catch{return new Set();}}
+function focusCard(a,read){
+  const p=a.profile, label=focusPriority[a.priority],fresh=!read.has(a.id);
+  return `<article class="card focus-card ${esc(a.priority)}" id="focus-${esc(a.id)}"><div class="meta"><span class="status ${a.priority==='priority'?'STRENGTHENING':'BUILDING'}">${esc(label)}</span>${fresh?'<span class="chip">未读</span>':''}<span>${esc(fmtDate(a.published_at))}</span></div><h2>${esc(a.author)} · ${esc(a.ticker)} ${a.priority==='review'?'新标的候选':'首次看好'}</h2><p class="focus-note">已存历史内首次明确方向 · ${a.backfill?'历史补录':'近 '+7+' 天发布'} · 本次复核 ${esc(fmtDate(a.evaluated_at))}</p>${p?`<div class="focus-evidence"><p><strong>${esc(p.domain_label)} · ${p.horizon} 个交易日</strong> · 历史证据${esc(evidenceTier[p.tier])}</p><p>${p.n} 个不同标的 / ${p.posts} 篇帖子 / ${p.quarters} 个季度；方向命中 ${p.wins}/${p.n}；中位超额 ${focusPP(p.median_excess)}（${esc(p.benchmark)}）</p><p class="focus-note">只使用这条帖发出之前已经成熟的结果；这不是新标的的上涨概率。</p></div>`:'<p class="assessment-note">尚未匹配该作者已验证的能力领域。</p>'}${a.issues.length?`<p class="assessment-note">${a.issues.map(esc).join('；')}</p>`:'<p>作者领域匹配、历史支持和新标的条件已通过，可以优先研究买入条件。</p>'}<details><summary>这次究竟说了什么</summary><blockquote>${esc(a.raw_text)}</blockquote><p class="focus-note">历史覆盖：${Number(a.history_scope.raw_posts||0).toLocaleString()} 篇，起于 ${esc(a.history_scope.history_start?.slice(0,10))}。全量历史覆盖尚未证明。</p></details><details><summary>买入前需要确认什么</summary><p class="focus-note">当前阶段：研究候选。估值、安全边际及退出条件尚未核实。</p>${list(a.decision_checks)}</details>${p?.samples?.length?`<details><summary>核对历史样本（含失败样本）</summary><div class="table-wrap"><table class="table"><thead><tr><th>标的</th><th>原帖日期</th><th>期末方向回报</th><th>相对行业超额</th></tr></thead><tbody>${p.samples.map(e=>`<tr><td>${esc(e.ticker)}</td><td><a href="/posts/${encodeURIComponent(e.post_id)}">${esc(e.published_at.slice(0,10))}</a></td><td>${focusPercent(e.return)}</td><td>${focusPP(e.excess)}</td></tr>`).join('')}</tbody></table></div></details>`:''}<div class="focus-actions"><a class="btn primary" href="/posts/${encodeURIComponent(a.post_id)}">原帖与解读</a><a class="btn" href="/posts/?ticker=${encodeURIComponent(a.ticker)}">该标的全部推文</a>${fresh?`<button class="btn" data-focus-read="${esc(a.id)}">标为已读</button>`:'<span class="chip">已读</span>'}</div></article>`;
+}
+async function focusBacktest(){
+  nav('focus');document.title='新标的历史回放 · SignalBoard';
+  const d=await readData('/data/focus-backtest.json.gz');
+  app.innerHTML=`<div class="page"><p><a class="btn" href="/">返回重点关注</a> <a class="btn" href="/reports/focus-backtest.html">打开完整报告</a></p>${d.html}</div>`;
+}
+async function focusHome(){
+  nav('focus');document.title='重点关注 · SignalBoard';
+  const d=await readData('/data/focus-signals.json.gz'),read=focusRead(),q=new URLSearchParams(location.search),filter=q.get('level')||'all';
+  const rows=d.alerts.filter(a=>filter==='all'||a.priority===filter),unread=d.alerts.filter(a=>a.priority==='priority'&&!read.has(a.id)).length;
+  app.innerHTML=`<div class="page"><div class="page-head"><h1>可信作者的新标的</h1><p>在擅长领域里，谁第一次明确看好一家公司？把值得研究的新观点放到买入决策之前。</p></div><p class="assessment-note">实验规则：四段历史回放共 467 条首次多头候选，尚无合格提醒，收益优势未验证。<a href="/focus/backtest/">查看回放与漏选诊断</a></p><div class="focus-counts"><a href="/?level=priority"><strong>${d.counts.priority||0}</strong>重点关注${unread?` · ${unread} 条未读`:''}</a><a href="/?level=field_watch"><strong>${d.counts.field_watch||0}</strong>领域观察</a><a href="/?level=review"><strong>${d.counts.review||0}</strong>待核实</a><a href="/">查看全部</a></div>${d.evidence_stale?'<p class="assessment-note">历史表现基准已过期或缺失，本轮停止生成高优先级提醒，等待证据刷新。</p>':''}<p class="focus-note">近 ${d.recent_days} 天新发帖；历史价格截至 ${esc(d.evidence_prices_as_of||'缺失')}。旧帖补录、反讽、条件单及重复标的不会直接变成重点提醒。</p>${!d.counts.priority?'<section class="panel"><h2>目前没有达到重点关注门槛的新标的</h2><p>这不代表作者没有发帖。重复喊单、跨领域及证据不足的观点继续保留在推文或待核实区。</p></section>':''}<div class="list">${rows.map(a=>focusCard(a,read)).join('')||'<div class="empty">这个分类暂时没有新提醒。</div>'}</div><details class="panel" style="margin-top:24px"><summary>作者能力领域与提醒门槛</summary><p class="focus-note">证据等级是研究优先级，尚未校准为买入胜率。领域与持有期来自本次复评；历史样本尚不构成前瞻验证。</p><p>${esc(d.policy.strong)}</p><p>领域观察：${esc(d.policy.supported)}</p><div class="focus-profile-grid">${d.profiles.map(p=>`<section class="panel"><h3>${esc(p.author)} · ${esc(p.domain_label)}</h3><p>${p.horizon} 日 · ${esc(evidenceTier[p.tier])}</p><p>${p.n} 标的 / ${p.posts} 帖子；中位行业超额 ${focusPP(p.median_excess)}</p></section>`).join('')}</div></details></div>`;
+  document.querySelectorAll('[data-focus-read]').forEach(button=>button.onclick=()=>{const ids=focusRead();ids.add(button.dataset.focusRead);try{localStorage.setItem('signalboard-focus-read-v1',JSON.stringify([...ids].slice(-2000)));button.disabled=true;button.textContent='已读';}catch{button.textContent='此浏览器暂时无法保存已读状态';}});
+}
 route = async function() {
   setFreshness();
   const s=location.pathname.split('/').filter(Boolean).map(decodeURIComponent),q=new URLSearchParams(location.search);
-  const aliases={'#ai-cost':'/ai-usage/','#market':'/','#tracking':'/tracking/','#feed-section':'/posts/','#people':'/posts/'};
+  const aliases={'#ai-cost':'/ai-usage/','#market':'/market/','#tracking':'/tracking/','#feed-section':'/posts/','#people':'/posts/'};
   if(aliases[location.hash])return location.replace(aliases[location.hash]);
   if(location.hash.startsWith('#clue/'))return location.replace('/clues/'+location.hash.slice(6));
   try {
-    if(!s.length||s[0]==='market'||s[0]==='legacy')return await panels('market');
+    if(s[0]==='focus'&&s[1]==='backtest')return await focusBacktest();
+    if(!s.length||s[0]==='focus')return await focusHome();
+    if(s[0]==='market'||s[0]==='legacy')return await panels('market');
     if(s[0]==='tracking'||(s[0]==='tickers'&&!s[1])||s[0]==='companies')return await panels('tracking');
     if(s[0]==='ai-usage'||s[0]==='admin')return await panels('usage');
     if(s[0]==='posts')return s[1]?await postDetail(s[1]):await rawFeed();
