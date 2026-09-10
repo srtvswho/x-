@@ -1,0 +1,28 @@
+name: Babybus read-only progress check
+on:
+  push:
+    branches: ["research/babybus-sample-20260910"]
+    paths: [".github/workflows/babybus-progress.yml"]
+permissions:
+  contents: read
+jobs:
+  progress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Read existing runs only
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+        run: |
+          python - <<'PY'
+          import os,json,urllib.request
+          def get(path):
+              req=urllib.request.Request("https://api.apify.com/v2/"+path,headers={"Authorization":"Bearer "+os.environ["APIFY_TOKEN"]})
+              with urllib.request.urlopen(req,timeout=25) as r: return json.load(r)
+          runs=get("acts/apidojo~twitter-scraper-lite/runs?limit=12&desc=true")["data"]["items"]
+          for run in runs:
+              if not run.get("startedAt","").startswith("2026-09-10"): continue
+              inp=get("key-value-stores/"+run["defaultKeyValueStoreId"]+"/records/INPUT")
+              if not any("from:BabybusFL since:" in q for q in inp.get("searchTerms",[])): continue
+              print(json.dumps({"id":run["id"],"status":run["status"],"started":run["startedAt"],"cost":run.get("usageTotalUsd"),"query":inp["searchTerms"]}),flush=True)
+          PY
