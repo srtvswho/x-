@@ -5,8 +5,10 @@ on:
     paths:
       - 'scripts/dashboard/**'
       - 'signalboard/focus_signals.py'
+      - 'signalboard/focus_labels.py'
       - 'data/focus_evidence.json.gz'
       - 'outputs/focus_backtest_20260910/summary.json'
+      - 'outputs/post_incremental_value_20260910/**'
       - '.github/workflows/signalboard-ui.yml'
   workflow_dispatch:
 permissions:
@@ -35,7 +37,11 @@ jobs:
           SIGNALBOARD_DB: ${{ github.workspace }}/data/signalboard_full.db
         run: |
           python tests/test_focus_signals.py
-          python scripts/dashboard/build_dashboard.py
+          python tests/test_focus_labels.py
+          # Keep the completed daily market/tracking snapshot during UI-only
+          # publication. Recomputing it without the daily price refresh can
+          # replace priced rows with cache misses. Daily updates still rebuild it.
+          test -s scripts/dashboard/dashboard.html
           python scripts/dashboard/build_unified_research_data.py --database data/signalboard_full.db --output dashboard_deploy_dist/data/raw-intelligence.json.gz
           python scripts/dashboard/build_research_clue_preview.py --deploy-root dashboard_deploy_dist
           cp dashboard_deploy_dist/index.html dashboard.html

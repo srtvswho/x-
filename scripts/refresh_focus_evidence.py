@@ -65,7 +65,17 @@ def refresh(database, max_requests=24, offline_prices=None, now=None, output=Non
     cache_path = Path(cache_path or ROOT/'data/focus_price_cache.json.gz')
     cached = json.load(gzip.open(cache_path, 'rt')) if cache_path.exists() else {}
     with sqlite3.connect(f'file:{Path(database).resolve()}?mode=ro', uri=True) as conn:
-        rows = normalize(query_call_performance_events(conn), evidence)
+        from signalboard.focus_labels import prepared
+        from signalboard.history_reuse import load_reviews
+        from signalboard.extract.prompts_intel import PROMPT_VERSION
+        from signalboard.call_attribution import candidates
+        events = query_call_performance_events(conn)
+        reviewed = load_reviews(conn)
+        current = {str(r[0]) for r in conn.execute('SELECT DISTINCT post_id FROM extractions_intel WHERE prompt_version=?',(PROMPT_VERSION,))}
+        pending = {str(p['post_id']) for p in candidates(conn)}
+        for e in events:
+            pid=str(e['post_id']);e['interpretation_current']=(pid in reviewed or pid in current) and pid not in pending
+        rows = prepared(events, evidence)
     first = {}
     for e in rows:
         if (e['source_id'] not in AUTHORS or e['direction'] != 'long' or not e['eligible']
@@ -108,13 +118,13 @@ def refresh(database, max_requests=24, offline_prices=None, now=None, output=Non
         if key not in existing or existing[key].get('raw_hash') != hashlib.sha256(e['raw_text'].encode()).hexdigest():
             # A fresh unambiguous extraction can accumulate outcomes; uncertainty
             # is retained instead of silently treating it as human adjudication.
-            if not e['explicit_long']: continue
+            if not e['semantic_confirmed']: continue
             existing[key] = {k:e[k] for k in ['source_id','post_id','ticker','direction','published_at']}
             existing[key].update(strict_eligible=True, strict_exclusion=None, identity_exclusion=None,
                 group='US_equity', results={}, raw_hash=hashlib.sha256(e['raw_text'].encode()).hexdigest(),
                 evidence_origin='automatic_explicit_call')
         target = existing[key]
-        for horizon in {h for d,h in AUTHORS[e['source_id']][1] if e['ticker'] in DOMAINS[d]['tickers']}:
+        for horizon in {60} | {h for d,h in AUTHORS[e['source_id']][1] if e['ticker'] in DOMAINS[d]['tickers']}:
             result = outcome(e, series, market, horizon)
             if result: target['results'][str(horizon)] = result
     evidence.update(events=list(existing.values()), prices_as_of=market[-1]['date'] if market else evidence.get('prices_as_of'),

@@ -299,6 +299,12 @@ def build(database: Path, legacy_dashboard: Path, clues_path: Path) -> dict:
     latest = posts[0]["date"] if posts else clues_doc.get("generated_at")
     from signalboard.focus_signals import build_from_database
     focus = build_from_database(con)
+    label_posts = defaultdict(list)
+    for a in focus.get('research_labels', {}).get('alerts', []):
+        if a['tags']:
+            label_posts[a['post_id']].append({k:a[k] for k in ('id','ticker','tags','semantic_origin','is_live','published_at')})
+    for post in posts:
+        post['research_labels'] = label_posts.get(post['id'], [])
     con.close()
     return {
         "version": "unified-research-experience-v1.6.3",

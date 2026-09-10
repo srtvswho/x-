@@ -1,0 +1,13 @@
+{
+  "README.md": "6a643251130a8d6748f661211c374fec4b57324c7e4c552aee50233c257dd8c8",
+  "decisions.csv": "55a3c89173eeeed95779d9d98cf97fdc18c93391c983911dbea25b428c383cc9",
+  "decisions_before_outcomes.json.gz": "1fdfebd84e0696c2b3ece731f63e3650623ccca4d57b5af92a4a55132d545fde",
+  "peer_prices.json.gz": "43bcc010a7de4acf7704884fa11beda2efc736ae14c2ac3d8a7e0f9cebff2d14",
+  "protocol.json": "2a27e3e6dc4176d047827c0d4ddfe10b79bf711796f16b3dba32f78831bd811b",
+  "report.html": "607c0c6a9fd31b21b43d3ff88cea825f038709274a0d883671366d4997972e78",
+  "report.md": "cdbedec4cb5208e15f50df037c78371688e43683c9257c15cc72dc128ab20db7",
+  "results.json.gz": "62dbf74e21efa9c32ed96a1ea51d29b6219cc0fc995cac1ef51453e502fa986d",
+  "semantic_review.json": "a7305e3f88930d1330512dd440603f94582d58639b029518178ab19d0b2ef2d6",
+  "summary.json": "b22dc44a91ff2534ed4ade0504dcee222d8d8e8052630994d4edb0463dce4fa9",
+  "validation.json": "8d645bb7c29d477554381d3e1be4953120b2701814ee65c209a269d94f5845ca"
+}

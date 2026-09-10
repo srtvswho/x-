@@ -152,6 +152,10 @@ def build(deploy_root: Path, report_path: Path):
     pack(data_dir/'focus-backtest.json.gz', json.loads((replay_root/'summary.json').read_text()))
     (deploy_root/'reports').mkdir(exist_ok=True)
     (deploy_root/'reports/focus-backtest.html').write_bytes((replay_root/'report.html').read_bytes())
+    incremental = HERE.parents[1]/'outputs/post_incremental_value_20260910'
+    published_report = (incremental/'report.html').read_text().replace('<main>', '<main><p><a href="/">返回重点关注</a> · 三个研究标签已接入后续更新；以下统计仍为原验证时点的冻结回放。</p>', 1)
+    (deploy_root/'reports/post-incremental-value.html').write_text(published_report)
+    pack(data_dir/'post-incremental-summary.json.gz', json.loads((incremental/'summary.json').read_text()))
     meta = {"build":fields['BUILD_META'], "data_until":raw['generated_at']}
     template = (HERE/'research_clue_preview.template.html').read_text()
     html = template.replace('__RESEARCH_CLUES__', json.dumps({"clues":[], **meta}, ensure_ascii=False).replace('</','<\\/'))
