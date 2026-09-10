@@ -1,0 +1,236 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>新标的历史回放 · SignalBoard</title><style>body{margin:0;background:#f6f5f0;color:#202924;font:16px/1.75 system-ui,sans-serif}article{max-width:1120px;margin:auto;padding:40px 24px}h1{font-size:34px;line-height:1.3}h2{margin-top:40px;font-size:23px}.lead{font-size:20px}.eyebrow{color:#527467;font-size:13px;letter-spacing:.08em}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:14px}td,th{padding:12px;text-align:left;border-bottom:1px solid #d8ded7;white-space:nowrap}th{background:#e8eee7}a{color:#245f4c}blockquote{white-space:pre-wrap;overflow-wrap:anywhere;border-left:3px solid #91a393;padding:12px 20px;margin:16px 0;background:#fff}details{border-bottom:1px solid #d8ded7;padding:16px 0}summary{cursor:pointer;font-weight:600}li{margin:10px 0}@media(max-width:600px){h1{font-size:27px}article{padding:24px 16px}}</style></head><body><article class="replay-report">
+<p class="eyebrow">SIGNALBOARD · 历史回放 · 2026-09-10</p>
+<h1>这套规则还没有证明能选出可买的新标的</h1>
+<p class="lead">冻结四个季度节点后，467 条首次多头候选中，33 条匹配作者预设领域，<strong>0 条达到重点关注或领域观察门槛</strong>。改为每次发帖前滚动更新历史证据，结果仍为 0。当前没有可估计的策略命中率或收益优势。</p>
+<p>本轮保留原 v1 门槛，没有看完涨跌后调参。新增付费抓取及模型调用为 <strong>$0</strong>；复用已存帖子、DS 解读和价格记录。</p>
+<h2>把时间拨回去，实际会选出什么？</h2>
+<div class="table-wrap"><table class="table"><thead><tr><th>验证期间</th><th>首次多头候选</th><th>领域匹配</th><th>重点 / 观察</th><th>选中信号收益</th></tr></thead><tbody><tr><td>2025-10-01 至 2026-01-01 前</td><td>89</td><td>11</td><td>0 / 0</td><td>不适用</td></tr><tr><td>2026-01-01 至 2026-04-01 前</td><td>193</td><td>12</td><td>0 / 0</td><td>不适用</td></tr><tr><td>2026-04-01 至 2026-07-01 前</td><td>111</td><td>8</td><td>0 / 0</td><td>不适用</td></tr><tr><td>2026-07-01 至 2026-09-10 前</td><td>74</td><td>2</td><td>0 / 0</td><td>不适用</td></tr></tbody></table></div>
+<p>“没有选中”不等于收益 0%：没有交易样本，也没有定义现金账户收益。候选指已存历史中该作者首次对该证券给出有效方向且方向为多头；不声称全 X 历史首发。</p>
+<h2>被历史证据门槛挡住的 6 条，后来怎样？</h2>
+<p><strong>以下全部是未入选的诊断对照，不是这套策略的成交或业绩。</strong>它们通过领域、语义及其他检查，只剩历史样本或表现门槛未通过。6 条仅来自 3 篇帖子、5 个不同标的；DRAM 被两位作者分别提及。</p>
+<div class="table-wrap"><table class="table"><thead><tr><th>作者 / 标的</th><th>发帖日</th><th>此前成熟标的</th><th>20 日</th><th>60 日</th><th>60 日超额 / SOXX</th><th>120 日</th></tr></thead><tbody><tr><td>Jukan · AMD</td><td>2025-10-28</td><td>0</td><td>-17.0%</td><td>+0.2%</td><td>-13.4 pp</td><td>+9.8%</td></tr><tr><td>Jukan · NVDA</td><td>2025-10-28</td><td>0</td><td>-5.4%</td><td>-2.8%</td><td>-16.4 pp</td><td>+3.5%</td></tr><tr><td>Serenity · DRAM</td><td>2026-04-09</td><td>3</td><td>+54.5%</td><td>+105.6%</td><td>+49.0 pp</td><td>未成熟 / 缺价格</td></tr><tr><td>Serenity · FN</td><td>2026-04-09</td><td>2</td><td>+10.8%</td><td>-18.3%</td><td>-74.9 pp</td><td>未成熟 / 缺价格</td></tr><tr><td>Serenity · SMTC</td><td>2026-04-09</td><td>2</td><td>+37.0%</td><td>+59.6%</td><td>+3.0 pp</td><td>未成熟 / 缺价格</td></tr><tr><td>Tradex · DRAM</td><td>2026-05-03</td><td>1</td><td>+61.3%</td><td>+6.4%</td><td>+7.0 pp</td><td>未成熟 / 缺价格</td></tr></tbody></table></div>
+<p>例如，Serenity 同一帖中的 DRAM 在 60 日后上涨 105.6%，FN 却下跌 18.3%。单看赢家会误判作者的可复制能力。2026 年 4 月这批光通信候选预设期限为 120 日，截至价格截止日尚未成熟；60 日只是辅助观察。</p>
+<h2>回跑暴露了两个需要先修的问题</h2>
+<ol><li><strong>存储重点提醒的门槛在当前池内不可达。</strong>美股主检验池只有 MU、SNDK、WDC、STX、DRAM 五个标的；新标的必须排除自身，却又要求此前验证五个不同标的。该领域最多只剩四个可训练标的。其他市场的证券当前不能充当美股验证样本。</li>
+<li><strong>整帖关键词会误挡观点。</strong>产业分析里的 if、产能售罄 sold out，可能触发条件单或卖出语义；invested in 等持仓表达也可能漏识别。必须区分“买入条件”“经营条件”“产能售罄”“卖出仓位”，再验证新的提取规则。</li></ol>
+<p>下一版建议：领域内首次明确看好先给“发现提醒”，历史证据决定研究优先级；样本不足单列，不显示虚构胜率。语义规则先在不看后续价格的标注集上验证，再冻结阈值做新一轮验证。以上是后续方案，本报告没有用它重选赢家。</p>
+<h2>如何防止偷看未来</h2>
+<ul><li>主检验分别冻结 2025-10-01、2026-01-01、2026-04-01、2026-07-01 的作者画像，观察下一段首次喊单；滚动版本只用发帖前证据。</li>
+<li>每位作者每标的只取最早多头训练记录；候选本身排除。训练结果必须在节点前完整到期，退出日收盘按次日 UTC 才可用。未来收益在筛选完成后才附加。</li>
+<li>入场为帖子发布之后的第一次常规开盘，盘中发帖使用下个交易日；第 20 / 60 / 120 个交易日收盘退出，入场日计第 1 日。只计算截至 2026-09-09 已成熟的窗口。</li>
+<li>回报不计股息、费用、滑点或仓位；超额为同窗口标的回报减 SOXX 回报。不同作者、同一帖子及持有区间存在相关性，均值不是账户盈亏。</li></ul>
+<p><strong>这仍是事后历史回放，不是真正盲测。</strong>作者名单、领域和期限来自本次复评；帖子抓取与解读也发生在后来。系统最早抓取记录为 2026-06-12T07:46:40.091398+00:00，没有这些历史节点的实际系统快照。回放假设当时已及时获得并审核公开帖子；缺失及删除帖子、价格缺口仍会影响结果。</p>
+<h2>逐条核查</h2><details><summary>Jukan · AMD · 2025-10-28：原帖与筛选理由</summary><p>季度训练截止 2025-10-01；领域 半导体，目标期限 60 个交易日；历史成熟标的 0 个。</p><p>跨标的历史样本或超额表现尚未达到门槛</p><blockquote>Amazon laid off 30,000 employees today, an even larger cut than during the industry contraction in 2022. The reason is simple:
+
+They don’t have enough capex left to buy GPUs.
+As a result, AWS growth has slowed, the market has punished them harshly, and now they must cut salaries to save money for GPU purchases—so the financials look better and they can tell a story of “AWS growth bottoming out.”
+
+Every internet company software engineer (SDE) should buy Nvidia/AMD stock as a hedge—compensating for the risk of being squeezed out of the value chain by GPUs.
+
+Entering 2024–2025, the main factor behind weak employment for American SDEs is no longer the massive over-expansion of 2021, nor the competition from lower-wage overseas engineering centers, and not yet the reduced demand caused by AI efficiency gains.
+
+A new boss has arrived: GPU capex.
+GPU capex is creating a strange “prosperous depression” inside internet companies:
+
+The company’s revenue growth looks strong, stock prices keep rising—but wage expenses have become immovable constraints for management. Everyone worries about their jobs. Continuous layoffs increase the workload for those who remain. Morale collapses. It feels like the Great Depression all over again.
+
+This isn’t a traditional recession. It’s capital’s radical redistribution between manpower and compute power.
+
+Amazon’s 30,000-person layoff has been rumored for two months. The mid-year performance review, usually in July, was delayed to mid- or late August. The return-to-office (RTO) policy also served as a major excuse for the cuts. The AGI group will remain untouched; PXT, Devices &amp; Services, and Operations will be the hardest hit. By convention, AWS will likely announce its cuts later—probably after AWS re:Invent—to squeeze every bit of output first.
+
+Meanwhile, AWS’s Q2 backlog reached $195 billion, up 25% YoY.
+
+This shows customers want to buy but AWS can’t deliver—demand remains scorching hot, and they simply can’t buy GPUs fast enough.
+
+In an era where AI server supply can’t keep up with explosive demand, shifting opex (wages) to capex directly boosts company performance. Capital will ruthlessly punish any CSP or hyperscaler that fails to fully embrace this path.
+Meta has quietly entered a “5% layoff every six months” rhythm. Recently, it cut 600 people in its AI org and also removed many directors across departments—same logic again: AI datacenter capacity is insufficient. In the past year, Meta revised up its 18-month capacity plan three times. Each time they thought they had overestimated demand—only to painfully realize a few months later that they had underestimated it.
+
+Does this mean internet companies no longer need people?
+
+Of course not. But after the hiring budget is slashed, they’re forced to squeeze productivity internally to compensate.
+
+Big tech companies are now pulling every possible lever: building internal tools with agent functions, encouraging “one-click deployment vibes,” setting KPIs for AI usage rates, requiring departments to report AI adoption progress and use cases, and mandating periodic peer learning sessions.
+
+All these frantic moves aim for just one modest goal: ~20% efficiency improvement.
+What happens next?
+
+To maintain growth and competitiveness—once efficiency gains plateau and layoffs hit the bone, when opex yields no more savings—the next step will be to sacrifice cash flow. Some, like Oracle, may even take on debt to sustain growth.
+
+Nvidia and AMD, armed with huge cash reserves, will continue to push partners to invest in AI capex—just like OpenAI has done.
+
+The biggest beneficiaries of all this will be the semiconductor supply chain.
+
+A new normal may emerge: semiconductor companies’ profit margins surpass those of internet firms.
+
+But they also bear the greatest risk:
+
+Once VCs or hyperscalers notice token demand slowing—or even just growth decelerating—they’ll ruthlessly cut orders.
+
+The transmission of that shock will be far faster than semiconductor production cycles.
+When might that point arrive?
+
+One reference indicator: when enterprise adoption reaches ~50%.
+During the March 2000 internet bubble burst, U.S. internet penetration was around 52% (some data say 43%).
+Currently, major internet companies’ GenAI daily-user penetration is rising from 50% toward 90%, while overall enterprise AI adoption is still under 10%.
+
+That means growth is safe for now. Historically, the fastest phase of any technological revolution is when corporate adoption moves from 10% to 50%.
+The Cisco bubble won’t repeat itself so simply.
+
+This time, information flow is vastly richer. There will always be enough skeptics warning about bubbles—ensuring that when it does burst, it won’t be nearly as catastrophic.</blockquote><p><a href='https://x.com/jukan05/status/1983085352282882479'>查看 X 原帖</a></p></details><details><summary>Jukan · NVDA · 2025-10-28：原帖与筛选理由</summary><p>季度训练截止 2025-10-01；领域 半导体，目标期限 60 个交易日；历史成熟标的 0 个。</p><p>跨标的历史样本或超额表现尚未达到门槛</p><blockquote>Amazon laid off 30,000 employees today, an even larger cut than during the industry contraction in 2022. The reason is simple:
+
+They don’t have enough capex left to buy GPUs.
+As a result, AWS growth has slowed, the market has punished them harshly, and now they must cut salaries to save money for GPU purchases—so the financials look better and they can tell a story of “AWS growth bottoming out.”
+
+Every internet company software engineer (SDE) should buy Nvidia/AMD stock as a hedge—compensating for the risk of being squeezed out of the value chain by GPUs.
+
+Entering 2024–2025, the main factor behind weak employment for American SDEs is no longer the massive over-expansion of 2021, nor the competition from lower-wage overseas engineering centers, and not yet the reduced demand caused by AI efficiency gains.
+
+A new boss has arrived: GPU capex.
+GPU capex is creating a strange “prosperous depression” inside internet companies:
+
+The company’s revenue growth looks strong, stock prices keep rising—but wage expenses have become immovable constraints for management. Everyone worries about their jobs. Continuous layoffs increase the workload for those who remain. Morale collapses. It feels like the Great Depression all over again.
+
+This isn’t a traditional recession. It’s capital’s radical redistribution between manpower and compute power.
+
+Amazon’s 30,000-person layoff has been rumored for two months. The mid-year performance review, usually in July, was delayed to mid- or late August. The return-to-office (RTO) policy also served as a major excuse for the cuts. The AGI group will remain untouched; PXT, Devices &amp; Services, and Operations will be the hardest hit. By convention, AWS will likely announce its cuts later—probably after AWS re:Invent—to squeeze every bit of output first.
+
+Meanwhile, AWS’s Q2 backlog reached $195 billion, up 25% YoY.
+
+This shows customers want to buy but AWS can’t deliver—demand remains scorching hot, and they simply can’t buy GPUs fast enough.
+
+In an era where AI server supply can’t keep up with explosive demand, shifting opex (wages) to capex directly boosts company performance. Capital will ruthlessly punish any CSP or hyperscaler that fails to fully embrace this path.
+Meta has quietly entered a “5% layoff every six months” rhythm. Recently, it cut 600 people in its AI org and also removed many directors across departments—same logic again: AI datacenter capacity is insufficient. In the past year, Meta revised up its 18-month capacity plan three times. Each time they thought they had overestimated demand—only to painfully realize a few months later that they had underestimated it.
+
+Does this mean internet companies no longer need people?
+
+Of course not. But after the hiring budget is slashed, they’re forced to squeeze productivity internally to compensate.
+
+Big tech companies are now pulling every possible lever: building internal tools with agent functions, encouraging “one-click deployment vibes,” setting KPIs for AI usage rates, requiring departments to report AI adoption progress and use cases, and mandating periodic peer learning sessions.
+
+All these frantic moves aim for just one modest goal: ~20% efficiency improvement.
+What happens next?
+
+To maintain growth and competitiveness—once efficiency gains plateau and layoffs hit the bone, when opex yields no more savings—the next step will be to sacrifice cash flow. Some, like Oracle, may even take on debt to sustain growth.
+
+Nvidia and AMD, armed with huge cash reserves, will continue to push partners to invest in AI capex—just like OpenAI has done.
+
+The biggest beneficiaries of all this will be the semiconductor supply chain.
+
+A new normal may emerge: semiconductor companies’ profit margins surpass those of internet firms.
+
+But they also bear the greatest risk:
+
+Once VCs or hyperscalers notice token demand slowing—or even just growth decelerating—they’ll ruthlessly cut orders.
+
+The transmission of that shock will be far faster than semiconductor production cycles.
+When might that point arrive?
+
+One reference indicator: when enterprise adoption reaches ~50%.
+During the March 2000 internet bubble burst, U.S. internet penetration was around 52% (some data say 43%).
+Currently, major internet companies’ GenAI daily-user penetration is rising from 50% toward 90%, while overall enterprise AI adoption is still under 10%.
+
+That means growth is safe for now. Historically, the fastest phase of any technological revolution is when corporate adoption moves from 10% to 50%.
+The Cisco bubble won’t repeat itself so simply.
+
+This time, information flow is vastly richer. There will always be enough skeptics warning about bubbles—ensuring that when it does burst, it won’t be nearly as catastrophic.</blockquote><p><a href='https://x.com/jukan05/status/1983085352282882479'>查看 X 原帖</a></p></details><details><summary>Serenity · DRAM · 2026-04-09：原帖与筛选理由</summary><p>季度训练截止 2026-04-01；领域 存储，目标期限 60 个交易日；历史成熟标的 3 个。</p><p>跨标的历史样本或超额表现尚未达到门槛</p><blockquote>Here&#x27;s a bunch of random 30 US-available random stocks I like today and why:  
+
+1. $INTC - America&#x27;s hope for foundry, national security
+2. $MRVL - scales rev from future maia asics and add ons like cpo, they do everything lost count
+3. $TSM - backbone of semis/ai
+4. $COHR - They do everything vertically integrated + captures optical cycle
+5. $RKLB - the final frontier of space will be around 5 years from now and 20 years from now. 
+6. $DRAM - memory exposure for samsung/sk hynix
+7. $AVGO - hyperscalers dont like nvidia gpu tax
+8. $AMZN - nobody can compete against the overnight shipping of toilet paper. robotics will lower opex over time
+9. $ARM - AGI CPUs scale revenue quite a bit over the next decade
+10. $TSEM - you&#x27;re going to need a foundry for light based stuff
+11. $IBIT - bitcoin, we all know by now
+12. $NBIS - i think it&#x27;s the next AWS. Also they do self-driving cars with uber, own scaling DB companies, data labeling. It&#x27;s almost like a mini Google. 
+13. $GOOGL - youtube is not going away, gemini is great. they&#x27;re vertically integrated with TPUs and fund buildout with operating income so i like it. 
+14. $AMKR - super facilities coming online in late 2027-2028. benefits from made in america
+15. $HOOD - i dont like short term, but long term i&#x27;m a fan of Robinhood since they captured retail + have more products like banking, etc that they&#x27;re scaling up. product innovation is wild.
+16. $CRCL - I happen to really like stablecoins and see them as the future for both payments/holding (depends on clarity act)
+17. $META - people aren&#x27;t going to stop using instagram or whatsapp, or others anytime soon. 
+18. $LITE - $GOOGL TPU exposure decently high part of BOM. As long as Google&#x27;s AI program keeps running I think $LITE will do well.
+19. $LPTH - Germanium and China export controls will always be an issue so US made engineered alternatives  will always be important
+20. $FN - Someone needs to assemble optical stuff
+21. $JBL - same as above, but added with ip from Intel&#x27;s SiPh acqusition so might end up like innolight?
+22. $MP - American rare earths program is extremely important, similar to $INTC national security risks
+23. $HIMS - Okay here me out they just acquired a ton of companies, and at $19 they have global DTC channel. short sellers really hate this company, but I think it&#x27;s actually promising as a contrarian long
+24. $SMTC - LRO/LPO transition
+25. $POWL - US alternative to hammond for switchgear DC type bottleneck
+26. $VPG - Humanoids will be a thing down the road maybe 2027-2028, this makes the sensors. 
+27. $MOG.A - Feels like i see them everywhere in robotics, to spacex supply chains
+28. $MSFT - At $375, one day we&#x27;ll look back and see this as a buying opportunity.
+29. $CVX - oil might crash after war but these oil companies are going to be extremely important, especially when Venezulea is a goldmine.
+30. $XLU - i think rate cuts might be back online, we need power/grid for AI so these names will always be improtant from $CEG to $NEE
+
+Just throwing out other thoughts aside from $AAOI and $AEHR.</blockquote><p><a href='https://x.com/aleabitoreddit/status/2042187668931616964'>查看 X 原帖</a></p></details><details><summary>Serenity · FN · 2026-04-09：原帖与筛选理由</summary><p>季度训练截止 2026-04-01；领域 光通信链，目标期限 120 个交易日；历史成熟标的 2 个。</p><p>跨标的历史样本或超额表现尚未达到门槛</p><blockquote>Here&#x27;s a bunch of random 30 US-available random stocks I like today and why:  
+
+1. $INTC - America&#x27;s hope for foundry, national security
+2. $MRVL - scales rev from future maia asics and add ons like cpo, they do everything lost count
+3. $TSM - backbone of semis/ai
+4. $COHR - They do everything vertically integrated + captures optical cycle
+5. $RKLB - the final frontier of space will be around 5 years from now and 20 years from now. 
+6. $DRAM - memory exposure for samsung/sk hynix
+7. $AVGO - hyperscalers dont like nvidia gpu tax
+8. $AMZN - nobody can compete against the overnight shipping of toilet paper. robotics will lower opex over time
+9. $ARM - AGI CPUs scale revenue quite a bit over the next decade
+10. $TSEM - you&#x27;re going to need a foundry for light based stuff
+11. $IBIT - bitcoin, we all know by now
+12. $NBIS - i think it&#x27;s the next AWS. Also they do self-driving cars with uber, own scaling DB companies, data labeling. It&#x27;s almost like a mini Google. 
+13. $GOOGL - youtube is not going away, gemini is great. they&#x27;re vertically integrated with TPUs and fund buildout with operating income so i like it. 
+14. $AMKR - super facilities coming online in late 2027-2028. benefits from made in america
+15. $HOOD - i dont like short term, but long term i&#x27;m a fan of Robinhood since they captured retail + have more products like banking, etc that they&#x27;re scaling up. product innovation is wild.
+16. $CRCL - I happen to really like stablecoins and see them as the future for both payments/holding (depends on clarity act)
+17. $META - people aren&#x27;t going to stop using instagram or whatsapp, or others anytime soon. 
+18. $LITE - $GOOGL TPU exposure decently high part of BOM. As long as Google&#x27;s AI program keeps running I think $LITE will do well.
+19. $LPTH - Germanium and China export controls will always be an issue so US made engineered alternatives  will always be important
+20. $FN - Someone needs to assemble optical stuff
+21. $JBL - same as above, but added with ip from Intel&#x27;s SiPh acqusition so might end up like innolight?
+22. $MP - American rare earths program is extremely important, similar to $INTC national security risks
+23. $HIMS - Okay here me out they just acquired a ton of companies, and at $19 they have global DTC channel. short sellers really hate this company, but I think it&#x27;s actually promising as a contrarian long
+24. $SMTC - LRO/LPO transition
+25. $POWL - US alternative to hammond for switchgear DC type bottleneck
+26. $VPG - Humanoids will be a thing down the road maybe 2027-2028, this makes the sensors. 
+27. $MOG.A - Feels like i see them everywhere in robotics, to spacex supply chains
+28. $MSFT - At $375, one day we&#x27;ll look back and see this as a buying opportunity.
+29. $CVX - oil might crash after war but these oil companies are going to be extremely important, especially when Venezulea is a goldmine.
+30. $XLU - i think rate cuts might be back online, we need power/grid for AI so these names will always be improtant from $CEG to $NEE
+
+Just throwing out other thoughts aside from $AAOI and $AEHR.</blockquote><p><a href='https://x.com/aleabitoreddit/status/2042187668931616964'>查看 X 原帖</a></p></details><details><summary>Serenity · SMTC · 2026-04-09：原帖与筛选理由</summary><p>季度训练截止 2026-04-01；领域 光通信链，目标期限 120 个交易日；历史成熟标的 2 个。</p><p>跨标的历史样本或超额表现尚未达到门槛</p><blockquote>Here&#x27;s a bunch of random 30 US-available random stocks I like today and why:  
+
+1. $INTC - America&#x27;s hope for foundry, national security
+2. $MRVL - scales rev from future maia asics and add ons like cpo, they do everything lost count
+3. $TSM - backbone of semis/ai
+4. $COHR - They do everything vertically integrated + captures optical cycle
+5. $RKLB - the final frontier of space will be around 5 years from now and 20 years from now. 
+6. $DRAM - memory exposure for samsung/sk hynix
+7. $AVGO - hyperscalers dont like nvidia gpu tax
+8. $AMZN - nobody can compete against the overnight shipping of toilet paper. robotics will lower opex over time
+9. $ARM - AGI CPUs scale revenue quite a bit over the next decade
+10. $TSEM - you&#x27;re going to need a foundry for light based stuff
+11. $IBIT - bitcoin, we all know by now
+12. $NBIS - i think it&#x27;s the next AWS. Also they do self-driving cars with uber, own scaling DB companies, data labeling. It&#x27;s almost like a mini Google. 
+13. $GOOGL - youtube is not going away, gemini is great. they&#x27;re vertically integrated with TPUs and fund buildout with operating income so i like it. 
+14. $AMKR - super facilities coming online in late 2027-2028. benefits from made in america
+15. $HOOD - i dont like short term, but long term i&#x27;m a fan of Robinhood since they captured retail + have more products like banking, etc that they&#x27;re scaling up. product innovation is wild.
+16. $CRCL - I happen to really like stablecoins and see them as the future for both payments/holding (depends on clarity act)
+17. $META - people aren&#x27;t going to stop using instagram or whatsapp, or others anytime soon. 
+18. $LITE - $GOOGL TPU exposure decently high part of BOM. As long as Google&#x27;s AI program keeps running I think $LITE will do well.
+19. $LPTH - Germanium and China export controls will always be an issue so US made engineered alternatives  will always be important
+20. $FN - Someone needs to assemble optical stuff
+21. $JBL - same as above, but added with ip from Intel&#x27;s SiPh acqusition so might end up like innolight?
+22. $MP - American rare earths program is extremely important, similar to $INTC national security risks
+23. $HIMS - Okay here me out they just acquired a ton of companies, and at $19 they have global DTC channel. short sellers really hate this company, but I think it&#x27;s actually promising as a contrarian long
+24. $SMTC - LRO/LPO transition
+25. $POWL - US alternative to hammond for switchgear DC type bottleneck
+26. $VPG - Humanoids will be a thing down the road maybe 2027-2028, this makes the sensors. 
+27. $MOG.A - Feels like i see them everywhere in robotics, to spacex supply chains
+28. $MSFT - At $375, one day we&#x27;ll look back and see this as a buying opportunity.
+29. $CVX - oil might crash after war but these oil companies are going to be extremely important, especially when Venezulea is a goldmine.
+30. $XLU - i think rate cuts might be back online, we need power/grid for AI so these names will always be improtant from $CEG to $NEE
+
+Just throwing out other thoughts aside from $AAOI and $AEHR.</blockquote><p><a href='https://x.com/aleabitoreddit/status/2042187668931616964'>查看 X 原帖</a></p></details><details><summary>Tradex · DRAM · 2026-05-03：原帖与筛选理由</summary><p>季度训练截止 2026-04-01；领域 存储，目标期限 60 个交易日；历史成熟标的 1 个。</p><p>跨标的历史样本或超额表现尚未达到门槛</p><blockquote>@BrokeDadCapital Long $DRAM</blockquote><p><a href='https://x.com/TradexWhisperer/status/2050754538047778999'>查看 X 原帖</a></p></details>
+<p><a href="https://github.com/srtvswho/x-/blob/master/outputs/kol_reaudit_20260910/report.md">八位作者复评</a> · <a href="https://github.com/srtvswho/x-/tree/master/outputs/focus_backtest_20260910">冻结输入、逐条结果与复算说明</a> · <a href="/">返回重点关注</a></p>
+</article></body></html>

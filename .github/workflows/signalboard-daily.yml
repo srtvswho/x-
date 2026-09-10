@@ -372,6 +372,12 @@ jobs:
         if: ${{ !contains(github.event.head_commit.message, '[summary backfill]') }}
         run: python scripts/dashboard/refresh_prices_polygon.py
 
+      - name: Refresh author field evidence with bounded free quotes
+        if: ${{ !contains(github.event.head_commit.message, '[summary backfill]') }}
+        run: |
+          python tests/test_focus_signals.py
+          python scripts/refresh_focus_evidence.py --database data/signalboard_full.db --max-requests 24
+
       - name: Generate summaries
         if: env.SUMMARY_ENABLED == 'true'
         env:
@@ -429,6 +435,8 @@ jobs:
           git config user.name "signalboard-bot"
           git config user.email "signalboard-bot@users.noreply.github.com"
           git add data/signalboard.db.gz scripts/dashboard/summaries.json scripts/dashboard/dashboard.html dashboard.html
+          git add -f data/focus_evidence.json.gz
+          if [ -f data/focus_price_cache.json.gz ]; then git add -f data/focus_price_cache.json.gz; fi
           git add -f dashboard_deploy_dist
           if git diff --cached --quiet; then
             echo "No changes to commit."

@@ -140,11 +140,18 @@ def build(deploy_root: Path, report_path: Path):
     market_module(legacy, deploy_root/'assets'/'market-panels.js')
     raw = json.loads(gzip.decompress((data_dir/'raw-intelligence.json.gz').read_bytes()))
     # Small first page; complete historical corpus remains available for filtering.
-    recent = {k:v for k,v in raw.items() if k not in ('posts', 'tracking', 'research_changes')}
+    recent = {k:v for k,v in raw.items() if k not in ('posts', 'tracking', 'research_changes', 'focus_signals')}
     recent.update(posts=sorted(raw['posts'], key=lambda p:p['date'], reverse=True)[:300], total_posts=len(raw['posts']), partial=True)
     pack(data_dir/'recent-posts.json.gz', recent)
     report = research_lines(json.loads(report_path.read_text()), raw)
     pack(data_dir/'research-lines.json.gz', report)
+    if 'focus_signals' not in raw:
+        raise RuntimeError('Rebuild unified data before publishing: focus signal evaluation is missing')
+    pack(data_dir/'focus-signals.json.gz', raw['focus_signals'])
+    replay_root = HERE.parents[1]/'outputs/focus_backtest_20260910'
+    pack(data_dir/'focus-backtest.json.gz', json.loads((replay_root/'summary.json').read_text()))
+    (deploy_root/'reports').mkdir(exist_ok=True)
+    (deploy_root/'reports/focus-backtest.html').write_bytes((replay_root/'report.html').read_bytes())
     meta = {"build":fields['BUILD_META'], "data_until":raw['generated_at']}
     template = (HERE/'research_clue_preview.template.html').read_text()
     html = template.replace('__RESEARCH_CLUES__', json.dumps({"clues":[], **meta}, ensure_ascii=False).replace('</','<\\/'))

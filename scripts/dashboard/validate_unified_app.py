@@ -15,7 +15,7 @@ def read(name):
 
 def main():
     home = (DIST/'index.html').read_text()
-    expected = [('market','/'),('tracking','/tracking/'),('posts','/posts/'),('clues','/research-clues/'),('usage','/ai-usage/')]
+    expected = [('focus','/'),('market','/market/'),('tracking','/tracking/'),('posts','/posts/'),('clues','/research-clues/'),('usage','/ai-usage/')]
     assert re.findall(r'data-nav="([^"]+)" href="([^"]+)"',home) == expected
     for path in DIST.glob('*/index.html'):
         assert path.read_text() == home, f'Different shell: {path}'
@@ -41,7 +41,12 @@ def main():
     subprocess.run(['node','--check',str(DIST/'assets/unified-navigation.js')],check=True)
     subprocess.run(['node','--input-type=module','--check'],input=(DIST/'assets/market-panels.js').read_text(),text=True,check=True)
     subprocess.run(['node',str(ROOT/'tests/test_unified_ui_runtime.cjs')],check=True,cwd=ROOT)
-    print(f'PASS: one shell, five navigation items, {len(raw["posts"])} posts, {len(lines["clues"])} chronological research lines')
+    subprocess.run(['node',str(ROOT/'tests/test_focus_ui.cjs')],check=True,cwd=ROOT)
+    focus = read('focus-signals.json.gz')
+    assert focus['version'] == 'trusted-first-call-v1'
+    assert all(not a['automatic_buy'] and a['decision_stage']=='research_candidate' for a in focus['alerts'])
+    assert all(a['profile'] and not a['issues'] for a in focus['alerts'] if a['priority']=='priority')
+    print(f'PASS: one shell, six navigation items, {len(raw["posts"])} posts, {len(lines["clues"])} chronological research lines')
 
 
 if __name__ == '__main__':

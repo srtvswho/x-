@@ -1,0 +1,31 @@
+{
+  "rule_tests": 17,
+  "rule_tests_passed": 17,
+  "runtime_checks": [
+    "focus render",
+    "empty state",
+    "filter",
+    "HTML escaping",
+    "market",
+    "tracking",
+    "usage",
+    "same navigation shell",
+    "chronological research lines",
+    "historical replay route"
+  ],
+  "raw_posts": 42061,
+  "real_recent_candidate_counts": {
+    "review": 7
+  },
+  "new_paid_calls": 0,
+  "browser_visual_check": "not completed: Chromium download unavailable",
+  "repo_owner_verified": "Authenticated user srtvswho owns repository srtvswho/x- with admin and push permissions",
+  "authorization": "本轮用户明确授权公开代码、复评结果及必要原帖，合并 master 并部署现有 SignalBoard",
+  "historical_replay": {
+    "first_long_candidates": 467,
+    "priority": 0,
+    "field_watch": 0,
+    "frozen_and_rolling_agree": true,
+    "compact_evidence_equivalence_checks": 890
+  }
+}
