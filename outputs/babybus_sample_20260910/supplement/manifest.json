@@ -1,0 +1,305 @@
+{
+  "handle": "BabybusFL",
+  "method": "4 active-account time strata with seeded random 18-day windows; latest up to 125 posts per window; not a uniform random sample of all posts",
+  "seed": 20260910,
+  "external_budget_usd": 2,
+  "max_reserved_apify_usd": 0.4,
+  "additional_model_calls": 0,
+  "queries": [
+    "from:BabybusFL since:2026-06-06 until:2026-06-24 -filter:retweets",
+    "from:BabybusFL since:2026-07-02 until:2026-07-20 -filter:retweets",
+    "from:BabybusFL since:2026-07-24 until:2026-08-11 -filter:retweets",
+    "from:BabybusFL since:2026-08-18 until:2026-09-05 -filter:retweets"
+  ],
+  "runs": [
+    {
+      "query": "from:BabybusFL since:2026-06-06 until:2026-06-24 -filter:retweets",
+      "reserved_usd": 0.1,
+      "id": "sspgN0hMEdg3aVIdu",
+      "status": "SUCCEEDED",
+      "usageTotalUsd": 0.044,
+      "chargedEventCounts": {
+        "list-query": 1,
+        "get-tweet-query": 0,
+        "dataset-item-tier-one": 70,
+        "dataset-item-tier-two": 0,
+        "dataset-item-tier-three": 0,
+        "dataset-item-tier-four": 0,
+        "dataset-item-tier-five": 0
+      },
+      "pricingInfo": {
+        "minimalMaxTotalChargeUsd": 0.02,
+        "pricingModel": "PAY_PER_EVENT",
+        "isPriceChangeNotificationSuppressed": false,
+        "startedAt": "2026-06-09T15:17:20.237Z",
+        "createdAt": "2026-06-09T15:17:22.982Z",
+        "apifyMarginPercentage": 0.2,
+        "pricingPerEvent": {
+          "actorChargeEvents": {
+            "list-query": {
+              "eventTitle": "Search/Profile/List etc Query",
+              "eventDescription": "Price for processing a search term, profile handle, or Twitter query. Includes first ~40 results.",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.016
+            },
+            "get-tweet-query": {
+              "eventTitle": "Single Tweet URL Query",
+              "eventDescription": "Price for retrieving data from a specific tweet URL.",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.05
+            },
+            "dataset-item-tier-one": {
+              "eventTitle": "Dataset Item Tier 1",
+              "eventDescription": "Pricing for dataset items in small batches (≤5 queries per run).",
+              "isOneTimeEvent": false,
+              "isPrimaryEvent": true,
+              "eventPriceUsd": 0.0004
+            },
+            "dataset-item-tier-two": {
+              "eventTitle": "Dataset Item Tier 2",
+              "eventDescription": "Pricing for dataset items in medium batches (6-10 queries per run).",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.0008
+            },
+            "dataset-item-tier-three": {
+              "eventTitle": "Dataset Item Tier 3",
+              "eventDescription": "Pricing for dataset items in regular batches (11-30 queries per run).",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.0012
+            },
+            "dataset-item-tier-four": {
+              "eventTitle": "Dataset Item Tier 4",
+              "eventDescription": "Pricing for dataset items in large batches (31-100 queries per run).",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.0016
+            },
+            "dataset-item-tier-five": {
+              "eventTitle": "Dataset Item Tier 5",
+              "eventDescription": "Pricing for dataset items in extensive batches (>100 queries per run).",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.002
+            }
+          }
+        }
+      },
+      "returned_items": 125
+    },
+    {
+      "query": "from:BabybusFL since:2026-07-02 until:2026-07-20 -filter:retweets",
+      "reserved_usd": 0.1,
+      "id": "Ibjh7Pv5DRxsOjqHb",
+      "status": "SUCCEEDED",
+      "usageTotalUsd": 0.0456,
+      "chargedEventCounts": {
+        "list-query": 1,
+        "get-tweet-query": 0,
+        "dataset-item-tier-one": 74,
+        "dataset-item-tier-two": 0,
+        "dataset-item-tier-three": 0,
+        "dataset-item-tier-four": 0,
+        "dataset-item-tier-five": 0
+      },
+      "pricingInfo": {
+        "minimalMaxTotalChargeUsd": 0.02,
+        "pricingModel": "PAY_PER_EVENT",
+        "isPriceChangeNotificationSuppressed": false,
+        "startedAt": "2026-06-09T15:17:20.237Z",
+        "createdAt": "2026-06-09T15:17:22.982Z",
+        "apifyMarginPercentage": 0.2,
+        "pricingPerEvent": {
+          "actorChargeEvents": {
+            "list-query": {
+              "eventTitle": "Search/Profile/List etc Query",
+              "eventDescription": "Price for processing a search term, profile handle, or Twitter query. Includes first ~40 results.",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.016
+            },
+            "get-tweet-query": {
+              "eventTitle": "Single Tweet URL Query",
+              "eventDescription": "Price for retrieving data from a specific tweet URL.",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.05
+            },
+            "dataset-item-tier-one": {
+              "eventTitle": "Dataset Item Tier 1",
+              "eventDescription": "Pricing for dataset items in small batches (≤5 queries per run).",
+              "isOneTimeEvent": false,
+              "isPrimaryEvent": true,
+              "eventPriceUsd": 0.0004
+            },
+            "dataset-item-tier-two": {
+              "eventTitle": "Dataset Item Tier 2",
+              "eventDescription": "Pricing for dataset items in medium batches (6-10 queries per run).",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.0008
+            },
+            "dataset-item-tier-three": {
+              "eventTitle": "Dataset Item Tier 3",
+              "eventDescription": "Pricing for dataset items in regular batches (11-30 queries per run).",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.0012
+            },
+            "dataset-item-tier-four": {
+              "eventTitle": "Dataset Item Tier 4",
+              "eventDescription": "Pricing for dataset items in large batches (31-100 queries per run).",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.0016
+            },
+            "dataset-item-tier-five": {
+              "eventTitle": "Dataset Item Tier 5",
+              "eventDescription": "Pricing for dataset items in extensive batches (>100 queries per run).",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.002
+            }
+          }
+        }
+      },
+      "returned_items": 125
+    },
+    {
+      "query": "from:BabybusFL since:2026-07-24 until:2026-08-11 -filter:retweets",
+      "reserved_usd": 0.1,
+      "id": "ghVBCUTxgepjJ7R0n",
+      "status": "SUCCEEDED",
+      "usageTotalUsd": 0.0464,
+      "chargedEventCounts": {
+        "list-query": 1,
+        "get-tweet-query": 0,
+        "dataset-item-tier-one": 76,
+        "dataset-item-tier-two": 0,
+        "dataset-item-tier-three": 0,
+        "dataset-item-tier-four": 0,
+        "dataset-item-tier-five": 0
+      },
+      "pricingInfo": {
+        "minimalMaxTotalChargeUsd": 0.02,
+        "pricingModel": "PAY_PER_EVENT",
+        "isPriceChangeNotificationSuppressed": false,
+        "startedAt": "2026-06-09T15:17:20.237Z",
+        "createdAt": "2026-06-09T15:17:22.982Z",
+        "apifyMarginPercentage": 0.2,
+        "pricingPerEvent": {
+          "actorChargeEvents": {
+            "list-query": {
+              "eventTitle": "Search/Profile/List etc Query",
+              "eventDescription": "Price for processing a search term, profile handle, or Twitter query. Includes first ~40 results.",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.016
+            },
+            "get-tweet-query": {
+              "eventTitle": "Single Tweet URL Query",
+              "eventDescription": "Price for retrieving data from a specific tweet URL.",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.05
+            },
+            "dataset-item-tier-one": {
+              "eventTitle": "Dataset Item Tier 1",
+              "eventDescription": "Pricing for dataset items in small batches (≤5 queries per run).",
+              "isOneTimeEvent": false,
+              "isPrimaryEvent": true,
+              "eventPriceUsd": 0.0004
+            },
+            "dataset-item-tier-two": {
+              "eventTitle": "Dataset Item Tier 2",
+              "eventDescription": "Pricing for dataset items in medium batches (6-10 queries per run).",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.0008
+            },
+            "dataset-item-tier-three": {
+              "eventTitle": "Dataset Item Tier 3",
+              "eventDescription": "Pricing for dataset items in regular batches (11-30 queries per run).",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.0012
+            },
+            "dataset-item-tier-four": {
+              "eventTitle": "Dataset Item Tier 4",
+              "eventDescription": "Pricing for dataset items in large batches (31-100 queries per run).",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.0016
+            },
+            "dataset-item-tier-five": {
+              "eventTitle": "Dataset Item Tier 5",
+              "eventDescription": "Pricing for dataset items in extensive batches (>100 queries per run).",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.002
+            }
+          }
+        }
+      },
+      "returned_items": 125
+    },
+    {
+      "query": "from:BabybusFL since:2026-08-18 until:2026-09-05 -filter:retweets",
+      "reserved_usd": 0.1,
+      "id": "bedTrveahZukqzrBC",
+      "status": "SUCCEEDED",
+      "usageTotalUsd": 0.0372,
+      "chargedEventCounts": {
+        "list-query": 1,
+        "get-tweet-query": 0,
+        "dataset-item-tier-one": 53,
+        "dataset-item-tier-two": 0,
+        "dataset-item-tier-three": 0,
+        "dataset-item-tier-four": 0,
+        "dataset-item-tier-five": 0
+      },
+      "pricingInfo": {
+        "minimalMaxTotalChargeUsd": 0.02,
+        "pricingModel": "PAY_PER_EVENT",
+        "isPriceChangeNotificationSuppressed": false,
+        "startedAt": "2026-06-09T15:17:20.237Z",
+        "createdAt": "2026-06-09T15:17:22.982Z",
+        "apifyMarginPercentage": 0.2,
+        "pricingPerEvent": {
+          "actorChargeEvents": {
+            "list-query": {
+              "eventTitle": "Search/Profile/List etc Query",
+              "eventDescription": "Price for processing a search term, profile handle, or Twitter query. Includes first ~40 results.",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.016
+            },
+            "get-tweet-query": {
+              "eventTitle": "Single Tweet URL Query",
+              "eventDescription": "Price for retrieving data from a specific tweet URL.",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.05
+            },
+            "dataset-item-tier-one": {
+              "eventTitle": "Dataset Item Tier 1",
+              "eventDescription": "Pricing for dataset items in small batches (≤5 queries per run).",
+              "isOneTimeEvent": false,
+              "isPrimaryEvent": true,
+              "eventPriceUsd": 0.0004
+            },
+            "dataset-item-tier-two": {
+              "eventTitle": "Dataset Item Tier 2",
+              "eventDescription": "Pricing for dataset items in medium batches (6-10 queries per run).",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.0008
+            },
+            "dataset-item-tier-three": {
+              "eventTitle": "Dataset Item Tier 3",
+              "eventDescription": "Pricing for dataset items in regular batches (11-30 queries per run).",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.0012
+            },
+            "dataset-item-tier-four": {
+              "eventTitle": "Dataset Item Tier 4",
+              "eventDescription": "Pricing for dataset items in large batches (31-100 queries per run).",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.0016
+            },
+            "dataset-item-tier-five": {
+              "eventTitle": "Dataset Item Tier 5",
+              "eventDescription": "Pricing for dataset items in extensive batches (>100 queries per run).",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.002
+            }
+          }
+        }
+      },
+      "returned_items": 125
+    }
+  ],
+  "unique_posts": 500
+}
