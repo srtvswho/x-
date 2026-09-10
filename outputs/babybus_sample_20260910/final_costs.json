@@ -1,0 +1,186 @@
+{
+  "runs": [
+    {
+      "id": "dXyfzMTu6MsesQlqf",
+      "status": "SUCCEEDED",
+      "cost_usd": 0.016,
+      "events": {
+        "list-query": 1,
+        "get-tweet-query": 0,
+        "dataset-item-tier-one": 0,
+        "dataset-item-tier-two": 0,
+        "dataset-item-tier-three": 0,
+        "dataset-item-tier-four": 0,
+        "dataset-item-tier-five": 0
+      },
+      "cap": 0.15
+    },
+    {
+      "id": "WA3qFzRie65tx4ttg",
+      "status": "SUCCEEDED",
+      "cost_usd": 0.016,
+      "events": {
+        "list-query": 1,
+        "get-tweet-query": 0,
+        "dataset-item-tier-one": 0,
+        "dataset-item-tier-two": 0,
+        "dataset-item-tier-three": 0,
+        "dataset-item-tier-four": 0,
+        "dataset-item-tier-five": 0
+      },
+      "cap": 0.15
+    },
+    {
+      "id": "hnJExmBzCfdiuyCru",
+      "status": "SUCCEEDED",
+      "cost_usd": 0.016,
+      "events": {
+        "list-query": 1,
+        "get-tweet-query": 0,
+        "dataset-item-tier-one": 0,
+        "dataset-item-tier-two": 0,
+        "dataset-item-tier-three": 0,
+        "dataset-item-tier-four": 0,
+        "dataset-item-tier-five": 0
+      },
+      "cap": 0.15
+    },
+    {
+      "id": "QryWlXPGUcPPYeBjq",
+      "status": "SUCCEEDED",
+      "cost_usd": 0.016,
+      "events": {
+        "list-query": 1,
+        "get-tweet-query": 0,
+        "dataset-item-tier-one": 0,
+        "dataset-item-tier-two": 0,
+        "dataset-item-tier-three": 0,
+        "dataset-item-tier-four": 0,
+        "dataset-item-tier-five": 0
+      },
+      "cap": 0.15
+    },
+    {
+      "id": "36eMc91oZ0tNy88VU",
+      "status": "SUCCEEDED",
+      "cost_usd": 0.016,
+      "events": {
+        "list-query": 1,
+        "get-tweet-query": 0,
+        "dataset-item-tier-one": 0,
+        "dataset-item-tier-two": 0,
+        "dataset-item-tier-three": 0,
+        "dataset-item-tier-four": 0,
+        "dataset-item-tier-five": 0
+      },
+      "cap": 0.15
+    },
+    {
+      "id": "b3kXVH7cG82Mzc0W6",
+      "status": "SUCCEEDED",
+      "cost_usd": 0.016,
+      "events": {
+        "list-query": 1,
+        "get-tweet-query": 0,
+        "dataset-item-tier-one": 0,
+        "dataset-item-tier-two": 0,
+        "dataset-item-tier-three": 0,
+        "dataset-item-tier-four": 0,
+        "dataset-item-tier-five": 0
+      },
+      "cap": 0.15
+    },
+    {
+      "id": "bRssKf3ZtGnQvwTos",
+      "status": "SUCCEEDED",
+      "cost_usd": 0.016,
+      "events": {
+        "list-query": 1,
+        "get-tweet-query": 0,
+        "dataset-item-tier-one": 0,
+        "dataset-item-tier-two": 0,
+        "dataset-item-tier-three": 0,
+        "dataset-item-tier-four": 0,
+        "dataset-item-tier-five": 0
+      },
+      "cap": 0.15
+    },
+    {
+      "id": "fixrAR96hbHzchExL",
+      "status": "SUCCEEDED",
+      "cost_usd": 0.0436,
+      "events": {
+        "list-query": 1,
+        "get-tweet-query": 0,
+        "dataset-item-tier-one": 69,
+        "dataset-item-tier-two": 0,
+        "dataset-item-tier-three": 0,
+        "dataset-item-tier-four": 0,
+        "dataset-item-tier-five": 0
+      },
+      "cap": 0.15
+    },
+    {
+      "id": "sspgN0hMEdg3aVIdu",
+      "status": "SUCCEEDED",
+      "cost_usd": 0.044,
+      "events": {
+        "list-query": 1,
+        "get-tweet-query": 0,
+        "dataset-item-tier-one": 70,
+        "dataset-item-tier-two": 0,
+        "dataset-item-tier-three": 0,
+        "dataset-item-tier-four": 0,
+        "dataset-item-tier-five": 0
+      },
+      "cap": 0.1
+    },
+    {
+      "id": "Ibjh7Pv5DRxsOjqHb",
+      "status": "SUCCEEDED",
+      "cost_usd": 0.0456,
+      "events": {
+        "list-query": 1,
+        "get-tweet-query": 0,
+        "dataset-item-tier-one": 74,
+        "dataset-item-tier-two": 0,
+        "dataset-item-tier-three": 0,
+        "dataset-item-tier-four": 0,
+        "dataset-item-tier-five": 0
+      },
+      "cap": 0.1
+    },
+    {
+      "id": "ghVBCUTxgepjJ7R0n",
+      "status": "SUCCEEDED",
+      "cost_usd": 0.0464,
+      "events": {
+        "list-query": 1,
+        "get-tweet-query": 0,
+        "dataset-item-tier-one": 76,
+        "dataset-item-tier-two": 0,
+        "dataset-item-tier-three": 0,
+        "dataset-item-tier-four": 0,
+        "dataset-item-tier-five": 0
+      },
+      "cap": 0.1
+    },
+    {
+      "id": "bedTrveahZukqzrBC",
+      "status": "SUCCEEDED",
+      "cost_usd": 0.0464,
+      "events": {
+        "list-query": 1,
+        "get-tweet-query": 0,
+        "dataset-item-tier-one": 76,
+        "dataset-item-tier-two": 0,
+        "dataset-item-tier-three": 0,
+        "dataset-item-tier-four": 0,
+        "dataset-item-tier-five": 0
+      },
+      "cap": 0.1
+    }
+  ],
+  "apify_total_usd": 0.33799999999999997,
+  "paid_model_calls": 0
+}
