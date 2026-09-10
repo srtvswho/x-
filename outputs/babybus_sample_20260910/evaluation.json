@@ -1,0 +1,1448 @@
+{
+  "excluded": {
+    "90": "wait to add, no fresh directional trade",
+    "347": "profit-taking, not a bearish call",
+    "465": "retrospective rotation"
+  },
+  "spec_count": 36,
+  "dedup_7_count": 36,
+  "dedup_21_count": 33,
+  "summary": {
+    "7": {
+      "US equities": {
+        "5": {
+          "n": 27,
+          "wins": 15,
+          "hit": 0.5555555555555556,
+          "median": 0.014577171125052635,
+          "median_excess": 0.0,
+          "median_soxx_excess": 0.0
+        },
+        "20": {
+          "n": 22,
+          "wins": 11,
+          "hit": 0.5,
+          "median": 0.004289619062041616,
+          "median_excess": 0.0,
+          "median_soxx_excess": -0.0034719173818505977
+        },
+        "60": {
+          "n": 7,
+          "wins": 4,
+          "hit": 0.5714285714285714,
+          "median": 0.035353823612619295,
+          "median_excess": 0.004347014891875611,
+          "median_soxx_excess": 0.0
+        },
+        "120": {
+          "n": 0,
+          "wins": 0,
+          "hit": null,
+          "median": null,
+          "median_excess": null,
+          "median_soxx_excess": null
+        }
+      },
+      "Korea": {
+        "5": {
+          "n": 1,
+          "wins": 1,
+          "hit": 1.0,
+          "median": 0.0060273972602740145,
+          "median_excess": 0.009145978436762459,
+          "median_soxx_excess": 0.05395078679054377
+        },
+        "20": {
+          "n": 1,
+          "wins": 0,
+          "hit": 0.0,
+          "median": -0.2191780821917808,
+          "median_excess": -0.15660953208713202,
+          "median_soxx_excess": -0.13940340685536257
+        },
+        "60": {
+          "n": 0,
+          "wins": 0,
+          "hit": null,
+          "median": null,
+          "median_excess": null,
+          "median_soxx_excess": null
+        },
+        "120": {
+          "n": 0,
+          "wins": 0,
+          "hit": null,
+          "median": null,
+          "median_excess": null,
+          "median_soxx_excess": null
+        }
+      },
+      "metals": {
+        "5": {
+          "n": 2,
+          "wins": 2,
+          "hit": 1.0,
+          "median": 0.09930308158712009,
+          "median_excess": 0.06751934006462101,
+          "median_soxx_excess": -0.005083820148601204
+        },
+        "20": {
+          "n": 2,
+          "wins": 2,
+          "hit": 1.0,
+          "median": 0.13796574622707414,
+          "median_excess": 0.11139927915876757,
+          "median_soxx_excess": 0.10401717484636042
+        },
+        "60": {
+          "n": 0,
+          "wins": 0,
+          "hit": null,
+          "median": null,
+          "median_excess": null,
+          "median_soxx_excess": null
+        },
+        "120": {
+          "n": 0,
+          "wins": 0,
+          "hit": null,
+          "median": null,
+          "median_excess": null,
+          "median_soxx_excess": null
+        }
+      }
+    },
+    "21": {
+      "US equities": {
+        "5": {
+          "n": 24,
+          "wins": 14,
+          "hit": 0.5833333333333334,
+          "median": 0.015254192267430411,
+          "median_excess": 0.0013501094652560441,
+          "median_soxx_excess": 0.00485727116302348
+        },
+        "20": {
+          "n": 19,
+          "wins": 10,
+          "hit": 0.5263157894736842,
+          "median": 0.01665043098031549,
+          "median_excess": 0.0,
+          "median_soxx_excess": 0.0
+        },
+        "60": {
+          "n": 7,
+          "wins": 4,
+          "hit": 0.5714285714285714,
+          "median": 0.035353823612619295,
+          "median_excess": 0.004347014891875611,
+          "median_soxx_excess": 0.0
+        },
+        "120": {
+          "n": 0,
+          "wins": 0,
+          "hit": null,
+          "median": null,
+          "median_excess": null,
+          "median_soxx_excess": null
+        }
+      },
+      "Korea": {
+        "5": {
+          "n": 1,
+          "wins": 1,
+          "hit": 1.0,
+          "median": 0.0060273972602740145,
+          "median_excess": 0.009145978436762459,
+          "median_soxx_excess": 0.05395078679054377
+        },
+        "20": {
+          "n": 1,
+          "wins": 0,
+          "hit": 0.0,
+          "median": -0.2191780821917808,
+          "median_excess": -0.15660953208713202,
+          "median_soxx_excess": -0.13940340685536257
+        },
+        "60": {
+          "n": 0,
+          "wins": 0,
+          "hit": null,
+          "median": null,
+          "median_excess": null,
+          "median_soxx_excess": null
+        },
+        "120": {
+          "n": 0,
+          "wins": 0,
+          "hit": null,
+          "median": null,
+          "median_excess": null,
+          "median_soxx_excess": null
+        }
+      },
+      "metals": {
+        "5": {
+          "n": 2,
+          "wins": 2,
+          "hit": 1.0,
+          "median": 0.09930308158712009,
+          "median_excess": 0.06751934006462101,
+          "median_soxx_excess": -0.005083820148601204
+        },
+        "20": {
+          "n": 2,
+          "wins": 2,
+          "hit": 1.0,
+          "median": 0.13796574622707414,
+          "median_excess": 0.11139927915876757,
+          "median_soxx_excess": 0.10401717484636042
+        },
+        "60": {
+          "n": 0,
+          "wins": 0,
+          "hit": null,
+          "median": null,
+          "median_excess": null,
+          "median_soxx_excess": null
+        },
+        "120": {
+          "n": 0,
+          "wins": 0,
+          "hit": null,
+          "median": null,
+          "median_excess": null,
+          "median_soxx_excess": null
+        }
+      }
+    }
+  },
+  "rows": [
+    {
+      "i": 16,
+      "id": "2064573995354054977",
+      "date_utc": "2026-06-10",
+      "timestamp_utc": "2026-06-10T05:02:53+00:00",
+      "ticker": "NVDA",
+      "direction": 1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2064573995354054977",
+      "text": "不 只有nvda可以闭眼买。其他几个早晚大翻车 各自都有各自问题。优先级最高的第一梯队。nvda tsm 海力士 美光。这四家公司独一档领先。",
+      "context": "@BabybusFL M7里只有谷歌和AMZN可以闭眼买",
+      "entry_date": "2026-06-10",
+      "entry_open": 204.42999267578125,
+      "available_days": 63,
+      "returns": {
+        "5": {
+          "raw_price_return": 0.014577171125052635,
+          "direction_return": 0.014577171125052635,
+          "exit_date": "2026-06-16",
+          "exit_close": 207.41000366210938,
+          "benchmark_price_return": 0.023098218005499715,
+          "excess_direction": -0.00852104688044708,
+          "soxx_excess_direction": -0.057169953945908514,
+          "adverse_close": -0.019615490145791115
+        },
+        "20": {
+          "raw_price_return": -0.008071192856232257,
+          "direction_return": -0.008071192856232257,
+          "exit_date": "2026-07-09",
+          "exit_close": 202.77999877929688,
+          "benchmark_price_return": 0.024979897405612572,
+          "excess_direction": -0.03305109026184483,
+          "soxx_excess_direction": -0.06252509657389371,
+          "adverse_close": -0.05821060667627842
+        },
+        "60": {
+          "raw_price_return": 0.11749745699279956,
+          "direction_return": 0.11749745699279956,
+          "exit_date": "2026-09-03",
+          "exit_close": 228.4499969482422,
+          "benchmark_price_return": 0.054241218815595627,
+          "excess_direction": 0.06325623817720394,
+          "soxx_excess_direction": 0.20715406313656604,
+          "adverse_close": -0.07053758590020065
+        }
+      }
+    },
+    {
+      "i": 17,
+      "id": "2064582517718389199",
+      "date_utc": "2026-06-10",
+      "timestamp_utc": "2026-06-10T05:36:44+00:00",
+      "ticker": "INTC",
+      "direction": -1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2064582517718389199",
+      "text": "跟屎一样。苹果早晚因为这个18A大翻车 给自己炸死。下了单 根本拿不到货 财报直接嗝屁 甚至拿到货质量很差 各种暴炸 直接二位喜提全美热搜 intc18A炸掉苹果多少市值。而且当前这个股价计价全部利好了。",
+      "context": "@BabybusFL 但intc是除了台积电和三星外唯一能做先进制程的了",
+      "entry_date": "2026-06-10",
+      "entry_open": 106.02999877929688,
+      "available_days": 63,
+      "returns": {
+        "5": {
+          "raw_price_return": 0.10393289068501499,
+          "direction_return": -0.10393289068501499,
+          "exit_date": "2026-06-16",
+          "exit_close": 117.05000305175781,
+          "benchmark_price_return": 0.023098218005499715,
+          "excess_direction": -0.08083467267951527,
+          "soxx_excess_direction": -0.03218576561405384,
+          "adverse_close": -0.205885146490421
+        },
+        "20": {
+          "raw_price_return": 0.06139773848136265,
+          "direction_return": -0.06139773848136265,
+          "exit_date": "2026-07-09",
+          "exit_close": 112.54000091552734,
+          "benchmark_price_return": 0.024979897405612572,
+          "excess_direction": -0.03641784107575008,
+          "soxx_excess_direction": -0.0069438347637011955,
+          "adverse_close": -0.3292464780158595
+        },
+        "60": {
+          "raw_price_return": -0.13543337523036414,
+          "direction_return": 0.13543337523036414,
+          "exit_date": "2026-09-03",
+          "exit_close": 91.66999816894531,
+          "benchmark_price_return": 0.054241218815595627,
+          "excess_direction": 0.18967459404595977,
+          "soxx_excess_direction": 0.04577676908659767,
+          "adverse_close": -0.3292464780158595
+        }
+      }
+    },
+    {
+      "i": 18,
+      "id": "2064584723611967736",
+      "date_utc": "2026-06-10",
+      "timestamp_utc": "2026-06-10T05:45:30+00:00",
+      "ticker": "MU",
+      "direction": 1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2064584723611967736",
+      "text": "海力士 mu sndk 西部数据 他们一定会分道扬镳的。前三家一定会分大小王 西部数据可以直接推沟里 也是垃圾。再加一个三星也不错 但是海力士遥遥领先其他几家。28年以前都没有问题 暴跌爆买 小跌小卖 平时没事sp就行了。美股没上海力士就做mu。",
+      "context": "@BabybusFL 哥对海力士mu评价这么高啊，赶紧加入进货清单，不过也许直接上dram就行了？之前一直觉得他们这个直线爆拉太吓人了，然后就越看越高一去不复返🤣",
+      "entry_date": "2026-06-10",
+      "entry_open": 905.1300048828125,
+      "available_days": 63,
+      "returns": {
+        "5": {
+          "raw_price_return": 0.12774960973455207,
+          "direction_return": 0.12774960973455207,
+          "exit_date": "2026-06-16",
+          "exit_close": 1020.760009765625,
+          "benchmark_price_return": 0.023098218005499715,
+          "excess_direction": 0.10465139172905236,
+          "soxx_excess_direction": 0.056002484663590923,
+          "adverse_close": -0.014638781090585362
+        },
+        "20": {
+          "raw_price_return": 0.09557744113987865,
+          "direction_return": 0.09557744113987865,
+          "exit_date": "2026-07-09",
+          "exit_close": 991.6400146484375,
+          "benchmark_price_return": 0.024979897405612572,
+          "excess_direction": 0.07059754373426608,
+          "soxx_excess_direction": 0.04112353742221719,
+          "adverse_close": -0.014638781090585362
+        },
+        "60": {
+          "raw_price_return": 0.05858823370747124,
+          "direction_return": 0.05858823370747124,
+          "exit_date": "2026-09-03",
+          "exit_close": 958.1599731445312,
+          "benchmark_price_return": 0.054241218815595627,
+          "excess_direction": 0.004347014891875611,
+          "soxx_excess_direction": 0.1482448398512377,
+          "adverse_close": -0.18354269992885874
+        }
+      }
+    },
+    {
+      "i": 23,
+      "id": "2064687455400304985",
+      "date_utc": "2026-06-10",
+      "timestamp_utc": "2026-06-10T12:33:44+00:00",
+      "ticker": "CRWV",
+      "direction": 1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2064687455400304985",
+      "text": "crwv么 随便卖 欢迎至极。持有股份太多了 你不能一次都卖 只能慢慢卖。兑现需要时间。然后自己再给自己激励 确实让股东难受 但是业务没问题 未来可以赚到钱 我预期28年经营性现金流归正了。当下估值错位很严重 至少低估50%左右。",
+      "context": "@BabybusFL insider一直卖股怎么看",
+      "entry_date": "2026-06-10",
+      "entry_open": 95.38999938964844,
+      "available_days": 63,
+      "returns": {
+        "5": {
+          "raw_price_return": 0.22685815628589645,
+          "direction_return": 0.22685815628589645,
+          "exit_date": "2026-06-16",
+          "exit_close": 117.02999877929688,
+          "benchmark_price_return": 0.023098218005499715,
+          "excess_direction": 0.20375993828039674,
+          "soxx_excess_direction": 0.1551110312149353,
+          "adverse_close": 0.002306334229068119
+        },
+        "20": {
+          "raw_price_return": -0.05964988445134345,
+          "direction_return": -0.05964988445134345,
+          "exit_date": "2026-07-09",
+          "exit_close": 89.69999694824219,
+          "benchmark_price_return": 0.024979897405612572,
+          "excess_direction": -0.08462978185695602,
+          "soxx_excess_direction": -0.1141037881690049,
+          "adverse_close": -0.14304430999448292
+        },
+        "60": {
+          "raw_price_return": -0.11353393333001682,
+          "direction_return": -0.11353393333001682,
+          "exit_date": "2026-09-03",
+          "exit_close": 84.55999755859375,
+          "benchmark_price_return": 0.054241218815595627,
+          "excess_direction": -0.16777515214561245,
+          "soxx_excess_direction": -0.023877327186250352,
+          "adverse_close": -0.3624069600169816
+        }
+      }
+    },
+    {
+      "i": 31,
+      "id": "2064869982329045019",
+      "date_utc": "2026-06-11",
+      "timestamp_utc": "2026-06-11T00:39:01+00:00",
+      "ticker": "CRWV",
+      "direction": -1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2064869982329045019",
+      "text": "大结局。类似于crwv nbis 你们可以扔掉了 中国移动 中国电信 可能利润率会好一些 但是目标不变",
+      "context": "https://t.co/iEuypInyC7",
+      "entry_date": "2026-06-11",
+      "entry_open": 92.63500213623047,
+      "available_days": 62,
+      "returns": {
+        "5": {
+          "raw_price_return": 0.2436983475753911,
+          "direction_return": -0.2436983475753911,
+          "exit_date": "2026-06-17",
+          "exit_close": 115.20999908447266,
+          "benchmark_price_return": 0.0167407816613796,
+          "excess_direction": -0.2269575659140115,
+          "soxx_excess_direction": -0.16392088381467285,
+          "adverse_close": -0.2633453455011612
+        },
+        "20": {
+          "raw_price_return": -0.04053548654633088,
+          "direction_return": 0.04053548654633088,
+          "exit_date": "2026-07-10",
+          "exit_close": 88.87999725341797,
+          "benchmark_price_return": 0.03593776015485428,
+          "excess_direction": 0.07647324670118516,
+          "soxx_excess_direction": 0.08720295394551025,
+          "adverse_close": -0.27327677690105845
+        },
+        "60": {
+          "raw_price_return": -0.035353823612619295,
+          "direction_return": 0.035353823612619295,
+          "exit_date": "2026-09-04",
+          "exit_close": 89.36000061035156,
+          "benchmark_price_return": 0.05684998095478022,
+          "excess_direction": 0.09220380456739952,
+          "soxx_excess_direction": -0.02866979572544448,
+          "adverse_close": -0.27327677690105845
+        }
+      }
+    },
+    {
+      "i": 31,
+      "id": "2064869982329045019",
+      "date_utc": "2026-06-11",
+      "timestamp_utc": "2026-06-11T00:39:01+00:00",
+      "ticker": "NBIS",
+      "direction": -1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2064869982329045019",
+      "text": "大结局。类似于crwv nbis 你们可以扔掉了 中国移动 中国电信 可能利润率会好一些 但是目标不变",
+      "context": "https://t.co/iEuypInyC7",
+      "entry_date": "2026-06-11",
+      "entry_open": 205.38999938964844,
+      "available_days": 62,
+      "returns": {
+        "5": {
+          "raw_price_return": 0.36769075659419426,
+          "direction_return": -0.36769075659419426,
+          "exit_date": "2026-06-17",
+          "exit_close": 280.9100036621094,
+          "benchmark_price_return": 0.0167407816613796,
+          "excess_direction": -0.35094997493281466,
+          "soxx_excess_direction": -0.287913292833476,
+          "adverse_close": -0.36769075659419426
+        },
+        "20": {
+          "raw_price_return": 0.06942886483865784,
+          "direction_return": -0.06942886483865784,
+          "exit_date": "2026-07-10",
+          "exit_close": 219.64999389648438,
+          "benchmark_price_return": 0.03593776015485428,
+          "excess_direction": -0.03349110468380356,
+          "soxx_excess_direction": -0.02276139743947847,
+          "adverse_close": -0.3958323350375126
+        },
+        "60": {
+          "raw_price_return": 0.1022445107473835,
+          "direction_return": -0.1022445107473835,
+          "exit_date": "2026-09-04",
+          "exit_close": 226.38999938964844,
+          "benchmark_price_return": 0.05684998095478022,
+          "excess_direction": -0.04539452979260328,
+          "soxx_excess_direction": -0.16626813008544727,
+          "adverse_close": -0.3958323350375126
+        }
+      }
+    },
+    {
+      "i": 55,
+      "id": "2065266116738609263",
+      "date_utc": "2026-06-12",
+      "timestamp_utc": "2026-06-12T02:53:07+00:00",
+      "ticker": "SOXX",
+      "direction": 1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2065266116738609263",
+      "text": "什么是ai 一段话给大家讲清楚：2011年微信诞生后，运营商发现移动互联网流量开始爆发，预判未来视频、社交、支付都将依赖高速网络，于是中国移动、中国联通、中国电信开启史无前例的4G建设潮，大量CAPEX投入基站、光纤和核心网。上游半导体、通信设备和光模块企业迎来数年高景气周期，订单暴增、股价大涨。随后4G网络逐渐覆盖全国，基础设施供给超过短期需求，设备投资增速放缓，产业链景气度见顶，大量概念股泡沫破裂。最终真正赚取超额利润的并非大多数基础设施公司，而是跑在4G高速公路上的微信、腾讯、阿里、字节等应用层企业。把微信换成chatgpt 把流量换成token。一切就清楚了。真正赚钱的就是半导体 剩下的都是笑话 后续不需要我赘述了吧。现在市场炒什么呢 光通信 光互连 光模块 光纤 甚至设备 材料 气体。和4g比 就是 capex更大了 泡沫更大了 剩下的没区别 股票还是哪些股票 名子换个新的而已。为什么选择止损甲骨文 对中国联通毫无兴趣 都不如买soxx。其他都是噪音 梭哈soxx即可。",
+      "context": "",
+      "entry_date": "2026-06-12",
+      "entry_open": 584.1099853515625,
+      "available_days": 61,
+      "returns": {
+        "5": {
+          "raw_price_return": 0.09474247700484151,
+          "direction_return": 0.09474247700484151,
+          "exit_date": "2026-06-18",
+          "exit_close": 639.4500122070312,
+          "benchmark_price_return": 0.008140794754821545,
+          "excess_direction": 0.08660168225001996,
+          "soxx_excess_direction": 0.0,
+          "adverse_close": 0.012206613585832082
+        },
+        "20": {
+          "raw_price_return": -0.05221619346507622,
+          "direction_return": -0.05221619346507622,
+          "exit_date": "2026-07-13",
+          "exit_close": 553.6099853515625,
+          "benchmark_price_return": 0.011421420915798342,
+          "excess_direction": -0.06363761438087456,
+          "soxx_excess_direction": 0.0,
+          "adverse_close": -0.05550321638594036
+        },
+        "60": {
+          "raw_price_return": -0.09537580649981436,
+          "direction_return": -0.09537580649981436,
+          "exit_date": "2026-09-08",
+          "exit_close": 528.4000244140625,
+          "benchmark_price_return": 0.03408891367873523,
+          "excess_direction": -0.1294647201785496,
+          "soxx_excess_direction": 0.0,
+          "adverse_close": -0.20391705045047792
+        }
+      }
+    },
+    {
+      "i": 84,
+      "id": "2067601729558814944",
+      "date_utc": "2026-06-18",
+      "timestamp_utc": "2026-06-18T13:34:01+00:00",
+      "ticker": "GOOGL",
+      "direction": -1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2067601729558814944",
+      "text": "早我就说了 谷歌会套死一大帮人。至少有一阵子 msft翻版。别着急 散户信仰之神谷歌。跌了就闭眼买的时代结束了。",
+      "context": "충격적이군요. Gemini 개발을 이끌어 가던 노암이 GDM을 떠나 OAI에 합류했습니다!\n\nOAI가 곧 망해없어질 꺼라고 장담하던 분들 많았죠? 전 절대 그렇게 되지 않을 것이라고 여전히 확신합니다.",
+      "entry_date": "2026-06-22",
+      "entry_open": 357.95001220703125,
+      "available_days": 56,
+      "returns": {
+        "5": {
+          "raw_price_return": -0.057438180911982384,
+          "direction_return": 0.057438180911982384,
+          "exit_date": "2026-06-26",
+          "exit_close": 337.3900146484375,
+          "benchmark_price_return": -0.025023434087460772,
+          "excess_direction": 0.03241474682452161,
+          "soxx_excess_direction": -0.04045774143833958,
+          "adverse_close": 0.02310383922117809
+        },
+        "20": {
+          "raw_price_return": -0.01665043098031549,
+          "direction_return": 0.01665043098031549,
+          "exit_date": "2026-07-20",
+          "exit_close": 351.989990234375,
+          "benchmark_price_return": -0.007502989514475367,
+          "excess_direction": 0.009147441465840123,
+          "soxx_excess_direction": -0.1818632441104332,
+          "adverse_close": -0.03623411308392832
+        }
+      }
+    },
+    {
+      "i": 109,
+      "id": "2069221294760145369",
+      "date_utc": "2026-06-23",
+      "timestamp_utc": "2026-06-23T00:49:35+00:00",
+      "ticker": "NFLX",
+      "direction": -1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2069221294760145369",
+      "text": "不崩就烧高香了。它们没惹到特朗普 不然没事狠狠报复奈飞了。发什么都没有用 从成长股变成成熟公司了  拿不出什么炸裂指引了吧。民主党上台的话再说吧 不然没多大劲  上次特朗普已经干预收购了 市场没人看它 至少这几年没有。散户都没人买。",
+      "context": "$NFLX 此前受马斯克影响超跌了\n7/16日的财报应该非常不错 https://t.co/hB8lrrFJny",
+      "entry_date": "2026-06-23",
+      "entry_open": 73.26000213623047,
+      "available_days": 55,
+      "returns": {
+        "5": {
+          "raw_price_return": 0.007097961068844194,
+          "direction_return": -0.007097961068844194,
+          "exit_date": "2026-06-29",
+          "exit_close": 73.77999877929688,
+          "benchmark_price_return": 0.009798179999356282,
+          "excess_direction": 0.0027002189305120883,
+          "soxx_excess_direction": 0.003944697044088397,
+          "adverse_close": -0.007507444803789953
+        },
+        "20": {
+          "raw_price_return": -0.06265361498010635,
+          "direction_return": 0.06265361498010635,
+          "exit_date": "2026-07-21",
+          "exit_close": 68.66999816894531,
+          "benchmark_price_return": 0.019719044148244658,
+          "excess_direction": 0.08237265912835101,
+          "soxx_excess_direction": -0.027778237568024,
+          "adverse_close": -0.05992354984490755
+        }
+      }
+    },
+    {
+      "i": 131,
+      "id": "2075066599451529425",
+      "date_utc": "2026-07-09",
+      "timestamp_utc": "2026-07-09T03:56:44+00:00",
+      "ticker": "MU",
+      "direction": -1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2075066599451529425",
+      "text": "知道为什么mu还要跌了吧 你们还不死心。我看可以去6开头给你们收尸了。我只是刚才看了一下数据。我发现今天是诱多 半导体 全部都是。nvda是有真买盘 存储都是诱多。实际是净流出的。就是你们俗话 边打边撤了。qqq也都是流出的。",
+      "context": "@BabybusFL 有点马后炮，我感觉dram周五会暴涨",
+      "entry_date": "2026-07-09",
+      "entry_open": 1016.510009765625,
+      "available_days": 44,
+      "returns": {
+        "5": {
+          "raw_price_return": -0.11040715722477412,
+          "direction_return": 0.11040715722477412,
+          "exit_date": "2026-07-15",
+          "exit_close": 904.280029296875,
+          "benchmark_price_return": 0.009981965901326717,
+          "excess_direction": 0.12038912312610084,
+          "soxx_excess_direction": 0.05234103259585132,
+          "adverse_close": 0.02446606022396347
+        },
+        "20": {
+          "raw_price_return": -0.1213170614548621,
+          "direction_return": 0.1213170614548621,
+          "exit_date": "2026-08-05",
+          "exit_close": 893.1900024414062,
+          "benchmark_price_return": 0.03002609644004184,
+          "excess_direction": 0.15134315789490393,
+          "soxx_excess_direction": 0.021571535088502847,
+          "adverse_close": 0.02446606022396347
+        }
+      }
+    },
+    {
+      "i": 136,
+      "id": "2075794042730733959",
+      "date_utc": "2026-07-11",
+      "timestamp_utc": "2026-07-11T04:07:20+00:00",
+      "ticker": "INTC",
+      "direction": -1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2075794042730733959",
+      "text": "全跌回去。我认为已经派发了。剩下就是怎么砸盘了。10几块我买了一火车皮 当时预期大概就是4000-5000亿 我觉得已经提前完成任务了。剩下就是暴跌腰斩 然后再创新高。intc很有前途 真的很有 但是这一波预期已经拉满了。我其实认为硬件行情不会太多 要到头了。各种风险在累积了。裂痕分歧越来越大 市场要释放风险了。我认为下半年最大的行情就是如何砸盘哈哈。其实已经写脸上 了。",
+      "context": "@BabybusFL 神觉得intc要到多少接",
+      "entry_date": "2026-07-13",
+      "entry_open": 105.9800033569336,
+      "available_days": 42,
+      "returns": {
+        "5": {
+          "raw_price_return": -0.10322704373353386,
+          "direction_return": 0.10322704373353386,
+          "exit_date": "2026-07-17",
+          "exit_close": 95.04000091552734,
+          "benchmark_price_return": -0.01219981266123249,
+          "excess_direction": 0.09102723107230137,
+          "soxx_excess_direction": 0.029111535261573285,
+          "adverse_close": -0.016795609765192676
+        },
+        "20": {
+          "raw_price_return": -0.04085678141065474,
+          "direction_return": 0.04085678141065474,
+          "exit_date": "2026-08-07",
+          "exit_close": 101.6500015258789,
+          "benchmark_price_return": 0.027629061453539938,
+          "excess_direction": 0.06848584286419468,
+          "soxx_excess_direction": 0.004819312120191932,
+          "adverse_close": -0.016795609765192676
+        }
+      }
+    },
+    {
+      "i": 138,
+      "id": "2075809227415732366",
+      "date_utc": "2026-07-11",
+      "timestamp_utc": "2026-07-11T05:07:41+00:00",
+      "ticker": "LITE",
+      "direction": 1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2075809227415732366",
+      "text": "周下轨买 长期不可能吃亏。如果让我下单 我现在唯一能买的 就是lite。其他的要靠边了。这个性价比 比 nvda还好",
+      "context": "我也给止盈了。但是我又很不舍 我又认为会出现一个巨大的 巨大的 lite上期权机会 小框 布林周下轨 直接杀穿 是一个巨大机会 然后大框 是股价会在这个区间 疯狂打转压缩。积累力量。举个例子 类似于这个 amd。横盘半年 一招吃肉直接上天。这个表有期权翻十倍机会。 https://t.co/A7Dw4eNRin",
+      "entry_date": "2026-07-13",
+      "entry_open": 778.3800048828125,
+      "available_days": 42,
+      "returns": {
+        "5": {
+          "raw_price_return": -0.05853181899945248,
+          "direction_return": -0.05853181899945248,
+          "exit_date": "2026-07-17",
+          "exit_close": 732.8200073242188,
+          "benchmark_price_return": -0.01219981266123249,
+          "excess_direction": -0.04633200633821999,
+          "soxx_excess_direction": 0.0155836894725081,
+          "adverse_close": -0.0926925460076854
+        },
+        "20": {
+          "raw_price_return": 0.14361876888676517,
+          "direction_return": 0.14361876888676517,
+          "exit_date": "2026-08-07",
+          "exit_close": 890.1699829101562,
+          "benchmark_price_return": 0.027629061453539938,
+          "excess_direction": 0.11598970743322523,
+          "soxx_excess_direction": 0.17965623817722798,
+          "adverse_close": -0.22614921785327313
+        }
+      }
+    },
+    {
+      "i": 142,
+      "id": "2076487334745231705",
+      "date_utc": "2026-07-13",
+      "timestamp_utc": "2026-07-13T02:02:14+00:00",
+      "ticker": "000660.KS",
+      "direction": 1,
+      "group": "Korea",
+      "url": "https://x.com/BabybusFL/status/2076487334745231705",
+      "text": "差不多就是这了 海力士。我们这个是移动的 这做多性价比 是最近几个月最好的一次。good luck 各位。",
+      "context": "",
+      "entry_date": "2026-07-14",
+      "entry_open": 1825000.0,
+      "available_days": 40,
+      "returns": {
+        "5": {
+          "raw_price_return": 0.0060273972602740145,
+          "direction_return": 0.0060273972602740145,
+          "exit_date": "2026-07-21",
+          "exit_close": 1836000.0,
+          "benchmark_price_return": -0.003118581176488444,
+          "excess_direction": 0.009145978436762459,
+          "soxx_excess_direction": 0.05395078679054377,
+          "adverse_close": -0.033424657534246616
+        },
+        "20": {
+          "raw_price_return": -0.2191780821917808,
+          "direction_return": -0.2191780821917808,
+          "exit_date": "2026-08-11",
+          "exit_close": 1425000.0,
+          "benchmark_price_return": -0.06256855010464879,
+          "excess_direction": -0.15660953208713202,
+          "soxx_excess_direction": -0.13940340685536257,
+          "adverse_close": -0.27561643835616434
+        }
+      }
+    },
+    {
+      "i": 153,
+      "id": "2077731115113099433",
+      "date_utc": "2026-07-16",
+      "timestamp_utc": "2026-07-16T12:24:34+00:00",
+      "ticker": "MU",
+      "direction": -1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2077731115113099433",
+      "text": "别接美光。出殡没必要看了。跌多了 反弹 我都不建议了。我觉得超级不稳定 不是恐慌 是胜率不大。",
+      "context": "",
+      "entry_date": "2026-07-16",
+      "entry_open": 866.77001953125,
+      "available_days": 39,
+      "returns": {
+        "5": {
+          "raw_price_return": 0.10696027648445616,
+          "direction_return": -0.10696027648445616,
+          "exit_date": "2026-07-22",
+          "exit_close": 959.47998046875,
+          "benchmark_price_return": -0.007107227471820021,
+          "excess_direction": -0.11406750395627618,
+          "soxx_excess_direction": -0.07640646494331427,
+          "adverse_close": -0.1200433626548818
+        },
+        "20": {
+          "raw_price_return": 0.05136305766571181,
+          "direction_return": -0.05136305766571181,
+          "exit_date": "2026-08-12",
+          "exit_close": 911.2899780273438,
+          "benchmark_price_return": 0.026210186796311152,
+          "excess_direction": -0.025152870869400656,
+          "soxx_excess_direction": -0.0373383888413108,
+          "adverse_close": -0.14241378873275146
+        }
+      }
+    },
+    {
+      "i": 162,
+      "id": "2077919678853177847",
+      "date_utc": "2026-07-17",
+      "timestamp_utc": "2026-07-17T00:53:51+00:00",
+      "ticker": "NVDA",
+      "direction": -1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2077919678853177847",
+      "text": "那你拿吧 你认可就行。我完全不认可。我认为半导体全要嗝屁。不是跌下去 是掉下去 懂么。nvda 160多 我才愿意考虑买。不然免谈。你自己决定。",
+      "context": "@BabybusFL 现在应该空仓吗，我买的英伟达，纳指，和台积电，博通，感觉都是挺好的资产，真的需要全部卖掉吗",
+      "entry_date": "2026-07-17",
+      "entry_open": 202.63999938964844,
+      "available_days": 38,
+      "returns": {
+        "5": {
+          "raw_price_return": 0.03020131827685013,
+          "direction_return": -0.03020131827685013,
+          "exit_date": "2026-07-23",
+          "exit_close": 208.75999450683594,
+          "benchmark_price_return": -0.0052555308379774734,
+          "excess_direction": -0.035456849114827604,
+          "soxx_excess_direction": 0.05374323676418813,
+          "adverse_close": -0.04648637089083274
+        },
+        "20": {
+          "raw_price_return": 0.11182394260936279,
+          "direction_return": -0.11182394260936279,
+          "exit_date": "2026-08-13",
+          "exit_close": 225.3000030517578,
+          "benchmark_price_return": 0.04824275949831214,
+          "excess_direction": -0.06358118311105065,
+          "soxx_excess_direction": -0.028862575085779607,
+          "adverse_close": -0.11182394260936279
+        }
+      }
+    },
+    {
+      "i": 163,
+      "id": "2077924231350714870",
+      "date_utc": "2026-07-17",
+      "timestamp_utc": "2026-07-17T01:11:57+00:00",
+      "ticker": "SOXX",
+      "direction": -1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2077924231350714870",
+      "text": "半导体全部跌烂。不客气",
+      "context": "",
+      "entry_date": "2026-07-17",
+      "entry_open": 508.54998779296875,
+      "available_days": 38,
+      "returns": {
+        "5": {
+          "raw_price_return": 0.08394455504103826,
+          "direction_return": -0.08394455504103826,
+          "exit_date": "2026-07-23",
+          "exit_close": 551.239990234375,
+          "benchmark_price_return": -0.0052555308379774734,
+          "excess_direction": -0.08920008587901573,
+          "soxx_excess_direction": -0.0,
+          "adverse_close": -0.09236069779909784
+        },
+        "20": {
+          "raw_price_return": 0.08296136752358318,
+          "direction_return": -0.08296136752358318,
+          "exit_date": "2026-08-13",
+          "exit_close": 550.739990234375,
+          "benchmark_price_return": 0.04824275949831214,
+          "excess_direction": -0.03471860802527105,
+          "soxx_excess_direction": -0.0,
+          "adverse_close": -0.09236069779909784
+        }
+      }
+    },
+    {
+      "i": 169,
+      "id": "2077966670929264698",
+      "date_utc": "2026-07-17",
+      "timestamp_utc": "2026-07-17T04:00:35+00:00",
+      "ticker": "SPY",
+      "direction": -1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2077966670929264698",
+      "text": "恭喜全球股市马上进入股灾。不客气。",
+      "context": "",
+      "entry_date": "2026-07-17",
+      "entry_open": 742.0800170898438,
+      "available_days": 38,
+      "returns": {
+        "5": {
+          "raw_price_return": -0.0052555308379774734,
+          "direction_return": 0.0052555308379774734,
+          "exit_date": "2026-07-23",
+          "exit_close": 738.1799926757812,
+          "benchmark_price_return": -0.0052555308379774734,
+          "excess_direction": -0.0,
+          "soxx_excess_direction": 0.08920008587901573,
+          "adverse_close": -0.008354910608353805
+        },
+        "20": {
+          "raw_price_return": 0.04824275949831214,
+          "direction_return": -0.04824275949831214,
+          "exit_date": "2026-08-13",
+          "exit_close": 777.8800048828125,
+          "benchmark_price_return": 0.04824275949831214,
+          "excess_direction": -0.0,
+          "soxx_excess_direction": 0.03471860802527105,
+          "adverse_close": -0.04824275949831214
+        }
+      }
+    },
+    {
+      "i": 203,
+      "id": "2078243333374083578",
+      "date_utc": "2026-07-17",
+      "timestamp_utc": "2026-07-17T22:19:57+00:00",
+      "ticker": "SNDK",
+      "direction": -1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2078243333374083578",
+      "text": "后面会出现一个事 就是一开始自以为自己特别聪明做空sndk的 又通过自己的所谓技术 进去做多 然后被套。被打的生活不能自理 然后狂发X骂街。",
+      "context": "DISS 闪迪的人。你们可以歇歇了。\n我2200喊空的，都没你现在这么看空\n\n1366已轻仓多（生活费级别）\n\n$SNDK",
+      "entry_date": "2026-07-20",
+      "entry_open": 1408.780029296875,
+      "available_days": 37,
+      "returns": {
+        "5": {
+          "raw_price_return": 0.019719210039299107,
+          "direction_return": -0.019719210039299107,
+          "exit_date": "2026-07-24",
+          "exit_close": 1436.56005859375,
+          "benchmark_price_return": -0.010882666598909685,
+          "excess_direction": -0.03060187663820879,
+          "soxx_excess_direction": -0.032809079392061236,
+          "adverse_close": -0.1430669959584865
+        },
+        "20": {
+          "raw_price_return": 0.1649157080759045,
+          "direction_return": -0.1649157080759045,
+          "exit_date": "2026-08-14",
+          "exit_close": 1641.1099853515625,
+          "benchmark_price_return": 0.03919367840944865,
+          "excess_direction": -0.12572202966645585,
+          "soxx_excess_direction": -0.1341666764089453,
+          "adverse_close": -0.1649157080759045
+        }
+      }
+    },
+    {
+      "i": 258,
+      "id": "2080733545971040302",
+      "date_utc": "2026-07-24",
+      "timestamp_utc": "2026-07-24T19:15:10+00:00",
+      "ticker": "SOXX",
+      "direction": -1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2080733545971040302",
+      "text": "做空soxx  不等了 我觉得下周各位要上西天见如来了。全部破位 soxx需要一次确认。我觉得不用了。止损就在11722.34。",
+      "context": "",
+      "entry_date": "2026-07-27",
+      "entry_open": 532.6400146484375,
+      "available_days": 32,
+      "returns": {
+        "5": {
+          "raw_price_return": -0.05209897723947021,
+          "direction_return": 0.05209897723947021,
+          "exit_date": "2026-07-31",
+          "exit_close": 504.8900146484375,
+          "benchmark_price_return": 0.0028460568777113338,
+          "excess_direction": 0.054945034117181546,
+          "soxx_excess_direction": -0.0,
+          "adverse_close": 0.03080886476491773
+        },
+        "20": {
+          "raw_price_return": -0.02363702784098687,
+          "direction_return": 0.02363702784098687,
+          "exit_date": "2026-08-21",
+          "exit_close": 520.0499877929688,
+          "benchmark_price_return": 0.027936258486038756,
+          "excess_direction": 0.051573286327025625,
+          "soxx_excess_direction": -0.0,
+          "adverse_close": -0.04971459098173048
+        }
+      }
+    },
+    {
+      "i": 264,
+      "id": "2082525819155497098",
+      "date_utc": "2026-07-29",
+      "timestamp_utc": "2026-07-29T17:57:01+00:00",
+      "ticker": "NVDA",
+      "direction": -1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2082525819155497098",
+      "text": "哈哈哈 我说我怎么刷不到了。被存储博主们集体拉黑了。nvda rklb hims dram specx。没有一个不是血流成河 完了拉黑别人 估计是被我唱空 唱崩溃了。没事你无法拿nvda补仓 因为你的nvda也会跌烂的。都烂在锅里。ytd都是-的。 https://t.co/ssoWBxml6n",
+      "context": "",
+      "entry_date": "2026-07-30",
+      "entry_open": 193.4499969482422,
+      "available_days": 29,
+      "returns": {
+        "5": {
+          "raw_price_return": 0.13321274065129995,
+          "direction_return": -0.13321274065129995,
+          "exit_date": "2026-08-05",
+          "exit_close": 219.22000122070312,
+          "benchmark_price_return": 0.04583926471562583,
+          "excess_direction": -0.08737347593567413,
+          "soxx_excess_direction": -0.053610640645625596,
+          "adverse_close": -0.13321274065129995
+        },
+        "20": {
+          "raw_price_return": 0.08379429811107308,
+          "direction_return": -0.08379429811107308,
+          "exit_date": "2026-08-26",
+          "exit_close": 209.66000366210938,
+          "benchmark_price_return": 0.040798899252643794,
+          "excess_direction": -0.04299539885842929,
+          "soxx_excess_direction": -0.03531693632173494,
+          "adverse_close": -0.1646420605115706
+        }
+      }
+    },
+    {
+      "i": 269,
+      "id": "2083292704524357989",
+      "date_utc": "2026-07-31",
+      "timestamp_utc": "2026-07-31T20:44:21+00:00",
+      "ticker": "MU",
+      "direction": 1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2083292704524357989",
+      "text": "止损挂在817.877 试试。看看到底怎么回事。",
+      "context": "834.427mu",
+      "entry_date": "2026-08-03",
+      "entry_open": 786.3599853515625,
+      "available_days": 27,
+      "returns": {
+        "5": {
+          "raw_price_return": 0.11599016184919231,
+          "direction_return": 0.11599016184919231,
+          "exit_date": "2026-08-07",
+          "exit_close": 877.5700073242188,
+          "benchmark_price_return": 0.031783741522499076,
+          "excess_direction": 0.08420642032669323,
+          "soxx_excess_direction": 0.011603260113471014,
+          "adverse_close": 0.05486038894661038
+        },
+        "20": {
+          "raw_price_return": 0.18630144301468166,
+          "direction_return": 0.18630144301468166,
+          "exit_date": "2026-08-28",
+          "exit_close": 932.8599853515625,
+          "benchmark_price_return": 0.026566467068306565,
+          "excess_direction": 0.1597349759463751,
+          "soxx_excess_direction": 0.15235287163396793,
+          "adverse_close": 0.05486038894661038
+        }
+      }
+    },
+    {
+      "i": 274,
+      "id": "2083731020726096135",
+      "date_utc": "2026-08-02",
+      "timestamp_utc": "2026-08-02T01:46:03+00:00",
+      "ticker": "GLD",
+      "direction": 1,
+      "group": "metals",
+      "url": "https://x.com/BabybusFL/status/2083731020726096135",
+      "text": "梭哈 btc 黄金白银 得了 这不是捡钱一样？",
+      "context": "",
+      "entry_date": "2026-08-03",
+      "entry_open": 370.1000061035156,
+      "available_days": 27,
+      "returns": {
+        "5": {
+          "raw_price_return": 0.07665494366204495,
+          "direction_return": 0.07665494366204495,
+          "exit_date": "2026-08-07",
+          "exit_close": 398.4700012207031,
+          "benchmark_price_return": 0.031783741522499076,
+          "excess_direction": 0.044871202139545874,
+          "soxx_excess_direction": -0.027731958073676344,
+          "adverse_close": 0.004350135976793679
+        },
+        "20": {
+          "raw_price_return": 0.1048095323026621,
+          "direction_return": 0.1048095323026621,
+          "exit_date": "2026-08-28",
+          "exit_close": 408.8900146484375,
+          "benchmark_price_return": 0.026566467068306565,
+          "excess_direction": 0.07824306523435554,
+          "soxx_excess_direction": 0.07086096092194838,
+          "adverse_close": 0.004350135976793679
+        }
+      }
+    },
+    {
+      "i": 274,
+      "id": "2083731020726096135",
+      "date_utc": "2026-08-02",
+      "timestamp_utc": "2026-08-02T01:46:03+00:00",
+      "ticker": "SLV",
+      "direction": 1,
+      "group": "metals",
+      "url": "https://x.com/BabybusFL/status/2083731020726096135",
+      "text": "梭哈 btc 黄金白银 得了 这不是捡钱一样？",
+      "context": "",
+      "entry_date": "2026-08-03",
+      "entry_open": 51.25,
+      "available_days": 27,
+      "returns": {
+        "5": {
+          "raw_price_return": 0.12195121951219523,
+          "direction_return": 0.12195121951219523,
+          "exit_date": "2026-08-07",
+          "exit_close": 57.5,
+          "benchmark_price_return": 0.031783741522499076,
+          "excess_direction": 0.09016747798969615,
+          "soxx_excess_direction": 0.017564317776473937,
+          "adverse_close": 0.023609738233612898
+        },
+        "20": {
+          "raw_price_return": 0.17112196015148617,
+          "direction_return": 0.17112196015148617,
+          "exit_date": "2026-08-28",
+          "exit_close": 60.02000045776367,
+          "benchmark_price_return": 0.026566467068306565,
+          "excess_direction": 0.1445554930831796,
+          "soxx_excess_direction": 0.13717338877077245,
+          "adverse_close": 0.023609738233612898
+        }
+      }
+    },
+    {
+      "i": 276,
+      "id": "2083747839822254297",
+      "date_utc": "2026-08-02",
+      "timestamp_utc": "2026-08-02T02:52:53+00:00",
+      "ticker": "SPY",
+      "direction": 1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2083747839822254297",
+      "text": "周一梭哈 告辞。砸不动了 sorry 捕猎失败 麒麟会来了。",
+      "context": "",
+      "entry_date": "2026-08-03",
+      "entry_open": 749.4400024414062,
+      "available_days": 27,
+      "returns": {
+        "5": {
+          "raw_price_return": 0.031783741522499076,
+          "direction_return": 0.031783741522499076,
+          "exit_date": "2026-08-07",
+          "exit_close": 773.260009765625,
+          "benchmark_price_return": 0.031783741522499076,
+          "excess_direction": 0.0,
+          "soxx_excess_direction": -0.07260316021322222,
+          "adverse_close": 0.010981506780982642
+        },
+        "20": {
+          "raw_price_return": 0.026566467068306565,
+          "direction_return": 0.026566467068306565,
+          "exit_date": "2026-08-28",
+          "exit_close": 769.3499755859375,
+          "benchmark_price_return": 0.026566467068306565,
+          "excess_direction": 0.0,
+          "soxx_excess_direction": -0.007382104312407156,
+          "adverse_close": 0.010981506780982642
+        }
+      }
+    },
+    {
+      "i": 336,
+      "id": "2085542283273797825",
+      "date_utc": "2026-08-07",
+      "timestamp_utc": "2026-08-07T01:43:22+00:00",
+      "ticker": "META",
+      "direction": 1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2085542283273797825",
+      "text": "meta。",
+      "context": "你现价会买入哪只标的？",
+      "entry_date": "2026-08-07",
+      "entry_open": 585.6400146484375,
+      "available_days": 23,
+      "returns": {
+        "5": {
+          "raw_price_return": 0.015931213409808187,
+          "direction_return": 0.015931213409808187,
+          "exit_date": "2026-08-13",
+          "exit_close": 594.969970703125,
+          "benchmark_price_return": 0.008897285644714037,
+          "excess_direction": 0.00703392776509415,
+          "soxx_excess_direction": 0.005769845281958563,
+          "adverse_close": -0.011594219815352136
+        },
+        "20": {
+          "raw_price_return": 0.04275660371734569,
+          "direction_return": 0.04275660371734569,
+          "exit_date": "2026-09-03",
+          "exit_close": 610.6799926757812,
+          "benchmark_price_return": 0.00278846634904939,
+          "excess_direction": 0.0399681373682963,
+          "soxx_excess_direction": 0.12162674134982876,
+          "adverse_close": -0.0716652392058218
+        }
+      }
+    },
+    {
+      "i": 414,
+      "id": "2090627174097182866",
+      "date_utc": "2026-08-21",
+      "timestamp_utc": "2026-08-21T02:28:54+00:00",
+      "ticker": "AAOI",
+      "direction": 1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2090627174097182866",
+      "text": "我不会买。半导体最值得买的 这一波下杀触底的 就是 aaoi lite nvda。",
+      "context": "@BabybusFL 神 be/mtrn可以入吗",
+      "entry_date": "2026-08-21",
+      "entry_open": 129.3679962158203,
+      "available_days": 13,
+      "returns": {
+        "5": {
+          "raw_price_return": -0.12435840321499891,
+          "direction_return": -0.12435840321499891,
+          "exit_date": "2026-08-27",
+          "exit_close": 113.27999877929688,
+          "benchmark_price_return": 0.00659224316094309,
+          "excess_direction": -0.130950646375942,
+          "soxx_excess_direction": -0.11920829129121568,
+          "adverse_close": -0.16803227690206757
+        }
+      }
+    },
+    {
+      "i": 414,
+      "id": "2090627174097182866",
+      "date_utc": "2026-08-21",
+      "timestamp_utc": "2026-08-21T02:28:54+00:00",
+      "ticker": "LITE",
+      "direction": 1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2090627174097182866",
+      "text": "我不会买。半导体最值得买的 这一波下杀触底的 就是 aaoi lite nvda。",
+      "context": "@BabybusFL 神 be/mtrn可以入吗",
+      "entry_date": "2026-08-21",
+      "entry_open": 898.6199951171875,
+      "available_days": 13,
+      "returns": {
+        "5": {
+          "raw_price_return": 0.06400928072354861,
+          "direction_return": 0.06400928072354861,
+          "exit_date": "2026-08-27",
+          "exit_close": 956.1400146484375,
+          "benchmark_price_return": 0.00659224316094309,
+          "excess_direction": 0.05741703756260552,
+          "soxx_excess_direction": 0.06915939264733184,
+          "adverse_close": -0.07617236716183329
+        }
+      }
+    },
+    {
+      "i": 414,
+      "id": "2090627174097182866",
+      "date_utc": "2026-08-21",
+      "timestamp_utc": "2026-08-21T02:28:54+00:00",
+      "ticker": "NVDA",
+      "direction": 1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2090627174097182866",
+      "text": "我不会买。半导体最值得买的 这一波下杀触底的 就是 aaoi lite nvda。",
+      "context": "@BabybusFL 神 be/mtrn可以入吗",
+      "entry_date": "2026-08-21",
+      "entry_open": 218.4199981689453,
+      "available_days": 13,
+      "returns": {
+        "5": {
+          "raw_price_return": 0.04376887482252978,
+          "direction_return": 0.04376887482252978,
+          "exit_date": "2026-08-27",
+          "exit_close": 227.97999572753906,
+          "benchmark_price_return": 0.00659224316094309,
+          "excess_direction": 0.03717663166158669,
+          "soxx_excess_direction": 0.04891898674631301,
+          "adverse_close": -0.04550866461283354
+        }
+      }
+    },
+    {
+      "i": 421,
+      "id": "2092281120196812821",
+      "date_utc": "2026-08-25",
+      "timestamp_utc": "2026-08-25T16:01:06+00:00",
+      "ticker": "SOXX",
+      "direction": 1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2092281120196812821",
+      "text": "疯狂做多半导体科技ing。各位空头需要注意一下 要干你们了。 注意一下姿势。",
+      "context": "",
+      "entry_date": "2026-08-26",
+      "entry_open": 512.0900268554688,
+      "available_days": 10,
+      "returns": {
+        "5": {
+          "raw_price_return": -0.02300382487276942,
+          "direction_return": -0.02300382487276942,
+          "exit_date": "2026-09-01",
+          "exit_close": 500.30999755859375,
+          "benchmark_price_return": -0.003857506894220042,
+          "excess_direction": -0.019146317978549376,
+          "soxx_excess_direction": 0.0,
+          "adverse_close": -0.02300382487276942
+        }
+      }
+    },
+    {
+      "i": 434,
+      "id": "2093846268170645568",
+      "date_utc": "2026-08-29",
+      "timestamp_utc": "2026-08-29T23:40:26+00:00",
+      "ticker": "MU",
+      "direction": 1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2093846268170645568",
+      "text": "有无数人问我存储。我的看法 是 mu已经见底 但是洗盘你能扛得住吗。尤其是期权。",
+      "context": "",
+      "entry_date": "2026-08-31",
+      "entry_open": 931.3900146484375,
+      "available_days": 7,
+      "returns": {
+        "5": {
+          "raw_price_return": 0.09147619242964589,
+          "direction_return": 0.09147619242964589,
+          "exit_date": "2026-09-04",
+          "exit_close": 1016.5900268554688,
+          "benchmark_price_return": 0.0037271907625993084,
+          "excess_direction": 0.08774900166704658,
+          "soxx_excess_direction": 0.07178301075158977,
+          "adverse_close": 0.002200998250708741
+        }
+      }
+    },
+    {
+      "i": 449,
+      "id": "2095524888333164657",
+      "date_utc": "2026-09-03",
+      "timestamp_utc": "2026-09-03T14:50:41+00:00",
+      "ticker": "AVGO",
+      "direction": 1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2095524888333164657",
+      "text": "我买我会说 我还没想好。我先买一点",
+      "context": "@BabybusFL 神 348接了三成仓avgo 如果继续下探下一个位置该在哪儿补仓呢",
+      "entry_date": "2026-09-04",
+      "entry_open": 359.70001220703125,
+      "available_days": 3,
+      "returns": {}
+    },
+    {
+      "i": 460,
+      "id": "2095552523792781444",
+      "date_utc": "2026-09-03",
+      "timestamp_utc": "2026-09-03T16:40:29+00:00",
+      "ticker": "CBRS",
+      "direction": 1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2095552523792781444",
+      "text": "买入 cbrs。",
+      "context": "",
+      "entry_date": "2026-09-04",
+      "entry_open": 190.99000549316406,
+      "available_days": 3,
+      "returns": {}
+    },
+    {
+      "i": 487,
+      "id": "2095853751793746172",
+      "date_utc": "2026-09-04",
+      "timestamp_utc": "2026-09-04T12:37:28+00:00",
+      "ticker": "SLV",
+      "direction": -1,
+      "group": "metals",
+      "url": "https://x.com/BabybusFL/status/2095853751793746172",
+      "text": "白银全部去掉",
+      "context": "",
+      "entry_date": "2026-09-04",
+      "entry_open": 59.15999984741211,
+      "available_days": 3,
+      "returns": {}
+    },
+    {
+      "i": 492,
+      "id": "2095856515173257615",
+      "date_utc": "2026-09-04",
+      "timestamp_utc": "2026-09-04T12:48:27+00:00",
+      "ticker": "GLD",
+      "direction": -1,
+      "group": "metals",
+      "url": "https://x.com/BabybusFL/status/2095856515173257615",
+      "text": "跑啊。白银卖的话 黄金多什么。",
+      "context": "@BabybusFL 黄金要跑了吗",
+      "entry_date": "2026-09-04",
+      "entry_open": 404.6600036621094,
+      "available_days": 3,
+      "returns": {}
+    },
+    {
+      "i": 515,
+      "id": "2095912355733361079",
+      "date_utc": "2026-09-04",
+      "timestamp_utc": "2026-09-04T16:30:20+00:00",
+      "ticker": "RKLB",
+      "direction": 1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2095912355733361079",
+      "text": "这个 rklb也能弹一下。",
+      "context": "",
+      "entry_date": "2026-09-08",
+      "entry_open": 65.2699966430664,
+      "available_days": 2,
+      "returns": {}
+    },
+    {
+      "i": 516,
+      "id": "2095941460193370430",
+      "date_utc": "2026-09-04",
+      "timestamp_utc": "2026-09-04T18:25:59+00:00",
+      "ticker": "CRWV",
+      "direction": 1,
+      "group": "US equities",
+      "url": "https://x.com/BabybusFL/status/2095941460193370430",
+      "text": "继续买入crwv",
+      "context": "",
+      "entry_date": "2026-09-08",
+      "entry_open": 92.94999694824219,
+      "available_days": 2,
+      "returns": {}
+    }
+  ]
+}
