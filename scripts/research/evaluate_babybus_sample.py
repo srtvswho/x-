@@ -2,12 +2,18 @@ import json,datetime,statistics,csv
 from email.utils import parsedate_to_datetime
 from zoneinfo import ZoneInfo
 from pathlib import Path
-p=json.load(open('combined_posts.json'))
+base=Path('.')
+if Path('combined_posts.json').exists():
+ p=json.load(open('combined_posts.json'))
+else:
+ base=Path(__file__).resolve().parents[2]/'outputs'/'babybus_sample_20260910'
+ raw=json.load(open(base/'posts.json'))+json.load(open(base/'supplement'/'posts.json'))
+ p=sorted({x['id']:x for x in raw}.values(),key=lambda x:int(x['id']))
 spec=[(16,'NVDA',1),(17,'INTC',-1),(18,'MU',1),(23,'CRWV',1),(31,'CRWV',-1),(31,'NBIS',-1),(55,'SOXX',1),(84,'GOOGL',-1),(90,'LITE',-1),(109,'NFLX',-1),(131,'MU',-1),(136,'INTC',-1),(138,'LITE',1),(142,'000660.KS',1),(153,'MU',-1),(162,'NVDA',-1),(163,'SOXX',-1),(169,'SPY',-1),(203,'SNDK',-1),(258,'SOXX',-1),(264,'NVDA',-1),(269,'MU',1),(274,'GLD',1),(274,'SLV',1),(276,'SPY',1),(336,'META',1),(347,'GDXU',-1),(414,'AAOI',1),(414,'LITE',1),(414,'NVDA',1),(421,'SOXX',1),(434,'MU',1),(449,'AVGO',1),(460,'CBRS',1),(465,'SLV',1),(487,'SLV',-1),(492,'GLD',-1),(515,'RKLB',1),(516,'CRWV',1)]
 # Exclude pure waiting, leveraged-profit-taking and retrospectively disclosed rotation.
 excluded={90:'wait to add, no fresh directional trade',347:'profit-taking, not a bearish call',465:'retrospective rotation'}
 spec=[s for s in spec if s[0] not in excluded]
-prices=json.load(open('audit_prices.json'))
+prices=json.load(open(base/'audit_prices.json'))
 bars={}
 for t,v in prices.items():
  if 'quote' not in v:continue
@@ -54,7 +60,7 @@ for days in [7,21]:
    vals=[r['direction_return'] for r in rets];exc=[r['excess_direction'] for r in rets if r['excess_direction'] is not None]
    sx=[r['soxx_excess_direction'] for r in rets if r['soxx_excess_direction'] is not None]
    summ[days][group][n]={'n':len(a),'wins':sum(v>0 for v in vals),'hit':sum(v>0 for v in vals)/len(a) if a else None,'median':statistics.median(vals) if vals else None,'median_excess':statistics.median(exc) if exc else None,'median_soxx_excess':statistics.median(sx) if sx else None}
-json.dump({'excluded':excluded,'spec_count':len(rows),'dedup_7_count':len(dedup(7)),'dedup_21_count':len(dedup(21)),'summary':summ,'rows':rows},open('evaluation.json','w'),ensure_ascii=False,indent=2)
+json.dump({'excluded':excluded,'spec_count':len(rows),'dedup_7_count':len(dedup(7)),'dedup_21_count':len(dedup(21)),'summary':summ,'rows':rows},open(base/'evaluation.json','w'),ensure_ascii=False,indent=2)
 print(json.dumps(summ,ensure_ascii=False,indent=2))
 for r in dedup(21):
  print(r['i'],r['date_utc'],r['ticker'],r['direction'],r['entry_date'],{k:round(v['direction_return']*100,2) for k,v in r['returns'].items()})
