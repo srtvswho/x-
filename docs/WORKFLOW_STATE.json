@@ -1,0 +1,43 @@
+{
+  "schema": "workflow-handoff-v1",
+  "project": "signalboard",
+  "updated_at": "2026-09-13",
+  "objective": "统一语义复核、作者复评画像、完整发布和线上内容验收",
+  "production_url": "https://signalboard-602.pages.dev",
+  "implementation_status": "complete",
+  "implementation_commit": "0a47bb12bf7b31dbaa71279a46d0777355398d0e",
+  "last_verified": {
+    "scope": "local_full_snapshot",
+    "date": "2026-09-13",
+    "posts": 42404,
+    "semantic_cases": 6,
+    "profiles": 8,
+    "python_tests_passed": 65,
+    "publication_gate": "passed"
+  },
+  "production_verification": {
+    "status": "verified",
+    "source_commit": "0a47bb12bf7b31dbaa71279a46d0777355398d0e",
+    "publication_commit": "8f3bd0e441afca3a2031cb59a2899096c68f2e45",
+    "verified_at_utc": "2026-09-13T09:36:18Z",
+    "workflow_run": "https://github.com/srtvswho/x-/actions/runs/34749701156",
+    "checked_files": [
+      "index.html",
+      "assets/market-panels.js",
+      "assets/unified-navigation.js",
+      "data/tracking-panels.json.gz",
+      "data/market-panels.json.gz",
+      "data/raw-intelligence.json.gz",
+      "data/focus-signals.json.gz"
+    ]
+  },
+  "current_state_source": "远端 master + Actions production-receipt + /build-manifest.json 内容核验",
+  "next_action": "先读取最新 master、工作流和生产 manifest。当前修正已上线；继续新任务时保留复核规则，发布后重新核对本次产物。失败只续跑未完成构建/发布验收，不重采历史数据。",
+  "blockers": [],
+  "constraints": [
+    "保留原帖、已有解读和历史证据",
+    "UI-only 使用缓存，零新增模型/API调用",
+    "research_candidate；automatic_buy=false",
+    "研究评级不是胜率，不能掩盖小样本和同周期相关性"
+  ]
+}
