@@ -72,6 +72,8 @@ def render_product_routes(data_path: Path, template_path: Path, deploy_root: Pat
     assets.mkdir(exist_ok=True)
     (assets / 'unified-navigation.js').write_text(Path(__file__).with_name('unified_navigation.js').read_text())
     (deploy_root / "_redirects").write_text(REDIRECTS, encoding="utf-8")
+    from publication_manifest import write_manifest
+    write_manifest(deploy_root)
     return outputs
 
 

@@ -21,6 +21,7 @@ from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
+from signalboard.semantic_review import VERSION as REVIEW_VERSION, post_reviews
 DEFAULT_DB = ROOT / "data" / "signalboard_full.db"
 DEFAULT_LEGACY = Path(__file__).with_name("dashboard.html")
 DEFAULT_CLUES = ROOT / "outputs" / "research_clue_desk_v16" / "research_clues.json"
@@ -271,6 +272,7 @@ def build(database: Path, legacy_dashboard: Path, clues_path: Path) -> dict:
             "avatar": author["avatar"],
             "date": row["published_at"],
             "text": html.unescape(row["raw_text"] or ""),
+            "semantic_reviews": post_reviews(row["source_id"], post_id, row["raw_text"] or ""),
             "url": row["raw_url"],
             "tickers": meta.get("tickers", []),
             "companies": meta.get("companies", []),
@@ -292,6 +294,8 @@ def build(database: Path, legacy_dashboard: Path, clues_path: Path) -> dict:
         author = authors.setdefault(key, {"key": key, "name": value.get("name", key), "handle": value.get("handle", "").lstrip("@"), "avatar": ""})
         author.update({
             "rating": value.get("rating", ""),
+            "rating_basis": value.get("ratingBasis", ""),
+            "rating_reviewed_at": value.get("ratingReviewedAt", ""),
             "type": value.get("typeLabel") or value.get("type") or "",
             "description": value.get("desc", ""),
         })
@@ -308,6 +312,7 @@ def build(database: Path, legacy_dashboard: Path, clues_path: Path) -> dict:
     con.close()
     return {
         "version": "unified-research-experience-v1.6.3",
+        "semantic_review_version": REVIEW_VERSION,
         "generated_at": latest,
         "openai_calls": 0,
         "openai_cost_usd": 0,

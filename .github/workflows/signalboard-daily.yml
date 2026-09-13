@@ -420,6 +420,7 @@ jobs:
           python scripts/dashboard/build_research_clue_preview.py \
             --deploy-root dashboard_deploy_dist
           cp dashboard_deploy_dist/index.html dashboard.html
+          python scripts/dashboard/validate_unified_app.py
 
       - name: Save updated database
         shell: bash
@@ -450,3 +451,12 @@ jobs:
           git stash push --include-untracked --message "workflow generated files before rebase" || true
           git pull --rebase origin master
           git push origin HEAD:master
+
+      - name: Verify the production publication
+        run: python scripts/dashboard/verify_production.py --wait-seconds 600 --receipt production-receipt.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: signalboard-production-receipt
+          path: production-receipt.json
+          if-no-files-found: warn

@@ -444,6 +444,23 @@ KOLS = {
               "weak": ["产业基本面较弱", "单条信号波动大", "需止损约束"]},
 }
 
+# The 2026-09-10 review supersedes old cross-window promotional summaries.
+# These are research-use judgements, not mechanically calibrated trade weights.
+_REVIEWED_PROFILES = {
+    'jukan': ('A', '核心产业研究', '早期 MU、SNDK 观点得到补证；严格股价信号样本少，交易能力继续观察。', ['存储产业研究', 'HBM', '早期观点'], ['严格信号样本少', '不可外推到所有标的']),
+    'serenity': ('B', '光通信专项 B+', '光通信方向值得跟踪；全部美股信号中位超额接近零，持续发帖并非每次都有买点优势。', ['光通信专项 B+', '早期产业方向'], ['重复观点的买点优势有限', '回撤风险']),
+    'zephyr': ('B+', '产业研究观察', '方向表现较好，但样本少，同帖一篮子股票占比较高。', ['半导体产业研究', '存储'], ['样本少', '同帖标的并不独立']),
+    'austin': ('B', '产业研究与交易观察', '剔除购买硬件等误识别后，仅有 10 个成熟 20 日样本；长持相对行业基准不足。', ['芯片商业格局', '产业研究'], ['交易样本少', '长持优势未证实']),
+    'dgretta': ('B−', '保留早期存储选股功劳', 'SNDK 早期判断应获补记；整体 60 日较弱，120 日只有 3 个样本且集中于同一赢家。', ['早期 SNDK 观点'], ['长期样本集中', '整体中期表现较弱']),
+    'feroce': ('B', '存储专项 B+', '存储中期观点值得提高研究关注；样本集中于少数股票和同一轮行情。', ['存储专项 B+', '中期方向'], ['同周期样本相关', '不独立触发重仓']),
+    'tradex': ('B', '存储专项 B+', '存储中期方向值得跟踪；一般短线优势有限，反讽与 sold out 逐帖核实。', ['存储专项 B+', '中期产业方向'], ['短线优势有限', '歧义与反讽']),
+    'gsmferrari': ('B−', '短线观察', '最近短线表现改善，但固定持有 60/120 日结果较弱，不作为长持依据。', ['近期短线观察'], ['长持依据不足', '固定持有不等于实际交易业绩']),
+}
+for _key, (_rating, _role, _desc, _strong, _weak) in _REVIEWED_PROFILES.items():
+    KOLS[_key].update(rating=_rating, ratingStatus='2026-09-10 复评 · 研究使用建议',
+                     typeLabel=_role, desc=_desc, strong=_strong, weak=_weak,
+                     ratingReviewedAt='2026-09-10', ratingBasis='/reports/author-reaudit.html')
+
 # 4 大V 真正强项领域的 ticker 白名单 (LLM bottleneck 误抽太多, 改用 ticker 黑/白名单二次过滤)
 KOL_TICKERS = {
     "jukan": {  # 信号源, 100% 推文带 ticker, 强存储/HBM/代工
@@ -796,6 +813,8 @@ def query_call_performance_events(conn, days: int | None = None) -> list[dict]:
             stamp = stamp.replace(tzinfo=timezone.utc)
         return stamp, row["post_id"]
 
+    from signalboard.semantic_review import apply_reviews
+    events = apply_reviews(events)
     events.sort(key=event_order)
     return events
 

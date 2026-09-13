@@ -5,6 +5,7 @@ No API/model calls. All data comes from the same completed dashboard export.
 from __future__ import annotations
 
 import gzip
+import html as html_lib
 import json
 import re
 from pathlib import Path
@@ -151,6 +152,9 @@ def build(deploy_root: Path, report_path: Path):
     replay_root = HERE.parents[1]/'outputs/focus_backtest_20260910'
     pack(data_dir/'focus-backtest.json.gz', json.loads((replay_root/'summary.json').read_text()))
     (deploy_root/'reports').mkdir(exist_ok=True)
+    audit = (HERE.parents[1]/'outputs/kol_reaudit_20260910/report.md').read_text()
+    (deploy_root/'reports/author-reaudit.html').write_text('<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>作者复评依据</title><style>body{max-width:960px;margin:40px auto;padding:0 20px;font:16px/1.7 system-ui}pre{white-space:pre-wrap;overflow-wrap:anywhere}</style><a href="/">返回 SignalBoard</a><h1>作者复评依据</h1><p>2026-09-10 冻结复评。样本、周期及局限见下文；评级表示研究使用建议。</p><pre>'+html_lib.escape(audit)+'</pre></html>')
+
     (deploy_root/'reports/focus-backtest.html').write_bytes((replay_root/'report.html').read_bytes())
     incremental = HERE.parents[1]/'outputs/post_incremental_value_20260910'
     published_report = (incremental/'report.html').read_text().replace('<main>', '<main><p><a href="/">返回重点关注</a> · 三个研究标签已接入后续更新；以下统计仍为原验证时点的冻结回放。</p>', 1)

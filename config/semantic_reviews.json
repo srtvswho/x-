@@ -1,0 +1,77 @@
+{
+  "version": "semantic-review-v1",
+  "reviews": [
+    {
+      "source_id": "tw_aleabitoreddit",
+      "post_id": "1982635468249501960",
+      "ticker": "IREN",
+      "raw_sha256": "31e79d2fbbbc4f7eb8d62e1ba510217e7fb4e077f91d240408e946bbefb19db3",
+      "decision": "correct_direction",
+      "direction": "long",
+      "reason": "原帖明确表示仍看多 IREN；对会计口径的批评不等于做空。",
+      "reviewed_at": "2026-09-13",
+      "raw_url": "https://x.com/aleabitoreddit/status/1982635468249501960",
+      "raw_text": "Great points! But...\n\nYou did base your thesis off misunderstanding gaap vs. non-gaap... which could be confusing to non-accountants and other people on X. \n\n$IREN reported non-GAAP and $NBIS GAAP when you look at hardware-segment profit to full-stack AWS margins.\n\nThe 92% percent was non-GAAP, hardware-specific profit metric that systematically excludes depreciation, data-center overhead, network expenses, support, etc. Hardware Profit Margin is typically calculated solely by deducting direct electricity costs from revenue, ignoring the components of true COGS GAAP. And when you do reporting, COGS omissions and accounting principles matter (eg. why crypto firms have like $MSTR wildly different numbers from crypto reporting like ASU 2023-08, so you don’t compare revenue with crypto holdings to Robinhood).\n\nMeanwhile $NBIS 71.2% gross margins was GAAP and includes colocation fees as part of 29% cost of revenue. So when you look into EBIT margins for the full picture, $NBIS (~30%) is vastly higher because full stack drives profitability. When $IREN scales to the $500M ARR target, they’re forced to incorporate realistic deprecation, data center costs, network expenses, and operations. If you normalize both under consistent accounting, $NBIS’s full-stack model already operates 15–25 points higher in true margin spread.\n\nYou’re right that hyperscale clients bring their own Type-1 stack. BUT... I’ve said this again to other $IREN posts that keep side-stepping this point.\n\nOnce again, Nebius’s Type-2 layer isn't for customer-facing features, it’s optimizing internal OPEX. If enterprises bring their own Type 1 (K8s/Ray), Nebius's internal orchestration (Type 2) still drives its own margins up. That's OPEX moat, it's not what customers use, it's about how efficiently you run the fleet. Think of it like AWS’s Nitro hypervisor but central to how AWS drives >80% utilization and minimal human ops. Nebius’s in-house control plane automates GPU scheduling, telemetry, and firmware lifecycles across mixed SKUs. Every percentage point of utilization is ~1-1.5 points of gross margin expansion. Nebius's in-house orchestration lowers their operating cost base and increases utilization, regardless of whether customers bring their own stack, so it’s not quite one or the other. \n\nLong-term utilization efficiency and automation compound faster than cheap power/capacity and $NBIS full stack drives higher margins long term, while others face margin compression on a race to the ground. As $NBIS scales, the incremental cost of their software proficiency approaches zero, structurally driving margins higher. Conversely, $IREN's dependency model means that as they scale, the licensing fees (3–8% of revenue if you we go with your figure) plus the necessary, unquantified SRE operational costs will remain a permanent drag on profitability, preventing the firm from achieving $NBIS's structural margin ceiling longer on. Licensing costs for outsourced Type 2 solutions are low like your 3-8% figure, but the \"20–30%\" figure is highly relevant when viewed as overhead.\n\n.Going back to GAAP-non-gaap, once $IREN is forced to recognize full GAAP costs at scale, the inevitable 15–30 point margin delta against $NBIS will materialize. I’d agree with you that short-term capacity and infrastructure is a great advantage today, which is why I’m still bullish crypto miners pivoting like $IREN, $WULF, $CIFR, but the software moat during execution, would vastly outperform bare mental infrastructure in the longer term when it comes to converting revenue to profit (and this is pretending $NBIS can’t scale up infra, which they can).\n\n$IREN current advantage is physical integration and cheap capacity, it’s capex-heavy, and subject to power-market tightening. $NBIS advantage is OPEX leverage. $NBIS higher margins is an economic inevitability in a years time when rooted in full stack AWS-like margins, while margin delta isn't collapsing as others race to the bottom, it's widening as scale hits.\n\nCheap power wins next quarter, efficient orchestration becomes the next AWS."
+    },
+    {
+      "source_id": "tw_zephyr_z9",
+      "post_id": "2000117661930602693",
+      "ticker": "MU",
+      "raw_sha256": "4689d963f70d898de162e081e22d84f95948833e4601bb6373f22b624c228e16",
+      "decision": "exclude_non_security",
+      "direction": null,
+      "reason": "建议提前购买消费 SSD，不是买入 MU 股票。",
+      "reviewed_at": "2026-09-13",
+      "raw_url": "https://x.com/zephyr_z9/status/2000117661930602693",
+      "raw_text": "BRUH\nMicron and Samsung are pulling out of the consumer SSD at the same time\nThe supply crunch next year is going to be insane\nBuy what u need as soon as possible"
+    },
+    {
+      "source_id": "tw_TradexWhisperer",
+      "post_id": "2023267320173314353",
+      "ticker": "PLTR",
+      "raw_sha256": "ae44904d5e64f064911317b1b843b2362265cc977c9787fe0f42d46b96523793",
+      "decision": "correct_direction",
+      "direction": "long",
+      "reason": "原帖明确表示 Palantir 已见底，修正为空头是错误的。",
+      "reviewed_at": "2026-09-13",
+      "raw_url": "https://x.com/TradexWhisperer/status/2023267320173314353",
+      "raw_text": "@ChessWarri42621 @jtsla4 @DMT_Doctor Saw it in my feed. Fake news. Shorts are working tandem to bring down Palantir. Bottom is here."
+    },
+    {
+      "source_id": "tw_TradexWhisperer",
+      "post_id": "2025708972058321045",
+      "ticker": "*",
+      "raw_sha256": "361afd0c878dd6db35bc7f7d69b3ab4d3630e552c4028795f68b08d636237fec",
+      "decision": "quarantine",
+      "direction": null,
+      "reason": "Sold The Fuck Out 无法区分产能售罄与卖出持仓，方向待核实。",
+      "reviewed_at": "2026-09-13",
+      "raw_url": "https://x.com/TradexWhisperer/status/2025708972058321045",
+      "raw_text": "$NVDA $MU $EWY $TSM\n\nSold The Fuck Out."
+    },
+    {
+      "source_id": "tw_austinsemis",
+      "post_id": "2034117525256966568",
+      "ticker": "DELL",
+      "raw_sha256": "f561689615646456abb8f62729d2ca7982605658e926306dd8b330be023dc34c",
+      "decision": "exclude_non_security",
+      "direction": null,
+      "reason": "购买 Dell 电脑的建议，不是买入 DELL 股票。",
+      "reviewed_at": "2026-09-13",
+      "raw_url": "https://x.com/austinsemis/status/2034117525256966568",
+      "raw_text": "Super bullish @DellTech Pro Max with GB300. The first @NVIDIA datacenter GB chip on your desktop. If your dev team needs a ton of tokens to be more productive, you could buy the tokens... or just buy a token generator. This is air-cooled and plugs into normal wall outlet. Buy one at $120K for each team and go crazy. The question -- what's the biggest and best model you can run on this, and how many concurrent users can it support? What's the throughput and latency? Would love to see the throughput vs interactivity chart for this one. $DELL $NVDA\nhttps://t.co/9QF7AQakk1"
+    },
+    {
+      "source_id": "tw_aleabitoreddit",
+      "post_id": "2086157318065168490",
+      "ticker": "*",
+      "raw_sha256": "673a94f5e9490fbf659db3a18d41931d97f42a372fddba3f3447bf7144dc9467",
+      "decision": "quarantine",
+      "direction": null,
+      "reason": "整帖含反讽，不能按字面当作 NBIS 做空或 LULU 做多。",
+      "reviewed_at": "2026-09-13",
+      "raw_url": "https://x.com/aleabitoreddit/status/2086157318065168490",
+      "raw_text": "Today I'm writing a weekend guide on how to do DD when shorting $NBIS:\n\nFirst, you look at hyperscaler earnings for AI cloud read through: \n\n> $GOOGL: reports record AI cloud demand + backlog + margin increases from earnings\n\n> $AMZN: reports record AI Cloud demand + backlog + margin increases from earnings\n\n> $META: reports higher than expected prices for available capacity from earnings.\n\nNow, time to look at Nebius:\n\n-> $NBIS: Growing hundreds of percent to $7-9B ARR by Q4. Growing margins, and guided 4GW+ contracted power. \n-> Sees Uber/Waymo splitting, putting more focus on Avride\n-> Sees Clickhouse growing rapidly every quarter. \n\nOkay looks bad! But next, you need a hedge?\n\n-> Wow! A $NIKE brand executive, after the stock dropped 75% over the past 5 years, went to $LULU to save that brand next? Lululemon seems good.\n\nConclusion: Short Nebius and go long on $LULU"
+    }
+  ]
+}

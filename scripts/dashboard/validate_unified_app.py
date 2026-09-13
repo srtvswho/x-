@@ -42,6 +42,22 @@ def main():
     subprocess.run(['node','--input-type=module','--check'],input=(DIST/'assets/market-panels.js').read_text(),text=True,check=True)
     subprocess.run(['node',str(ROOT/'tests/test_unified_ui_runtime.cjs')],check=True,cwd=ROOT)
     subprocess.run(['node',str(ROOT/'tests/test_focus_ui.cjs')],check=True,cwd=ROOT)
+    import sys
+    sys.path.insert(0,str(ROOT))
+    from signalboard.semantic_review import reviews, VERSION
+    from publication_manifest import validate_manifest
+    manifest = validate_manifest(DIST)
+    assert raw['semantic_review_version'] == VERSION == manifest['semantic_review_version']
+    by_id = {p['id']:p for p in raw['posts']}
+    tracking = read('tracking-panels.json.gz')['CALL_PERFORMANCE']
+    for review in reviews():
+        assert review['post_id'] in by_id, f"Missing reviewed original: {review['post_id']}"
+        notes = by_id[review['post_id']]['semantic_reviews']
+        assert any(r['ticker']==review['ticker'] and r['decision']==review['decision'] for r in notes), review['post_id']
+        for row in tracking:
+            if str(row['post_id']) == review['post_id'] and review['ticker'] in ('*', row['ticker']):
+                assert review['decision']=='correct_direction' and row['direction']==review['direction'], review['post_id']
+    assert (DIST/'reports/author-reaudit.html').is_file()
     focus = read('focus-signals.json.gz')
     assert focus['version'] == 'trusted-first-call-v1'
     assert all(not a['automatic_buy'] and a['decision_stage']=='research_candidate' for a in focus['alerts'])

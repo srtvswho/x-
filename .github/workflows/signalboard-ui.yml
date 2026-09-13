@@ -6,6 +6,9 @@ on:
       - 'scripts/dashboard/**'
       - 'signalboard/focus_signals.py'
       - 'signalboard/focus_labels.py'
+      - 'signalboard/semantic_review.py'
+      - 'config/semantic_reviews.json'
+      - 'outputs/kol_reaudit_20260910/**'
       - 'data/focus_evidence.json.gz'
       - 'outputs/focus_backtest_20260910/summary.json'
       - 'outputs/post_incremental_value_20260910/**'
@@ -38,10 +41,9 @@ jobs:
         run: |
           python tests/test_focus_signals.py
           python tests/test_focus_labels.py
-          # Keep the completed daily market/tracking snapshot during UI-only
-          # publication. Recomputing it without the daily price refresh can
-          # replace priced rows with cache misses. Daily updates still rebuild it.
-          test -s scripts/dashboard/dashboard.html
+          python tests/test_publication_receipt.py
+          python tests/test_semantic_review.py
+          python scripts/dashboard/build_dashboard.py
           python scripts/dashboard/build_unified_research_data.py --database data/signalboard_full.db --output dashboard_deploy_dist/data/raw-intelligence.json.gz
           python scripts/dashboard/build_research_clue_preview.py --deploy-root dashboard_deploy_dist
           cp dashboard_deploy_dist/index.html dashboard.html
@@ -57,3 +59,12 @@ jobs:
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'Build unified SignalBoard views [skip daily] [skip ui]'
           git push origin "HEAD:$TARGET_BRANCH"
+      - name: Verify the production publication
+        if: github.ref_name == 'master'
+        run: python scripts/dashboard/verify_production.py --wait-seconds 600 --receipt production-receipt.json
+      - uses: actions/upload-artifact@v4
+        if: always() && github.ref_name == 'master'
+        with:
+          name: signalboard-production-receipt
+          path: production-receipt.json
+          if-no-files-found: warn

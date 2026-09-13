@@ -229,7 +229,9 @@ def get_prices(con, ticker, pub_date):
     返回: (call_price, now_price, raw_pct, excess_pct)
     缓存命中 → 0 API call; 缓存 miss → 2 call (call/now).
     """
-    if ambiguous_price_identity(ticker) or not POLYGON_API_KEY:
+    # Reading a persisted cache needs no vendor credential and makes UI builds
+    # deterministic without paid requests.
+    if ambiguous_price_identity(ticker):
         return None, None, None, None
     pub_date = pub_date[:10]
     cached = get_cached_price(con, ticker, pub_date)
@@ -334,12 +336,14 @@ def today_str():
 def query_extractions(conn):
     """区块2/4 用。返回最近1年的有效判断（有ticker或bottleneck或非neutral）。"""
     cutoff = (datetime.datetime.utcnow() - datetime.timedelta(days=370)).isoformat()
-    rows = conn.execute("""
+    from common import latest_extractions_cte
+    rows = conn.execute(f"""
+        WITH {latest_extractions_cte(conn)}
         SELECT e.post_id, e.source_id, e.direction, e.ticker, e.company,
                e.bottleneck, e.attribution, e.rebuts_narrative, e.summary_100,
                e.is_retrospective, e.is_disclosure, e.is_self_reported_returns,
                r.published_at, r.raw_text
-        FROM extractions_intel e
+        FROM latest_extractions e
         JOIN raw_posts r ON r.post_id = e.post_id
         WHERE r.published_at >= ?
           AND (e.ticker IS NOT NULL OR e.bottleneck IS NOT NULL OR e.direction != 'neutral')
@@ -361,7 +365,8 @@ def query_extractions(conn):
             "raw_text":raw_text,
             "raw_url":f"https://x.com/{handle}/status/{post_id}",
         })
-    return out
+    from signalboard.semantic_review import review_market_records
+    return review_market_records(out)
 
 
 def query_thesis_changes(conn, limit=12):
