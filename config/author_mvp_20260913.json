@@ -1,0 +1,21 @@
+{
+  "campaign": "author-mvp-20260913",
+  "authorized_total_usd": 5,
+  "paid_enabled": true,
+  "expires_at": "2026-09-16T00:00:00+00:00",
+  "authors": {"qinbafrank": [1000, 400], "bboczeng": [1500, 500], "KobeissiLetter": [500, 300]},
+  "sample_start": "2025-09-01",
+  "sample_end_exclusive": "2026-09-01",
+  "price_as_of": "2026-09-11",
+  "scrape_reserved_max_usd": 1.5,
+  "ai_reserved_max_usd": 3.4,
+  "unspent_contingency_usd": 0.1,
+  "model": "deepseek-flash",
+  "peak_input_usd_per_million": 0.3,
+  "peak_output_usd_per_million": 1.2,
+  "pricing_checked_at": "2026-09-13",
+  "pricing_sources": ["https://api-docs.deepseek.com/quick_start/pricing/", "https://docs.apify.com/api/v2/actors-runs-post"],
+  "retry_policy": "No automatic paid retries; unknown requests retain full reservations. Existing campaign claim prevents fresh-budget reruns.",
+  "production_changes": false,
+  "automatic_buy": false
+}

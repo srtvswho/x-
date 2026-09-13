@@ -1,0 +1,74 @@
+name: Author MVP - $5 one-time experiment
+on:
+  push:
+    branches: [codex/author-mvp-20260913]
+    paths: [config/author_mvp_20260913.json]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: author-mvp-20260913
+  cancel-in-progress: false
+jobs:
+  experiment:
+    if: github.ref == 'refs/heads/codex/author-mvp-20260913'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: codex/author-mvp-20260913
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests
+      - name: Offline tests
+        run: python -m unittest discover -s tests -p 'test_author_mvp.py' -v
+      - name: Preflight - no paid requests
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: python scripts/author_mvp_20260913.py --preflight
+      - name: Claim campaign before any paid request
+        id: claim
+        run: |
+          set -Eeuo pipefail
+          if [ -f outputs/author_mvp_20260913/claim.json ]; then
+            echo '::error::Campaign already claimed. Never rerun with a fresh budget; reconcile saved ledger and artifacts first.'
+            exit 1
+          fi
+          git config user.name signalboard-bot
+          git config user.email signalboard-bot@users.noreply.github.com
+          python scripts/author_mvp_20260913.py --claim
+          git add outputs/author_mvp_20260913/claim.json
+          git commit -m 'Claim one-time $5 author experiment [skip daily] [skip ui]'
+          git push origin HEAD:codex/author-mvp-20260913
+          echo 'claimed=true' >> "$GITHUB_OUTPUT"
+      - name: Execute isolated experiment
+        if: steps.claim.outputs.claimed == 'true'
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: python scripts/author_mvp_20260913.py --execute
+      - name: Preserve receipt without production writes
+        if: always() && steps.claim.outputs.claimed == 'true'
+        run: |
+          set -Eeuo pipefail
+          python scripts/author_mvp_20260913.py --receipt
+          git add outputs/author_mvp_20260913/claim.json outputs/author_mvp_20260913/receipt.json
+          if [ -f outputs/author_mvp_20260913/report.json ]; then
+            git add outputs/author_mvp_20260913/report.json
+          fi
+          if ! git diff --cached --quiet; then
+            git commit -m 'Save author experiment receipt [skip daily] [skip ui]'
+            git push origin HEAD:codex/author-mvp-20260913
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: author-mvp-20260913-${{ github.run_id }}-${{ github.run_attempt }}
+          path: outputs/author_mvp_20260913/
+          retention-days: 90
+          if-no-files-found: warn
