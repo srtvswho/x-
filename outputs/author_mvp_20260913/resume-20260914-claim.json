@@ -1,9 +1,14 @@
 {
-  "status": "claimed",
+  "status": "complete",
   "run_id": "34799846832",
   "original_run_id": "34762158376",
   "policy_hash": "d24aabdadbbd743f0329b8a25330c80509f2fd836f3298500a4cfda9c5bc0cac",
   "initial_reserved_micro_usd": 1494501,
   "claimed_at": "2026-09-14T02:37:58.727185+00:00",
-  "new_budget": false
+  "new_budget": false,
+  "parsed": 1023,
+  "selected": 1023,
+  "failure_count": 0,
+  "stopped_reason": null,
+  "finished_at": "2026-09-14T02:44:23.537151+00:00"
 }
