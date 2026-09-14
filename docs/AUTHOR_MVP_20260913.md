@@ -1,5 +1,9 @@
 # Three-author $5 screening experiment
 
+Completed 2026-09-14. See [verified results](AUTHOR_MVP_RESULTS_20260914.md).
+Original frozen labels/report remain available; separate schema and assistant
+semantic review are exploratory revisions, not silently rewritten old outcomes.
+
 User authorized qinbafrank (1,000 fetched / 400 AI), bboczeng (1,500 / 500),
 KobeissiLetter (500 / 300), maximum $5 incremental provider spending.
 User separately authorized an isolated one-time GitHub Actions entry point.

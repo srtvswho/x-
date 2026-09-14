@@ -13,6 +13,23 @@ import resume_author_mvp_20260914 as resume
 
 
 class ResumeTests(unittest.TestCase):
+    def test_lowercase_explicit_cashtag_identity(self):
+        p=m.normalize({'id':'123','text':'$arm buy now','createdAt':'2026-01-01',
+                       'author':{'userName':'qinbafrank'}},'qinbafrank')
+        value={'posts':[{'id':'123','kind':'prospective','signals':[{'ticker':'ARM','quote':'$arm buy now',
+                'direction':'bullish','domain':'semiconductor','conditional':False,'context_complete':True}]}]}
+        self.assertEqual(m.validate_labels(value,[p])[0]['signals'][0]['ticker'],'ARM')
+
+    def test_actual_apify_quote_field(self):
+        p=m.normalize({'id':'123','text':'$MU buy','createdAt':'2026-01-01',
+                       'author':{'userName':'bboczeng'},'isQuote':True,'quote':{'text':'previous post'}},'bboczeng')
+        self.assertFalse(p['quote_context_missing'])
+
+    def test_quote_id_without_body_stays_missing(self):
+        p=m.normalize({'id':'123','text':'$MU buy','createdAt':'2026-01-01',
+                       'author':{'userName':'bboczeng'},'isQuote':True,'quote':{'id':'456'}},'bboczeng')
+        self.assertTrue(p['quote_context_missing'])
+
     def post(self):
         return m.normalize({'id':'2044423226051457174','text':'$MU buy memory',
                             'createdAt':'2026-01-01','author':{'userName':'bboczeng'}},'bboczeng')

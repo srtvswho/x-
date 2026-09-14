@@ -1,0 +1,16 @@
+{
+  "verified_at": "2026-09-14T02:54:58.916327+00:00",
+  "labels": 1023,
+  "reviewed_events": 45,
+  "original_ledger_prefix_unchanged": true,
+  "unique_paid_requests": 241,
+  "no_price_failures": true,
+  "original_artifact_sha256": "a4de41903f57e834ceb77919726e9dcf37516fe57b53ff9f78aa8e77e9a11a79",
+  "original_report_sha256": "1eb35b23de09f3b6ef9b0979c6c5bb907ce80a98fa766dfe4ec098dcca1e8cd7",
+  "review_report_sha256": "27c4ff0e111904d785415fc56bc9678218f7cdf433af29231fa16c6dde76010c",
+  "original_selected_sha256": "9812dc5f57e07c48e6296e5f49dfdd71ab5f97f079f084b1c83498aa8ac2efde",
+  "raw_hashes_all_match": true,
+  "provider_usage_plus_peak_ai_upper_usd": 1.2679955,
+  "reserved_upper_usd": 2.423126,
+  "ai_tokens": 501054
+}

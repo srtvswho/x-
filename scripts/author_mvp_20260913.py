@@ -237,11 +237,13 @@ def normalize(item, author):
     text = fields['raw_text']
     if not text or not fields['post_id']:
         return None
+    quoted = item.get('quote') or item.get('quoted_tweet') or item.get('quotedTweet') or {}
+    quoted_text = (quoted.get('fullText') or quoted.get('text') or '') if isinstance(quoted,dict) else ''
     return {'id': str(fields['post_id']), 'author': author, 'published_at': published, 'text': text,
             'url': f'https://x.com/{author}/status/{fields["post_id"]}', 'raw_hash': digest(text),
             'reply': bool(item.get('isReply') or item.get('inReplyToId') or item.get('inReplyToStatusId')),
             'retweet': bool(item.get('isRetweet') or text.startswith('RT @')),
-            'quote_context_missing': bool(item.get('isQuote') and not item.get('quoted_tweet'))}
+            'quote_context_missing': bool(item.get('isQuote') and not quoted_text)}
 
 
 def stored_posts():
@@ -361,7 +363,7 @@ def validate_labels(payload, posts):
         for s in signals:
             ticker = MACRO_MAP.get(str(s.get('ticker', '')).upper(), str(s.get('ticker', '')).upper())
             quote = s.get('quote', '')
-            identity = bool(re.search(r'(?<![\w])\$?'+re.escape(ticker)+r'(?![\w])', p['text']))
+            identity = bool(re.search(r'(?<![\w])\$?'+re.escape(ticker)+r'(?![\w])', p['text'], re.I))
             identity |= any(alias.lower() in p['text'].lower() for alias in ALIASES.get(ticker, []))
             valid = (label.get('kind') == 'prospective' and s.get('direction') in {'bullish', 'bearish'}
                      and s.get('domain') in DOMAINS and s.get('conditional') is False
