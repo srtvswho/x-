@@ -1,0 +1,9 @@
+{
+  "status": "claimed",
+  "run_id": "34799846832",
+  "original_run_id": "34762158376",
+  "policy_hash": "d24aabdadbbd743f0329b8a25330c80509f2fd836f3298500a4cfda9c5bc0cac",
+  "initial_reserved_micro_usd": 1494501,
+  "claimed_at": "2026-09-14T02:37:58.727185+00:00",
+  "new_budget": false
+}
