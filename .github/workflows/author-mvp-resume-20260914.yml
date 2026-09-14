@@ -1,0 +1,74 @@
+name: Resume author MVP - original $5 budget
+on:
+  push:
+    branches: [codex/author-mvp-20260913]
+    paths: [config/author_mvp_resume_20260914.json]
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: author-mvp-20260913
+  cancel-in-progress: false
+jobs:
+  resume:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: codex/author-mvp-20260913
+      - name: Refuse duplicate continuation
+        run: test ! -f outputs/author_mvp_20260913/resume-20260914-claim.json
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check requests
+      - run: python -m unittest discover -s tests -p 'test_author_mvp*.py' -v
+      - name: Restore exact original artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: author-mvp-20260913-34762158376-1
+          run-id: '34762158376'
+          github-token: ${{ github.token }}
+          path: outputs/author_mvp_20260913
+      - name: Verify original reservations and persist continuation claim
+        id: claim
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: |
+          set -Eeuo pipefail
+          python scripts/resume_author_mvp_20260914.py check
+          python scripts/resume_author_mvp_20260914.py claim
+          git config user.name signalboard-bot
+          git config user.email signalboard-bot@users.noreply.github.com
+          git add outputs/author_mvp_20260913/resume-20260914-claim.json
+          git commit -m 'Claim authorized continuation with original budget [skip daily] [skip ui]'
+          git push origin HEAD:codex/author-mvp-20260913
+          echo 'claimed=true' >> "$GITHUB_OUTPUT"
+      - name: Resume remaining analysis and free backtest
+        if: steps.claim.outputs.claimed == 'true'
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: python scripts/resume_author_mvp_20260914.py run
+      - name: Save completion or failure receipt
+        if: always() && steps.claim.outputs.claimed == 'true'
+        run: |
+          set -Eeuo pipefail
+          python scripts/author_mvp_20260913.py --receipt
+          git add outputs/author_mvp_20260913/claim.json outputs/author_mvp_20260913/receipt.json outputs/author_mvp_20260913/resume-20260914-claim.json
+          for name in report.json progress.json unresolved.json offline_recovery.json; do
+            if [ -f "outputs/author_mvp_20260913/$name" ]; then git add "outputs/author_mvp_20260913/$name"; fi
+          done
+          if ! git diff --cached --quiet; then
+            git commit -m 'Save resumed author experiment results [skip daily] [skip ui]'
+            git push origin HEAD:codex/author-mvp-20260913
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: author-mvp-resumed-${{ github.run_id }}
+          path: outputs/author_mvp_20260913/
+          retention-days: 90
+          if-no-files-found: error

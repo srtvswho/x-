@@ -1,0 +1,16 @@
+{
+  "campaign": "author-mvp-20260913",
+  "continuation": "resume-20260914",
+  "source_run_id": "34762158376",
+  "artifact_name": "author-mvp-20260913-34762158376-1",
+  "artifact_id": 10318939179,
+  "initial_ledger_sha256": "43f21311feb5f129c44c0003ff8e5670b43acae6b019c13e25b9407e97f32bc1",
+  "selected_sha256": "9812dc5f57e07c48e6296e5f49dfdd71ab5f97f079f084b1c83498aa8ac2efde",
+  "coverage_sha256": "cb2e8f448ed84e6893270e08cc0d9d46e81e3144a2df8507fae20cdccb867254",
+  "initial_reserved_micro_usd": 1494501,
+  "initial_ledger_rows": 82,
+  "new_total_budget": false,
+  "scraping_allowed": false,
+  "paid_retry_limit_per_invalid_output_post": 1,
+  "authorization": "User requested continuation on 2026-09-14 under the original $5 total cap."
+}

@@ -67,3 +67,25 @@ The claim, provider run IDs, reservation ledger, token usage, sample coverage,
 model labels and outcome report jointly determine completion. A successful push
 or workflow start does not establish a finished experiment. Missing credentials,
 provider errors, price gaps and budget stops must be reported explicitly.
+
+## Authorized continuation 2026-09-14
+
+Original run 34762158376 stopped on malformed JSON after 225 labels. All 3,000
+raw posts and 1,023 selected candidates are preserved in artifact 10318939179.
+The original 82 ledger rows reserve $1.494501, including all previously billed
+attempts. The new entry point verifies exact ledger/selection/coverage hashes
+before any model request and uses that same ledger. No scraper credential or
+scraping call is available to the continuation. A separate durable continuation
+claim prevents concurrent/fresh-state repeats; it grants no new spending budget.
+
+The observed missing opening quote around a numeric post ID can be repaired
+offline with an exact syntax rule and strict ID/schema checks. Original model
+responses remain unchanged. New malformed batches are isolated; other batches
+continue. Each known-invalid-output post has at most one single-post retry under
+the cumulative budget. Unknown network/billing outcomes stop paid work. All
+remaining failures are listed, and the free report stage still runs.
+
+Frozen author selection, raw texts, extraction prompt, semantic gates, horizons
+and statistical policy remain unchanged. Existing labels are reused, not billed
+again. Completion requires counts reconciled to 1,023 selected posts, explicit
+price gaps/immature outcomes, the full cumulative cost receipt, and report review.

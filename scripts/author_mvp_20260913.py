@@ -75,6 +75,32 @@ class Stop(RuntimeError):
     pass
 
 
+class OutputError(ValueError):
+    """A billed, saved response has invalid structure; isolate this batch."""
+
+
+def decode_labels(payload, posts, key):
+    content = payload['choices'][0]['message']['content']
+    # Only repair the observed transport syntax: a missing opening quote around
+    # a decimal post ID. Never repair prose, quotes, tickers or directions.
+    repaired = re.sub(r'("id"\s*:\s*)(\d{15,22})"(?=\s*[,}])', r'\1"\2"', content)
+    try:
+        data = json.loads(repaired)
+        for item in data['posts']:
+            if type(item.get('id')) is int:
+                item['id'] = str(item['id'])
+        result = validate_labels(data, posts)
+    except (ValueError, TypeError, KeyError, AttributeError, Stop) as error:
+        raise OutputError('Saved response failed JSON/schema validation: '+type(error).__name__) from error
+    if repaired != content:
+        save(OUT/'format_repairs'/f'{key}.json', {
+            'policy': 'missing_opening_quote_decimal_post_id_only',
+            'original_content_sha256': hashlib.sha256(content.encode()).hexdigest(),
+            'repaired_content_sha256': hashlib.sha256(repaired.encode()).hexdigest(),
+            'post_ids': [p['id'] for p in posts], 'paid_calls': 0})
+    return result
+
+
 def now():
     return datetime.now(timezone.utc)
 
@@ -374,8 +400,8 @@ def analyze(posts, ledger):
     ledger.finish(row, status='SUCCESS', usage=usage, usage_cost_peak_upper_usd=peak_cost,
                   model_reported=payload.get('model'))
     if payload['choices'][0].get('finish_reason') != 'stop':
-        raise Stop('Model output truncated; no paid retry')
-    labels = validate_labels(json.loads(payload['choices'][0]['message']['content']), posts)
+        raise OutputError('Saved model output truncated')
+    labels = decode_labels(payload, posts, key)
     save(OUT/'labels'/f'{key}.json', labels)
     return labels
 
