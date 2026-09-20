@@ -857,10 +857,13 @@ def main():
               f"empty_reason={today_stats['empty_reason']!r}", flush=True)
         print(f"  build time:  {build_meta['build_time_label']} "
               f"(data_until={build_meta.get('data_until_label')})", flush=True)
+        from author_briefs import build_author_briefs
+        author_briefs = build_author_briefs(conn, data, query_call_performance_events(conn), KOLS, build_meta['build_time_utc'])
         conn.close()
         summaries = load_summaries()
         tickers = _annotate_tickers(tickers)
         html = TEMPLATE.read_text(encoding="utf-8")
+        html = html.replace("__AUTHOR_BRIEFS__", json.dumps(author_briefs, ensure_ascii=False).replace("</", "<\\/"))
         html = html.replace("__RECORDS__",   json.dumps(data, ensure_ascii=False))
         html = html.replace("__KOLS__",      json.dumps(KOLS, ensure_ascii=False))
         html = html.replace("__TICKERS__",   json.dumps(tickers, ensure_ascii=False))
