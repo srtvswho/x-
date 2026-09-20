@@ -26,6 +26,18 @@ for(const mode of ['market','tracking','usage']){
     assert(root.getElementById('daily-archive').innerHTML.includes('每日信息聚合'));
     root.getElementById('stance-window').onchange({target:{value:'1'}});
     assert(root.getElementById('consensus').innerHTML.includes('近 1 个月'));
+    assert(root.getElementById('stancegrid').innerHTML.includes('观点的变化与延续'));
+    assert(!root.getElementById('consensus').innerHTML.includes('核心标的'));
+    root.getElementById('stance-author').onchange({target:{value:'serenity'}});
+    for(const win of ['0','0.25','1','3','6','12']){
+      root.getElementById('stance-window').onchange({target:{value:win}});
+      const body=root.getElementById('stancegrid').innerHTML;
+      assert(body.includes('data-author="serenity"'));
+      assert(!body.includes('data-author="jukan"'));
+      assert(body.includes('具体标的怎么看'));
+      assert(!body.includes('undefined'));
+    }
+
   }
   if(mode==='tracking'){
     root.getElementById('perf-kol').onchange({target:{value:'jukan'}});

@@ -39,6 +39,7 @@ jobs:
         env:
           SIGNALBOARD_DB: ${{ github.workspace }}/data/signalboard_full.db
         run: |
+          python tests/test_author_briefs.py
           python tests/test_focus_signals.py
           python tests/test_focus_labels.py
           python tests/test_publication_receipt.py

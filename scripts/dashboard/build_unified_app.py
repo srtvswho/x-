@@ -51,7 +51,7 @@ def market_module(legacy, target):
       document.getElementById('daily-archive-date').innerHTML=dates.map(day=>`<option>${day}</option>`).join('');
       document.getElementById('daily-archive-date').onchange=renderDailyArchive;
       document.getElementById('stance-window').onchange=e=>{win=+e.target.value;renderStance();};
-      renderDailyArchive();renderStance();
+      initStanceAuthor();renderDailyArchive();renderStance();
     }else if(mode==='tracking'){
       document.getElementById('perf-kol').innerHTML='<option value="all">全部人物</option>'+ORDER.map(k=>`<option value="${k}">${KOLS[k].name}</option>`).join('');
       document.getElementById('perf-kol').onchange=e=>{perfKol=e.target.value;renderTickers();};
@@ -136,7 +136,7 @@ def build(deploy_root: Path, report_path: Path):
     market = dict(fields, CALL_PERFORMANCE=[], TICKERS=[], THESIS_CHANGES=[])
     market['DATA'] = [r for r in fields['DATA'] if r.get('published_at','') >= cutoff]
     pack(data_dir/'market-panels.json.gz', market)
-    pack(data_dir/'tracking-panels.json.gz', dict(fields, DATA=[], TODAY_RECORDS=[], SUMMARIES={}, THESIS_CHANGES=[]))
+    pack(data_dir/'tracking-panels.json.gz', dict(fields, DATA=[], TODAY_RECORDS=[], SUMMARIES={}, AUTHOR_BRIEFS={}, THESIS_CHANGES=[]))
     pack(data_dir/'usage-panels.json.gz', {k:(v if k in ('AI_COST_PANEL','KOLS','BUILD_META') else [] if isinstance(v,list) else {}) for k,v in fields.items()})
     market_module(legacy, deploy_root/'assets'/'market-panels.js')
     raw = json.loads(gzip.decompress((data_dir/'raw-intelligence.json.gz').read_bytes()))
