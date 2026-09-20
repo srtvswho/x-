@@ -1,20 +1,20 @@
 {
   "schema": "workflow-handoff-v1",
   "project": "signalboard",
-  "updated_at": "2026-09-20T09:35:24.686837+00:00",
+  "updated_at": "2026-09-20T09:38:50Z",
   "objective": "市场态度作者卡片分层：主题观点主栏、标的方向侧栏、最新与变化底栏",
   "production_url": "https://signalboard-602.pages.dev",
-  "implementation_status": "implemented_pending_publication",
-  "implementation_commit": null,
+  "implementation_status": "complete",
+  "implementation_commit": "77e5f42c9f502f07522a45a6693b32aa19da7c9a",
   "last_verified": {
     "scope": "layout_only",
     "required_tests": 38,
     "provider_calls": 0,
     "runtime": "passed: all author periods and author filter, tracking, usage, focus; publication gate passed, 43480 posts",
-    "browser": "pending"
+    "browser": "production screenshot inspected; Serenity week/month; supplement, remaining tickers and timeline expand; original post text and saved interpretation displayed"
   },
   "current_state_source": "远端 master + Actions production-receipt + /build-manifest.json 内容核验",
-  "next_action": "完成离线 UI 验证后发布并检查实际布局、筛选、展开与原帖链接",
+  "next_action": "本次卡片结构调整已发布并验收；后续从最新 master 和线上 manifest 继续。响应式单栏规则已添加，尚未做手机浏览器实测。",
   "blockers": [],
   "constraints": [
     "保留原帖、已有解读和历史证据",
@@ -51,5 +51,23 @@
       "dated timeline expands",
       "original post 2095456799759700412 text and interpretation rendered"
     ]
+  },
+  "production_verification": {
+    "status": "verified",
+    "source_commit": "77e5f42c9f502f07522a45a6693b32aa19da7c9a",
+    "publication_commit": "a88563fb615d0aae5978e8b6b6669eeb01f31220",
+    "url": "https://signalboard-602.pages.dev",
+    "verified_at_utc": "2026-09-20T09:38:50Z",
+    "checked_files": [
+      "index.html",
+      "assets/market-panels.js",
+      "assets/unified-navigation.js",
+      "data/tracking-panels.json.gz",
+      "data/market-panels.json.gz",
+      "data/raw-intelligence.json.gz",
+      "data/focus-signals.json.gz"
+    ],
+    "workflow_run": "https://github.com/srtvswho/x-/actions/runs/35502774828",
+    "workflow_conclusion": "success"
   }
 }
