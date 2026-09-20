@@ -259,23 +259,36 @@ a{color:inherit;text-decoration:none}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
-.author-reading-grid{grid-template-columns:1fr;gap:24px}
-.brief-scope{margin:0 0 24px;color:var(--ink-soft);font-size:14px;line-height:1.7}
+.stance.author-brief{padding:0}
+.author-reading-grid{grid-template-columns:1fr;gap:28px}
+.brief-scope{margin:0 0 22px;color:var(--ink-dim);font-size:13px;line-height:1.7}
 .brief-scope p{margin:5px 0}.brief-scope strong{color:var(--ink);font-size:17px}.brief-scope span{margin-left:12px}
-.brief-body{padding:0 24px 24px}.brief-meta{font-size:13px;color:var(--ink-faint);margin:0 0 16px}
-.brief-prose{font-size:16px;line-height:1.9;max-width:1000px}.brief-prose p{margin:0 0 15px}
+.author-brief .sh{padding:24px 28px 20px;gap:12px;border-bottom:1px solid var(--line);margin:0}
+.brief-identity{min-width:0}.author-brief .sh .nm{font-size:19px}.brief-meta{font-size:12px;color:var(--ink-faint);margin-top:4px;font-weight:400}
+.brief-posts{margin-left:auto;font-size:13px;color:var(--blue);text-decoration:none;white-space:nowrap}
+.brief-body{padding:26px 28px}.brief-columns{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:32px;align-items:start}
+.brief-body h3{font-size:13px;letter-spacing:.06em;color:var(--ink-dim);margin:0 0 18px;font-weight:600}
+.brief-main,.brief-aside{min-width:0}.brief-aside{border-left:1px solid var(--line);padding-left:26px}
+.brief-topic{padding:0 0 20px;margin-bottom:20px;border-bottom:1px solid var(--line)}.brief-topic:last-child{border:0;margin:0;padding-bottom:0}
+.brief-topic h4{font-size:18px;line-height:1.5;margin:0 0 10px;color:var(--ink);font-weight:650}
+.brief-topic p,.brief-extra p{font-size:15px;line-height:1.85;margin:0;max-width:72ch}
+.brief-evidence{display:flex;align-items:baseline;flex-wrap:wrap;gap:5px 12px;margin-top:10px;font-size:12px;line-height:1.6}
 .brief-source{font-size:12px;white-space:nowrap;text-decoration:none;color:var(--blue)}
-.brief-coverage{display:block;color:var(--ink-faint);font-size:12px;margin-top:3px}
-.brief-posts{margin-left:auto;font-size:13px;color:var(--blue);text-decoration:none}
-.brief-body h3{font-size:15px;margin:23px 0 10px}.brief-muted{font-size:13px;color:var(--ink-soft);line-height:1.7}
-.brief-latest{background:var(--bg);border-left:3px solid var(--blue);padding:12px 16px;font-size:14px;line-height:1.8}.brief-latest p{margin:5px 0}
-.brief-timeline,.brief-changes,.brief-mentions{margin-top:12px;font-size:14px}.brief-body summary,.daily-archive-fold>summary{cursor:pointer;color:var(--blue);font-size:14px}
-.brief-milestone,.brief-change{border-left:2px solid var(--line);margin:16px 0 0 7px;padding:0 0 0 16px;font-size:14px;line-height:1.8}.brief-milestone p{margin:5px 0}
-.security-group{display:grid;grid-template-columns:110px 1fr;align-items:start;border-top:1px solid var(--line);padding:12px 0;font-size:14px;gap:8px}
-.security-group>strong{padding-top:4px}.security-group.long>strong{color:var(--green)}.security-group.short>strong{color:var(--red)}.security-group.conditional>strong{color:var(--amber)}
-.security-view{display:inline-flex;gap:8px;align-items:baseline;border:1px solid var(--line);border-radius:6px;padding:4px 9px;margin:0 6px 7px 0;text-decoration:none;color:var(--ink);font-size:13px}.security-view span{font-size:11px;color:var(--ink-faint)}
+.brief-coverage{color:var(--ink-faint);font-size:12px}.brief-muted{font-size:12px;color:var(--ink-dim);line-height:1.7;margin:8px 0}
+.brief-body summary,.daily-archive-fold>summary{cursor:pointer;color:var(--blue);font-size:13px;line-height:1.7}.brief-body summary:focus-visible{outline:2px solid var(--blue);outline-offset:4px;border-radius:3px}
+.brief-extra{margin-top:20px;padding-top:14px;border-top:1px solid var(--line)}.brief-extra[open]>summary{margin-bottom:12px}
+.security-group{padding:12px 0;border-bottom:1px solid var(--line);font-size:13px}.security-group:first-of-type{padding-top:0}.security-group>strong{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;font-size:14px}.security-group>strong span{font-size:12px;font-weight:400}
+.security-group.long>strong{color:var(--blue)}.security-group.short>strong{color:var(--rose)}.security-group.conditional>strong{color:var(--amber)}
+.security-view{display:inline-flex;gap:6px;align-items:baseline;border:1px solid var(--line);border-radius:5px;padding:4px 7px;margin:0 4px 5px 0;text-decoration:none;color:var(--ink);font-size:12px;background:var(--card,#fff)}.security-view span{font-size:10px;color:var(--ink-faint)}
+.brief-more>summary{margin:2px 0 6px}.brief-mentions{margin-top:14px}.brief-mentions>div{margin-top:10px}
+.brief-updates{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:26px;padding-top:22px;border-top:1px solid var(--line)}
+.brief-updates h3{margin-bottom:12px}.brief-latest{font-size:14px;line-height:1.8}.brief-latest p{margin:0 0 8px}.brief-latest-date{font-size:12px;color:var(--ink-faint);margin-bottom:8px}
+.brief-change-status{font-size:15px;font-weight:600;margin:0 0 8px}.brief-timeline,.brief-changes{margin-top:12px;font-size:13px}
+.brief-milestone,.brief-change{border-left:2px solid var(--line);margin:16px 0 0 3px;padding:0 0 0 14px;font-size:14px;line-height:1.8}.brief-milestone p{margin:5px 0}
 .daily-archive-fold{margin-top:28px;padding:18px;border:1px solid var(--line);border-radius:12px}.daily-archive-fold .period-control{margin-top:16px}
-@media(max-width:680px){.brief-body{padding:0 14px 18px}.brief-prose{font-size:15px}.security-group{grid-template-columns:1fr}.period-control{flex-wrap:wrap}.brief-scope span{display:block;margin-left:0}}
+@media(min-width:1500px){.brief-columns{grid-template-columns:minmax(0,1fr) 350px;gap:44px}}
+@media(max-width:1050px){.brief-columns{grid-template-columns:1fr}.brief-aside{border-left:0;border-top:1px solid var(--line);padding:20px 0 0}.brief-aside-groups{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}.security-group:first-of-type{padding-top:12px}}
+@media(max-width:680px){.author-brief .sh{padding:18px 16px;flex-wrap:wrap}.brief-body{padding:20px 16px}.brief-columns{gap:24px}.brief-updates{grid-template-columns:1fr;gap:22px}.brief-updates>section+section{border-top:1px solid var(--line);padding-top:20px}.brief-topic h4{font-size:17px}.brief-meta{max-width:230px}.brief-posts{font-size:12px}.brief-aside-groups{grid-template-columns:1fr}.period-control{flex-wrap:wrap}.brief-scope span{display:block;margin-left:0}}
 
 </style>
 </head>
@@ -533,23 +546,31 @@ function briefLink(source,label){
 function directionLabel(e){return (e.conditional?'条件性':'')+(e.direction==='long'?'看多':'看空');}
 function renderAuthorBrief(key,b){
   const k=KOLS[key],c=COLORS[key];
-  const paragraphs=b.paragraphs.map(p=>`<p>${escHtml(p.text)} ${p.sources.map(r=>briefLink(r)).join(' ')}${p.coverage?`<span class="brief-coverage">${escHtml(p.coverage)}</span>`:''}</p>`).join('');
+  const evidence=p=>`<div class="brief-evidence">${p.coverage?`<span class="brief-coverage">${escHtml(p.coverage)}</span>`:''}${p.sources.map(r=>briefLink(r)).join(' ')}</div>`;
+  const topics=(b.topics||[]);
+  const mainParagraphs=topics.length?b.paragraphs.slice(1,1+topics.length):b.paragraphs;
+  const paragraphs=mainParagraphs.map((p,i)=>{
+    const heading=topics[i]||'本期观点';
+    const prefix='关于'+heading+'，';
+    const body=p.text.startsWith(prefix)?p.text.slice(prefix.length):p.text;
+    return `<section class="brief-topic"><h4>${escHtml(heading)}</h4><p>${escHtml(body)}</p>${evidence(p)}</section>`;
+  }).join('');
+  const additional=topics.length?b.paragraphs.slice(1+topics.length):[];
+  const extra=additional.length?`<details class="brief-extra"><summary>补充观点 · ${additional.length} 条</summary>${additional.map(p=>`<p>${escHtml(p.text)}</p>${evidence(p)}`).join('')}</details>`:'';
   const groups=[['long','看多'],['short','看空'],['conditional','条件性观点']];
   const securities=groups.map(([dir,label])=>{
     const rows=b.securities.filter(e=>dir==='conditional'?e.conditional:!e.conditional&&e.direction===dir);
-    const tag=e=>`<a class="security-view" href="/posts/${encodeURIComponent(e.post_id)}"><b>${escHtml(e.ticker)}</b>${dir==='conditional'?` · ${directionLabel(e)}`:''}<span>${escHtml(e.date.slice(0,10))}</span></a>`;
-    const tags=rows.slice(0,6).map(tag).join('')+(rows.length>6?`<details class="brief-more"><summary>展开其余 ${rows.length-6} 个</summary>${rows.slice(6).map(tag).join('')}</details>`:'');
-    return `<div class="security-group ${dir}"><strong>${label}${rows.length?' · '+rows.length:''}</strong><div>${rows.length?tags:'<span class="brief-muted">暂无明确记录</span>'}</div></div>`;
+    const tag=e=>`<a class="security-view" href="/posts/${encodeURIComponent(e.post_id)}"><b>${escHtml(e.ticker)}</b>${dir==='conditional'?` · ${directionLabel(e)}`:''}<span>${escHtml(e.date.slice(5,10))}</span></a>`;
+    const tags=rows.slice(0,4).map(tag).join('')+(rows.length>4?`<details class="brief-more"><summary>展开其余 ${rows.length-4} 个</summary>${rows.slice(4).map(tag).join('')}</details>`:'');
+    return `<div class="security-group ${dir}"><strong>${label}<span>${rows.length} 个</span></strong><div>${rows.length?tags:'<span class="brief-muted">暂无明确记录</span>'}</div></div>`;
   }).join('');
-  const changes=b.changes.length?`<details class="brief-changes"><summary>${b.changes.length} 处标的方向记录不同 · 查看前后依据</summary><p class="brief-muted">短期谨慎与长期看好可以并存。这里只对照记录，不自动判断已经改口。</p>${b.changes.map(e=>`<div class="brief-change"><b>${escHtml(e.ticker)}</b><p>${directionLabel(e.before)} · ${escHtml(e.before.horizon)} ${briefLink(e.before)}<br>${escHtml(e.before.text)}</p><p>${directionLabel(e.after)} · ${escHtml(e.after.horizon)} ${briefLink(e.after)}<br>${escHtml(e.after.text)}</p></div>`).join('')}</details>`:'<p class="brief-muted">所选范围内，未发现同一标的明确多空记录的变化；不代表所有观点都保持不变。</p>';
-  const latest=b.latest?`<div class="brief-latest"><strong>最近一次说到</strong><p>${escHtml(b.latest.text)} ${briefLink(b.latest)}</p></div>`:'';
+  const changes=b.changes.length?`<p class="brief-change-status">${b.changes.length} 处标的方向记录不同</p><p class="brief-muted">期限或条件可能不同，需对照前后依据。</p><details class="brief-changes"><summary>查看前后表态</summary>${b.changes.map(e=>`<div class="brief-change"><b>${escHtml(e.ticker)}</b><p>${directionLabel(e.before)} · ${escHtml(e.before.horizon)} ${briefLink(e.before)}<br>${escHtml(e.before.text)}</p><p>${directionLabel(e.after)} · ${escHtml(e.after.horizon)} ${briefLink(e.after)}<br>${escHtml(e.after.text)}</p></div>`).join('')}</details>`:'<p class="brief-change-status">未发现明确多空转向</p><p class="brief-muted">限所选范围内同一标的的方向记录，不代表所有观点都保持不变。</p>';
+  const latest=b.latest?`<div class="brief-latest"><div class="brief-latest-date">${escHtml(b.latest.date.slice(0,10))}</div><p>${escHtml(b.latest.text)}</p>${briefLink(b.latest,'查看')}</div>`:'<p class="brief-muted">暂无已解读发言</p>';
   const timeline=b.timeline.length?`<details class="brief-timeline"><summary>展开阶段脉络 · 从早期论点到近期判断</summary><p class="brief-muted">${escHtml(b.change_note)}</p>${b.timeline.map(e=>`<div class="brief-milestone"><span>${briefLink(e)}</span><p>${escHtml(e.text)}</p></div>`).join('')}</details>`:'';
   const mention=b.mentions.length?`<details class="brief-mentions"><summary>仅提及 / 方向未确认 · ${b.mentions.length} 个标的</summary><p class="brief-muted">这些名称出现在帖子中，但尚无足够的逐标的方向依据。</p><div>${b.mentions.map(e=>`<a class="security-view" href="/posts/${encodeURIComponent(e.post_id)}">${escHtml(e.ticker)}<span>${escHtml(e.date.slice(0,10))}</span></a>`).join('')}</div></details>`:'';
-  return `<article class="stance author-brief" data-author="${escHtml(key)}"><div class="sh"><div class="av" style="background:${c}">${initials(k.name)}</div><div class="nm">${escHtml(k.name)}</div><a class="brief-posts" href="/posts/?author=${encodeURIComponent(key)}">全部推文 ↗</a></div>
-    <div class="brief-body"><div class="brief-meta">${winLabel(win)} · 已存 ${b.post_count} 篇 · ${b.interpreted_count} 篇有观点解读${b.last_post_at?' · 最新 '+escHtml(b.last_post_at.slice(0,10)):''}</div>
-    <div class="brief-prose">${paragraphs}</div>${latest}
-    <h3>观点的变化与延续</h3>${changes}${timeline}
-    <h3>具体标的怎么看</h3><p class="brief-muted">以下为所选范围内最后一次明确表态，日期是发帖日，不代表当前持仓或买入建议。</p>${securities}${mention}
+  return `<article class="stance author-brief" data-author="${escHtml(key)}"><div class="sh"><div class="av" style="background:${c}">${initials(k.name)}</div><div class="brief-identity"><div class="nm">${escHtml(k.name)}</div><div class="brief-meta">${winLabel(win)} · ${b.post_count} 篇推文 · ${b.interpreted_count} 篇有解读${b.last_post_at?' · 更新 '+escHtml(b.last_post_at.slice(5,10)):''}</div></div><a class="brief-posts" href="/posts/?author=${encodeURIComponent(key)}">全部推文 ↗</a></div>
+    <div class="brief-body"><div class="brief-columns"><section class="brief-main"><h3>核心观点</h3>${paragraphs}${extra}</section><aside class="brief-aside" aria-label="标的方向"><h3>具体标的怎么看</h3><div class="brief-aside-groups">${securities}</div>${mention}<p class="brief-muted">所选范围内最后一次明确表态。日期为发帖日，点击标的查看依据。</p></aside></div>
+    <div class="brief-updates"><section><h3>最近一次说到</h3>${latest}</section><section><h3>观点的变化与延续</h3>${changes}${timeline}</section></div>
     </div></article>`;
 }
 function renderStance(){
