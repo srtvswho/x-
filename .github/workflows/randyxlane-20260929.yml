@@ -1,0 +1,48 @@
+name: Randyxlane evidence capture 20260929
+on:
+  push:
+    branches: [codex/randyxlane-20260929]
+    paths: [config/randyxlane_20260929.json]
+permissions:
+  contents: write
+concurrency:
+  group: randyxlane-20260929
+  cancel-in-progress: false
+jobs:
+  capture:
+    if: github.ref == 'refs/heads/codex/randyxlane-20260929'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: codex/randyxlane-20260929
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Record existing project status
+        run: python scripts/workflow_status.py
+      - name: Claim one capture before paid request
+        run: |
+          set -Eeuo pipefail
+          test ! -f outputs/randyxlane_20260929/claim.json
+          mkdir -p outputs/randyxlane_20260929
+          python -c 'import json,os; json.dump({"run_id":os.environ["GITHUB_RUN_ID"],"cap_usd":0.801,"retry_allowed":False},open("outputs/randyxlane_20260929/claim.json","w"))'
+          git config user.name signalboard-bot
+          git config user.email signalboard-bot@users.noreply.github.com
+          git add outputs/randyxlane_20260929/claim.json
+          git commit -m 'Claim single-account capture [skip daily] [skip ui]'
+          git push origin HEAD:codex/randyxlane-20260929
+      - name: Capture posts and original trade images
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+        run: python scripts/randyxlane_capture_20260929.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: randyxlane-evidence-${{ github.run_id }}
+          path: outputs/randyxlane_20260929/
+          retention-days: 90
+          if-no-files-found: error
