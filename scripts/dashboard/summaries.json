@@ -23,7 +23,7 @@
       "12": "核心方向｜光通信（激光器/InP 瓶颈）+ 存储，看多；AI capex 为代际机会\n明确标的｜AAOI、SIVE、COHR、AXTI、LITE 看多；ESMT、AEHR 看多\n依据/风险｜激光器售罄与并购重估独立供应商（✅强项）；存储非强项，打折参考；回撤风险"
     },
     "zephyr": {
-      "0": "核心方向｜存储/半导体产业：中性，仅事实陈述，无方向性表态\n明确标的｜无明确标的\n依据/风险｜YMTC、Solidigm 暂停 IPO 反映市场走弱；属强项领域但无多空判断，样本少仅参考",
+      "0": "zephyr 在该时间窗无有效判断。",
       "1": "核心方向｜存储/半导体产业：中性偏谨慎，看空PC需求（明年出货-20%），HBM/DRAM技术跟踪为主\n明确标的｜MRVL 看多（光互连护城河）；无其他明确建仓标的\n依据/风险｜CXMT HBM毛利测算、PC需求反驳为强项✅；MRVL属光互连延伸，样本少⚠️仅参考",
       "3": "核心方向｜存储/半导体产业：中性偏谨慎，看空PC内存需求，看多光互连\n明确标的｜MRVL 看多；PC出货看空；无其他明确建仓\n依据/风险｜CXMT HBM良率与成本测算、PC出货跌20%反驳Zinsner；属强项✅，但样本少、同帖标的不独立⚠️",
       "6": "核心方向｜半导体/存储：中性偏谨慎，看空PC需求(明年出货-20%)；光互连看多MRVL\n明确标的｜MRVL 看多；PC/存储链 看空\n依据/风险｜存储与半导体属强项✅，但多为产业事实陈述、方向性表态少；同帖标的非独立，样本少⚠️",
@@ -44,7 +44,7 @@
       "12": "核心方向｜电力/能源为2027首选押注（看多）；量子计算回避（看空）；GOOG回避（看空）\n明确标的｜AAPL 看多；CASY/MUSA 看多；CRK 持有；GOOG 看空\n依据/风险｜依据为能源押注与GOOG广告叙事质疑；非其强项SNDK领域，认知权重0.35，仅参考⚠️"
     },
     "feroce": {
-      "0": "核心方向｜存储/半导体中期偏多，AI交易未结束；neocloud看空但当前不建议新开空\n明确标的｜MU中性(期权异动)；BE/ALAB、NVDA、SOFI/XYZ/RKT、IWM看多\n依据/风险｜存储专项B+可信✅；但同周期样本相关，不独立触发重仓，非存储标的仅参考⚠️",
+      "0": "Feroce Research 在该时间窗无有效判断。",
       "1": "核心方向｜存储/AI算力 + 看多（MU为MAG3核心、现金流超巨头）；neocloud/CPU 看空；光互连 ALAB/CRDO/COHR 看多\n明确标的｜MU 多；ALAB/CRDO/COHR 多；NVDA 多；AAPL/XLV 空；neocloud 空\n依据/风险｜存储专项属强项✅；但同周期样本相关，不独立触发重仓，仓位打折⚠️",
       "3": "核心方向｜存储/AI算力 + 光互联看多；neocloud、CPU、苹果看空\n明确标的｜MU/NVDA/ALAB/CRDO/COHR 多；AAPL、neocloud 空\n依据/风险｜存储现金牛+光互联替代逻辑✅；但同周期样本相关，不独立触发重仓⚠️",
       "6": "核心方向｜存储/AI算力 + 光互连看多；neocloud、CPU、苹果看空\n明确标的｜MU/NVDA/ALAB/CRDO/COHR 多；AAPL 空\n依据/风险｜存储现金流与AI互补逻辑✅；光互连属专项外，打折参考",
@@ -67,7 +67,7 @@
   },
   "generated_at": "2026-11-05T02:43:24.906857+00:00",
   "data_until": "2026-11-05T00:55:30+00:00",
-  "stale": false,
+  "stale": true,
   "daily_history": {
     "2026-08-09": {
       "summary": "市场主线｜光通信/存储瓶颈轮动；AI数据中心瓶颈未变，估值波动主导。\n模块/标的｜InP激光器/PiC代工；Win Semiconductors、MU、LITE、COHR。\n方向/共识｜看多；serenity（✅光通信/存储强项）看多Win、MU，反驳基本面恶化。\n风险/分歧｜zephyr（⚠️看空盲区）对GOOGL负面但模糊；NBIS做空为讽刺，勿当真。",
@@ -1660,11 +1660,11 @@
     },
     "2026-11-05": {
       "window_start_utc": "2026-11-04T16:00:00+00:00",
-      "window_end_utc": "2026-11-05T02:43:24.906857+00:00",
+      "window_end_utc": "2026-11-05T16:00:00+00:00",
       "window_kind": "beijing_calendar_day",
-      "source_data_until": "2026-11-05T00:55:30+00:00",
-      "post_count": 76,
-      "complete": true,
+      "source_data_until": "2026-11-05T15:58:19+00:00",
+      "post_count": 232,
+      "complete": false,
       "person": {
         "jukan": "Jukan 在该时间窗无有效判断。",
         "serenity": "Serenity 在该时间窗无有效判断。",
@@ -1675,16 +1675,110 @@
         "tradex": "TradexWhisperer 在该时间窗无有效判断。",
         "gsmferrari": "核心方向｜短线交易为主，方向混乱：SPX 7480 看多、12月底计划做空（未指明标的）、NVO 看多；SOXX/DAX 中性困惑\n明确标的｜SPX 看多；NVO 看多；SOXX 中性；DAX 中性\n依据/风险｜依据为技术位与周期分析，但自述“市场极难交易、无规律”；属短线观察强项✅，长持依据不足⚠️打折"
       },
-      "segment_errors": {},
+      "segment_errors": {
+        "summary": "RUN_BUDGET_EXCEEDED",
+        "consensus": "RUN_BUDGET_EXCEEDED",
+        "jukan": "RUN_BUDGET_EXCEEDED",
+        "serenity": "RUN_BUDGET_EXCEEDED",
+        "austin": "RUN_BUDGET_EXCEEDED",
+        "dgretta": "RUN_BUDGET_EXCEEDED",
+        "tradex": "RUN_BUDGET_EXCEEDED",
+        "gsmferrari": "RUN_BUDGET_EXCEEDED"
+      },
       "summary": "市场主线｜AI/半导体交易未结束，资金剧烈轮动，利率敏感股与金属待补涨\n模块/标的｜半导体；AMD、NVDA、MU、BE、ALAB、SOFI/XYZ/RKT\n方向/共识｜看多；feroce与austin在AI/半导体上形成共识（⚠️feroce存储仅B+、austin交易样本少）\n风险/分歧｜gsmferrari称市场极难交易、SOXX与纳指背离，并预告12月底all in做空；neocloud被看空",
       "consensus": "共识方向｜AI/半导体韧性 + 存储看多 + neocloud 看空 + 市场轮动剧烈难交易；参与者：feroce、gsmferrari、austin（认知验证，非等权）\n核心标的｜MU（中性偏多）、NVDA、AMD、BE、ALAB、IWM、SOFI/XYZ/RKT；neocloud 无 ticker\n分歧/风险｜gsmferrari 称市场无规律、SOXX 与纳指背离；feroce 提示 QQQ/SKHY/MU 大额看跌或为空头陷阱；存储仅期权流，非基本面确认",
       "source_hash": "719dbe3ab60ca3a0e463b1600f31d045eb6557baf03c8549cbc02108f3cfff1f",
       "generated_at": "2026-11-05T02:43:24.906857+00:00",
       "data_until": "2026-11-05T00:55:30+00:00"
+    },
+    "2026-11-06": {
+      "window_start_utc": "2026-11-05T16:00:00+00:00",
+      "window_end_utc": "2026-11-06T02:45:03.746253+00:00",
+      "window_kind": "beijing_calendar_day",
+      "source_data_until": "2026-11-06T02:21:35+00:00",
+      "post_count": 130,
+      "complete": false,
+      "person": {
+        "jukan": "Jukan 在该时间窗无有效判断。",
+        "serenity": "（摘要待补；请查看该日期的原始 Post 和逐条解读）",
+        "zephyr": "zephyr 在该时间窗无有效判断。",
+        "austin": "Austin 在该时间窗无有效判断。",
+        "dgretta": "（摘要待补；请查看该日期的原始 Post 和逐条解读）",
+        "feroce": "Feroce Research 在该时间窗无有效判断。",
+        "tradex": "TradexWhisperer 在该时间窗无有效判断。",
+        "gsmferrari": "（摘要待补；请查看该日期的原始 Post 和逐条解读）"
+      },
+      "segment_errors": {
+        "summary": "RUN_BUDGET_EXCEEDED",
+        "consensus": "RUN_BUDGET_EXCEEDED",
+        "serenity": "RUN_BUDGET_EXCEEDED",
+        "dgretta": "RUN_BUDGET_EXCEEDED",
+        "gsmferrari": "RUN_BUDGET_EXCEEDED"
+      },
+      "summary": "（摘要待补；请查看该日期的原始 Post 和逐条解读）",
+      "consensus": "（摘要待补；请查看该日期的原始 Post 和逐条解读）"
     }
   },
-  "segment_errors": {},
-  "source_data_until": "2026-11-05T00:55:30+00:00",
+  "segment_errors": {
+    "today": "HTTPError",
+    "consensus/0": "HTTPError",
+    "person/jukan/0": "HTTPError",
+    "person/serenity/0": "HTTPError",
+    "person/austin/0": "HTTPError",
+    "person/dgretta/0": "HTTPError",
+    "person/tradex/0": "HTTPError",
+    "person/gsmferrari/0": "HTTPError",
+    "consensus/1": "HTTPError",
+    "person/jukan/1": "HTTPError",
+    "person/serenity/1": "HTTPError",
+    "person/zephyr/1": "HTTPError",
+    "person/austin/1": "HTTPError",
+    "person/dgretta/1": "HTTPError",
+    "person/feroce/1": "HTTPError",
+    "person/tradex/1": "HTTPError",
+    "person/gsmferrari/1": "HTTPError",
+    "consensus/3": "HTTPError",
+    "person/jukan/3": "HTTPError",
+    "person/serenity/3": "HTTPError",
+    "person/zephyr/3": "HTTPError",
+    "person/austin/3": "HTTPError",
+    "person/dgretta/3": "HTTPError",
+    "person/feroce/3": "RUN_BUDGET_EXCEEDED",
+    "person/tradex/3": "RUN_BUDGET_EXCEEDED",
+    "person/gsmferrari/3": "RUN_BUDGET_EXCEEDED",
+    "consensus/6": "RUN_BUDGET_EXCEEDED",
+    "person/jukan/6": "RUN_BUDGET_EXCEEDED",
+    "person/serenity/6": "RUN_BUDGET_EXCEEDED",
+    "person/zephyr/6": "RUN_BUDGET_EXCEEDED",
+    "person/austin/6": "RUN_BUDGET_EXCEEDED",
+    "person/dgretta/6": "RUN_BUDGET_EXCEEDED",
+    "person/feroce/6": "RUN_BUDGET_EXCEEDED",
+    "person/tradex/6": "RUN_BUDGET_EXCEEDED",
+    "person/gsmferrari/6": "RUN_BUDGET_EXCEEDED",
+    "consensus/12": "RUN_BUDGET_EXCEEDED",
+    "person/jukan/12": "RUN_BUDGET_EXCEEDED",
+    "person/serenity/12": "RUN_BUDGET_EXCEEDED",
+    "person/zephyr/12": "RUN_BUDGET_EXCEEDED",
+    "person/austin/12": "RUN_BUDGET_EXCEEDED",
+    "person/dgretta/12": "RUN_BUDGET_EXCEEDED",
+    "person/feroce/12": "RUN_BUDGET_EXCEEDED",
+    "person/tradex/12": "RUN_BUDGET_EXCEEDED",
+    "person/gsmferrari/12": "RUN_BUDGET_EXCEEDED",
+    "daily/2026-11-05/summary": "RUN_BUDGET_EXCEEDED",
+    "daily/2026-11-05/consensus": "RUN_BUDGET_EXCEEDED",
+    "daily/2026-11-05/jukan": "RUN_BUDGET_EXCEEDED",
+    "daily/2026-11-05/serenity": "RUN_BUDGET_EXCEEDED",
+    "daily/2026-11-05/austin": "RUN_BUDGET_EXCEEDED",
+    "daily/2026-11-05/dgretta": "RUN_BUDGET_EXCEEDED",
+    "daily/2026-11-05/tradex": "RUN_BUDGET_EXCEEDED",
+    "daily/2026-11-05/gsmferrari": "RUN_BUDGET_EXCEEDED",
+    "daily/2026-11-06/summary": "RUN_BUDGET_EXCEEDED",
+    "daily/2026-11-06/consensus": "RUN_BUDGET_EXCEEDED",
+    "daily/2026-11-06/serenity": "RUN_BUDGET_EXCEEDED",
+    "daily/2026-11-06/dgretta": "RUN_BUDGET_EXCEEDED",
+    "daily/2026-11-06/gsmferrari": "RUN_BUDGET_EXCEEDED"
+  },
+  "source_data_until": "2026-11-06T02:21:35+00:00",
   "request_cache": {
     "62b71d04a89bcbfc1438e42c478ba58c7ff0b3afbc54d60c0d84d3b05ced3d47": {
       "text": "市场主线｜HBM/存储容量与带宽之争成焦点，AI算力需求持续扩张\n模块/标的｜HBM/存储；无明确标的\n方向/共识｜中性偏多；tradex反驳SemiAnalysis强调容量重要性，jukan/tradex共认HBM稀缺性转向引脚速度\n风险/分歧｜SemiAnalysis认为降容量不影响有效带宽，tradex反驳；zephyr看多AI算力但存盲区\n标注能力圈：tradex✅存储强项，jukan✅存储强项，zephyr⚠️AI泡沫论盲区",
@@ -16067,6 +16161,7 @@
       "generated_at": "2026-11-05T02:45:07.022208+00:00"
     }
   },
-  "last_attempt_at": "2026-11-05T02:43:24.906857+00:00",
-  "refresh_complete": true
+  "last_attempt_at": "2026-11-06T02:45:03.746253+00:00",
+  "refresh_complete": false,
+  "stale_reason": "部分摘要待补；旧内容保留，原始 Post 正常更新"
 }
