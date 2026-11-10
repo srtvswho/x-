@@ -14,8 +14,8 @@
     "from:iiiinvest since:2025-01-01 until:2026-01-01",
     "from:iiiinvest since:2026-01-01 until:2026-04-16"
   ],
-  "purpose": "55 daily queries subdivide dense Nov2022 and Mar2026; no production updates",
-  "diagnostic_attempt": 4,
+  "purpose": "Final independent index checks: replies/nonreplies/native retweets/numeric author; new cap $0.20",
+  "diagnostic_attempt": 5,
   "prior_run_id": "KMm0sTPlFZxus0XJr",
   "prior_actual_cost_usd": 0.0,
   "prior_apify_run_ids": [
@@ -30,6 +30,17 @@
     "0Szi9bOmsRXgeop8Y",
     "7DS96MXJ7H20yrqfY",
     "tyKR0erIAQWoh68cj",
-    "tg0ouljsn25TQNDOO"
+    "tg0ouljsn25TQNDOO",
+    "VGVi1F13Bfmdx0OMd",
+    "abMVn6abkj274BYpp",
+    "ybNHTqggk5mdl5iRw",
+    "hNfsQqEPE6Ix0bjQ6",
+    "Er5UQ5i64kbjrP8KA",
+    "rkFUFjlTWGiPedxQ2",
+    "gvKW4AlSZcK2iJ7vq",
+    "0eXyeFVh6uSKH0cg8",
+    "bqGHM6AqnjQMsjthh",
+    "Qe8E44Kg06isGNO0B",
+    "TpTblNl1h8YXIWNsR"
   ]
 }

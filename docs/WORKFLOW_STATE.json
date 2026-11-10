@@ -90,11 +90,11 @@
       "Apify public pricing and advanced author/date query schema checked",
       "Provider maxTotalChargeUsd API contract checked"
     ],
-    "status": "1096_api_posts_monthly_complete_daily_dense_pass_required",
-    "next_action": "55 daily queries for Nov2022 and Mar2026; conservative prior charge upper 0.5856 + reserve0.084 + 11*0.16 =2.4296 maximum. Do not claim all-history completeness yet.",
+    "status": "4415_combined_posts_captured_independent_index_checks",
+    "next_action": "Independent historical search variants cap $0.20. All known old public posts and self-quotes found; profile count gap244 still unresolved, no false completeness claim.",
     "production_live_check": "build-manifest returned HTTP 403 in local environment; no production operation requested",
-    "workflow_run": "https://github.com/srtvswho/x-/actions/runs/42771798381",
+    "workflow_run": "https://github.com/srtvswho/x-/actions/runs/42772414019",
     "apify_run_id": "KMm0sTPlFZxus0XJr",
-    "actual_cost_usd": 0.5
+    "actual_cost_usd": 0.5316
   }
 }
