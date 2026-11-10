@@ -69,5 +69,29 @@
     ],
     "workflow_run": "https://github.com/srtvswho/x-/actions/runs/35502774828",
     "workflow_conclusion": "success"
+  },
+  "isolated_research_capture": {
+    "updated_at_utc": "2026-11-10T06:46:49.631938+00:00",
+    "objective": "Recover @iiiinvest posts older than free timeline boundary for full semantic evaluation",
+    "branch": "codex/iiiinvest-20261110",
+    "source_base_commit": "c69816e7a502e89c4a0693882194676ea33cbc62",
+    "production_changes": false,
+    "hard_budget_usd": 3.0,
+    "provider": "apidojo/tweet-scraper",
+    "current_unit_price_usd": 0.0004,
+    "known_earliest_post_id": "2044318642817642799",
+    "known_earliest_time_utc": "2026-04-15T07:35:20+00:00",
+    "checks": [
+      "Read AGENTS.md / INSTRUCTIONS.txt / WORKFLOW.md / previous state",
+      "workflow_status.py passed against local source",
+      "master source ref confirmed",
+      "Existing scheduled workflows only trigger master or named UI branch; isolated branch cannot deploy",
+      "py_compile passed",
+      "Apify public pricing and advanced author/date query schema checked",
+      "Provider maxTotalChargeUsd API contract checked"
+    ],
+    "status": "prepared_not_run",
+    "next_action": "Run smoke then bounded bulk; retain raw fields, pricing and coverage receipts as Actions artifact",
+    "production_live_check": "build-manifest returned HTTP 403 in local environment; no production operation requested"
   }
 }

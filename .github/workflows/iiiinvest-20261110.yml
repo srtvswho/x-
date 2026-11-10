@@ -1,0 +1,48 @@
+name: iiiinvest historical evidence 20261110
+on:
+  push:
+    branches: [codex/iiiinvest-20261110]
+    paths: [config/iiiinvest_20261110.json]
+permissions:
+  contents: write
+concurrency:
+  group: iiiinvest-20261110
+  cancel-in-progress: false
+jobs:
+  capture:
+    if: github.ref == 'refs/heads/codex/iiiinvest-20261110'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: codex/iiiinvest-20261110
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Record project status
+        run: python scripts/workflow_status.py
+      - name: Claim capture before paid requests
+        run: |
+          set -Eeuo pipefail
+          test ! -f outputs/iiiinvest_20261110/claim.json
+          mkdir -p outputs/iiiinvest_20261110
+          python -c 'import json,os; json.dump({"run_id":os.environ["GITHUB_RUN_ID"],"cap_usd":3.0,"paid_retries":0},open("outputs/iiiinvest_20261110/claim.json","w"))'
+          git config user.name signalboard-bot
+          git config user.email signalboard-bot@users.noreply.github.com
+          git add outputs/iiiinvest_20261110/claim.json
+          git commit -m 'Claim isolated iiiinvest capture [skip daily] [skip ui]'
+          git push origin HEAD:codex/iiiinvest-20261110
+      - name: Capture original posts with a cumulative dollar cap
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+        run: python scripts/iiiinvest_capture_20261110.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iiiinvest-evidence-${{ github.run_id }}
+          path: outputs/iiiinvest_20261110/
+          retention-days: 90
+          if-no-files-found: error

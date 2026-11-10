@@ -1,0 +1,18 @@
+{
+  "handle": "iiiinvest",
+  "hard_budget_usd": 3.0,
+  "max_items": 7400,
+  "paid_retries": 0,
+  "production_changes": false,
+  "known_earliest_post_id": "2044318642817642799",
+  "known_earliest_time_utc": "2026-04-15T07:35:20+00:00",
+  "smoke_query": "from:iiiinvest since:2022-11-07 until:2026-04-16",
+  "queries": [
+    "from:iiiinvest since:2022-11-07 until:2023-01-01",
+    "from:iiiinvest since:2023-01-01 until:2024-01-01",
+    "from:iiiinvest since:2024-01-01 until:2025-01-01",
+    "from:iiiinvest since:2025-01-01 until:2026-01-01",
+    "from:iiiinvest since:2026-01-01 until:2026-04-16"
+  ],
+  "purpose": "Recover only history older than free timeline boundary via author/date search; no profile timeline; no production data writes; raw posts only in Actions artifacts"
+}
