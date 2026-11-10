@@ -90,11 +90,19 @@
       "Apify public pricing and advanced author/date query schema checked",
       "Provider maxTotalChargeUsd API contract checked"
     ],
-    "status": "4415_combined_posts_captured_independent_index_checks",
-    "next_action": "Independent historical search variants cap $0.20. All known old public posts and self-quotes found; profile count gap244 still unresolved, no false completeness claim.",
+    "status": "all_authorized_capture_passes_complete_with_explicit_coverage_gap",
+    "next_action": "Merge saved API versions and independent public thread post; complete all semantic review/backtests. No more provider runs required or scheduled; do not claim profile100%.",
     "production_live_check": "build-manifest returned HTTP 403 in local environment; no production operation requested",
-    "workflow_run": "https://github.com/srtvswho/x-/actions/runs/42772414019",
+    "workflow_run": "https://github.com/srtvswho/x-/actions/runs/42773106324",
     "apify_run_id": "KMm0sTPlFZxus0XJr",
-    "actual_cost_usd": 0.5316
+    "actual_cost_usd": 0.6652,
+    "conservative_event_cost_upper_usd": 0.8332,
+    "api_unique_posts": 1219,
+    "api_plus_free_and_visible_threads_posts": 4418,
+    "profile_count": 4659,
+    "unreconciled_profile_gap": 241,
+    "known_unindexed_public_thread_post": "2019237435658629268",
+    "full_history_100_percent_verified": false,
+    "all_paid_runs_finished": true
   }
 }
