@@ -1792,10 +1792,10 @@
     },
     "2026-11-10": {
       "window_start_utc": "2026-11-09T16:00:00+00:00",
-      "window_end_utc": "2026-11-10T08:00:00.579453+00:00",
+      "window_end_utc": "2026-11-10T11:26:04.351828+00:00",
       "window_kind": "beijing_calendar_day",
-      "source_data_until": "2026-11-10T06:43:28+00:00",
-      "post_count": 91,
+      "source_data_until": "2026-11-10T10:50:11+00:00",
+      "post_count": 119,
       "complete": true,
       "person": {
         "jukan": "Jukan 在该时间窗无有效判断。",
@@ -1810,9 +1810,9 @@
       "segment_errors": {},
       "summary": "今日生产跟踪账号无新推文或无新有效判断。",
       "consensus": "近 0 月无有效判断数据。",
-      "source_hash": "f41bceffe388573863544a185be6531f46eabdfbf99ba768f306bba0da8fccdf",
-      "generated_at": "2026-11-10T08:00:00.579453+00:00",
-      "data_until": "2026-11-10T06:43:28+00:00"
+      "source_hash": "60b5c7aa81c9232fe9a2a270cde1524f05ca5b9bbe19ac04cf6d3f6093aa09a3",
+      "generated_at": "2026-11-10T11:26:04.351828+00:00",
+      "data_until": "2026-11-10T10:50:11+00:00"
     }
   },
   "segment_errors": {
@@ -1853,7 +1853,7 @@
     "person/tradex/12": "DAILY_BUDGET_EXCEEDED",
     "person/gsmferrari/12": "DAILY_BUDGET_EXCEEDED"
   },
-  "source_data_until": "2026-11-10T06:43:28+00:00",
+  "source_data_until": "2026-11-10T10:50:11+00:00",
   "request_cache": {
     "62b71d04a89bcbfc1438e42c478ba58c7ff0b3afbc54d60c0d84d3b05ced3d47": {
       "text": "市场主线｜HBM/存储容量与带宽之争成焦点，AI算力需求持续扩张\n模块/标的｜HBM/存储；无明确标的\n方向/共识｜中性偏多；tradex反驳SemiAnalysis强调容量重要性，jukan/tradex共认HBM稀缺性转向引脚速度\n风险/分歧｜SemiAnalysis认为降容量不影响有效带宽，tradex反驳；zephyr看多AI算力但存盲区\n标注能力圈：tradex✅存储强项，jukan✅存储强项，zephyr⚠️AI泡沫论盲区",
@@ -16236,7 +16236,7 @@
       "generated_at": "2026-11-05T02:45:07.022208+00:00"
     }
   },
-  "last_attempt_at": "2026-11-10T08:00:00.579453+00:00",
+  "last_attempt_at": "2026-11-10T11:26:04.351828+00:00",
   "refresh_complete": false,
   "stale_reason": "部分摘要待补；旧内容保留，原始 Post 正常更新"
 }
