@@ -90,11 +90,11 @@
       "Apify public pricing and advanced author/date query schema checked",
       "Provider maxTotalChargeUsd API contract checked"
     ],
-    "status": "582_older_posts_captured_monthly_completeness_pass_required",
-    "next_action": "Run 42 monthly searches in 9 bounded runs. Annual search missed known Jan31 post; do not claim completeness. Cumulative conservative reservation $2.8372 maximum.",
+    "status": "1096_api_posts_monthly_complete_daily_dense_pass_required",
+    "next_action": "55 daily queries for Nov2022 and Mar2026; conservative prior charge upper 0.5856 + reserve0.084 + 11*0.16 =2.4296 maximum. Do not claim all-history completeness yet.",
     "production_live_check": "build-manifest returned HTTP 403 in local environment; no production operation requested",
-    "workflow_run": "https://github.com/srtvswho/x-/actions/runs/42771327404",
+    "workflow_run": "https://github.com/srtvswho/x-/actions/runs/42771798381",
     "apify_run_id": "KMm0sTPlFZxus0XJr",
-    "actual_cost_usd": 0.1872
+    "actual_cost_usd": 0.5
   }
 }

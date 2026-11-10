@@ -14,13 +14,22 @@
     "from:iiiinvest since:2025-01-01 until:2026-01-01",
     "from:iiiinvest since:2026-01-01 until:2026-04-16"
   ],
-  "purpose": "42 disjoint month queries to address confirmed holes in annual search; full Apr15 boundary overlap deduplicated by ID",
-  "diagnostic_attempt": 3,
+  "purpose": "55 daily queries subdivide dense Nov2022 and Mar2026; no production updates",
+  "diagnostic_attempt": 4,
   "prior_run_id": "KMm0sTPlFZxus0XJr",
   "prior_actual_cost_usd": 0.0,
   "prior_apify_run_ids": [
     "KMm0sTPlFZxus0XJr",
+    "rSuDqYndVjd1xa0Jr",
     "LSaHGMb8ax6fq6E6d",
-    "rSuDqYndVjd1xa0Jr"
+    "4oQosKamAvVaLqZtm",
+    "KqwDxIK01gKNY5yVC",
+    "lA5TAy2AiFcjgzsc7",
+    "S5XI9IDnU16ltrImL",
+    "J40PfGZ4DUvbveQ2L",
+    "0Szi9bOmsRXgeop8Y",
+    "7DS96MXJ7H20yrqfY",
+    "tyKR0erIAQWoh68cj",
+    "tg0ouljsn25TQNDOO"
   ]
 }
