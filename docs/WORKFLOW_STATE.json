@@ -90,8 +90,11 @@
       "Apify public pricing and advanced author/date query schema checked",
       "Provider maxTotalChargeUsd API contract checked"
     ],
-    "status": "prepared_not_run",
-    "next_action": "Run smoke then bounded bulk; retain raw fields, pricing and coverage receipts as Actions artifact",
-    "production_live_check": "build-manifest returned HTTP 403 in local environment; no production operation requested"
+    "status": "first_query_empty_zero_cost_probe_distinct_query_forms",
+    "next_action": "Capture Actor log, try three distinct simple/native author-date query forms; keep aggregate reservation <= $3; no paid POST retries",
+    "production_live_check": "build-manifest returned HTTP 403 in local environment; no production operation requested",
+    "workflow_run": "https://github.com/srtvswho/x-/actions/runs/42770863030",
+    "apify_run_id": "KMm0sTPlFZxus0XJr",
+    "actual_cost_usd": 0.0
   }
 }

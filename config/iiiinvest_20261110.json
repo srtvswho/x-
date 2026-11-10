@@ -14,5 +14,8 @@
     "from:iiiinvest since:2025-01-01 until:2026-01-01",
     "from:iiiinvest since:2026-01-01 until:2026-04-16"
   ],
-  "purpose": "Recover only history older than free timeline boundary via author/date search; no profile timeline; no production data writes; raw posts only in Actions artifacts"
+  "purpose": "Recover only history older than free timeline boundary via author/date search; no profile timeline; no production data writes; raw posts only in Actions artifacts",
+  "diagnostic_attempt": 2,
+  "prior_run_id": "KMm0sTPlFZxus0XJr",
+  "prior_actual_cost_usd": 0.0
 }

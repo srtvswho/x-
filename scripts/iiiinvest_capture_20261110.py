@@ -105,7 +105,7 @@ def publish_receipt(runs, cutoff):
     print(json.dumps(receipt), flush=True)
 
 
-def capture(label, queries, max_items, cap, build):
+def capture(label, queries, max_items, cap, build, extra=None):
     assert 1 <= len(queries) <= 5
     assert cap >= max_items * MAX_RATE
     body = {
@@ -115,6 +115,8 @@ def capture(label, queries, max_items, cap, build):
         'onlyVerifiedUsers': False, 'onlyVideo': False,
         'searchTerms': queries, 'sort': 'Latest', 'disableMaximization': True,
     }
+    if extra:
+        body.update(extra)
     save(label + '/input.json', body)
     save(label + '/reservation.json', {
         'cap_usd': cap, 'max_items': max_items, 'paid_post_attempted': True,
