@@ -90,11 +90,11 @@
       "Apify public pricing and advanced author/date query schema checked",
       "Provider maxTotalChargeUsd API contract checked"
     ],
-    "status": "first_query_empty_zero_cost_probe_distinct_query_forms",
-    "next_action": "Capture Actor log, try three distinct simple/native author-date query forms; keep aggregate reservation <= $3; no paid POST retries",
+    "status": "582_older_posts_captured_monthly_completeness_pass_required",
+    "next_action": "Run 42 monthly searches in 9 bounded runs. Annual search missed known Jan31 post; do not claim completeness. Cumulative conservative reservation $2.8372 maximum.",
     "production_live_check": "build-manifest returned HTTP 403 in local environment; no production operation requested",
-    "workflow_run": "https://github.com/srtvswho/x-/actions/runs/42770863030",
+    "workflow_run": "https://github.com/srtvswho/x-/actions/runs/42771327404",
     "apify_run_id": "KMm0sTPlFZxus0XJr",
-    "actual_cost_usd": 0.0
+    "actual_cost_usd": 0.1872
   }
 }
