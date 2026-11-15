@@ -66,7 +66,7 @@ class GitBranchStore:
 
     def load(self):
         # Explicit refspec only; missing remote branch fails, never auto-creates.
-        self._git('fetch','--no-tags',self.remote,f'+refs/heads/{self.branch}:{self.ref}')
+        self._git('fetch','--depth=1','--no-tags',self.remote,f'+refs/heads/{self.branch}:{self.ref}')
         revision=self._git('rev-parse','--verify',self.ref)
         if not re.fullmatch(r'[0-9a-f]{40,64}',revision):
             raise StateStoreError('invalid state revision')

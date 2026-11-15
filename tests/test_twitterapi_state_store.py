@@ -30,6 +30,12 @@ class StoreTests(unittest.TestCase):
         self.assertEqual(self.git('status','--porcelain'),self.original_status)
         self.assertEqual(self.git('show',new+':unrelated.txt'),'preserved')
         self.assertEqual(json.loads((self.repo/'state.json').read_text()),self.initial)
+    def test_fetch_bounds_history_depth(self):
+        original=self.store._git;calls=[]
+        def record(*args,**kw):
+            calls.append(args);return original(*args,**kw)
+        self.store._git=record;self.store.load()
+        self.assertIn('--depth=1',next(a for a in calls if a[0]=='fetch'))
     def test_state_only_tree_can_reserve(self):
         self.git('rm','unrelated.txt');self.git('commit','-m','state-only fixture')
         self.git('push','origin','HEAD:refs/heads/state/twitterapi-recovery')
