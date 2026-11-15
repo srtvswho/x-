@@ -74,11 +74,11 @@
     "status": "offline_pilot_candidate",
     "base_commit": "a9589947db0a9adbdd1d272a20b0850c9bf7a07a",
     "checks": [
-      "12 offline provider tests passed",
+      "17 offline provider and bonus gate tests passed",
       "py_compile passed",
       "independent credential/no-write review completed"
     ],
-    "live_test": "not_run",
+    "live_test": "Run 43687137374 blocked at recharge-only preflight; 0 search requests. User dashboard then confirmed 100K bonus credits and 0 recharge.",
     "production_changed": false,
     "next_action": "Dispatch existing thesis-engine-v11-validation.yml on recovery/twitterapi-free only: ai_enabled=false, allow_expensive_ai_job=false, ai_dry_run=true. No merge needed. Live test pending.",
     "constraints": [
@@ -89,6 +89,7 @@
       "no database/checkpoint/model/deploy writes",
       "existing Apify token and daily workflow unchanged"
     ],
-    "branch_smoke": "Dedicated manual branch-only job; golden explicitly disabled on recovery branch regardless of flags; checks remain PR-only."
+    "branch_smoke": "Dedicated manual branch-only job; golden explicitly disabled on recovery branch regardless of flags; checks remain PR-only.",
+    "bonus_correction": "Official API only documents recharge_credits. Branch-only dated no-card bonus exception expires 2026-11-16 UTC; manual attempt 1 only; max 2 pages, no retries. Bonus consumption not observable via recharge field. No production guard change."
   }
 }

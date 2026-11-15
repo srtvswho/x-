@@ -175,7 +175,8 @@ jobs:
       - name: Two-account smoke only (no DB, AI or publication)
         env:
           TWITTERAPI_IO_KEY: ${{ secrets.TWITTERAPI_IO_KEY }}
-          # User confirmed no card; script checks sufficient credit before searches.
+          # Time-limited manual pilot only: 100K bonus screenshot, no card confirmed.
+          TWITTERAPI_BONUS_PILOT_EVIDENCE: 'dashboard-2026-11-15-100k-no-card'
           TWITTERAPI_FREE_CREDIT_VERIFIED: 'true'
           AI_ENABLED: 'false'
           ALLOW_EXPENSIVE_AI_JOB: 'false'

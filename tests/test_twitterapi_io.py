@@ -41,4 +41,24 @@ class Tests(unittest.TestCase):
         client=Fake({})
         with self.assertRaises(FetchError): self.run_search(client)
         self.assertEqual(len(client.calls),1)
+class BonusGateTests(unittest.TestCase):
+    def env(self):
+        return dict(TWITTERAPI_BONUS_PILOT_EVIDENCE='dashboard-2026-11-15-100k-no-card',
+                    GITHUB_EVENT_NAME='workflow_dispatch',GITHUB_REF='refs/heads/recovery/twitterapi-free',
+                    GITHUB_ACTOR='srtvswho',GITHUB_RUN_ATTEMPT='1',AI_ENABLED='false',
+                    ALLOW_EXPENSIVE_AI_JOB='false',AI_DRY_RUN='true')
+    def allowed(self,env,credits=0,now=None):
+        from scripts.twitterapi_pilot import bonus_pilot_allowed
+        return bonus_pilot_allowed(env,credits,now or datetime(2026,11,15,12,tzinfo=timezone.utc))
+    def test_explicit_evidence(self): self.assertTrue(self.allowed(self.env()))
+    def test_every_guard_required(self):
+        for key in self.env():
+            env=self.env(); del env[key]
+            self.assertFalse(self.allowed(env),key)
+    def test_no_production_or_schedule(self):
+        for key,value in [('GITHUB_REF','refs/heads/master'),('GITHUB_EVENT_NAME','schedule'),
+                          ('GITHUB_RUN_ATTEMPT','2'),('AI_ENABLED','true'),('ALLOW_EXPENSIVE_AI_JOB','true')]:
+            env=self.env();env[key]=value;self.assertFalse(self.allowed(env))
+    def test_no_paid_balance(self): self.assertFalse(self.allowed(self.env(),credits=1))
+    def test_expired(self): self.assertFalse(self.allowed(self.env(),now=datetime(2026,11,16,tzinfo=timezone.utc)))
 if __name__=='__main__': unittest.main()
