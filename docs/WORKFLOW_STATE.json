@@ -71,16 +71,27 @@
     "workflow_conclusion": "success"
   },
   "twitterapi_recovery": {
-    "status": "offline_pilot_candidate",
+    "status": "live_connectivity_verified_not_recovered",
     "base_commit": "a9589947db0a9adbdd1d272a20b0850c9bf7a07a",
     "checks": [
       "17 offline provider and bonus gate tests passed",
       "py_compile passed",
       "independent credential/no-write review completed"
     ],
-    "live_test": "Run 43687137374 blocked at recharge-only preflight; 0 search requests. User dashboard then confirmed 100K bonus credits and 0 recharge.",
+    "live_test": {
+      "url": "https://github.com/srtvswho/x-/actions/runs/43688297896",
+      "source_commit": "84ba1cea8a51868aacf9251ede39d946a146d4de",
+      "jukan05": 6,
+      "aleabitoreddit": 1,
+      "search_requests": 2,
+      "both_windows_complete": false,
+      "fetch_status": "page_cap_partial",
+      "recharge_credit_delta": 0,
+      "bonus_credit_delta": null,
+      "production_changed": false
+    },
     "production_changed": false,
-    "next_action": "Dispatch existing thesis-engine-v11-validation.yml on recovery/twitterapi-free only: ai_enabled=false, allow_expensive_ai_job=false, ai_dry_run=true. No merge needed. Live test pending.",
+    "next_action": "Do not rerun pilot. Prepare offline transactional ingest/dedupe tests and separate capped catch-up. Agree full 8-account budget/expiry and production activation before live expansion. Bonus trial is not recurring free service.",
     "constraints": [
       "no card per user",
       "no payment/recharge",
@@ -90,6 +101,19 @@
       "existing Apify token and daily workflow unchanged"
     ],
     "branch_smoke": "Dedicated manual branch-only job; golden explicitly disabled on recovery branch regardless of flags; checks remain PR-only.",
-    "bonus_correction": "Official API only documents recharge_credits. Branch-only dated no-card bonus exception expires 2026-11-16 UTC; manual attempt 1 only; max 2 pages, no retries. Bonus consumption not observable via recharge field. No production guard change."
+    "bonus_correction": "Official API only documents recharge_credits. Branch-only dated no-card bonus exception expires 2026-11-16 UTC; manual attempt 1 only; max 2 pages, no retries. Bonus consumption not observable via recharge field. No production guard change.",
+    "offline_recovery_candidate": {
+      "status": "unactivated_draft",
+      "tests": "46 offline tests passed",
+      "coverage": "Request scope bound; per-author atomic INSERT-only raw data + independent coverage; partial/empty/stale/gap rejects",
+      "quota": "Immutable expiring grants; persistent 300-credit/page pre-reservation; no refund/reset/retry",
+      "not_ready": [
+        "No durable Actions ledger integration",
+        "No approved live recovery grant/bonus expiry",
+        "No saved full provider payload fixtures",
+        "No bounded continuation cache or daily-boundary promotion",
+        "No 8-account live freshness or production activation"
+      ]
+    }
   }
 }

@@ -57,6 +57,8 @@ jobs:
           tests/test_call_attribution_execution.py tests/test_history_campaign.py
           tests/test_history_repair_execution.py tests/test_first_call_repair.py
           tests/test_ai_output_recovery.py
+      - name: Offline TwitterAPI recovery contract tests
+        run: python -m unittest discover -s tests -p 'test_twitterapi*.py'
       - name: Static validation
         run: |
           python -m py_compile scripts/intel_*.py signalboard/ai/*.py signalboard/db.py

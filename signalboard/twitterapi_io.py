@@ -4,7 +4,7 @@ Official schema: docs.twitterapi.io/api-reference/endpoint/tweet_advanced_search
 A completed search window is not proof of complete X history or account availability.
 """
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 import json
 import re
@@ -70,17 +70,19 @@ class Window:
     complete: bool = False
     reason: str = 'not_started'
     pages: int = 0
+    request_scope: tuple | None = None
 
 
 def search(client, handle, start, end, budget, max_pages=1):
     if not re.fullmatch(r'[A-Za-z0-9_]{1,15}', handle):
         raise ValueError('invalid handle')
-    if not start.tzinfo or not end.tzinfo or start >= end:
+    if not start.tzinfo or not end.tzinfo or start >= end or start.microsecond or end.microsecond:
         raise ValueError('explicit ordered UTC window required')
     if not 1 <= max_pages <= 16:
         raise ValueError('invalid page cap')
     query = f'from:{handle} since_time:{int(start.timestamp())} until_time:{int(end.timestamp())}'
-    result, cursor, cursors, ids = Window(), '', set(), set()
+    scope = (handle.lower(), start.astimezone(timezone.utc).isoformat(), end.astimezone(timezone.utc).isoformat())
+    result, cursor, cursors, ids = Window(request_scope=scope), '', set(), set()
     for _ in range(max_pages):
         budget.take()
         data = client.get('/twitter/tweet/advanced_search',
