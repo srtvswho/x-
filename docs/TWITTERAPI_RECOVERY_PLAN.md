@@ -26,3 +26,24 @@ The source snapshot at base `a958994` contains 52,714 raw posts. All eight old s
 - Need real full response fixtures (only capture during the next authorized useful fetch), final profile/empty-window policy, durable ledger placement and atomic persistence across Actions, explicit grant/bonus expiry, continuation cache and daily-boundary promotion design.
 - Do not promise permanent free service: sign-up bonus is finite and expires. [Official pricing](https://twitterapi.io/pricing/details) says sign-up/bonus credits expire after 31 days; actual grant date/expiry still needs account evidence.
 - Do not merge current PR merely to test. Production and eight-account live recovery remain pending.
+
+## Durable disabled-job follow-up
+
+The candidate now includes `twitterapi-recovery-candidate.yml`: **manual only, enabled=false by default, exact recovery branch only**. It has no schedule/push trigger and no publication route. It restores current master data into a separate working DB and uploads only a candidate artifact, never commits database files or changes master. No actual state branch or grant has been provisioned.
+
+`GitBranchStore` loads preexisting `state/twitterapi-recovery:state.json`. Before each search, a compare-and-swap Git commit durably stores its 300-credit reservation and pending marker. The request is sent only after remote SHA verification. A validated page is then committed with full raw JSON and next cursor. Interrupted/unknown calls remain pending and cannot be automatically retried. A later authorized invocation continues cached successful pages; it does not start over. Changes to grant configuration or reductions of reserved credits are refused. State writes use only the allowlisted state branch, never checkout/reset/master.
+
+Config must be explicitly reviewed: grant_id, credit_limit, expires_at, max_pages_per_window, mode, exact frozen windows, bonus_only, no_payment_instrument_verified, verified_bonus_credits, bonus_expires_at. Dispatch requires the exact config SHA256 and grant ID. Each invocation caps two additional pages/account, sixteen total; the grant and per-window total caps survive invocations. Initial empty searches remain unverified; an explicit final empty page after validated cached rows may exhaust that window. Runtime never provisions or replenishes grants. Daily requires a matching verified coverage start; catch-up cannot silently become daily.
+
+The Git-backed paging journal is the durable runner's authoritative quota store. The standalone SQLite ledger remains a tested alternative for deployments with a persistent volume; they must not be used as independent double budgets. Balance preflight is a separate read with undocumented tariff and not included in the search-only credit ceiling. No paid balance is accepted.
+
+Remaining owner facts/decisions: exact bonus expiry (or an intentionally shorter approved trial deadline), approved finite search-credit budget, and whether/when to publish recovered data and enable recurring daily operation. Existing TWITTERAPI_IO_KEY and repository Actions token suffice; **no additional credential or card is needed**. State branch provisioning, safe workflow activation and final production integration are implementation gates, not a reason to request another API key. No infinite-free claim; bonus expiry/quota stop preserves existing data.
+
+
+### Final offline safeguards (87 tests)
+- Validate complete durable journal before any provider request; unknown page attempt blocks preflight.
+- Explicit `max_balance_reads` (1..16) is immutable and persisted before each read. Unknown reads block retries. Completed cache needs no balance call. Balance query tariff is unknown and is **not** included in the search-credit estimate.
+- GitHub job `contents: write` is repository-wide; the state-store implementation, not the token, limits writes to `state/twitterapi-recovery`.
+- No actual state branch/grant was provisioned and no new provider request was made. New candidate workflow is not on master and remains disabled by default.
+- Daily scheduling/publication and promotion of catch-up coverage into daily coverage are intentionally not activated. The candidate only writes a temporary database artifact; the live dashboard remains unchanged.
+- Activation requires a reviewed finite credit/request allowance and deadline (or verified bonus expiry), explicit window/bootstrap scope, and separate deployment/publication readiness. Do not ask for another API key or card.

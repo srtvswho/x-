@@ -104,15 +104,15 @@
     "bonus_correction": "Official API only documents recharge_credits. Branch-only dated no-card bonus exception expires 2026-11-16 UTC; manual attempt 1 only; max 2 pages, no retries. Bonus consumption not observable via recharge field. No production guard change.",
     "offline_recovery_candidate": {
       "status": "unactivated_draft",
-      "tests": "46 offline tests passed",
+      "tests": "87 offline tests passed",
       "coverage": "Request scope bound; per-author atomic INSERT-only raw data + independent coverage; partial/empty/stale/gap rejects",
-      "quota": "Immutable expiring grants; persistent 300-credit/page pre-reservation; no refund/reset/retry",
+      "quota": "Durable Git CAS page journal; immutable expiring policy; 300-credit/page pre-reservation; separately bounded balance-read claims; uncertain calls block replay",
       "not_ready": [
-        "No durable Actions ledger integration",
-        "No approved live recovery grant/bonus expiry",
-        "No saved full provider payload fixtures",
-        "No bounded continuation cache or daily-boundary promotion",
-        "No 8-account live freshness or production activation"
+        "No actual state branch or approved live grant provisioned",
+        "No verified bonus expiry or explicit finite trial deadline agreed",
+        "No full provider payload fixtures; tests use clearly synthetic payloads",
+        "No automatic daily boundary promotion or production activation",
+        "No 8-account live freshness verification"
       ]
     }
   }

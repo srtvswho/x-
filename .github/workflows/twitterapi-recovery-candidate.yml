@@ -1,0 +1,68 @@
+name: TwitterAPI recovery candidate (disabled by default)
+on:
+  workflow_dispatch:
+    inputs:
+      enabled:
+        description: 'Explicit reviewed bonus-only recovery; not production activation'
+        type: boolean
+        default: false
+        required: true
+      grant_id:
+        description: 'Existing reviewed grant ID in state/twitterapi-recovery'
+        type: string
+        required: true
+      config_sha256:
+        description: 'Exact reviewed immutable configuration SHA256'
+        type: string
+        required: true
+permissions:
+  contents: read
+concurrency:
+  group: twitterapi-durable-recovery
+  cancel-in-progress: false
+jobs:
+  recover:
+    if: github.event_name == 'workflow_dispatch' && inputs.enabled == true && github.repository == 'srtvswho/x-' && github.ref == 'refs/heads/recovery/twitterapi-free'
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: true
+          fetch-depth: 1
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Offline safety tests without provider credentials
+        run: python -m unittest discover -s tests -p 'test_twitterapi*.py'
+      - name: Restore a separate current snapshot, never alter source data
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch --no-tags origin master
+          mkdir -p recovery_output
+          git show FETCH_HEAD:data/signalboard.db.gz > recovery_output/original.db.gz
+          gzip -t recovery_output/original.db.gz
+          gzip -cd recovery_output/original.db.gz > recovery_output/working.db
+      - name: Bounded capture and offline ingest into working copy only
+        env:
+          TWITTERAPI_IO_KEY: ${{ secrets.TWITTERAPI_IO_KEY }}
+          RECOVERY_ENABLED: 'true'
+          RECOVERY_GRANT_ID: ${{ inputs.grant_id }}
+          RECOVERY_CONFIG_SHA256: ${{ inputs.config_sha256 }}
+          AI_ENABLED: 'false'
+          ALLOW_EXPENSIVE_AI_JOB: 'false'
+          AI_DRY_RUN: 'true'
+        run: python scripts/twitterapi_recovery_candidate.py
+      - name: Preserve working copy and sanitized receipts, not publish
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: twitterapi-recovery-candidate-${{ github.run_id }}
+          path: |
+            recovery_output/receipt.json
+            recovery_output/working.db
+          if-no-files-found: warn
