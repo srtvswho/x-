@@ -7,6 +7,7 @@ from copy import deepcopy
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import sys
 from datetime import datetime, timezone
@@ -18,7 +19,12 @@ from signalboard.twitterapi_ingest import get_coverage, ingest_window
 
 def check_config(config, env, now):
     expected=hashlib.sha256(json.dumps(config,sort_keys=True,separators=(',',':')).encode()).hexdigest()
-    if env.get('RECOVERY_ENABLED')!='true' or env.get('GITHUB_EVENT_NAME')!='workflow_dispatch' or env.get('GITHUB_REF')!='refs/heads/recovery/twitterapi-free':
+    manual=(env.get('GITHUB_EVENT_NAME')=='workflow_dispatch' and env.get('GITHUB_REF')=='refs/heads/recovery/twitterapi-free')
+    scheduled=(env.get('GITHUB_EVENT_NAME')=='schedule' and env.get('GITHUB_REF')=='refs/heads/master' and
+        env.get('GITHUB_REPOSITORY')=='srtvswho/x-' and
+        env.get('GITHUB_WORKFLOW_REF')=='srtvswho/x-/.github/workflows/twitterapi-finite-recovery.yml@refs/heads/master' and
+        re.fullmatch(r'[0-9a-f]{40}',env.get('RECOVERY_CODE_SHA','')) is not None)
+    if env.get('RECOVERY_ENABLED')!='true' or not (manual or scheduled):
         raise ValueError('disabled or wrong execution scope')
     if env.get('AI_ENABLED')!='false' or env.get('ALLOW_EXPENSIVE_AI_JOB')!='false' or env.get('AI_DRY_RUN')!='true':
         raise ValueError('AI flags must remain disabled')
@@ -60,6 +66,11 @@ def main():
     # Delayed imports: offline config tests need no store/network initialization.
     from signalboard.twitterapi_state_store import GitBranchStore
     from signalboard.twitterapi_paging import advance_page, cached_window
+    if os.environ.get('GITHUB_EVENT_NAME')=='schedule':
+        import subprocess
+        actual=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+        if actual!=os.environ.get('RECOVERY_CODE_SHA'):
+            raise ValueError('pinned scheduler checkout mismatch')
     store=GitBranchStore(Path.cwd())
     state,revision=store.load()  # Missing branch/config is a blocker, never an initializer.
     config=state['config']

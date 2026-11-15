@@ -42,7 +42,7 @@ jobs:
         shell: bash
         run: |
           set -Eeuo pipefail
-          git fetch --no-tags origin master
+          git fetch --depth=1 --no-tags origin master
           mkdir -p recovery_output
           git show FETCH_HEAD:data/signalboard.db.gz > recovery_output/original.db.gz
           gzip -t recovery_output/original.db.gz

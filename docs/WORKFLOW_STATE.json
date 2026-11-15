@@ -122,10 +122,15 @@
     "request_cap": 100,
     "balance_calls": 0,
     "expires_shanghai": "2026-11-22T16:10:00+08:00",
-    "status": "prepared_not_dispatched",
+    "status": "run51_failed_before_api_state_only_tree_bug_fixed",
     "initial_scope": "eight accounts, Shanghai 2026-11-12 day",
-    "tests": "98 offline passed",
+    "tests": "111 offline passed",
     "production_changed": false,
-    "daily_schedule_enabled": false
+    "daily_schedule_enabled": false,
+    "run_url": "https://github.com/srtvswho/x-/actions/runs/43695897968",
+    "automation_candidate": "Standalone default-branch finite schedule pins reviewed runner; no merge yet",
+    "reserved_credits": 0,
+    "actual_provider_requests": 0,
+    "next_action": "Reviewed finite scheduler performs original first catchup automatically; no production publication"
   }
 }

@@ -30,6 +30,12 @@ class StoreTests(unittest.TestCase):
         self.assertEqual(self.git('status','--porcelain'),self.original_status)
         self.assertEqual(self.git('show',new+':unrelated.txt'),'preserved')
         self.assertEqual(json.loads((self.repo/'state.json').read_text()),self.initial)
+    def test_state_only_tree_can_reserve(self):
+        self.git('rm','unrelated.txt');self.git('commit','-m','state-only fixture')
+        self.git('push','origin','HEAD:refs/heads/state/twitterapi-recovery')
+        state,rev=self.store.load();state['reserved_credits']=300
+        self.store.save(state,rev)
+        self.assertEqual(self.store.load()[0]['reserved_credits'],300)
     def test_reserved_credit_rollback_refused(self):
         state,rev=self.store.load();state['reserved_credits']=300;rev=self.store.save(state,rev)
         state['reserved_credits']=0

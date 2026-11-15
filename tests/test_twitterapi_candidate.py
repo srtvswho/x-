@@ -46,6 +46,15 @@ class ConfigTests(unittest.TestCase):
         c=copy.deepcopy(self.config);c['max_balance_reads']=1
         e=self.env.copy();e['RECOVERY_CONFIG_SHA256']=self.digest(c)
         with self.assertRaises(ValueError):check_config(c,e,self.now)
+    def test_scheduler_requires_exact_workflow_and_pinned_sha(self):
+        e=dict(self.env,GITHUB_EVENT_NAME='schedule',GITHUB_REF='refs/heads/master',
+               GITHUB_REPOSITORY='srtvswho/x-',
+               GITHUB_WORKFLOW_REF='srtvswho/x-/.github/workflows/twitterapi-finite-recovery.yml@refs/heads/master',
+               RECOVERY_CODE_SHA='a'*40)
+        self.assertEqual(len(check_config(self.config,e,self.now)),1)
+        for k,v in [('GITHUB_WORKFLOW_REF','other'),('RECOVERY_CODE_SHA','x'*40),('GITHUB_REPOSITORY','other/x-')]:
+            bad=dict(e);bad[k]=v
+            with self.assertRaises(ValueError):check_config(self.config,bad,self.now)
     def test_no_master_or_ai(self):
         for key,value in [('GITHUB_REF','refs/heads/master'),('AI_ENABLED','true'),('GITHUB_EVENT_NAME','schedule')]:
             e=self.env.copy();e[key]=value

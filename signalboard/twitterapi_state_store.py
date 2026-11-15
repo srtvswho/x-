@@ -95,10 +95,10 @@ class GitBranchStore:
         if not old_entry or not old_entry.startswith('100644 blob '):
             raise StateStoreError('state.json must be a regular committed file')
         blob=self._git('hash-object','-w','--stdin',input=encoded)
-        tree_input='\n'.join(e for e in entries if e != old_entry)+'\n'+f'100644 blob {blob}\tstate.json\n'
+        tree_input='\n'.join([e for e in entries if e != old_entry]+[f'100644 blob {blob}\tstate.json'])+'\n'
         tree=self._git('mktree',input=tree_input)
         commit=self._git('-c','user.name=signalboard-state-bot','-c','user.email=signalboard-state-bot@users.noreply.github.com',
-                         'commit-tree',tree,'-p',head,'-m','Persist bounded TwitterAPI recovery journal [skip daily] [skip ui]')
+                         'commit-tree',tree,'-p',head,'-m','[CF-Pages-Skip] Persist bounded TwitterAPI recovery journal [skip daily] [skip ui]')
         # A race after load is caught server-side. This is a fast-forward child of
         # head, with an exact lease; no force without expected revision is allowed.
         self._git('push',f'--force-with-lease=refs/heads/{self.branch}:{head}',self.remote,
