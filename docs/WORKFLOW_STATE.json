@@ -80,7 +80,7 @@
     ],
     "live_test": "not_run",
     "production_changed": false,
-    "next_action": "Review and approve manual-only pilot workflow before merge/dispatch. Verify credit balance and retain account-level evidence. Production integration awaits successful pilot.",
+    "next_action": "Dispatch existing thesis-engine-v11-validation.yml on recovery/twitterapi-free only: ai_enabled=false, allow_expensive_ai_job=false, ai_dry_run=true. No merge needed. Live test pending.",
     "constraints": [
       "no card per user",
       "no payment/recharge",
@@ -88,6 +88,7 @@
       "2 additional balance reads; total credit cost not yet verified",
       "no database/checkpoint/model/deploy writes",
       "existing Apify token and daily workflow unchanged"
-    ]
+    ],
+    "branch_smoke": "Dedicated manual branch-only job; golden explicitly disabled on recovery branch regardless of flags; checks remain PR-only."
   }
 }

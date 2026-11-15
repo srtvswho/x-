@@ -33,7 +33,7 @@ permissions:
 
 concurrency:
   group: thesis-v11-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.ref != 'refs/heads/recovery/twitterapi-free' }}
 
 jobs:
   checks:
@@ -68,7 +68,7 @@ jobs:
           PY
 
   golden:
-    if: github.event_name == 'workflow_dispatch' && inputs.ai_enabled && inputs.allow_expensive_ai_job
+    if: github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/recovery/twitterapi-free' && inputs.ai_enabled && inputs.allow_expensive_ai_job
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
@@ -150,3 +150,34 @@ jobs:
           name: thesis-engine-v11-audit
           path: outputs/thesis_engine_v11/*.json
           if-no-files-found: error
+
+  twitterapi_branch_smoke:
+    # Only this reviewed branch can use the existing dispatch entry for the pilot.
+    # No new inputs: the default branch UI already exposes these three booleans.
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/recovery/twitterapi-free' && inputs.ai_enabled == false && inputs.allow_expensive_ai_job == false && inputs.ai_dry_run == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: read
+    concurrency:
+      group: twitterapi-isolated-pilot
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Offline provider tests without credentials
+        run: python -m unittest discover -s tests -p test_twitterapi_io.py
+      - name: Two-account smoke only (no DB, AI or publication)
+        env:
+          TWITTERAPI_IO_KEY: ${{ secrets.TWITTERAPI_IO_KEY }}
+          # User confirmed no card; script checks sufficient credit before searches.
+          TWITTERAPI_FREE_CREDIT_VERIFIED: 'true'
+          AI_ENABLED: 'false'
+          ALLOW_EXPENSIVE_AI_JOB: 'false'
+          AI_DRY_RUN: 'true'
+        run: python scripts/twitterapi_pilot.py
