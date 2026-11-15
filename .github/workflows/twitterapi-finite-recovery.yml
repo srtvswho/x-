@@ -1,0 +1,77 @@
+name: SignalBoard finite bonus recovery
+on:
+  schedule:
+    - cron: '7,37 * 15-22 11 *'
+permissions:
+  contents: read
+concurrency:
+  group: twitterapi-durable-recovery
+  cancel-in-progress: false
+jobs:
+  recover:
+    if: github.repository == 'srtvswho/x-' && github.event_name == 'schedule' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    env:
+      RECOVERY_ENABLED: 'true'
+      RECOVERY_GRANT_ID: 'bonus-recovery-20261115-7d-30000'
+      RECOVERY_CONFIG_SHA256: '7f69ddfd026f5c68fadb74b6c4b312b75d2893f0b06d04dd72848df35ace1756'
+      RECOVERY_CODE_SHA: '10e2e6f206c54ac7cba75a7ec150e986b9752d09'
+      AI_ENABLED: 'false'
+      ALLOW_EXPENSIVE_AI_JOB: 'false'
+      AI_DRY_RUN: 'true'
+    steps:
+      - name: Enforce absolute trial deadline before checkout
+        id: deadline
+        shell: bash
+        run: |
+          if [ "$(date -u +%s)" -lt "$(date -u -d '2026-11-22 08:10:00' +%s)" ]; then
+            echo 'active=true' >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v6
+        if: steps.deadline.outputs.active == 'true' 
+        with:
+          ref: '10e2e6f206c54ac7cba75a7ec150e986b9752d09'
+          persist-credentials: true
+          fetch-depth: 1
+      - uses: actions/setup-python@v6
+        if: steps.deadline.outputs.active == 'true'
+        with:
+          python-version: '3.11'
+      - name: Offline tests without provider key
+        if: steps.deadline.outputs.active == 'true'
+        run: python -m unittest discover -s tests -p 'test_twitterapi*.py'
+      - name: Select reviewed due windows or stop
+        if: steps.deadline.outputs.active == 'true'
+        id: plan
+        run: python scripts/twitterapi_schedule_plan.py
+      - name: Restore separate latest database
+        if: steps.plan.outputs.ready == 'true'
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch --depth=1 --no-tags origin master
+          git show FETCH_HEAD:data/signalboard.db.gz > recovery_output/original.db.gz
+          gzip -t recovery_output/original.db.gz
+          gzip -cd recovery_output/original.db.gz > recovery_output/working.db
+      - name: Bounded recovery, no publication
+        if: steps.plan.outputs.ready == 'true'
+        env:
+          TWITTERAPI_IO_KEY: ${{ secrets.TWITTERAPI_IO_KEY }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          export RECOVERY_SELECTED_WINDOWS="$(cat recovery_output/selected_windows.json)"
+          python scripts/twitterapi_recovery_candidate.py
+      - name: Preserve receipts and candidate data
+        if: always() && steps.deadline.outputs.active == 'true'
+        uses: actions/upload-artifact@v6
+        with:
+          name: twitterapi-finite-recovery-${{ github.run_id }}
+          path: |
+            recovery_output/plan.json
+            recovery_output/receipt.json
+            recovery_output/working.db
+          if-no-files-found: warn
