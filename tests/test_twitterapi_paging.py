@@ -3,7 +3,7 @@ from copy import deepcopy
 from datetime import datetime,timezone
 import unittest
 from signalboard.twitterapi_io import FetchError
-from signalboard.twitterapi_paging import initialize_state,advance_page,cached_window
+from signalboard.twitterapi_paging import initialize_state,advance_page,cached_window,select_windows
 START=datetime(2026,11,14,tzinfo=timezone.utc)
 END=datetime(2026,11,15,tzinfo=timezone.utc)
 NOW=datetime(2026,11,15,12,tzinfo=timezone.utc)
@@ -34,6 +34,11 @@ class Client:
         if isinstance(data,Exception):raise data
         return data
 class Tests(unittest.TestCase):
+    def setUp(self):
+        from unittest.mock import patch
+        clock=patch('signalboard.twitterapi_paging._current_time',return_value=NOW)
+        clock.start();self.addCleanup(clock.stop)
+
     def step(self,c,s,**kw):return advance_page(c,s,'jukan05',START,END,now=kw.pop('now',NOW),expected_policy=kw.pop('expected_policy',policy()),**kw)
     def test_claim_before_call_and_cache(self):
         s=Store();c=Client(page(),store=s);w=self.step(c,s)
@@ -128,27 +133,89 @@ class Tests(unittest.TestCase):
         s=Conflict();c=Client(page())
         with self.assertRaises(RuntimeError):self.step(c,s)
         self.assertEqual(c.calls,[])
-if __name__=='__main__':unittest.main()
 
 
 class BalanceTests(unittest.TestCase):
     def test_cap_and_durable_unknown(self):
         from signalboard.twitterapi_paging import balance_preflight
-        p=policy(max_balance_reads=1);s=Store(p)
+        p=policy(max_balance_reads=1,balance_read_credits=10,balance_pricing_verified=True);s=Store(p)
         class Balance:
             def credits(self):return 0
-        balance_preflight(Balance(),s,expected_policy=p)
+        balance_preflight(Balance(),s,expected_policy=p,now=NOW)
         self.assertEqual(s.state['balance_reads'],['zero_recharge'])
-        with self.assertRaises(FetchError):balance_preflight(Balance(),s,expected_policy=p)
+        with self.assertRaises(FetchError):balance_preflight(Balance(),s,expected_policy=p,now=NOW)
         s=Store(p)
         class Unknown:
             def credits(self):raise RuntimeError('timeout')
-        with self.assertRaises(RuntimeError):balance_preflight(Unknown(),s,expected_policy=p)
+        with self.assertRaises(FetchError):balance_preflight(Unknown(),s,expected_policy=p,now=NOW)
         self.assertEqual(s.state['balance_reads'],['pending'])
-        with self.assertRaises(FetchError):balance_preflight(Balance(),s,expected_policy=p)
+        with self.assertRaises(FetchError):balance_preflight(Balance(),s,expected_policy=p,now=NOW)
     def test_invalid_cache_blocks_balance(self):
         from signalboard.twitterapi_paging import balance_preflight
-        p=policy(max_balance_reads=1);s=Store(p);s.state['reserved_credits']=300
+        p=policy(max_balance_reads=1,balance_read_credits=10,balance_pricing_verified=True);s=Store(p);s.state['reserved_credits']=300
         class Never:
             def credits(self):raise AssertionError('must not request')
         with self.assertRaises(FetchError):balance_preflight(Never(),s,expected_policy=p)
+
+
+class MultiWindowTests(unittest.TestCase):
+    def setUp(self):
+        from unittest.mock import patch
+        clock=patch('signalboard.twitterapi_paging._current_time',return_value=NOW)
+        clock.start();self.addCleanup(clock.stop)
+
+    def test_many_windows_one_immutable_allowance(self):
+        windows=[{'handle':'jukan05','start':START.isoformat(),'end':END.isoformat()},
+                 {'handle':'jukan05','start':'2026-11-13T00:00:00Z','end':START.isoformat()}]
+        p=policy(mode='recovery',windows=windows,credit_limit=300,max_balance_reads=0)
+        s=Store(p);c=Client(page())
+        self.assertEqual(len(select_windows(p,[windows[0]])),1)
+        advance_page(c,s,'jukan05',START,END,now=NOW,expected_policy=p)
+        self.assertEqual(len(select_windows(p,[windows[1]])),1)
+        with self.assertRaises(FetchError):
+            advance_page(c,s,'jukan05',windows[1]['start'],START,now=NOW,expected_policy=p)
+        self.assertEqual(len(c.calls),1)
+        self.assertEqual(s.state['reserved_credits'],300)
+    def test_shanghai_window_normalized(self):
+        w={'handle':'Jukan05','start':'2026-11-14T08:00:00+08:00','end':'2026-11-15T08:00:00+08:00'}
+        self.assertEqual(select_windows(policy(),[w]),policy()['windows'])
+    def test_explicit_subset_required(self):
+        for selected in (None,[],policy()['windows']*2,policy()['windows']*9,
+                         [{'handle':'other','start':START.isoformat(),'end':END.isoformat()}]):
+            with self.assertRaises(ValueError):select_windows(policy(),selected)
+    def test_one_window_per_account(self):
+        windows=policy()['windows']+[{'handle':'jukan05','start':'2026-11-13T00:00:00Z','end':START.isoformat()}]
+        with self.assertRaises(ValueError):select_windows(policy(windows=windows),windows)
+    def test_unverified_balance_pricing_never_called(self):
+        from signalboard.twitterapi_paging import balance_preflight
+        p=policy(max_balance_reads=1);s=Store(p)
+        class Never:
+            def credits(self):raise AssertionError('network forbidden')
+        with self.assertRaises(FetchError):balance_preflight(Never(),s,expected_policy=p,now=NOW)
+        self.assertEqual(s.saves,0)
+    def test_balance_cost_competes_with_search_same_total(self):
+        from signalboard.twitterapi_paging import balance_preflight
+        p=policy(credit_limit=300,max_balance_reads=1,balance_read_credits=1,balance_pricing_verified=True);s=Store(p)
+        class Balance:
+            def credits(self):return 0
+        balance_preflight(Balance(),s,expected_policy=p,now=NOW)
+        c=Client(page())
+        with self.assertRaises(FetchError):advance_page(c,s,'jukan05',START,END,now=NOW,expected_policy=p)
+        self.assertEqual(c.calls,[]);self.assertEqual(s.state['reserved_credits'],1)
+    def test_dashboard_evidence_policy(self):
+        p=policy(preflight_mode='dashboard_evidence',recharge_credits=0,max_balance_reads=0)
+        self.assertEqual(initialize_state(p)['config']['recharge_credits'],0)
+        with self.assertRaises(ValueError):initialize_state(dict(p,recharge_credits=True))
+        with self.assertRaises(ValueError):initialize_state(dict(p,recharge_credits=1))
+
+if __name__=='__main__':unittest.main()
+
+
+class DeadlineTests(unittest.TestCase):
+    def test_slow_save_consumes_reservation_without_request(self):
+        from unittest.mock import patch
+        s=Store();c=Client(page())
+        with patch('signalboard.twitterapi_paging._current_time',return_value=datetime(2026,11,16,tzinfo=timezone.utc)):
+            with self.assertRaises(FetchError):advance_page(c,s,'jukan05',START,END,now=NOW,expected_policy=policy())
+        self.assertEqual(c.calls,[])
+        self.assertEqual(s.state['reserved_credits'],300)

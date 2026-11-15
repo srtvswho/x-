@@ -37,6 +37,7 @@ class Client:
             raise FetchError('missing TWITTERAPI_IO_KEY')
         self._key = key
         self._last_request = None
+        self.deadline = None
         self._opener = urllib.request.build_opener(NoRedirect())
 
     def get(self, path, params=None):
@@ -45,6 +46,8 @@ class Client:
             raise FetchError('endpoint refused')
         if self._last_request is not None:
             time.sleep(max(0, 5.1 - (time.monotonic() - self._last_request)))
+        if self.deadline is not None and datetime.now(timezone.utc) >= self.deadline:
+            raise FetchError('grant expired before transport')
         self._last_request = time.monotonic()
         req = urllib.request.Request(BASE + path + ('?' + urlencode(params) if params else ''),
                                      headers={'X-API-Key': self._key})

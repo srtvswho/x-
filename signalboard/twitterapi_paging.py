@@ -22,7 +22,7 @@ def _utc(value):
 
 def _policy(policy):
     required={'grant_id','credit_limit','expires_at','max_pages_per_window','mode','windows'}
-    optional={'bonus_only','no_payment_instrument_verified','bonus_expires_at','verified_bonus_credits','max_balance_reads'}
+    optional={'bonus_only','no_payment_instrument_verified','bonus_expires_at','verified_bonus_credits','max_balance_reads','balance_read_credits','balance_pricing_verified','preflight_mode','recharge_credits'}
     if not isinstance(policy,dict) or not required <= set(policy) or set(policy)-required-optional:
         raise ValueError('explicit exact grant policy required')
     if not isinstance(policy['grant_id'],str) or not policy['grant_id']:
@@ -31,10 +31,18 @@ def _policy(policy):
         raise ValueError('positive page credit allowance required')
     if type(policy['max_pages_per_window']) is not int or not 1 <= policy['max_pages_per_window'] <= 100:
         raise ValueError('window cap must be 1..100 pages')
-    if policy['mode'] not in ('daily','catchup') or not isinstance(policy['windows'],list) or not policy['windows']:
+    if policy['mode'] not in ('daily','catchup','recovery') or not isinstance(policy['windows'],list) or not policy['windows']:
         raise ValueError('mode and authorized windows required')
-    if 'max_balance_reads' in policy and (type(policy['max_balance_reads']) is not int or not 1 <= policy['max_balance_reads'] <= 16):
+    if 'max_balance_reads' in policy and (type(policy['max_balance_reads']) is not int or not 0 <= policy['max_balance_reads'] <= 16):
         raise ValueError('bounded balance reads required')
+    if 'balance_read_credits' in policy and (type(policy['balance_read_credits']) is not int or policy['balance_read_credits'] < 0):
+        raise ValueError('nonnegative verified balance tariff required')
+    if 'balance_pricing_verified' in policy and policy['balance_pricing_verified'] is not True:
+        raise ValueError('balance pricing verification required')
+    if 'preflight_mode' in policy and policy['preflight_mode'] != 'dashboard_evidence':
+        raise ValueError('unsupported preflight evidence mode')
+    if 'recharge_credits' in policy and (type(policy['recharge_credits']) is not int or policy['recharge_credits'] != 0):
+        raise ValueError('bonus-only evidence requires zero recharge credits')
     result=deepcopy(policy);result['expires_at']=_utc(result['expires_at']).isoformat()
     normalized=[]
     for window in result['windows']:
@@ -55,6 +63,28 @@ def _policy(policy):
         if _utc(result['expires_at']) > _utc(result['bonus_expires_at']):
             raise ValueError('grant outlives bonus proof')
     return result
+
+
+def select_windows(policy, selected_windows):
+    """Validate an explicit invocation subset without changing the lifetime grant.
+
+    One exact window per account, at most eight accounts. A caller must retain
+    the complete policy when loading/saving the journal, not initialize a subset
+    journal. Dates are normalized instants, including Shanghai UTC+08 offsets.
+    """
+    policy=_policy(policy)
+    if not isinstance(selected_windows,list) or not 1 <= len(selected_windows) <= 8:
+        raise ValueError('explicit invocation requires 1..8 windows')
+    selected=[];handles=set()
+    for window in selected_windows:
+        if not isinstance(window,dict) or set(window)!={'handle','start','end'}:
+            raise ValueError('exact invocation window required')
+        _,scope,_,_=_scope(window['handle'],window['start'],window['end'])
+        normalized=dict(zip(('handle','start','end'),scope))
+        if normalized not in policy['windows'] or scope[0] in handles:
+            raise ValueError('unauthorized window or repeated invocation account')
+        handles.add(scope[0]);selected.append(normalized)
+    return selected
 
 
 def initialize_state(policy):
@@ -114,25 +144,37 @@ def _check_state(state,policy):
         except (KeyError,TypeError,ValueError,FetchError):
             raise FetchError('invalid cached scope/page state') from None
         pages += len(entry['pages']) + (1 if entry.get('pending') else 0)
-    if pages*300 != state['reserved_credits'] or state['reserved_credits']>state['config']['credit_limit']:
+    balance_reserved=len(reads)*state['config'].get('balance_read_credits',0)
+    if pages*300 + balance_reserved != state['reserved_credits'] or state['reserved_credits']>state['config']['credit_limit']:
         raise FetchError('reservation accounting mismatch')
 
 
-def balance_preflight(client,store,*,expected_policy):
-    """Persist a separately count-bounded balance attempt before the request.
+def balance_preflight(client,store,*,expected_policy,now=None):
+    """No unknown-price requests; known cost joins the same lifetime allowance.
 
-    Unknown tariff is not represented as search credits. Uncertain attempts block
-    automatic retry; successful reads are not a durable claim about bonus balance.
+    Legacy policies remain readable but cannot initiate unpriced balance calls.
+    Even a verified zero-price read requires explicit policy proof and expiry.
     """
     state,revision=store.load();_check_state(state,expected_policy)
+    config=state['config']
+    if config.get('balance_pricing_verified') is not True or 'balance_read_credits' not in config:
+        raise FetchError('balance request pricing unverified; no call')
+    if now is None or _utc(now) >= _utc(config['expires_at']):
+        raise FetchError('current time required within credit grant')
     state=deepcopy(state);reads=state.setdefault('balance_reads',[])
-    cap=state['config'].get('max_balance_reads',0)
+    cap=config.get('max_balance_reads',0);cost=config['balance_read_credits']
     if not isinstance(reads,list) or any(r != 'zero_recharge' for r in reads):
         raise FetchError('uncertain balance read requires reconciliation')
     if len(reads)>=cap:raise FetchError('balance request cap reached')
-    reads.append('pending');revision=store.save(state,revision)
-    if client.credits()!=0:raise FetchError('bonus-only candidate refuses paid balance')
-    reads[-1]='zero_recharge';store.save(state,revision)
+    if state['reserved_credits']+cost > config['credit_limit']:
+        raise FetchError('durable credit allowance exhausted')
+    reads.append('pending');state['reserved_credits']+=cost
+    revision=store.save(state,revision)
+    try:
+        if client.credits()!=0:raise FetchError('bonus-only candidate refuses paid balance')
+        reads[-1]='zero_recharge';store.save(state,revision)
+    except Exception:
+        raise FetchError('balance response or persistence uncertain; no automatic retry') from None
 
 
 class _Response:
@@ -164,6 +206,10 @@ def cached_window(store,handle,start,end,*,expected_policy):
     if entry is None:return Window(request_scope=scope)
     if tuple(entry.get('scope',())) != scope:raise FetchError('cached scope mismatch')
     return _window(entry,scope)
+
+
+def _current_time():
+    return datetime.now(timezone.utc)
 
 
 def advance_page(client,store,handle,start,end,*,now,expected_policy):
@@ -199,6 +245,8 @@ def advance_page(client,store,handle,start,end,*,now,expected_policy):
     params={'query':f'from:{handle} since_time:{int(start.timestamp())} until_time:{int(end.timestamp())}',
             'queryType':'Latest','cursor':cursor}
     try:
+        if _current_time() >= _utc(policy['expires_at']):
+            raise FetchError('grant expired after durable reservation')
         data=client.get('/twitter/tweet/advanced_search',params)
         rows=_validated_rows(data,handle,start,end)
         more,next_cursor=data['has_next_page'],data['next_cursor']

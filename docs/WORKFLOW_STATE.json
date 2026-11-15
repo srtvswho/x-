@@ -115,5 +115,17 @@
         "No 8-account live freshness verification"
       ]
     }
+  },
+  "twitterapi_authorized_trial": {
+    "grant_id": "bonus-recovery-20261115-7d-30000",
+    "all_api_credit_cap": 30000,
+    "request_cap": 100,
+    "balance_calls": 0,
+    "expires_shanghai": "2026-11-22T16:10:00+08:00",
+    "status": "prepared_not_dispatched",
+    "initial_scope": "eight accounts, Shanghai 2026-11-12 day",
+    "tests": "98 offline passed",
+    "production_changed": false,
+    "daily_schedule_enabled": false
   }
 }
