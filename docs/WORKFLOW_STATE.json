@@ -69,5 +69,25 @@
     ],
     "workflow_run": "https://github.com/srtvswho/x-/actions/runs/35502774828",
     "workflow_conclusion": "success"
+  },
+  "twitterapi_recovery": {
+    "status": "offline_pilot_candidate",
+    "base_commit": "a9589947db0a9adbdd1d272a20b0850c9bf7a07a",
+    "checks": [
+      "12 offline provider tests passed",
+      "py_compile passed",
+      "independent credential/no-write review completed"
+    ],
+    "live_test": "not_run",
+    "production_changed": false,
+    "next_action": "Review and approve manual-only pilot workflow before merge/dispatch. Verify credit balance and retain account-level evidence. Production integration awaits successful pilot.",
+    "constraints": [
+      "no card per user",
+      "no payment/recharge",
+      "2 search requests maximum, 0 retries",
+      "2 additional balance reads; total credit cost not yet verified",
+      "no database/checkpoint/model/deploy writes",
+      "existing Apify token and daily workflow unchanged"
+    ]
   }
 }
