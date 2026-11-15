@@ -144,7 +144,18 @@ def _check_state(state,policy):
         except (KeyError,TypeError,ValueError,FetchError):
             raise FetchError('invalid cached scope/page state') from None
         pages += len(entry['pages']) + (1 if entry.get('pending') else 0)
-    balance_reserved=len(reads)*state['config'].get('balance_read_credits',0)
+    extra=state.get('one_time_observation')
+    extra_reserved=0
+    if extra is not None:
+        if (not isinstance(extra,dict) or extra.get('operation')!='page2-observation-once-20261115' or
+            extra.get('credits')!=300 or extra.get('prior_reserved_credits')!=600 or
+            extra.get('original_revision')!='550f29844c8fc676cc922945dad9bd13255890de' or
+            extra.get('status') not in ('reserved_uncertain','failed','observed') or
+            not any(e.get('pending')==extra.get('original_pending') and e.get('scope')==extra.get('scope') and
+                    e.get('cursor')==extra.get('request_cursor') for e in state['windows'].values())):
+            raise FetchError('invalid one-time observation accounting')
+        extra_reserved=300
+    balance_reserved=len(reads)*state['config'].get('balance_read_credits',0)+extra_reserved
     if pages*300 + balance_reserved != state['reserved_credits'] or state['reserved_credits']>state['config']['credit_limit']:
         raise FetchError('reservation accounting mismatch')
 
