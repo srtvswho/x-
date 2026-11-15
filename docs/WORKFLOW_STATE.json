@@ -122,7 +122,7 @@
     "request_cap": 100,
     "balance_calls": 0,
     "expires_shanghai": "2026-11-22T16:10:00+08:00",
-    "status": "run51_failed_before_api_state_only_tree_bug_fixed",
+    "status": "active_cron_zero_runs_preparing_exact_path_push_wakeup",
     "initial_scope": "eight accounts, Shanghai 2026-11-12 day",
     "tests": "111 offline passed",
     "production_changed": false,
@@ -131,6 +131,6 @@
     "automation_candidate": "Standalone default-branch finite schedule pins reviewed runner; no merge yet",
     "reserved_credits": 0,
     "actual_provider_requests": 0,
-    "next_action": "Reviewed finite scheduler performs original first catchup automatically; no production publication"
+    "next_action": "Narrow push wakeup for original bounded recovery; no workflow_run trigger"
   }
 }

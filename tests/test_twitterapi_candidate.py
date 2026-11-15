@@ -52,6 +52,8 @@ class ConfigTests(unittest.TestCase):
                GITHUB_WORKFLOW_REF='srtvswho/x-/.github/workflows/twitterapi-finite-recovery.yml@refs/heads/master',
                RECOVERY_CODE_SHA='a'*40)
         self.assertEqual(len(check_config(self.config,e,self.now)),1)
+        push=dict(e,GITHUB_EVENT_NAME='push')
+        self.assertEqual(len(check_config(self.config,push,self.now)),1)
         for k,v in [('GITHUB_WORKFLOW_REF','other'),('RECOVERY_CODE_SHA','x'*40),('GITHUB_REPOSITORY','other/x-')]:
             bad=dict(e);bad[k]=v
             with self.assertRaises(ValueError):check_config(self.config,bad,self.now)

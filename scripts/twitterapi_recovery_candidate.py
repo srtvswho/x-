@@ -20,7 +20,7 @@ from signalboard.twitterapi_ingest import get_coverage, ingest_window
 def check_config(config, env, now):
     expected=hashlib.sha256(json.dumps(config,sort_keys=True,separators=(',',':')).encode()).hexdigest()
     manual=(env.get('GITHUB_EVENT_NAME')=='workflow_dispatch' and env.get('GITHUB_REF')=='refs/heads/recovery/twitterapi-free')
-    scheduled=(env.get('GITHUB_EVENT_NAME')=='schedule' and env.get('GITHUB_REF')=='refs/heads/master' and
+    scheduled=(env.get('GITHUB_EVENT_NAME') in ('schedule','push') and env.get('GITHUB_REF')=='refs/heads/master' and
         env.get('GITHUB_REPOSITORY')=='srtvswho/x-' and
         env.get('GITHUB_WORKFLOW_REF')=='srtvswho/x-/.github/workflows/twitterapi-finite-recovery.yml@refs/heads/master' and
         re.fullmatch(r'[0-9a-f]{40}',env.get('RECOVERY_CODE_SHA','')) is not None)
@@ -66,7 +66,7 @@ def main():
     # Delayed imports: offline config tests need no store/network initialization.
     from signalboard.twitterapi_state_store import GitBranchStore
     from signalboard.twitterapi_paging import advance_page, cached_window
-    if os.environ.get('GITHUB_EVENT_NAME')=='schedule':
+    if os.environ.get('GITHUB_EVENT_NAME') in ('schedule','push'):
         import subprocess
         actual=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
         if actual!=os.environ.get('RECOVERY_CODE_SHA'):
