@@ -21,7 +21,7 @@ jobs:
       RECOVERY_ENABLED: 'true'
       RECOVERY_GRANT_ID: 'bonus-recovery-20261115-7d-30000'
       RECOVERY_CONFIG_SHA256: '7f69ddfd026f5c68fadb74b6c4b312b75d2893f0b06d04dd72848df35ace1756'
-      RECOVERY_CODE_SHA: '085a16935d5302a32697ab2b34e85f192b4a4154'
+      RECOVERY_CODE_SHA: 'c6a76c316b76ae638cc133a1fffd06edcd37c714'
       AI_ENABLED: 'false'
       ALLOW_EXPENSIVE_AI_JOB: 'false'
       AI_DRY_RUN: 'true'
@@ -36,7 +36,7 @@ jobs:
       - uses: actions/checkout@v6
         if: steps.deadline.outputs.active == 'true' 
         with:
-          ref: '085a16935d5302a32697ab2b34e85f192b4a4154'
+          ref: 'c6a76c316b76ae638cc133a1fffd06edcd37c714'
           persist-credentials: true
           fetch-depth: 1
       - uses: actions/setup-python@v6
