@@ -7,6 +7,7 @@ from signalboard.twitterapi_timeline_ingest import replay_completed_timeline
 from signalboard.twitterapi_timeline_daily import plan,run_daily,completed_attempts
 from signalboard.twitterapi_paging import _check_state
 from signalboard.twitterapi_io import Client
+from signalboard.twitterapi_history_ingest import ingest_completed_history
 
 def main():
     e=os.environ
@@ -28,10 +29,14 @@ def main():
         before=c.execute("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='twitterapi_timeline_coverage'").fetchone()[0]
         count=c.execute('SELECT count(*) FROM twitterapi_timeline_coverage').fetchone()[0] if before else 0
     result=replay_completed_timeline(db,state,captured_at=now)
+    history=state.get('timeline_history',{}).get('accounts',{})
+    if len(history)==8 and all(a.get('status')=='complete' for a in history.values()):
+        result['historical_ingest']=ingest_completed_history(db,state,captured_at=now)
     with sqlite3.connect(db) as c:
         after=c.execute('SELECT count(*) FROM twitterapi_timeline_coverage').fetchone()[0]
         if c.execute('PRAGMA integrity_check').fetchone()[0]!='ok':raise ValueError('database integrity')
-    changed=after!=count or any(a['new_persisted'] for r in result['intervals'] for a in r['accounts'])
+    changed=(after!=count or any(a['new_persisted'] for r in result['intervals'] for a in r['accounts'])
+             or any(a['new_persisted'] for a in result.get('historical_ingest',{}).get('accounts',[])))
     Path('recovery_output').mkdir(exist_ok=True)
     Path('recovery_output/ingest_receipt.json').write_text(json.dumps({'state_revision':revision,'ingest':result,'publish_needed':changed,'selection':selection['status']},indent=2))
     with open(e['GITHUB_OUTPUT'],'a') as f:f.write('publish='+str(changed).lower()+'\n')
