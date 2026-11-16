@@ -1,0 +1,14 @@
+{
+  "kind": "actual_sanitized_smoke_receipt_not_provider_payload",
+  "workflow_run": "https://github.com/srtvswho/x-/actions/runs/43688297896",
+  "source_commit": "84ba1cea8a51868aacf9251ede39d946a146d4de",
+  "results": [
+    {"handle": "jukan05", "fetched": 6, "fetch_status": "page_cap_partial", "window_complete": false, "sample_ids": ["2121831028495180063", "2121829003258462415"]},
+    {"handle": "aleabitoreddit", "fetched": 1, "fetch_status": "page_cap_partial", "window_complete": false, "sample_ids": ["2121852636261724398"]}
+  ],
+  "search_requests": 2,
+  "recharge_credit_delta": 0,
+  "bonus_credit_delta": null,
+  "production_changed": false,
+  "limitations": ["Full provider payload and text were not saved", "Both windows partial; no complete-coverage evidence", "Do not rerun just to obtain fixtures"]
+}

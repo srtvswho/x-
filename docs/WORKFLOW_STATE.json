@@ -69,5 +69,68 @@
     ],
     "workflow_run": "https://github.com/srtvswho/x-/actions/runs/35502774828",
     "workflow_conclusion": "success"
+  },
+  "twitterapi_recovery": {
+    "status": "live_connectivity_verified_not_recovered",
+    "base_commit": "a9589947db0a9adbdd1d272a20b0850c9bf7a07a",
+    "checks": [
+      "17 offline provider and bonus gate tests passed",
+      "py_compile passed",
+      "independent credential/no-write review completed"
+    ],
+    "live_test": {
+      "url": "https://github.com/srtvswho/x-/actions/runs/43688297896",
+      "source_commit": "84ba1cea8a51868aacf9251ede39d946a146d4de",
+      "jukan05": 6,
+      "aleabitoreddit": 1,
+      "search_requests": 2,
+      "both_windows_complete": false,
+      "fetch_status": "page_cap_partial",
+      "recharge_credit_delta": 0,
+      "bonus_credit_delta": null,
+      "production_changed": false
+    },
+    "production_changed": false,
+    "next_action": "Do not rerun pilot. Prepare offline transactional ingest/dedupe tests and separate capped catch-up. Agree full 8-account budget/expiry and production activation before live expansion. Bonus trial is not recurring free service.",
+    "constraints": [
+      "no card per user",
+      "no payment/recharge",
+      "2 search requests maximum, 0 retries",
+      "2 additional balance reads; total credit cost not yet verified",
+      "no database/checkpoint/model/deploy writes",
+      "existing Apify token and daily workflow unchanged"
+    ],
+    "branch_smoke": "Dedicated manual branch-only job; golden explicitly disabled on recovery branch regardless of flags; checks remain PR-only.",
+    "bonus_correction": "Official API only documents recharge_credits. Branch-only dated no-card bonus exception expires 2026-11-16 UTC; manual attempt 1 only; max 2 pages, no retries. Bonus consumption not observable via recharge field. No production guard change.",
+    "offline_recovery_candidate": {
+      "status": "unactivated_draft",
+      "tests": "87 offline tests passed",
+      "coverage": "Request scope bound; per-author atomic INSERT-only raw data + independent coverage; partial/empty/stale/gap rejects",
+      "quota": "Durable Git CAS page journal; immutable expiring policy; 300-credit/page pre-reservation; separately bounded balance-read claims; uncertain calls block replay",
+      "not_ready": [
+        "No actual state branch or approved live grant provisioned",
+        "No verified bonus expiry or explicit finite trial deadline agreed",
+        "No full provider payload fixtures; tests use clearly synthetic payloads",
+        "No automatic daily boundary promotion or production activation",
+        "No 8-account live freshness verification"
+      ]
+    }
+  },
+  "twitterapi_authorized_trial": {
+    "grant_id": "bonus-recovery-20261115-7d-30000",
+    "all_api_credit_cap": 30000,
+    "request_cap": 100,
+    "balance_calls": 0,
+    "expires_shanghai": "2026-11-22T16:10:00+08:00",
+    "status": "auto1_state_read_timeout_before_api_fixed_shallow_fetch",
+    "initial_scope": "eight accounts, Shanghai 2026-11-12 day",
+    "tests": "112 offline passed",
+    "production_changed": false,
+    "daily_schedule_enabled": false,
+    "run_url": "https://github.com/srtvswho/x-/actions/runs/43701601819",
+    "automation_candidate": "Standalone default-branch finite schedule pins reviewed runner; no merge yet",
+    "reserved_credits": 0,
+    "actual_provider_requests": 0,
+    "next_action": "Repin reviewed shallow state reader; same bounded first catchup, no provider retry"
   }
 }

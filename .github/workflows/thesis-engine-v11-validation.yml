@@ -33,7 +33,7 @@ permissions:
 
 concurrency:
   group: thesis-v11-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.ref != 'refs/heads/recovery/twitterapi-free' }}
 
 jobs:
   checks:
@@ -57,6 +57,8 @@ jobs:
           tests/test_call_attribution_execution.py tests/test_history_campaign.py
           tests/test_history_repair_execution.py tests/test_first_call_repair.py
           tests/test_ai_output_recovery.py
+      - name: Offline TwitterAPI recovery contract tests
+        run: python -m unittest discover -s tests -p 'test_twitterapi*.py'
       - name: Static validation
         run: |
           python -m py_compile scripts/intel_*.py signalboard/ai/*.py signalboard/db.py
@@ -68,7 +70,7 @@ jobs:
           PY
 
   golden:
-    if: github.event_name == 'workflow_dispatch' && inputs.ai_enabled && inputs.allow_expensive_ai_job
+    if: github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/recovery/twitterapi-free' && inputs.ai_enabled && inputs.allow_expensive_ai_job
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
@@ -150,3 +152,56 @@ jobs:
           name: thesis-engine-v11-audit
           path: outputs/thesis_engine_v11/*.json
           if-no-files-found: error
+
+  twitterapi_bounded_recovery:
+    # User-authorized finite recovery; same safe existing manual branch entry.
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/recovery/twitterapi-free' && inputs.ai_enabled == false && inputs.allow_expensive_ai_job == false && inputs.ai_dry_run == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    concurrency:
+      group: twitterapi-durable-recovery
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: true
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Offline recovery tests without provider credentials
+        run: python -m unittest discover -s tests -p 'test_twitterapi*.py'
+      - name: Restore separate current snapshot
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch --depth=1 --no-tags origin master
+          mkdir -p recovery_output
+          git show FETCH_HEAD:data/signalboard.db.gz > recovery_output/original.db.gz
+          gzip -t recovery_output/original.db.gz
+          gzip -cd recovery_output/original.db.gz > recovery_output/working.db
+      - name: Authorized first catch-up window, all eight accounts
+        env:
+          TWITTERAPI_IO_KEY: ${{ secrets.TWITTERAPI_IO_KEY }}
+          RECOVERY_ENABLED: 'true'
+          RECOVERY_GRANT_ID: 'bonus-recovery-20261115-7d-30000'
+          RECOVERY_CONFIG_SHA256: '7f69ddfd026f5c68fadb74b6c4b312b75d2893f0b06d04dd72848df35ace1756'
+          AI_ENABLED: 'false'
+          ALLOW_EXPENSIVE_AI_JOB: 'false'
+          AI_DRY_RUN: 'true'
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          export RECOVERY_SELECTED_WINDOWS="$(cat config/twitterapi_recovery_selected.json)"
+          python scripts/twitterapi_recovery_candidate.py
+      - name: Preserve candidate data and receipt without publication
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: twitterapi-recovery-candidate-${{ github.run_id }}
+          path: |
+            recovery_output/receipt.json
+            recovery_output/working.db
+          if-no-files-found: warn
