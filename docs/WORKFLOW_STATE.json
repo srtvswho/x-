@@ -69,5 +69,14 @@
     ],
     "workflow_run": "https://github.com/srtvswho/x-/actions/runs/35502774828",
     "workflow_conclusion": "success"
+  },
+  "timeline_recovery": {
+    "status": "cached_ingestion_and_finite_schedule_prepared_pending_publication",
+    "validation_run": "https://github.com/srtvswho/x-/actions/runs/43793457922",
+    "accounts": 8,
+    "cached_posts": 21,
+    "historical_gap": "2026-11-12 through new timeline bootstrap remains unresolved",
+    "ai": "not_requested",
+    "next_action": "Verify canonical snapshot, live production receipt and finite schedule."
   }
 }

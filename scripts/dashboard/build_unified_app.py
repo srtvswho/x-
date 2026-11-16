@@ -8,9 +8,11 @@ import gzip
 import html as html_lib
 import json
 import re
+import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE.parents[1]))
 
 
 def pack(path, value):
@@ -163,4 +165,6 @@ def build(deploy_root: Path, report_path: Path):
     meta = {"build":fields['BUILD_META'], "data_until":raw['generated_at']}
     template = (HERE/'research_clue_preview.template.html').read_text()
     html = template.replace('__RESEARCH_CLUES__', json.dumps({"clues":[], **meta}, ensure_ascii=False).replace('</','<\\/'))
+    from signalboard.recovery_freshness import recovery_banner
+    html = html.replace('</header>', '</header>' + recovery_banner(raw.get('fetch_freshness')), 1)
     return html
