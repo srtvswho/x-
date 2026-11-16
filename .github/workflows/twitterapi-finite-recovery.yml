@@ -21,7 +21,7 @@ jobs:
       RECOVERY_ENABLED: 'true'
       RECOVERY_GRANT_ID: 'bonus-recovery-20261115-7d-30000'
       RECOVERY_CONFIG_SHA256: '7f69ddfd026f5c68fadb74b6c4b312b75d2893f0b06d04dd72848df35ace1756'
-      RECOVERY_CODE_SHA: '74c9e9cff4d00ba4e6f637bf594169efd2f8fc1c'
+      RECOVERY_CODE_SHA: '896540010884692cd372ac5cb4e8ac146ba06b34'
       AI_ENABLED: 'false'
       ALLOW_EXPENSIVE_AI_JOB: 'false'
       AI_DRY_RUN: 'true'
@@ -36,7 +36,7 @@ jobs:
       - uses: actions/checkout@v6
         if: steps.deadline.outputs.active == 'true' 
         with:
-          ref: '74c9e9cff4d00ba4e6f637bf594169efd2f8fc1c'
+          ref: '896540010884692cd372ac5cb4e8ac146ba06b34'
           persist-credentials: true
           fetch-depth: 1
       - uses: actions/setup-python@v6
@@ -46,16 +46,16 @@ jobs:
       - name: Offline tests without provider key
         if: steps.deadline.outputs.active == 'true'
         run: python -m unittest discover -s tests -p 'test_twitterapi*.py'
-      - name: Observe exactly one originally uncertain page
+      - name: Verify bounded new-period timeline
         if: steps.deadline.outputs.active == 'true' && github.event_name == 'push'
         env:
           TWITTERAPI_IO_KEY: ${{ secrets.TWITTERAPI_IO_KEY }}
-        run: python scripts/twitterapi_one_reread.py
+        run: python scripts/twitterapi_timeline_feasibility.py
       - name: Preserve receipts and candidate data
         if: always() && steps.deadline.outputs.active == 'true'
         uses: actions/upload-artifact@v6
         with:
           name: twitterapi-finite-recovery-${{ github.run_id }}
           path: |
-            recovery_output/one_reread_receipt.json
+            recovery_output/timeline_receipt.json
           if-no-files-found: warn
