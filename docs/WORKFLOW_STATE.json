@@ -80,7 +80,7 @@
     "next_action": "Verify canonical snapshot, live production receipt and finite schedule."
   },
   "bounded_history_recovery": {
-    "status": "reviewed_offline_not_executed",
+    "status": "all_eight_captured_cache_publication_pending",
     "base_commit": "2e87922a3387bdaeda1855e414da2e0083665bd7",
     "method": "last_tweets independent historical window; no advanced_search retry",
     "range": "per-account 2026-11-12 last_fetched_at through 2026-11-15T16:00:00Z exclusive",
@@ -91,6 +91,14 @@
     "expires_at": "2026-11-22T08:10:00Z",
     "preserves": "prior 3420 conservative credits and original uncertain historical evidence",
     "effects": "durable cache only; no AI, canonical DB mutation or deployment",
-    "next_action": "Review and merge bounded entry, verify exact live receipt and all-account traversal; only then prepare offline ingestion. DeepSeek remains disabled."
+    "next_action": "Publish the verified historical cache without provider/AI calls, verify live hashes; DeepSeek still disabled pending new budget.",
+    "capture_run": "https://github.com/srtvswho/x-/actions/runs/43798974353",
+    "state_revision": "7199133f7f4182bb3682c631f8e9b3f69fca24d1",
+    "actual_pages": 22,
+    "cached_posts": 339,
+    "total_reserved_credits": 10350,
+    "local_ingest_new_posts": 339,
+    "local_total_posts": 53074,
+    "tests": "192 provider/ingestion + 7 freshness + 38 publication regression tests passed; local dashboard build and unified app validation passed"
   }
 }

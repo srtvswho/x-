@@ -1,4 +1,4 @@
-"""Read-only publication metadata: new timeline coverage never closes old gaps."""
+"""Read-only publication metadata: exact historical repairs never imply complete older history."""
 import html
 from datetime import datetime, timezone, timedelta
 
@@ -13,7 +13,27 @@ def recovery_freshness(con):
     fields=('handle','coverage_start','coverage_end','completion_reason','verified_at','in_window_count')
     result['timeline_windows']=[dict(zip(fields,row)) for row in rows]
     result['status']='recorded_intervals_only' if rows else 'not_recorded'
+    columns={r[1] for r in con.execute('PRAGMA table_info(twitterapi_timeline_coverage)')}
+    if {'operation','provider','endpoint'} <= columns:
+        from signalboard.twitterapi_timeline_history import BOUNDARIES,END,OPERATION
+        repaired=[]
+        for handle,start,end,reason in con.execute(
+                'SELECT handle,coverage_start,coverage_end,completion_reason FROM twitterapi_timeline_coverage WHERE operation=? AND provider=? AND endpoint=?',
+                (OPERATION,'twitterapi.io','last_tweets')):
+            if (handle in BOUNDARIES and reason in ('start_boundary_crossed','timeline_exhausted')
+                    and _instant(start)==_instant(BOUNDARIES[handle]) and _instant(end)==_instant(END)):
+                repaired.append({'handle':handle,'start':start,'end':end})
+        if {r['handle'] for r in repaired}==set(BOUNDARIES):
+            result['historical_gap'].update(status='known_last_fetch_gap_closed_earlier_unverified',
+                repaired_intervals=repaired,earlier_history_status='unverified')
     return result
+
+
+def _instant(value):
+    try:
+        instant=datetime.fromisoformat(value.replace('Z','+00:00'))
+        return instant.astimezone(timezone.utc) if instant.tzinfo else None
+    except (ValueError,TypeError,AttributeError):return None
 
 
 def _display(value):
@@ -31,8 +51,11 @@ def recovery_banner(meta):
     rows=meta['timeline_windows']
     handles={r['handle'] for r in rows}
     items=''.join('<li>@'+html.escape(str(r['handle']))+'：'+_display(r['coverage_start'])+' 至 '+_display(r['coverage_end'])+'（'+str(int(r['in_window_count']))+' 条）</li>' for r in rows)
+    gap_text=('已核验补齐 8 个账户各自 2026-11-12 最后抓取时刻至 2026-11-16 00:00:00（上海时间）的缺口；更早历史仍未核验完整。'
+              if meta.get('historical_gap',{}).get('status')=='known_last_fetch_gap_closed_earlier_unverified'
+              else '自 2026-11-12 起的旧缺口尚未验证补齐；新窗口不会抹平该缺口。')
     return ('<aside id="recovery-freshness" role="status" style="margin:16px 0;padding:12px 16px;background:#fbf1db;border:1px solid #e7d6ac;border-radius:10px;font-size:12px">'
             '<strong>原帖新窗口已核验：'+str(len(handles))+' 个账户</strong>。仅代表下列时间段的提供方时间线覆盖，不代表完整 X 历史。'
-            '<br>历史缺口：自 2026-11-12 起的旧缺口尚未验证补齐；新窗口不会抹平该缺口。'
+            '<br>历史缺口：'+gap_text+
             '<br>AI 解读：抓取成功不代表解读已更新，原有解读及其时间保持独立。'
             '<details><summary>查看逐账户覆盖范围（上海时间）</summary><ul>'+items+'</ul></details></aside>')

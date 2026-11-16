@@ -1,4 +1,5 @@
 name: SignalBoard finite bonus recovery
+# Replay independently verified historical cache on this source push; no provider key on push.
 on:
   push:
     branches: [master]
