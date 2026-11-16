@@ -170,6 +170,9 @@ def _check_state(state,policy):
     if 'timeline_daily' in state:
         from .twitterapi_timeline_daily import daily_reserved_credits
         extra_reserved+=daily_reserved_credits(state)
+    if 'timeline_history' in state:
+        from .twitterapi_timeline_history import history_reserved_credits
+        extra_reserved+=history_reserved_credits(state)
     balance_reserved=len(reads)*state['config'].get('balance_read_credits',0)+extra_reserved
     if pages*300 + balance_reserved != state['reserved_credits'] or state['reserved_credits']>state['config']['credit_limit']:
         raise FetchError('reservation accounting mismatch')
