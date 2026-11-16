@@ -1,11 +1,11 @@
 {
   "schema": "workflow-handoff-v1",
   "project": "signalboard",
-  "updated_at": "2026-11-16T08:01:54.219902+00:00",
+  "updated_at": "2026-11-16T08:06:59Z",
   "objective": "接手 money 的有限恢复：完成历史缓存发布，修复上下文帖冲突和新渠道健康检查，避免旧日更重复收费",
   "production_url": "https://signalboard-602.pages.dev",
-  "implementation_status": "tested_pending_publication",
-  "implementation_commit": null,
+  "implementation_status": "raw_recovery_published_verified_ai_paused",
+  "implementation_commit": "c8c181f5f98e98776e7c0badf094242359daf26a",
   "last_verified": {
     "raw_before": 52740,
     "raw_after": 53078,
@@ -22,13 +22,16 @@
     "freshness_tests": 3,
     "publication_tests": 38,
     "local_health": "passed",
-    "local_build": "completed; unified publication validation pending"
+    "local_build": "passed: one shell, six navigation items, 51753 scoped posts, 13 chronological research lines",
+    "production_health": "all 8 accounts passed",
+    "source_identity": "context post 2121981880480522483 present in published feed data as serenity; original fields preserved",
+    "automatic_legacy_push": "43828377889 completed, update job skipped; no duplicate legacy provider or AI calls",
+    "browser": "not exercised: direct site read in this environment returned 403; existing Actions verified production manifest and seven content hashes"
   },
   "current_state_source": "远端 master + Actions production-receipt + /build-manifest.json 内容核验",
-  "next_action": "提交离线修复，通过原有限恢复入口发布缓存并验证生产回执；不重跑历史抓取，不启用 AI，不改变共享额度或截止时间",
+  "next_action": "Verify the first due finite daily window after 2026-11-17T02:39:16Z through the existing schedule. Keep 30000-credit shared cap and absolute 2026-11-22T08:10:00Z expiry unchanged; do not silently reactivate legacy paid provider/AI. Raw backlog publication is complete; new AI summaries require the pending budget decision.",
   "blockers": [
-    "Previous finite publication bot push denied (403); permissions remain unchanged, early dry-run preflight added.",
-    "Production site direct read from this environment returned HTTP 403; live verification remains pending existing deployment receipt."
+    "New AI extraction/summary generation remains paused under money's recorded pending-budget constraint."
   ],
   "constraints": [
     "保留原帖、已有解读和历史证据",
@@ -67,19 +70,35 @@
     ]
   },
   "production_verification": {
-    "status": "pending_current_recovery"
+    "status": "verified",
+    "source_commit": "c8c181f5f98e98776e7c0badf094242359daf26a",
+    "url": "https://signalboard-602.pages.dev",
+    "checked_files": [
+      "index.html",
+      "assets/market-panels.js",
+      "assets/unified-navigation.js",
+      "data/tracking-panels.json.gz",
+      "data/market-panels.json.gz",
+      "data/raw-intelligence.json.gz",
+      "data/focus-signals.json.gz"
+    ],
+    "verified_at_utc": "2026-11-16T08:06:59Z",
+    "publication_commit": "8d28532c14a408a7ca313c4707400a3b38a8c459",
+    "workflow_run": "https://github.com/srtvswho/x-/actions/runs/43828377772",
+    "workflow_conclusion": "success",
+    "receipt_artifact_id": 14207238335
   },
   "timeline_recovery": {
-    "status": "cached_ingestion_and_finite_schedule_prepared_pending_publication",
+    "status": "published_verified_through_2026-11-16T02:39:16Z",
     "validation_run": "https://github.com/srtvswho/x-/actions/runs/43793457922",
     "accounts": 8,
     "cached_posts": 21,
-    "historical_gap": "2026-11-12 through new timeline bootstrap remains unresolved",
+    "historical_gap": "Eight known last-fetch gaps repaired; earlier historical coverage remains unverified.",
     "ai": "not_requested",
-    "next_action": "Verify canonical snapshot, live production receipt and finite schedule."
+    "next_action": "First due daily window is not yet executed; observe existing finite schedule."
   },
   "bounded_history_recovery": {
-    "status": "validated_on_latest_snapshot_pending_publication",
+    "status": "published_verified",
     "base_commit": "2e87922a3387bdaeda1855e414da2e0083665bd7",
     "method": "last_tweets independent historical window; no advanced_search retry",
     "range": "per-account 2026-11-12 last_fetched_at through 2026-11-15T16:00:00Z exclusive",
@@ -90,15 +109,17 @@
     "expires_at": "2026-11-22T08:10:00Z",
     "preserves": "prior 3420 conservative credits and original uncertain historical evidence",
     "effects": "durable cache only; no AI, canonical DB mutation or deployment",
-    "next_action": "Publish cache with context alias fix, same Actions credentials; stop on repeat permission denial.",
+    "next_action": "No historical recapture or replay needed; continue finite daily schedule only.",
     "capture_run": "https://github.com/srtvswho/x-/actions/runs/43798974353",
     "state_revision": "7199133f7f4182bb3682c631f8e9b3f69fca24d1",
     "actual_pages": 22,
     "cached_posts": 339,
     "total_reserved_credits": 10350,
-    "local_ingest_new_posts": 339,
-    "local_total_posts": 53074,
-    "tests": "192 provider/ingestion + 7 freshness + 38 publication regression tests passed; local dashboard build and unified app validation passed"
+    "local_ingest_new_posts": 338,
+    "local_total_posts": 53078,
+    "tests": "192 provider/ingestion + 7 freshness + 38 publication regression tests passed; local dashboard build and unified app validation passed",
+    "production_run": "https://github.com/srtvswho/x-/actions/runs/43828377772",
+    "context_promoted": 1
   },
   "previous_ui_delivery": {
     "objective": "市场态度作者卡片分层：主题观点主栏、标的方向侧栏、最新与变化底栏",
@@ -139,6 +160,7 @@
     ],
     "context_post": "2121981880480522483",
     "policy": "preserve grant 30000 credits, reserved 10350, expiry 2026-11-22T08:10:00Z; automatic legacy provider/AI disabled while finite recovery owns ingestion, no automatic fallback after expiry; manual dispatch unchanged",
-    "ai": "not enabled; saved interpretations and failed attribution retained"
+    "ai": "not enabled; saved interpretations and failed attribution retained",
+    "completed_at": "2026-11-16T08:06:59Z"
   }
 }
