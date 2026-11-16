@@ -35,8 +35,8 @@ def main():
     with sqlite3.connect(db) as c:
         after=c.execute('SELECT count(*) FROM twitterapi_timeline_coverage').fetchone()[0]
         if c.execute('PRAGMA integrity_check').fetchone()[0]!='ok':raise ValueError('database integrity')
-    changed=(after!=count or any(a['new_persisted'] for r in result['intervals'] for a in r['accounts'])
-             or any(a['new_persisted'] for a in result.get('historical_ingest',{}).get('accounts',[])))
+    changed=(after!=count or any((a['new_persisted'] or a.get('context_promoted',0)) for r in result['intervals'] for a in r['accounts'])
+             or any((a['new_persisted'] or a.get('context_promoted',0)) for a in result.get('historical_ingest',{}).get('accounts',[])))
     Path('recovery_output').mkdir(exist_ok=True)
     Path('recovery_output/ingest_receipt.json').write_text(json.dumps({'state_revision':revision,'ingest':result,'publish_needed':changed,'selection':selection['status']},indent=2))
     with open(e['GITHUB_OUTPUT'],'a') as f:f.write('publish='+str(changed).lower()+'\n')

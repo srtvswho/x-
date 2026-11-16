@@ -82,6 +82,15 @@ jobs:
             echo "should_run=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
+          # Finite recovery owns automatic ingestion from its reviewed start.
+          # After expiry, do not silently fall back to the broken paid provider.
+          # Manual dispatch remains available for an explicitly reviewed run.
+          if [ "$(date -u +%s)" -ge "$(date -u -d '2026-11-16 02:39:16' +%s)" ]; then
+            echo "Automatic ingestion is owned by finite bonus recovery; no duplicate Apify/AI job."
+            echo "Grant expires 2026-11-22T08:10:00Z; a subsequent provider/budget decision is required."
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           today=$(TZ=Asia/Shanghai date +%Y-%m-%d)
           latest_subject=$(git log -1 --format=%s)
           if [[ "$latest_subject" == "Daily Signalboard update $today"* ]]; then

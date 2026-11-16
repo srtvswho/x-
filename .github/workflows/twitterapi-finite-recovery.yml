@@ -1,5 +1,5 @@
 name: SignalBoard finite bonus recovery
-# Replay independently verified historical cache on this source push; no provider key on push.
+# Replay independently verified cache after context-alias repair; no provider/AI key on push.
 on:
   push:
     branches: [master]
@@ -47,8 +47,11 @@ jobs:
         run: |
           set -Eeuo pipefail
           test "$(git ls-remote origin refs/heads/master | cut -f1)" = "$GITHUB_SHA"
+          # Same Actions identity; fail early on write denial before any capture.
+          git push --dry-run origin HEAD:master
           python -m unittest discover -s tests -p 'test_twitterapi*.py'
           python -m unittest discover -s tests -p 'test_recovery_freshness.py'
+          python -m unittest discover -s tests -p 'test_ingestion_health.py'
           gzip -cd data/signalboard.db.gz > data/signalboard_full.db
       - name: Replay cache or capture one due daily window
         if: steps.deadline.outputs.active == 'true'
@@ -62,6 +65,7 @@ jobs:
           SIGNALBOARD_DB: ${{ github.workspace }}/data/signalboard_full.db
         run: |
           set -Eeuo pipefail
+          SIGNALBOARD_HEALTH_LOG_DIR=recovery_output python scripts/intel_daily_health.py
           python tests/test_author_briefs.py
           python tests/test_focus_signals.py
           python tests/test_focus_labels.py

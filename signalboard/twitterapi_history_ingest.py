@@ -4,6 +4,7 @@ Only exact independently revalidated per-account intervals are marked covered.
 Earlier unverified history and all search/scrape checkpoints remain unchanged.
 """
 from pathlib import Path
+from signalboard.twitterapi_existing_post import reconcile_existing_source
 from signalboard.db import get_conn
 from signalboard.twitterapi_ingest import IngestError,_iso,_posts
 from signalboard.twitterapi_recovery import HANDLES as CANONICAL,utc
@@ -45,12 +46,11 @@ def ingest_completed_history(db_path,state,*,captured_at):
                         or old['completion_reason']!=reason or old['in_window_count']!=len(posts)):
                 raise IngestError('historical coverage conflicts')
             receipt={'handle':handle,'coverage_start':start,'coverage_end':end,'in_window_count':len(posts),
-                     'new_persisted':0,'existing_preserved':0,'changed_originals_preserved':0}
+                     'new_persisted':0,'existing_preserved':0,'changed_originals_preserved':0,'context_promoted':0}
             for post in posts:
-                prior=conn.execute('SELECT source_id,platform,raw_text,published_at FROM raw_posts WHERE post_id=?',(post.post_id,)).fetchone()
+                prior=conn.execute('SELECT source_id,platform,raw_text,published_at,raw_json FROM raw_posts WHERE post_id=?',(post.post_id,)).fetchone()
                 if prior:
-                    if prior['source_id'].lower()!=post.source_id.lower() or prior['platform']!='twitter':
-                        raise IngestError('existing historical ID source mismatch')
+                    receipt['context_promoted'] += int(reconcile_existing_source(conn,prior,post,capture_iso))
                     receipt['existing_preserved']+=1
                     if prior['raw_text']!=post.raw_text or prior['published_at']!=post.published_at:receipt['changed_originals_preserved']+=1
                 else:

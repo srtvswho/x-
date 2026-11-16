@@ -1,28 +1,42 @@
 {
   "schema": "workflow-handoff-v1",
   "project": "signalboard",
-  "updated_at": "2026-09-20T09:38:50Z",
-  "objective": "市场态度作者卡片分层：主题观点主栏、标的方向侧栏、最新与变化底栏",
+  "updated_at": "2026-11-16T08:01:54.219902+00:00",
+  "objective": "接手 money 的有限恢复：完成历史缓存发布，修复上下文帖冲突和新渠道健康检查，避免旧日更重复收费",
   "production_url": "https://signalboard-602.pages.dev",
-  "implementation_status": "complete",
-  "implementation_commit": "77e5f42c9f502f07522a45a6693b32aa19da7c9a",
+  "implementation_status": "tested_pending_publication",
+  "implementation_commit": null,
   "last_verified": {
-    "scope": "layout_only",
-    "required_tests": 38,
+    "raw_before": 52740,
+    "raw_after": 53078,
+    "historical_new_posts": 338,
+    "identical_context_source_promoted": 1,
+    "coverage_accounts": 8,
+    "coverage_intervals": 16,
+    "coverage_through_utc": "2026-11-16T02:39:16Z",
     "provider_calls": 0,
-    "runtime": "passed: all author periods and author filter, tracking, usage, focus; publication gate passed, 43480 posts",
-    "browser": "production screenshot inspected; Serenity week/month; supplement, remaining tickers and timeline expand; original post text and saved interpretation displayed"
+    "ai_calls": 0,
+    "integrity": "ok",
+    "provider_tests": 195,
+    "ingestion_health_tests": 5,
+    "freshness_tests": 3,
+    "publication_tests": 38,
+    "local_health": "passed",
+    "local_build": "completed; unified publication validation pending"
   },
   "current_state_source": "远端 master + Actions production-receipt + /build-manifest.json 内容核验",
-  "next_action": "本次卡片结构调整已发布并验收；后续从最新 master 和线上 manifest 继续。响应式单栏规则已添加，尚未做手机浏览器实测。",
-  "blockers": [],
+  "next_action": "提交离线修复，通过原有限恢复入口发布缓存并验证生产回执；不重跑历史抓取，不启用 AI，不改变共享额度或截止时间",
+  "blockers": [
+    "Previous finite publication bot push denied (403); permissions remain unchanged, early dry-run preflight added.",
+    "Production site direct read from this environment returned HTTP 403; live verification remains pending existing deployment receipt."
+  ],
   "constraints": [
     "保留原帖、已有解读和历史证据",
     "UI-only 使用缓存，零新增模型/API调用",
     "research_candidate；automatic_buy=false",
     "研究评级不是胜率，不能掩盖小样本和同周期相关性"
   ],
-  "source_base_commit": "a74f6ded8bba6ea971ddcbb62abdbfbe1613439f",
+  "source_base_commit": "a03934870dbce71fa683201c303e9d823cb5cf54",
   "authorization": {
     "instruction": "确认发布；后续反馈：我觉得这个ui的结构性不好",
     "scope": "继续改进已授权发布的市场态度界面，不变更观点数据或研究规则"
@@ -53,22 +67,7 @@
     ]
   },
   "production_verification": {
-    "status": "verified",
-    "source_commit": "77e5f42c9f502f07522a45a6693b32aa19da7c9a",
-    "publication_commit": "a88563fb615d0aae5978e8b6b6669eeb01f31220",
-    "url": "https://signalboard-602.pages.dev",
-    "verified_at_utc": "2026-09-20T09:38:50Z",
-    "checked_files": [
-      "index.html",
-      "assets/market-panels.js",
-      "assets/unified-navigation.js",
-      "data/tracking-panels.json.gz",
-      "data/market-panels.json.gz",
-      "data/raw-intelligence.json.gz",
-      "data/focus-signals.json.gz"
-    ],
-    "workflow_run": "https://github.com/srtvswho/x-/actions/runs/35502774828",
-    "workflow_conclusion": "success"
+    "status": "pending_current_recovery"
   },
   "timeline_recovery": {
     "status": "cached_ingestion_and_finite_schedule_prepared_pending_publication",
@@ -80,7 +79,7 @@
     "next_action": "Verify canonical snapshot, live production receipt and finite schedule."
   },
   "bounded_history_recovery": {
-    "status": "all_eight_captured_cache_publication_pending",
+    "status": "validated_on_latest_snapshot_pending_publication",
     "base_commit": "2e87922a3387bdaeda1855e414da2e0083665bd7",
     "method": "last_tweets independent historical window; no advanced_search retry",
     "range": "per-account 2026-11-12 last_fetched_at through 2026-11-15T16:00:00Z exclusive",
@@ -91,7 +90,7 @@
     "expires_at": "2026-11-22T08:10:00Z",
     "preserves": "prior 3420 conservative credits and original uncertain historical evidence",
     "effects": "durable cache only; no AI, canonical DB mutation or deployment",
-    "next_action": "Publish the verified historical cache without provider/AI calls, verify live hashes; DeepSeek still disabled pending new budget.",
+    "next_action": "Publish cache with context alias fix, same Actions credentials; stop on repeat permission denial.",
     "capture_run": "https://github.com/srtvswho/x-/actions/runs/43798974353",
     "state_revision": "7199133f7f4182bb3682c631f8e9b3f69fca24d1",
     "actual_pages": 22,
@@ -100,5 +99,46 @@
     "local_ingest_new_posts": 339,
     "local_total_posts": 53074,
     "tests": "192 provider/ingestion + 7 freshness + 38 publication regression tests passed; local dashboard build and unified app validation passed"
+  },
+  "previous_ui_delivery": {
+    "objective": "市场态度作者卡片分层：主题观点主栏、标的方向侧栏、最新与变化底栏",
+    "implementation_status": "complete",
+    "implementation_commit": "77e5f42c9f502f07522a45a6693b32aa19da7c9a",
+    "last_verified": {
+      "scope": "layout_only",
+      "required_tests": 38,
+      "provider_calls": 0,
+      "runtime": "passed: all author periods and author filter, tracking, usage, focus; publication gate passed, 43480 posts",
+      "browser": "production screenshot inspected; Serenity week/month; supplement, remaining tickers and timeline expand; original post text and saved interpretation displayed"
+    },
+    "production_verification": {
+      "status": "verified",
+      "source_commit": "77e5f42c9f502f07522a45a6693b32aa19da7c9a",
+      "publication_commit": "a88563fb615d0aae5978e8b6b6669eeb01f31220",
+      "url": "https://signalboard-602.pages.dev",
+      "verified_at_utc": "2026-09-20T09:38:50Z",
+      "checked_files": [
+        "index.html",
+        "assets/market-panels.js",
+        "assets/unified-navigation.js",
+        "data/tracking-panels.json.gz",
+        "data/market-panels.json.gz",
+        "data/raw-intelligence.json.gz",
+        "data/focus-signals.json.gz"
+      ],
+      "workflow_run": "https://github.com/srtvswho/x-/actions/runs/35502774828",
+      "workflow_conclusion": "success"
+    }
+  },
+  "takeover": {
+    "user_instruction": "最近卡住了 我用money重新处理了一下 你来接手重新推动",
+    "date_shanghai": "2026-11-16",
+    "diagnosed_runs": [
+      43799741169,
+      43822701536
+    ],
+    "context_post": "2121981880480522483",
+    "policy": "preserve grant 30000 credits, reserved 10350, expiry 2026-11-22T08:10:00Z; automatic legacy provider/AI disabled while finite recovery owns ingestion, no automatic fallback after expiry; manual dispatch unchanged",
+    "ai": "not enabled; saved interpretations and failed attribution retained"
   }
 }

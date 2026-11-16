@@ -5,6 +5,7 @@ posts. Coverage describes this provider interval only; old historical gaps and
 search checkpoints remain untouched. No transport, AI or publication occurs.
 """
 from pathlib import Path
+from signalboard.twitterapi_existing_post import reconcile_existing_source
 from .db import get_conn
 from .twitterapi_ingest import IngestError, _iso, _posts
 from .twitterapi_recovery import HANDLES, utc
@@ -54,14 +55,13 @@ def ingest_timeline_cache(db_path, state, *, expected_operation, expected_start,
             if old and (old['operation']!=expected_operation or old['provider']!='twitterapi.io' or
                         old['endpoint']!='last_tweets' or old['completion_reason']!=reason or old['in_window_count']!=len(posts)):
                 raise IngestError('existing timeline coverage conflicts with reviewed cache')
-            receipt={'handle':handle,'new_persisted':0,'existing_preserved':0,'changed_originals_preserved':0,
+            receipt={'handle':handle,'new_persisted':0,'existing_preserved':0,'changed_originals_preserved':0,'context_promoted':0,
                      'in_window_count':len(posts),'coverage_start':start_iso,'coverage_end':end_iso,
                      'coverage_status':'provider_timeline_complete','summary_status':'not_requested'}
             for post in posts:
-                prior=conn.execute('SELECT source_id,platform,raw_text,published_at FROM raw_posts WHERE post_id=?',(post.post_id,)).fetchone()
+                prior=conn.execute('SELECT source_id,platform,raw_text,published_at,raw_json FROM raw_posts WHERE post_id=?',(post.post_id,)).fetchone()
                 if prior:
-                    if prior['source_id'].lower()!=post.source_id.lower() or prior['platform']!='twitter':
-                        raise IngestError('existing ID source/provider mismatch')
+                    receipt['context_promoted'] += int(reconcile_existing_source(conn,prior,post,capture_iso))
                     receipt['existing_preserved']+=1
                     if prior['raw_text']!=post.raw_text or prior['published_at']!=post.published_at:
                         receipt['changed_originals_preserved']+=1

@@ -56,4 +56,37 @@ class Tests(unittest.TestCase):
   with sqlite3.connect(self.db) as c:
    self.assertEqual(c.execute('SELECT DISTINCT raw_text,is_deleted,archive_url FROM raw_posts').fetchall(),[('prior original',1,'saved')])
    self.assertEqual(c.execute('SELECT * FROM twitterapi_coverage').fetchall(),[('keep',)])
+ def test_context_promotion_preserves_every_original_field(self):
+  self.run_import()
+  with sqlite3.connect(self.db) as c:
+   c.row_factory=sqlite3.Row
+   c.execute("UPDATE raw_posts SET source_id='ctx_'||source_id,is_deleted=1,archive_url='keep'")
+   before={r['post_id']:dict(r) for r in c.execute('SELECT * FROM raw_posts')}
+  r=self.run_import();self.assertEqual(sum(a['context_promoted'] for a in r['accounts']),8)
+  with sqlite3.connect(self.db) as c:
+   c.row_factory=sqlite3.Row
+   for row in c.execute('SELECT * FROM raw_posts'):
+    old=before[row['post_id']];old['source_id']=old['source_id'][4:]
+    self.assertEqual(dict(row),old)
+   self.assertEqual(c.execute('SELECT COUNT(*) FROM twitterapi_source_promotions').fetchone()[0],8)
+  self.assertEqual(sum(a['context_promoted'] for a in self.run_import()['accounts']),0)
+ def test_context_wrong_identity_or_changed_text_rejected(self):
+  self.run_import()
+  for column,value in [('raw_text','changed'),('raw_json','{}'),('source_id','ctx_tw_wrong')]:
+   with sqlite3.connect(self.db) as c:
+    original=c.execute('SELECT '+column+' FROM raw_posts LIMIT 1').fetchone()[0]
+    c.execute("UPDATE raw_posts SET source_id='ctx_'||source_id WHERE post_id=(SELECT post_id FROM raw_posts LIMIT 1)")
+    c.execute('UPDATE raw_posts SET '+column+'=? WHERE post_id=(SELECT post_id FROM raw_posts LIMIT 1)',(value,))
+   with self.assertRaises(ValueError):self.run_import()
+   with sqlite3.connect(self.db) as c:
+    c.execute('UPDATE raw_posts SET '+column+'=? WHERE post_id=(SELECT post_id FROM raw_posts LIMIT 1)',(original,))
+    c.execute("UPDATE raw_posts SET source_id=substr(source_id,5) WHERE source_id LIKE 'ctx_%'")
+ def test_promotion_rolls_back_if_later_identity_conflicts(self):
+  self.run_import()
+  with sqlite3.connect(self.db) as c:
+   c.execute("UPDATE raw_posts SET source_id='ctx_'||source_id")
+   c.execute("UPDATE raw_posts SET raw_json='{}' WHERE source_id='ctx_tw_gsmferrari'")
+  with self.assertRaises(ValueError):self.run_import()
+  with sqlite3.connect(self.db) as c:
+   self.assertEqual(c.execute("SELECT COUNT(*) FROM raw_posts WHERE source_id LIKE 'ctx_%'").fetchone()[0],8)
 if __name__=='__main__':unittest.main()

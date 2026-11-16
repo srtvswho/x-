@@ -21,9 +21,12 @@ import os
 import sqlite3
 import sys
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+from signalboard.ingestion_health import recent_timeline_coverage
 
-DB_PATH = "/workspace/data/signalboard_full.db"
-LOG_DIR = "/workspace/logs"
+DB_PATH = os.environ.get("SIGNALBOARD_DB", "/workspace/data/signalboard_full.db")
+LOG_DIR = os.environ.get("SIGNALBOARD_HEALTH_LOG_DIR", "/workspace/logs")
 TODAY = datetime.now(timezone.utc).date()
 TODAY_ISO = TODAY.isoformat()
 
@@ -58,6 +61,7 @@ def health_check():
 
     con = sqlite3.connect(DB_PATH, timeout=30)
     cur = con.cursor()
+    timeline = recent_timeline_coverage(con,datetime.now(timezone.utc))
 
     # ===== 检查 1: 重复 (生产名单内部 + 之间) =====
     log("\n[1/4] 🔍 重复检查 (raw_posts post_id 重复)")
@@ -103,6 +107,10 @@ def health_check():
     log("-" * 70)
 
     for handle, sid in KOLS:
+        covered = timeline.get(handle.lower())
+        if covered:
+            log(f"  ✅ {sid}: 已核验时间线覆盖至 {covered['end'].isoformat()}（窗口内 {covered['count']} 条）；旧抓取检查点保持不变")
+            continue
         r = cur.execute("""
             SELECT last_fetched_at, last_tweet_published_at, total_scraped
             FROM scrape_state WHERE handle=?
@@ -135,8 +143,8 @@ def health_check():
 
     for handle, sid in KOLS:
         r = cur.execute("""
-            SELECT last_tweet_published_at FROM scrape_state WHERE handle=?
-        """, (handle,)).fetchone()
+            SELECT published_at FROM raw_posts WHERE source_id=? ORDER BY datetime(published_at) DESC LIMIT 1
+        """, (sid,)).fetchone()
         if not r or not r[0]:
             log(f"  ⚠  {sid}: last_tweet_published_at 缺")
             continue
@@ -151,11 +159,13 @@ def health_check():
             log(f"  ✅ {sid}: 最新推文 {days_ago} 天前 ({last_pub}) — 正常活跃")
         elif days_ago <= 30:
             log(f"  ⚠  {sid}: 最新推文 {days_ago} 天前 ({last_pub}) — KOL 可能停发")
-            issues.append(("INACTIVE", sid, days_ago))
+            if handle.lower() not in timeline:
+                issues.append(("INACTIVE", sid, days_ago))
         else:
             msg = f"❌ {sid}: 最新推文 {days_ago} 天前 ({last_pub}) — 长期停发 / 抓取失败"
             log(msg)
-            issues.append(("INACTIVE", sid, days_ago))
+            if handle.lower() not in timeline:
+                issues.append(("INACTIVE", sid, days_ago))
 
     # 全员零新增是系统性抓取故障的高风险形态，不能只凭 last_fetched_at 判健康。
     recent_capture_counts = []
@@ -165,7 +175,7 @@ def health_check():
             WHERE source_id=? AND datetime(captured_at) >= datetime('now', '-6 hours')
         """, (sid,)).fetchone()[0]
         recent_capture_counts.append(n)
-    if not any(recent_capture_counts):
+    if not any(recent_capture_counts) and not all(h.lower() in timeline for h,_ in KOLS):
         msg = "❌ 全部生产账号最近6小时新增均为0；禁止仅凭 last_fetched_at 判定抓取健康"
         log(msg)
         issues.append(("ALL_ZERO_NEW", "all", 0))
