@@ -155,6 +155,18 @@ def _check_state(state,policy):
                     e.get('cursor')==extra.get('request_cursor') for e in state['windows'].values())):
             raise FetchError('invalid one-time observation accounting')
         extra_reserved=300
+    timeline=state.get('timeline_feasibility')
+    if timeline is not None:
+        allowed=('jukan05','aleabitoreddit','zephyr_z9','austinsemis','DGretta_Author','FeroceResearch','TradexWhisperer','gsmferrari')
+        attempts=timeline.get('attempts') if isinstance(timeline,dict) else None
+        if (extra is None or timeline.get('operation')!='timeline-feasibility-20261116' or
+            timeline.get('historical_gap_preserved') is not True or
+            timeline.get('start')!='2026-11-15T16:00:00+00:00' or
+            not isinstance(attempts,list) or not 1<=len(attempts)<=8 or
+            any(a.get('handle')!=allowed[i] or a.get('credits')!=315 or a.get('endpoint')!='last_tweets' or
+                a.get('cursor')!='' or a.get('status') not in ('pending','observed','failed') for i,a in enumerate(attempts))):
+            raise FetchError('invalid timeline observation accounting')
+        extra_reserved+=315*len(attempts)
     balance_reserved=len(reads)*state['config'].get('balance_read_credits',0)+extra_reserved
     if pages*300 + balance_reserved != state['reserved_credits'] or state['reserved_credits']>state['config']['credit_limit']:
         raise FetchError('reservation accounting mismatch')

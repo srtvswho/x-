@@ -42,7 +42,7 @@ class Client:
 
     def get(self, path, params=None):
         from urllib.parse import urlencode
-        if path not in ('/oapi/my/info', '/twitter/tweet/advanced_search'):
+        if path not in ('/oapi/my/info', '/twitter/tweet/advanced_search', '/twitter/user/last_tweets'):
             raise FetchError('endpoint refused')
         if self._last_request is not None:
             time.sleep(max(0, 5.1 - (time.monotonic() - self._last_request)))
