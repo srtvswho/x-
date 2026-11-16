@@ -8,54 +8,88 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: twitterapi-durable-recovery
+  group: signalboard-data-write
   cancel-in-progress: false
 jobs:
   recover:
     if: github.repository == 'srtvswho/x-' && (github.event_name == 'schedule' || github.event_name == 'push') && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     permissions:
       contents: write
     env:
-      RECOVERY_ENABLED: 'true'
-      RECOVERY_GRANT_ID: 'bonus-recovery-20261115-7d-30000'
-      RECOVERY_CONFIG_SHA256: '7f69ddfd026f5c68fadb74b6c4b312b75d2893f0b06d04dd72848df35ace1756'
-      RECOVERY_CODE_SHA: '896540010884692cd372ac5cb4e8ac146ba06b34'
       AI_ENABLED: 'false'
       ALLOW_EXPENSIVE_AI_JOB: 'false'
       AI_DRY_RUN: 'true'
+      POLYGON_API_KEY: ''
     steps:
-      - name: Enforce absolute trial deadline before checkout
+      - name: Absolute finite cutoff
         id: deadline
-        shell: bash
         run: |
           if [ "$(date -u +%s)" -lt "$(date -u -d '2026-11-22 08:10:00' +%s)" ]; then
             echo 'active=true' >> "$GITHUB_OUTPUT"
           fi
       - uses: actions/checkout@v6
-        if: steps.deadline.outputs.active == 'true' 
+        if: steps.deadline.outputs.active == 'true'
         with:
-          ref: '896540010884692cd372ac5cb4e8ac146ba06b34'
-          persist-credentials: true
+          ref: ${{ github.sha }}
           fetch-depth: 1
       - uses: actions/setup-python@v6
         if: steps.deadline.outputs.active == 'true'
         with:
-          python-version: '3.11'
-      - name: Offline tests without provider key
+          python-version: '3.12'
+      - name: Install existing build dependency
         if: steps.deadline.outputs.active == 'true'
-        run: python -m unittest discover -s tests -p 'test_twitterapi*.py'
-      - name: Verify bounded new-period timeline
-        if: steps.deadline.outputs.active == 'true' && github.event_name == 'push'
+        run: python -m pip install --disable-pip-version-check requests
+      - name: Validate code and restore canonical snapshot
+        if: steps.deadline.outputs.active == 'true'
+        run: |
+          set -Eeuo pipefail
+          test "$(git ls-remote origin refs/heads/master | cut -f1)" = "$GITHUB_SHA"
+          python -m unittest discover -s tests -p 'test_twitterapi*.py'
+          python -m unittest discover -s tests -p 'test_recovery_freshness.py'
+          gzip -cd data/signalboard.db.gz > data/signalboard_full.db
+      - name: Replay cache or capture one due daily window
+        if: steps.deadline.outputs.active == 'true'
+        id: ingest
         env:
-          TWITTERAPI_IO_KEY: ${{ secrets.TWITTERAPI_IO_KEY }}
-        run: python scripts/twitterapi_timeline_feasibility.py
-      - name: Preserve receipts and candidate data
+          TWITTERAPI_IO_KEY: ${{ github.event_name == 'schedule' && secrets.TWITTERAPI_IO_KEY || '' }}
+        run: python scripts/twitterapi_publish_cached.py
+      - name: Build truthful dashboard without paid APIs
+        if: steps.ingest.outputs.publish == 'true'
+        env:
+          SIGNALBOARD_DB: ${{ github.workspace }}/data/signalboard_full.db
+        run: |
+          set -Eeuo pipefail
+          python tests/test_author_briefs.py
+          python tests/test_focus_signals.py
+          python tests/test_focus_labels.py
+          python tests/test_publication_receipt.py
+          python tests/test_semantic_review.py
+          python scripts/dashboard/build_dashboard.py
+          python scripts/dashboard/build_unified_research_data.py --database data/signalboard_full.db --output dashboard_deploy_dist/data/raw-intelligence.json.gz
+          python scripts/dashboard/build_research_clue_preview.py --deploy-root dashboard_deploy_dist
+          cp dashboard_deploy_dist/index.html dashboard.html
+          python scripts/dashboard/validate_unified_app.py
+          gzip -n -c data/signalboard_full.db > data/signalboard.db.gz
+      - name: Publish only verified cached data and static artifacts
+        if: steps.ingest.outputs.publish == 'true'
+        run: |
+          set -Eeuo pipefail
+          test "$(git ls-remote origin refs/heads/master | cut -f1)" = "$GITHUB_SHA"
+          git config user.name signalboard-bot
+          git config user.email signalboard-bot@users.noreply.github.com
+          git add data/signalboard.db.gz scripts/dashboard/dashboard.html dashboard.html
+          git add -f dashboard_deploy_dist
+          git diff --cached --quiet && exit 0
+          git commit -m 'Publish verified timeline recovery [skip daily] [skip ui]'
+          git push origin HEAD:master
+      - name: Verify live production hashes
+        if: steps.ingest.outputs.publish == 'true'
+        run: python scripts/dashboard/verify_production.py --wait-seconds 600 --receipt recovery_output/production-receipt.json
+      - uses: actions/upload-artifact@v6
         if: always() && steps.deadline.outputs.active == 'true'
-        uses: actions/upload-artifact@v6
         with:
-          name: twitterapi-finite-recovery-${{ github.run_id }}
-          path: |
-            recovery_output/timeline_receipt.json
+          name: timeline-recovery-receipts-${{ github.run_id }}
+          path: recovery_output/*.json
           if-no-files-found: warn

@@ -309,11 +309,14 @@ def build(database: Path, legacy_dashboard: Path, clues_path: Path) -> dict:
             label_posts[a['post_id']].append({k:a[k] for k in ('id','ticker','tags','semantic_origin','is_live','published_at')})
     for post in posts:
         post['research_labels'] = label_posts.get(post['id'], [])
+    from signalboard.recovery_freshness import recovery_freshness
+    fetch_freshness = recovery_freshness(con)
     con.close()
     return {
         "version": "unified-research-experience-v1.6.3",
         "semantic_review_version": REVIEW_VERSION,
         "generated_at": latest,
+        "fetch_freshness": fetch_freshness,
         "openai_calls": 0,
         "openai_cost_usd": 0,
         "posts": posts,
