@@ -1,45 +1,35 @@
 {
   "schema": "workflow-handoff-v1",
   "project": "signalboard",
-  "updated_at": "2026-11-18T06:46:41.490519+00:00",
+  "updated_at": "2026-11-18T06:52:05Z",
   "objective": "按用户要求补跑已有原帖缺失 AI 解读，修复重试与持久化，建立可复用的采集分层规范",
   "production_url": "https://signalboard-602.pages.dev",
-  "implementation_status": "ai_partial_published_long_output_and_exact_quote_recovery_ready",
-  "implementation_commit": "2af7b008e87f584f3663d415ba0f0598d89aa50c",
+  "implementation_status": "ai_missing_recovery_complete_published_verified",
+  "implementation_commit": "05a3d0d4e6cd03d5c9daf640d840e9fd25ed5d3a",
   "last_verified": {
-    "raw_before": 52740,
-    "raw_after": 53078,
-    "historical_new_posts": 338,
-    "identical_context_source_promoted": 1,
-    "coverage_accounts": 8,
-    "coverage_intervals": 16,
-    "coverage_through_utc": "2026-11-16T02:39:16Z",
-    "provider_calls": 0,
-    "ai_calls": 0,
-    "integrity": "ok",
-    "provider_tests": 195,
-    "ingestion_health_tests": 5,
-    "freshness_tests": 3,
+    "raw_count": 53174,
+    "new_interpretations": 1355,
+    "pending_in_campaign": 0,
+    "per_security_pending": 0,
+    "raw_differences_vs_start": 0,
+    "prior_interpretation_differences_vs_start": 0,
+    "database_integrity": "ok",
+    "ai_and_quote_tests": 63,
     "publication_tests": 38,
-    "local_health": "passed",
-    "local_build": "passed: one shell, six navigation items, 51753 scoped posts, 13 chronological research lines",
-    "production_health": "all 8 accounts passed",
-    "source_identity": "context post 2121981880480522483 present in published feed data as serenity; original fields preserved",
-    "automatic_legacy_push": "43828377889 completed, update job skipped; no duplicate legacy provider or AI calls",
-    "browser": "not exercised: direct site read in this environment returned 403; existing Actions verified production manifest and seven content hashes"
+    "summary_refresh_complete": true,
+    "production_hashes": 7,
+    "browser": "Not exercised for this data-only update; existing Actions verified production manifest and all seven content hashes."
   },
   "current_state_source": "远端 master + Actions production-receipt + /build-manifest.json 内容核验",
-  "next_action": "Execute same-budget long-output repair, restore the source-verified paid CRWD quote, require zero pending attribution and complete summaries, then verify live hashes.",
-  "blockers": [
-    "Four incomplete long outputs and one source-verified quotation correction remain to be applied in production."
-  ],
+  "next_action": "Current saved-November AI gap is complete. Continue observing the existing finite raw capture schedule. Long-term provider funding and a reusable ongoing job configuration are not enabled by this bounded backfill; retain 30000-credit grant, reserved 13815 as last observed, and absolute 2026-11-22T08:10:00Z cutoff. New scenarios follow docs/INGESTION_OPERATING_MODEL.md.",
+  "blockers": [],
   "constraints": [
     "保留原帖、已有解读和历史证据",
     "UI-only 使用缓存，零新增模型/API调用",
     "research_candidate；automatic_buy=false",
     "研究评级不是胜率，不能掩盖小样本和同周期相关性"
   ],
-  "source_base_commit": "474ce399639010b85090981e65642ff1ef8b3cf1",
+  "source_base_commit": "7bf5f41cdbd5a5ec2b8f7af2b0d40561a95fc476",
   "authorization": {
     "instruction": "以后新的场景 爬取有系统解决方案吗 ai解读为什么不补跑一下",
     "scope": "补跑当前已存原帖的缺失文本解读、证券方向及摘要，保留既有原帖和解读；沿用确认发布授权"
@@ -70,12 +60,12 @@
     ]
   },
   "production_verification": {
-    "status": "verified_partial_ai_recovery",
-    "source_commit": "cc4539058b35ea8d4391abb0b21841bbe31b5f3b",
-    "publication_commit": "474ce399639010b85090981e65642ff1ef8b3cf1",
-    "verified_at_utc": "2026-11-18T06:43:49Z",
-    "workflow_run": "https://github.com/srtvswho/x-/actions/runs/44250345037",
-    "workflow_conclusion": "failure_on_remaining_4_deferred_items_after_successful_publication",
+    "status": "verified",
+    "source_commit": "e3ee2399ba19405711bf6a6268fd16ecec6ef506",
+    "publication_commit": "44fa38cd249fc835f980e8fe319389cdedceaf5d",
+    "verified_at_utc": "2026-11-18T06:52:05Z",
+    "workflow_run": "https://github.com/srtvswho/x-/actions/runs/44253892652",
+    "workflow_conclusion": "success",
     "url": "https://signalboard-602.pages.dev",
     "checked_files": [
       "index.html",
@@ -85,7 +75,8 @@
       "data/market-panels.json.gz",
       "data/raw-intelligence.json.gz",
       "data/focus-signals.json.gz"
-    ]
+    ],
+    "receipt_artifact_id": 14405272095
   },
   "timeline_recovery": {
     "status": "scheduled_daily_published_verified",
@@ -173,19 +164,32 @@
     "all_stages_cap_usd": 2.3,
     "daily_cap_usd": 3.0,
     "tests": 63,
-    "status": "1351_published_4_long_outputs_pending",
+    "status": "completed_published_verified",
     "existing_interpretations": "preserved",
     "provider_calls": 0,
-    "completed": 1351,
-    "deferred": 4,
+    "completed": 1355,
+    "deferred": 0,
     "pending": 0,
-    "accounted_usd_all_stages": 0.93759895,
+    "accounted_usd_all_stages": 1.01680706,
     "prior_raw_changes": 0,
     "prior_interpretation_changes": 0,
     "summary_refresh_complete": true,
-    "attribution_pending": 1,
+    "attribution_pending": 0,
     "initial_run": "https://github.com/srtvswho/x-/actions/runs/44250345037",
     "long_output_recovery": "3000 tokens, one growth to 6000, same campaign and shard budgets",
-    "quote_repair": "Exact source/payload/extraction-bound CRWD quote repair; original paid responses and original interpretations preserved; offline recovery verified"
-  }
+    "quote_repair": "Applied once from saved paid response. Source, payload and extraction hashes matched; all original responses and interpretations retained.",
+    "attempted_calls_all_stages": 1447,
+    "publication_tests": 38,
+    "raw_count": 53174,
+    "summary_generated_at_utc": "2026-11-18T06:49:26.258953+00:00",
+    "source_data_until_utc": "2026-11-17T02:37:16Z",
+    "completed_run": "https://github.com/srtvswho/x-/actions/runs/44253892652",
+    "receipt_artifact_id": 14405272095,
+    "scope_note": "All 1355 missing owned-author interpretations in the saved 2026-11-05 to 2026-11-18-exclusive window; not a full-history reanalysis. Older pre-window missing history remains outside this campaign."
+  },
+  "remaining_scope": [
+    "Permanent ingestion and continuous AI scheduling require a separate sustainable quota configuration; current capture grant expires at 2026-11-22T08:10:00Z.",
+    "New platform/media adapters are specified, not implemented.",
+    "Earlier missing historical interpretations and archives before the latest three Beijing days were not regenerated."
+  ]
 }
