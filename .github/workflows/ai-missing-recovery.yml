@@ -48,7 +48,7 @@ jobs:
           git config user.name signalboard-bot
           git config user.email signalboard-bot@users.noreply.github.com
           python -m pip install --disable-pip-version-check requests pytest
-          python -m pytest -q tests/test_ai_resume_queue.py tests/test_ai_guardrails.py tests/test_ai_output_recovery.py tests/test_call_attribution_execution.py
+          env -u AI_CAMPAIGN_ID -u AI_CAMPAIGN_MAX_COST_USD python -m pytest -q tests/test_ai_resume_queue.py tests/test_ai_guardrails.py tests/test_ai_output_recovery.py tests/test_call_attribution_execution.py
           gzip -cd data/signalboard.db.gz > data/signalboard_full.db
           python scripts/intel_resume_queue.py --db data/signalboard_full.db
       - name: Resume missing interpretations with durable checkpoints
