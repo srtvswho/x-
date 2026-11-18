@@ -2,10 +2,10 @@
   "today": "今日生产跟踪账号无新推文或无新有效判断。",
   "consensus": {
     "0": "近 0 月无有效判断数据。",
-    "1": "共识方向｜AI算力/推理需求 + 看多 + serenity、tradex（权重1.05）；存储/HBM + 看多 + tradex、zephyr、dgretta（权重1.65）\n核心标的｜MU、SNDK；NVDA、GOOGL、AMZN\n分歧/风险｜zephyr指NAND采用慢、供给扩产；jukan对NVDA治理存疑；gsmferrari短线止损离场",
-    "3": "共识方向｜AI推理/算力需求 + 看多 + serenity、tradex（权重1.45）；存储/HBM + 看多 + tradex、zephyr、dgretta（1.65）\n核心标的｜MU、SNDK、NVDA、GOOGL/AMZN\n分歧/风险｜zephyr指NAND采用慢、扩产压力；jukan疑字节ASIC；gsmferrari已止损NBIS/CRWV/IREN",
-    "6": "共识方向｜AI算力/推理需求 + 看多 + serenity、tradex（权重1.45）；存储/HBM + 看多 + tradex、zephyr、dgretta（1.65）\n核心标的｜MU、SNDK、NVDA、GOOGL、AMZN\n分歧/风险｜zephyr 警示 NAND 供给扩张与 KV cache 采用慢；jukan 对 NVDA 后 Jensen 时代存疑；gsmferrari 短线止损离场",
-    "12": "共识方向｜AI算力/推理需求长期看多（serenity、tradex，权重合计1.45）；存储/HBM看多（tradex、zephyr、dgretta，合计1.65）\n核心标的｜MU、SNDK、NVDA、AMD、CRWV、NBIS、IREN\n分歧/风险｜zephyr指NAND采用慢、供给扩张；jukan对NVDA管理层与ASIC存疑；gsmferrari短线止损离场"
+    "1": "共识方向｜AI推理/算力需求长期看多（serenity、tradex，权重合计1.0）；存储/HBM看多（tradex、zephyr、dgretta，权重合计1.65）\n核心标的｜MU、SNDK；NVDA、AMD、GOOGL、AMZN\n分歧/风险｜zephyr指NAND采用慢、供给扩张；jukan对NVDA管理层与字节ASIC存疑；gsmferrari短线止损离场",
+    "3": "共识方向｜AI推理/算力需求 + 存储(HBM/NAND) 看多；参与者：tradex、serenity、zephyr、jukan（权重合计≥0.80）\n核心标的｜MU、SNDK、NVDA、AMD、NBIS、CRWV、IREN\n分歧/风险｜zephyr 指 NAND 采用慢、消费弱；jukan 疑字节 ASIC；gsmferrari 已止损离场",
+    "6": "共识方向｜AI算力/推理需求 + 存储HBM + 光通信CPO 看多｜参与者：Jukan、Serenity、Tradex、Zephyr、Feroce（方向权重合计≥0.80）\n核心标的｜MU、SNDK、NVDA、AVGO、LITE、COHR、AMD\n分歧/风险｜Zephyr 看空权重为0，Austin 仅作认知验证；SNDK 存 NAND 扩产与需求疲弱风险；Serenity 提示杠杆去化",
+    "12": "共识方向｜AI推理/算力需求长期看多（tradex、serenity，权重合计1.0）；存储/HBM看多（tradex、zephyr、dgretta，权重1.65）\n核心标的｜MU、SNDK、NVDA、AMD、CRWV、NBIS、IREN\n分歧/风险｜zephyr警示NAND扩产与KV cache采用慢；gsmferrari已止损离场；Jukan对NVDA仅中性"
   },
   "person": {
     "jukan": {
@@ -17,10 +17,10 @@
     },
     "serenity": {
       "0": "Serenity 在该时间窗无有效判断。",
-      "1": "核心方向｜光通信/CPO + AI算力基础设施 看多；存储供给短缺看多\n明确标的｜LITE、COHR、AXTI、SIVE 看多；NVDA 看多（换帅长期存疑）\n依据/风险｜CPO激光器用量与InP衬底瓶颈、供给受限涨价逻辑；属光通信强项✅，但重复观点买点优势有限、回撤风险⚠️",
-      "3": "核心方向｜光通信/CPO + AI算力基础设施 看多；存储瓶颈 看多\n明确标的｜LITE、COHR、AXTI、SIVE 看多；NVDA 看多（换帅长期存疑）\n依据/风险｜CPO激光器用量与InP衬底瓶颈、算力短缺为结构性需求✅；NVDA人事与去杠杆回撤⚠️",
-      "6": "核心方向｜光通信/CPO+AI算力瓶颈 看多；存储供给受限 看多\n明确标的｜LITE/COHR/AXTI/SIVE 看多；NVDA 看多但换帅存疑\n依据/风险｜CPO激光用量与InP瓶颈、算力短缺为结构需求✅；NVDA人事与回撤风险⚠️",
-      "12": "核心方向｜光通信/CPO + AI算力瓶颈 看多；存储供给短缺 看多\n明确标的｜LITE/COHR/AXTI/SIVE 看多；NVDA 看多但换帅存疑\n依据/风险｜CPO激光器用量与InP衬底瓶颈至2030✅；NVDA人事与去杠杆回撤⚠️"
+      "1": "核心方向｜光通信/CPO + AI算力基础设施 看多；存储/MLCC瓶颈看多\n明确标的｜LITE、COHR、AXTI、SIVE 看多；NVDA 看多但换帅存疑\n依据/风险｜CPO激光器用量与InP衬底紧缺为核心依据✅；重复观点买点优势有限、回撤风险⚠️",
+      "3": "核心方向｜光通信/CPO + AI算力基础设施 看多；存储/MLCC瓶颈看多\n明确标的｜LITE、COHR、AXTI、SIVE 看多；NVDA 看多（换帅长期存疑）\n依据/风险｜CPO激光器用量与InP衬底紧缺、瓶颈涨价可持续；属光通信强项✅，但重复观点买点优势有限、回撤风险⚠️",
+      "6": "核心方向｜光通信/CPO+AI算力基础设施 看多；存储/MLCC瓶颈 看多\n明确标的｜LITE、COHR、AXTI、SIVE 看多；NVDA 看多（换帅长期存疑）；SHAZ 中性\n依据/风险｜CPO激光器用量与ASP大增、上游瓶颈紧缺；光通信强项✅，但重复观点买点优势有限、回撤风险⚠️",
+      "12": "核心方向｜光通信/CPO+AI算力瓶颈 看多；存储供给紧缺 看多\n明确标的｜LITE、COHR、AXTI、SIVE 看多；NVDA 长期看多但换帅存疑\n依据/风险｜CPO激光用量与InP衬底瓶颈、供给受限涨价✅；重复买点优势有限、回撤风险⚠️"
     },
     "zephyr": {
       "0": "zephyr 在该时间窗无有效判断。",
@@ -65,7 +65,7 @@
       "12": "核心方向｜短线交易为主：做空天然气/白银/铜，逢跌买入AI算力股，方向偏多但高频切换\n明确标的｜IREN、NBIS、CRWV 看多；NATGAS、SILVER、COPPER 看空\n依据/风险｜技术形态（三重顶/破位）驱动短线；仅参考，长持依据不足，固定持有≠实绩"
     }
   },
-  "generated_at": "2026-11-18T06:40:24.086095+00:00",
+  "generated_at": "2026-11-18T06:49:26.258953+00:00",
   "data_until": "2026-11-17T02:37:16Z",
   "stale": false,
   "daily_history": {
@@ -1895,7 +1895,7 @@
       "complete": true,
       "person": {
         "jukan": "核心方向｜AI算力/ASIC：中性偏谨慎（质疑字节自研ASIC）；Anthropic IPO：看多\n明确标的｜Anthropic（IPO）看多；字节跳动ASIC 存疑，无仓位\n依据/风险｜非存储/HBM强项领域，仅参考；严格信号样本少，不可外推",
-        "serenity": "核心方向｜光通信/CPO 看多（激光器用量与ASP提升）；AI推理算力看多\n明确标的｜AVGO/LITE/COHR 看多；GOOGL/AMZN 看多；NVDA 看多；SHAZ 中性\n依据/风险｜CPO激光器瓶颈至2030、算力短缺为需求信号；光通信属强项✅，其余打折",
+        "serenity": "核心方向｜光通信/CPO + 推理算力 看多；内存LTA被低估 中性偏多\n明确标的｜LITE/COHR/AVGO 看多；AOI 看多(merchant lasers被低估)；NVDA/GOOGL/AMZN 看多；SHAZ 中性\n依据/风险｜CPO使激光器用量10-100倍、UHP瓶颈至2030；算力短缺为看多信号。光通信属强项✅；SHAZ/杠杆去化为弱项，打折⚠️",
         "zephyr": "zephyr 在该时间窗无有效判断。",
         "austin": "核心方向｜CPU/芯片格局 + 中性（反问，非建仓）\n明确标的｜INTC + 中性\n依据/风险｜质疑Intel缺GPU客户而错过agentic CPU浪潮，属提问非判断；芯片商业格局为强项✅，但交易样本少⚠️",
         "dgretta": "核心方向｜存储 + 看多（SNDK 估值吸引力）\n明确标的｜SNDK + 看多\n依据/风险｜前瞻P/E<3、PEG 0.05、P/S 4，本周拆股；属其强项早期SNDK观点✅，但整体中期表现弱、样本集中，仅参考",
@@ -1904,10 +1904,10 @@
         "gsmferrari": "gsmferrari 在该时间窗无有效判断。"
       },
       "segment_errors": {},
-      "summary": "市场主线｜AI推理算力需求爆发（OpenRouter token年增30倍、DeepSeek限流），算力短缺被视为结构性看多信号\n模块/标的｜推理算力/CPO/存储；GOOGL、AMZN、NVDA、AVGO、LITE、COHR、SNDK、MU、NBIS\n方向/共识｜看多：serenity、tradex、jukan 共同指向AI算力/推理需求（✅）；SNDK获serenity、dgretta提及（⚠️dgretta）\n风险/分歧｜tradex驳SemiAnalysis称MU HBM4零出货为谎言，HBM4认证待验证；jukan疑字节ASIC；杠杆去化风险（⚠️）",
-      "consensus": "共识方向｜AI推理/算力需求 + 存储（SNDK）看多｜Serenity、Tradex、DGretta（权重合计≥0.80）\n核心标的｜SNDK（DGretta、Serenity）；GOOGL/AMZN、NVDA、AVGO/LITE/COHR（Serenity）；MU（Tradex，中性偏多）\n分歧/风险｜Tradex 对 MU/HBM4 仅中性且反驳 SemiAnalysis；Jukan 疑字节 ASIC；Austin 仅提问 Intel，不计票；Serenity 警示杠杆去化",
-      "source_hash": "ecd947c2b01c7a4d5bb92adecda2ae78eb664ab57511b1a0b58d37f82091fb28",
-      "generated_at": "2026-11-18T06:40:24.086095+00:00",
+      "summary": "市场主线｜AI推理算力需求爆发，算力短缺被视为基础设施看多信号\n模块/标的｜推理算力/光通信CPO；GOOGL、AMZN、NVDA、AVGO、LITE、COHR、SNDK、MU\n方向/共识｜看多；serenity与tradex就AI算力/推理需求形成共识（✅）\n风险/分歧｜SemiAnalysis称Micron HBM4未认证零出货，tradex斥其误导；jukan对字节ASIC存疑；SNDK估值与拆股待验证（⚠️DGretta长持样本弱）",
+      "consensus": "共识方向｜AI推理/算力需求 + 存储/光通信供给紧缺 + 看多 + serenity、tradex、jukan、dgretta（权重合计≥0.80）\n核心标的｜SNDK（serenity、dgretta）；MU（tradex，中性偏多）；NVDA、AVGO、LITE、COHR（serenity）\n分歧/风险｜MU HBM4认证存疑（tradex反驳SemiAnalysis，待验证）；jukan对字节ASIC存疑；serenity警示杠杆去化与2028后capex下滑",
+      "source_hash": "3b5097b8bb294b84a0b89d3f7340fa1ce85f596406301ce372fe1175f92bcc06",
+      "generated_at": "2026-11-18T06:49:26.258953+00:00",
       "data_until": "2026-11-17T02:37:16Z"
     },
     "2026-11-18": {
@@ -16521,8 +16521,52 @@
     "c6374956a702487c88faf3ac7e33f63ad0130d2b94768e708002dd82bcfb5b8c": {
       "text": "核心方向｜AI推理/算力需求 + HBM存储，看多（✅存储强项）\n明确标的｜MU 中性偏多（驳HBM4零出货负面报告）；NVDA 中性（财报为技术决策点）\n依据/风险｜OpenRouter token年增30倍、智能体驱动千倍增长；短线/图表观点打折⚠️",
       "generated_at": "2026-11-18T06:42:04.890285+00:00"
+    },
+    "6e6ef7e74b781de99a6ff9fb0627a42c2c3acef9e04c932b7fe38b0020c51767": {
+      "text": "共识方向｜AI推理/算力需求长期看多（serenity、tradex，权重合计1.0）；存储/HBM看多（tradex、zephyr、dgretta，权重合计1.65）\n核心标的｜MU、SNDK；NVDA、AMD、GOOGL、AMZN\n分歧/风险｜zephyr指NAND采用慢、供给扩张；jukan对NVDA管理层与字节ASIC存疑；gsmferrari短线止损离场",
+      "generated_at": "2026-11-18T06:49:28.920672+00:00"
+    },
+    "c7e55f8899dec82f75fd5abbaad078da65306000f80d52e6a38c6645125166fe": {
+      "text": "核心方向｜光通信/CPO + AI算力基础设施 看多；存储/MLCC瓶颈看多\n明确标的｜LITE、COHR、AXTI、SIVE 看多；NVDA 看多但换帅存疑\n依据/风险｜CPO激光器用量与InP衬底紧缺为核心依据✅；重复观点买点优势有限、回撤风险⚠️",
+      "generated_at": "2026-11-18T06:49:31.429195+00:00"
+    },
+    "a97106a68f4d6c41d5fb25e45d953f12ab643c54f61840fa587db922dd04d730": {
+      "text": "共识方向｜AI推理/算力需求 + 存储(HBM/NAND) 看多；参与者：tradex、serenity、zephyr、jukan（权重合计≥0.80）\n核心标的｜MU、SNDK、NVDA、AMD、NBIS、CRWV、IREN\n分歧/风险｜zephyr 指 NAND 采用慢、消费弱；jukan 疑字节 ASIC；gsmferrari 已止损离场",
+      "generated_at": "2026-11-18T06:49:33.846739+00:00"
+    },
+    "f31a58ad6fd425aab8879715b84be2a2f574f1ad6f4ef1afc02f8db2898f660a": {
+      "text": "核心方向｜光通信/CPO + AI算力基础设施 看多；存储/MLCC瓶颈看多\n明确标的｜LITE、COHR、AXTI、SIVE 看多；NVDA 看多（换帅长期存疑）\n依据/风险｜CPO激光器用量与InP衬底紧缺、瓶颈涨价可持续；属光通信强项✅，但重复观点买点优势有限、回撤风险⚠️",
+      "generated_at": "2026-11-18T06:49:36.232919+00:00"
+    },
+    "fd831abdc04f012b3aeef8b47ec7d3023d438e4a0c5147375b4dc659676867db": {
+      "text": "共识方向｜AI算力/推理需求 + 存储HBM + 光通信CPO 看多｜参与者：Jukan、Serenity、Tradex、Zephyr、Feroce（方向权重合计≥0.80）\n核心标的｜MU、SNDK、NVDA、AVGO、LITE、COHR、AMD\n分歧/风险｜Zephyr 看空权重为0，Austin 仅作认知验证；SNDK 存 NAND 扩产与需求疲弱风险；Serenity 提示杠杆去化",
+      "generated_at": "2026-11-18T06:49:39.328067+00:00"
+    },
+    "d0b299e7b6bb59cfb9cc40c0bf3b1998615183429c5e05f5ae816ea3b295df9b": {
+      "text": "核心方向｜光通信/CPO+AI算力基础设施 看多；存储/MLCC瓶颈 看多\n明确标的｜LITE、COHR、AXTI、SIVE 看多；NVDA 看多（换帅长期存疑）；SHAZ 中性\n依据/风险｜CPO激光器用量与ASP大增、上游瓶颈紧缺；光通信强项✅，但重复观点买点优势有限、回撤风险⚠️",
+      "generated_at": "2026-11-18T06:49:41.814276+00:00"
+    },
+    "665054a042443ecde9f56fca60d0abf1c55e3feb63d92eb0d1b831df4696ecb6": {
+      "text": "共识方向｜AI推理/算力需求长期看多（tradex、serenity，权重合计1.0）；存储/HBM看多（tradex、zephyr、dgretta，权重1.65）\n核心标的｜MU、SNDK、NVDA、AMD、CRWV、NBIS、IREN\n分歧/风险｜zephyr警示NAND扩产与KV cache采用慢；gsmferrari已止损离场；Jukan对NVDA仅中性",
+      "generated_at": "2026-11-18T06:49:45.466845+00:00"
+    },
+    "18965920c867a206e1fab4528c5549d68e0186c21a1705bda1ac716e943bf3de": {
+      "text": "核心方向｜光通信/CPO+AI算力瓶颈 看多；存储供给紧缺 看多\n明确标的｜LITE、COHR、AXTI、SIVE 看多；NVDA 长期看多但换帅存疑\n依据/风险｜CPO激光用量与InP衬底瓶颈、供给受限涨价✅；重复买点优势有限、回撤风险⚠️",
+      "generated_at": "2026-11-18T06:49:47.843358+00:00"
+    },
+    "04e25587ee8b10279de18b9c08e9b5fd26187d51ebe2bb7de28a12e0342ad468": {
+      "text": "市场主线｜AI推理算力需求爆发，算力短缺被视为基础设施看多信号\n模块/标的｜推理算力/光通信CPO；GOOGL、AMZN、NVDA、AVGO、LITE、COHR、SNDK、MU\n方向/共识｜看多；serenity与tradex就AI算力/推理需求形成共识（✅）\n风险/分歧｜SemiAnalysis称Micron HBM4未认证零出货，tradex斥其误导；jukan对字节ASIC存疑；SNDK估值与拆股待验证（⚠️DGretta长持样本弱）",
+      "generated_at": "2026-11-18T06:49:51.827261+00:00"
+    },
+    "1df7ada3ae2244bc5c90da484f761dff74bdc141f510b246eb4dfe642d6bdc18": {
+      "text": "共识方向｜AI推理/算力需求 + 存储/光通信供给紧缺 + 看多 + serenity、tradex、jukan、dgretta（权重合计≥0.80）\n核心标的｜SNDK（serenity、dgretta）；MU（tradex，中性偏多）；NVDA、AVGO、LITE、COHR（serenity）\n分歧/风险｜MU HBM4认证存疑（tradex反驳SemiAnalysis，待验证）；jukan对字节ASIC存疑；serenity警示杠杆去化与2028后capex下滑",
+      "generated_at": "2026-11-18T06:49:53.741150+00:00"
+    },
+    "4a3f7a83a7f26825c2c59d96446cfa0ca836b76b8f4a1f9dad2a90142a3765b7": {
+      "text": "核心方向｜光通信/CPO + 推理算力 看多；内存LTA被低估 中性偏多\n明确标的｜LITE/COHR/AVGO 看多；AOI 看多(merchant lasers被低估)；NVDA/GOOGL/AMZN 看多；SHAZ 中性\n依据/风险｜CPO使激光器用量10-100倍、UHP瓶颈至2030；算力短缺为看多信号。光通信属强项✅；SHAZ/杠杆去化为弱项，打折⚠️",
+      "generated_at": "2026-11-18T06:49:55.749679+00:00"
     }
   },
-  "last_attempt_at": "2026-11-18T06:40:24.086095+00:00",
+  "last_attempt_at": "2026-11-18T06:49:26.258953+00:00",
   "refresh_complete": true
 }
