@@ -3,13 +3,13 @@
   "since": "2026-11-05T00:00:00Z",
   "until_exclusive": "2026-11-18T00:00:00Z",
   "counts": {
-    "complete": 573,
+    "complete": 648,
     "deferred": 2,
-    "pending": 780
+    "pending": 705
   },
-  "pending": 780,
+  "pending": 705,
   "deferred": 2,
-  "attempted_calls": 575,
-  "accounted_usd": 0.31993395,
+  "attempted_calls": 650,
+  "accounted_usd": 0.36038184,
   "blocked": null
 }
