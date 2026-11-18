@@ -164,3 +164,16 @@ def test_evidence_debt_does_not_block_unattempted_records():
     assert runner.batch_status({},6,4,36,evidence_failures=2)==(True,False)
     assert runner.batch_status({'canary_passed':True},2,0,2,evidence_failures=2)==(True,False)
     assert runner.batch_status({'canary_passed':True},0,0,2)==(True,True)
+
+
+def test_semantic_failure_survives_report_loss(environment, monkeypatch):
+    db, root = environment
+    with sqlite3.connect(db) as con:
+        target=candidates(con)[0]
+    runner.remember_response(db, target, {'decisions': []}, 'ValueError: Directional decision lacks exact raw evidence')
+    with sqlite3.connect(db) as con:
+        attempts, errors=runner.durable_failures(con,[target])
+    assert attempts[target['post_id']]==1
+    prompt=json.loads(runner.review_prompt(target,errors[target['post_id']]))
+    assert 'exact raw evidence' in prompt['previous_validation_error']
+    assert prompt['raw_post']==target['raw_text']

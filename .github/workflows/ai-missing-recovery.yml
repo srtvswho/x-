@@ -1,0 +1,138 @@
+name: SignalBoard missing AI recovery
+on:
+  push:
+    branches: [master]
+    paths: ['.github/workflows/ai-missing-recovery.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: signalboard-data-write
+  cancel-in-progress: false
+jobs:
+  recover:
+    if: github.repository == 'srtvswho/x-' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: write
+    env:
+      AI_ENABLED: 'true'
+      AI_DRY_RUN: 'false'
+      ALLOW_EXPENSIVE_AI_JOB: 'false'
+      AI_CAMPAIGN_ID: missing-ai-20261118
+      AI_CAMPAIGN_MAX_COST_USD: '2.00'
+      AI_MAX_COST_PER_RUN_USD: '2.00'
+      AI_MAX_DAILY_COST_USD: '3.00'
+      EXTRACT_MAX_COST_PER_RUN: '2.00'
+      AI_MAX_CALLS_PER_RUN: '500'
+      AI_LEDGER_DB_PATH: ${{ github.workspace }}/data/signalboard_full.db
+      SIGNALBOARD_DB: ${{ github.workspace }}/data/signalboard_full.db
+      SIGNALBOARD_DB_PATH: ${{ github.workspace }}/data/signalboard_full.db
+      SUMMARY_OUT_PATH: ${{ github.workspace }}/scripts/dashboard/summaries.json
+      POLYGON_API_KEY: ''
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Verify bounded scope and write access
+        run: |
+          set -Eeuo pipefail
+          test "$(date -u +%s)" -lt "$(date -u -d '2026-11-22 08:10:00' +%s)"
+          test "$(git ls-remote origin refs/heads/master | cut -f1)" = "$GITHUB_SHA"
+          git push --dry-run origin HEAD:master
+          git config user.name signalboard-bot
+          git config user.email signalboard-bot@users.noreply.github.com
+          python -m pip install --disable-pip-version-check requests pytest
+          python -m pytest -q tests/test_ai_resume_queue.py tests/test_ai_guardrails.py tests/test_ai_output_recovery.py tests/test_call_attribution_execution.py
+          gzip -cd data/signalboard.db.gz > data/signalboard_full.db
+          python scripts/intel_resume_queue.py --db data/signalboard_full.db
+      - name: Resume missing interpretations with durable checkpoints
+        id: extract
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: |
+          set -Eeuo pipefail
+          for batch in $(seq 1 30); do
+            result=0
+            python -u scripts/intel_resume_queue.py --db data/signalboard_full.db --apply || result=$?
+            gzip -n -c data/signalboard_full.db > data/signalboard.db.gz
+            git add data/signalboard.db.gz
+            git add -f outputs/ai-resume.json
+            if ! git diff --cached --quiet; then
+              git commit -m 'Checkpoint missing AI results [skip daily] [skip ui] [CF-Pages-Skip]'
+              git push origin HEAD:master
+            fi
+            if [ "$result" -ne 0 ]; then
+              echo 'blocked=true' >> "$GITHUB_OUTPUT"
+              break
+            fi
+            pending=$(python -c "import json; print(json.load(open('outputs/ai-resume.json'))['pending'])")
+            if [ "$pending" -eq 0 ]; then break; fi
+          done
+      - name: Resolve security directions and refresh current summaries
+        if: steps.extract.outputs.blocked != 'true'
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          AI_CAMPAIGN_MAX_COST_USD: '2.30'
+        run: |
+          set -Eeuo pipefail
+          for round in $(seq 1 10); do
+            AI_RUN_ID=missing-ai-20261118/review AI_MAX_COST_PER_RUN_USD=0.10 EXTRACT_MAX_COST_PER_RUN=0.10 \
+              python scripts/intel_call_attribution.py --db data/signalboard_full.db --apply --daily --limit 100 --report outputs/ai-resume-attribution.json || break
+            pending=$(python -c "import json; print(json.load(open('outputs/ai-resume-attribution.json'))['pending'])")
+            if [ "$pending" -eq 0 ]; then break; fi
+          done
+          AI_RUN_ID=missing-ai-20261118/summary AI_MAX_CALLS_PER_RUN=100 AI_MAX_COST_PER_RUN_USD=0.30 EXTRACT_MAX_COST_PER_RUN=0.30 \
+            python scripts/dashboard/intel_gen_summaries.py --backfill-days 3
+      - name: Checkpoint every paid stage even on downstream failure
+        if: always() && steps.extract.outcome != 'skipped'
+        run: |
+          set -Eeuo pipefail
+          test -s data/signalboard_full.db
+          gzip -n -c data/signalboard_full.db > data/signalboard.db.gz
+          git add data/signalboard.db.gz scripts/dashboard/summaries.json
+          git add -f outputs/ai-resume*.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Checkpoint AI recovery stages [skip daily] [skip ui] [CF-Pages-Skip]'
+            git push origin HEAD:master
+          fi
+      - name: Build preserved evidence and verify publication gate
+        if: always() && steps.extract.outcome == 'success'
+        run: |
+          set -Eeuo pipefail
+          python tests/test_author_briefs.py
+          python tests/test_focus_signals.py
+          python tests/test_focus_labels.py
+          python tests/test_publication_receipt.py
+          python tests/test_semantic_review.py
+          python scripts/dashboard/build_dashboard.py
+          python scripts/dashboard/build_unified_research_data.py --database data/signalboard_full.db --output dashboard_deploy_dist/data/raw-intelligence.json.gz
+          python scripts/dashboard/build_research_clue_preview.py --deploy-root dashboard_deploy_dist
+          cp dashboard_deploy_dist/index.html dashboard.html
+          python scripts/dashboard/validate_unified_app.py
+          git add scripts/dashboard/dashboard.html dashboard.html
+          git add -f dashboard_deploy_dist
+          git commit -m 'Publish missing AI interpretations [skip daily] [skip ui]'
+          git push origin HEAD:master
+          python scripts/dashboard/verify_production.py --wait-seconds 600 --receipt outputs/ai-resume-production.json
+      - name: Require complete recovery
+        if: always() && steps.extract.outcome == 'success'
+        run: |
+          python - <<'PY'
+          import json
+          r=json.load(open('outputs/ai-resume.json'))
+          s=json.load(open('scripts/dashboard/summaries.json'))
+          assert not r['blocked'] and not r['pending'] and not r['deferred'], r
+          assert s.get('refresh_complete'), s.get('segment_errors')
+          PY
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: ai-recovery-${{ github.run_id }}
+          path: outputs/ai-resume*.json
+          if-no-files-found: warn

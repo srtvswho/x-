@@ -341,6 +341,10 @@ def _call(
             last_error = exc
             if isinstance(exc, AIGuardrailBlocked):
                 raise
+            # Authentication, balance and request errors cannot heal by repeating
+            # the same request. Keep their reservation, and stop immediately.
+            if isinstance(exc, requests.HTTPError) and exc.response is not None and 400 <= exc.response.status_code < 500:
+                raise
             if attempt < max_retries:
                 if isinstance(exc, (AIOutputTruncatedError, json.JSONDecodeError)) and max_output_tokens < ceiling:
                     previous_limit = max_output_tokens

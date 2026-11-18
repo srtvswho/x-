@@ -51,6 +51,22 @@ def batch_status(previous, selected_count, successes, remaining, evidence_failur
     return canary_passed, blocked
 
 
+def durable_failures(con, pending):
+    """A discarded report must not discard paid semantic validation failures."""
+    if not con.execute("SELECT 1 FROM sqlite_master WHERE name='call_attribution_attempts'").fetchone():
+        return {}, {}
+    attempts, errors = {}, {}
+    for post in pending:
+        rows = con.execute('''SELECT validation_error FROM call_attribution_attempts
+            WHERE post_id=? AND extraction_id=? AND raw_hash=? AND version=?
+              AND validation_error IS NOT NULL ORDER BY id''',
+            (post['post_id'], post['id'], raw_hash(post), VERSION)).fetchall()
+        if rows:
+            attempts[post['post_id']] = len(rows)
+            errors[post['post_id']] = rows[-1][0]
+    return attempts, errors
+
+
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--db',default='/workspace/data/signalboard_full.db')
@@ -73,6 +89,11 @@ def main():
         previous={}
     pending_ids={p['post_id'] for p in pending}
     attempts={pid:n for pid,n in previous.get('failed_attempts',{}).items() if pid in pending_ids}
+    with sqlite3.connect(args.db) as con:
+        saved_attempts, saved_errors = durable_failures(con, pending)
+    for pid, count in saved_attempts.items():
+        attempts[pid] = max(attempts.get(pid, 0), count)
+    previous['errors'] = {**saved_errors, **previous.get('errors', {})}
     untouched=[p for p in pending if not attempts.get(p['post_id'])]
     limit=args.limit if previous.get('canary_passed') else min(args.limit,6)
     selected=(untouched or [p for p in pending if attempts.get(p['post_id'],0)<2])[:limit]

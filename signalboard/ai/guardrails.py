@@ -249,6 +249,19 @@ def preflight(
                 raise AIGuardrailBlocked("DUPLICATE_SUCCESS", status="SKIPPED")
 
         placeholders = ",".join("?" for _ in ATTEMPTED_STATUSES)
+        campaign = os.getenv("AI_CAMPAIGN_ID", "").strip()
+        if campaign:
+            prefix = campaign + "/"
+            if not run_id.startswith(prefix):
+                raise AIGuardrailBlocked("CAMPAIGN_ID_MISMATCH")
+            campaign_cost = float(con.execute(
+                f"SELECT COALESCE(SUM({ACCOUNTED_COST_SQL}),0) FROM ai_usage_ledger "
+                f"WHERE substr(run_id,1,?)=? AND status IN ({placeholders})",
+                (len(prefix), prefix, *ATTEMPTED_STATUSES),
+            ).fetchone()[0])
+            if campaign_cost + estimated_cost > _number("AI_CAMPAIGN_MAX_COST_USD", 0):
+                _insert_event(con, status="BUDGET_BLOCKED", reason="CAMPAIGN_BUDGET_EXCEEDED", **event)
+                raise AIGuardrailBlocked("CAMPAIGN_BUDGET_EXCEEDED")
         attempted_count = int(con.execute(
             f"SELECT COUNT(*) FROM ai_usage_ledger WHERE run_id=? AND status IN ({placeholders})",
             (run_id, *ATTEMPTED_STATUSES),

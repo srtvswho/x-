@@ -1,10 +1,10 @@
 {
   "schema": "workflow-handoff-v1",
   "project": "signalboard",
-  "updated_at": "2026-11-16T08:06:59Z",
-  "objective": "接手 money 的有限恢复：完成历史缓存发布，修复上下文帖冲突和新渠道健康检查，避免旧日更重复收费",
+  "updated_at": "2026-11-18T06:16:22.995793+00:00",
+  "objective": "按用户要求补跑已有原帖缺失 AI 解读，修复重试与持久化，建立可复用的采集分层规范",
   "production_url": "https://signalboard-602.pages.dev",
-  "implementation_status": "raw_recovery_published_verified_ai_paused",
+  "implementation_status": "ai_recovery_tested_pending_execution",
   "implementation_commit": "c8c181f5f98e98776e7c0badf094242359daf26a",
   "last_verified": {
     "raw_before": 52740,
@@ -29,17 +29,15 @@
     "browser": "not exercised: direct site read in this environment returned 403; existing Actions verified production manifest and seven content hashes"
   },
   "current_state_source": "远端 master + Actions production-receipt + /build-manifest.json 内容核验",
-  "next_action": "Verify the first due finite daily window after 2026-11-17T02:39:16Z through the existing schedule. Keep 30000-credit shared cap and absolute 2026-11-22T08:10:00Z expiry unchanged; do not silently reactivate legacy paid provider/AI. Raw backlog publication is complete; new AI summaries require the pending budget decision.",
-  "blockers": [
-    "New AI extraction/summary generation remains paused under money's recorded pending-budget constraint."
-  ],
+  "next_action": "Execute bounded missing AI workflow, inspect real canary response, retain checkpoints, verify live content hashes. Provider expiry and grant unchanged.",
+  "blockers": [],
   "constraints": [
     "保留原帖、已有解读和历史证据",
     "UI-only 使用缓存，零新增模型/API调用",
     "research_candidate；automatic_buy=false",
     "研究评级不是胜率，不能掩盖小样本和同周期相关性"
   ],
-  "source_base_commit": "a03934870dbce71fa683201c303e9d823cb5cf54",
+  "source_base_commit": "7bf5f41cdbd5a5ec2b8f7af2b0d40561a95fc476",
   "authorization": {
     "instruction": "确认发布；后续反馈：我觉得这个ui的结构性不好",
     "scope": "继续改进已授权发布的市场态度界面，不变更观点数据或研究规则"
@@ -89,13 +87,16 @@
     "receipt_artifact_id": 14207238335
   },
   "timeline_recovery": {
-    "status": "published_verified_through_2026-11-16T02:39:16Z",
+    "status": "scheduled_daily_published_verified",
     "validation_run": "https://github.com/srtvswho/x-/actions/runs/43793457922",
     "accounts": 8,
     "cached_posts": 21,
     "historical_gap": "Eight known last-fetch gaps repaired; earlier historical coverage remains unverified.",
     "ai": "not_requested",
-    "next_action": "First due daily window is not yet executed; observe existing finite schedule."
+    "next_action": "First due daily window is not yet executed; observe existing finite schedule.",
+    "coverage_through_utc": "2026-11-17T02:39:16Z",
+    "workflow_run": "https://github.com/srtvswho/x-/actions/runs/44070746506",
+    "reserved_credits": 13815
   },
   "bounded_history_recovery": {
     "status": "published_verified",
@@ -162,5 +163,17 @@
     "policy": "preserve grant 30000 credits, reserved 10350, expiry 2026-11-22T08:10:00Z; automatic legacy provider/AI disabled while finite recovery owns ingestion, no automatic fallback after expiry; manual dispatch unchanged",
     "ai": "not enabled; saved interpretations and failed attribution retained",
     "completed_at": "2026-11-16T08:06:59Z"
+  },
+  "ai_recovery": {
+    "authorization": "以后新的场景 爬取有系统解决方案吗 ai解读为什么不补跑一下",
+    "campaign": "missing-ai-20261118",
+    "missing_at_plan": 1355,
+    "extract_cap_usd": 2.0,
+    "all_stages_cap_usd": 2.3,
+    "daily_cap_usd": 3.0,
+    "tests": 34,
+    "status": "pending_execution",
+    "existing_interpretations": "preserved",
+    "provider_calls": 0
   }
 }
