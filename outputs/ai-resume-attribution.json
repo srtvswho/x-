@@ -1,0 +1,13 @@
+{
+  "version": "per-security-calls-v4-labeled-evidence",
+  "pending": 1,
+  "resolved": 0,
+  "recovered_from_paid_responses": 0,
+  "selected_count": 0,
+  "canary_passed": true,
+  "status": "blocked",
+  "errors": {},
+  "failed_attempts": {
+    "2117220957622255727": 2
+  }
+}
