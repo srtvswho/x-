@@ -21,7 +21,7 @@
     "browser": "Not exercised for this data-only update; existing Actions verified production manifest and all seven content hashes."
   },
   "current_state_source": "远端 master + Actions production-receipt + /build-manifest.json 内容核验",
-  "next_action": "Current saved-November AI gap is complete. Continue observing the existing finite raw capture schedule. Long-term provider funding and a reusable ongoing job configuration are not enabled by this bounded backfill; retain 30000-credit grant, reserved 13815 as last observed, and absolute 2026-11-22T08:10:00Z cutoff. New scenarios follow docs/INGESTION_OPERATING_MODEL.md.",
+  "next_action": "Verify the first new fully captured window in the daily AI workflow and its production receipt. Finite collection expires November 22; continuation beyond its existing grant requires a provider quota.",
   "blockers": [],
   "constraints": [
     "保留原帖、已有解读和历史证据",
@@ -188,8 +188,19 @@
     "scope_note": "All 1355 missing owned-author interpretations in the saved 2026-11-05 to 2026-11-18-exclusive window; not a full-history reanalysis. Older pre-window missing history remains outside this campaign."
   },
   "remaining_scope": [
-    "Permanent ingestion and continuous AI scheduling require a separate sustainable quota configuration; current capture grant expires at 2026-11-22T08:10:00Z.",
+    "Permanent collection requires a sustainable quota after the finite grant. Daily text AI is wired to each newly verified coverage window.",
     "New platform/media adapters are specified, not implemented.",
     "Earlier missing historical interpretations and archives before the latest three Beijing days were not regenerated."
-  ]
+  ],
+  "daily_ai": {
+    "status": "wired_pending_first_verified_window",
+    "trigger": "after finite bonus recovery completes on master",
+    "start_utc": "2026-11-17T02:39:16Z",
+    "model": "deepseek-v4-flash",
+    "max_usd_per_capture_window": 0.5,
+    "shared_max_usd_per_utc_day": 3.0,
+    "evidence": "outputs/daily-ai-windows.json and daily-interpretation.yml Actions",
+    "capture_credit_limit": 30000,
+    "capture_expires_utc": "2026-11-22T08:10:00Z"
+  }
 }

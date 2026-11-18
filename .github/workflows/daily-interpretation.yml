@@ -1,0 +1,128 @@
+name: SignalBoard daily post interpretation
+on:
+  workflow_run:
+    workflows: ['SignalBoard finite bonus recovery']
+    types: [completed]
+    branches: [master]
+  push:
+    branches: [master]
+    paths: ['.github/workflows/daily-interpretation.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  interpret:
+    if: >-
+      github.repository == 'srtvswho/x-' && github.ref == 'refs/heads/master' &&
+      (github.event_name != 'workflow_run' ||
+       (github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.head_repository.full_name == github.repository &&
+        github.event.workflow_run.head_branch == 'master'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    concurrency:
+      group: signalboard-data-write
+      cancel-in-progress: false
+    permissions:
+      contents: write
+    env:
+      AI_ENABLED: 'false'
+      AI_DRY_RUN: 'true'
+      ALLOW_EXPENSIVE_AI_JOB: 'false'
+      AI_CAMPAIGN_MAX_COST_USD: '0.50'
+      AI_MAX_COST_PER_RUN_USD: '0.50'
+      EXTRACT_MAX_COST_PER_RUN: '0.50'
+      AI_MAX_DAILY_COST_USD: '3.00'
+      AI_MAX_CALLS_PER_RUN: '500'
+      AI_ROUTE_BULK_POST_PROCESSING_PROVIDER: deepseek
+      AI_ROUTE_BULK_POST_PROCESSING_MODEL: deepseek-v4-flash
+      AI_ROUTE_DAILY_SUMMARY_PROVIDER: deepseek
+      AI_ROUTE_DAILY_SUMMARY_MODEL: deepseek-v4-flash
+      SIGNALBOARD_DB: ${{ github.workspace }}/data/signalboard_full.db
+      SIGNALBOARD_DB_PATH: ${{ github.workspace }}/data/signalboard_full.db
+      AI_LEDGER_DB_PATH: ${{ github.workspace }}/data/signalboard_full.db
+      SUMMARY_OUT_PATH: ${{ github.workspace }}/scripts/dashboard/summaries.json
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: master
+          fetch-depth: 1
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Select a saved, fully covered eight-account window
+        id: plan
+        run: |
+          set -Eeuo pipefail
+          python -m pip install --disable-pip-version-check requests
+          git config user.name signalboard-bot
+          git config user.email signalboard-bot@users.noreply.github.com
+          gzip -cd data/signalboard.db.gz > data/signalboard_full.db
+          python scripts/intel_daily_ai.py plan
+      - name: Confirm DeepSeek key and available balance without model calls
+        if: github.event_name == 'push' || steps.plan.outputs.action == 'interpret'
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request
+          req = urllib.request.Request('https://api.deepseek.com/user/balance',
+              headers={'Authorization': 'Bearer ' + os.environ['DEEPSEEK_API_KEY']})
+          with urllib.request.urlopen(req, timeout=30) as response:
+              available = json.load(response).get('is_available')
+          if available is not True:
+              raise SystemExit('DeepSeek reports balance unavailable for API calls')
+          print('DeepSeek reports balance available for API calls.')
+          PY
+      - name: Interpret only missing posts and refresh summaries
+        id: paid
+        if: steps.plan.outputs.action == 'interpret'
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          AI_ENABLED: 'true'
+          AI_DRY_RUN: 'false'
+          WINDOW_END: ${{ steps.plan.outputs.end }}
+        run: |
+          set -Eeuo pipefail
+          git push --dry-run origin HEAD:master
+          python -u scripts/intel_daily_ai.py interpret --end "$WINDOW_END"
+      - name: Preserve completed responses after a processing failure
+        if: failure() && steps.paid.outcome == 'failure'
+        run: |
+          if test -f outputs/daily-ai-windows.json; then bash scripts/checkpoint_daily_ai.sh; fi
+      - name: Publish dashboard with the saved interpretations
+        if: success() && steps.plan.outputs.action != 'wait'
+        run: |
+          set -Eeuo pipefail
+          python tests/test_author_briefs.py
+          python tests/test_publication_receipt.py
+          python scripts/dashboard/build_dashboard.py
+          python scripts/dashboard/build_unified_research_data.py --database data/signalboard_full.db --output dashboard_deploy_dist/data/raw-intelligence.json.gz
+          python scripts/dashboard/build_research_clue_preview.py --deploy-root dashboard_deploy_dist
+          cp dashboard_deploy_dist/index.html dashboard.html
+          python scripts/dashboard/validate_unified_app.py
+          git add scripts/dashboard/dashboard.html dashboard.html
+          git add -f dashboard_deploy_dist
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish daily post interpretations [skip daily] [skip ui]'
+            git push origin HEAD:master
+          fi
+      - name: Verify production and record completed window
+        if: success() && steps.plan.outputs.action != 'wait'
+        env:
+          WINDOW_END: ${{ steps.plan.outputs.end }}
+        run: |
+          set -Eeuo pipefail
+          python scripts/dashboard/verify_production.py --wait-seconds 600 --receipt outputs/daily-ai-production.json
+          python scripts/intel_daily_ai.py accept --end "$WINDOW_END"
+          git add -f outputs/daily-ai-windows.json
+          git commit -m 'Record verified daily AI window [skip daily] [skip ui] [CF-Pages-Skip]'
+          git push origin HEAD:master
+      - uses: actions/upload-artifact@v6
+        if: always() && steps.plan.outputs.action != 'wait'
+        with:
+          name: daily-ai-${{ github.run_id }}-${{ github.run_attempt }}
+          path: outputs/daily-ai-*.json
+          if-no-files-found: ignore

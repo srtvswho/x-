@@ -17,7 +17,7 @@ SOURCES = ('tw_jukan05', 'tw_aleabitoreddit', 'tw_zephyr_z9', 'tw_austinsemis',
 SINCE, UNTIL = '2026-11-05T00:00:00Z', '2026-11-18T00:00:00Z'
 
 
-def prepare(con):
+def prepare(con, campaign=CAMPAIGN, since=SINCE, until=UNTIL):
     con.execute('''CREATE TABLE IF NOT EXISTS ai_resume_queue (
         campaign TEXT, post_id TEXT, shard INTEGER, status TEXT DEFAULT 'pending',
         attempts INTEGER DEFAULT 0, payload TEXT, error TEXT,
@@ -27,40 +27,44 @@ def prepare(con):
         WHERE julianday(r.published_at)>=julianday(?) AND julianday(r.published_at)<julianday(?)
         AND r.source_id IN (?,?,?,?,?,?,?,?)
         AND NOT EXISTS(SELECT 1 FROM extractions_intel e WHERE e.post_id=r.post_id)
-        ORDER BY julianday(r.published_at),r.post_id''', (SINCE, UNTIL, *SOURCES)).fetchall()
-    existing = con.execute('SELECT count(*) FROM ai_resume_queue WHERE campaign=?', (CAMPAIGN,)).fetchone()[0]
-    known = {r[0] for r in con.execute('SELECT post_id FROM ai_resume_queue WHERE campaign=?', (CAMPAIGN,))}
+        ORDER BY julianday(r.published_at),r.post_id''', (since, until, *SOURCES)).fetchall()
+    existing = con.execute('SELECT count(*) FROM ai_resume_queue WHERE campaign=?', (campaign,)).fetchone()[0]
+    known = {r[0] for r in con.execute('SELECT post_id FROM ai_resume_queue WHERE campaign=?', (campaign,))}
     for (pid,) in posts:
         if pid not in known:
             if existing >= 2000:
                 raise ValueError('Queue exceeds bounded scope')
-            con.execute('INSERT INTO ai_resume_queue(campaign,post_id,shard) VALUES(?,?,?)', (CAMPAIGN, pid, existing // 350))
+            con.execute('INSERT INTO ai_resume_queue(campaign,post_id,shard) VALUES(?,?,?)', (campaign, pid, existing // 350))
             existing += 1
+    # An independent authorized workflow may have completed an item between retries.
+    con.execute("""UPDATE ai_resume_queue SET status='complete', error=NULL
+        WHERE campaign=? AND status IN ('pending','deferred')
+        AND EXISTS(SELECT 1 FROM extractions_intel e WHERE e.post_id=ai_resume_queue.post_id)""", (campaign,))
     con.commit()
 
 
-def report(con):
-    counts = dict(con.execute('SELECT status,count(*) FROM ai_resume_queue WHERE campaign=? GROUP BY status', (CAMPAIGN,)))
-    prefix = CAMPAIGN + '/'
+def report(con, campaign=CAMPAIGN, since=SINCE, until=UNTIL):
+    counts = dict(con.execute('SELECT status,count(*) FROM ai_resume_queue WHERE campaign=? GROUP BY status', (campaign,)))
+    prefix = campaign + '/'
     paid = con.execute(f'''SELECT count(*),coalesce(sum({ACCOUNTED_COST_SQL}),0)
         FROM ai_usage_ledger WHERE substr(run_id,1,?)=? AND status IN (?,?,?,?,?)''',
         (len(prefix), prefix, *ATTEMPTED_STATUSES)).fetchone()
-    return {'campaign': CAMPAIGN, 'since': SINCE, 'until_exclusive': UNTIL, 'counts': counts,
+    return {'campaign': campaign, 'since': since, 'until_exclusive': until, 'counts': counts,
             'pending': counts.get('pending', 0), 'deferred': counts.get('deferred', 0),
             'attempted_calls': paid[0], 'accounted_usd': round(paid[1], 8)}
 
 
-def run_step(con, limit=75, retry_deferred=False):
+def run_step(con, limit=75, retry_deferred=False, campaign=CAMPAIGN):
     rows = con.execute('''SELECT r.post_id,r.source_id,r.raw_text,r.published_at,q.shard,q.payload
         FROM ai_resume_queue q JOIN raw_posts r USING(post_id)
         WHERE q.campaign=? AND q.status=? AND (?=0 OR q.attempts<2)
         ORDER BY q.shard,julianday(r.published_at),r.post_id LIMIT ?''',
-        (CAMPAIGN, 'deferred' if retry_deferred else 'pending', int(retry_deferred), limit)).fetchall()
+        (campaign, 'deferred' if retry_deferred else 'pending', int(retry_deferred), limit)).fetchall()
     if not rows:
         return None
     shard = rows[0][4]
     posts = [dict(zip(('post_id','source_id','raw_text','published_at','shard','payload'), r)) for r in rows if r[4] == shard]
-    os.environ['AI_RUN_ID'] = f'{CAMPAIGN}/extract-{shard}'
+    os.environ['AI_RUN_ID'] = f'{campaign}/extract-{shard}'
     extract.MAX_RETRIES = 0  # The queue owns retries; HTTP/budget failures stop the batch.
     blocked = None
     def request(post):
@@ -83,19 +87,19 @@ def run_step(con, limit=75, retry_deferred=False):
             if result['ok']:
                 payload = result['raw_response']
                 con.execute('UPDATE ai_resume_queue SET payload=?,attempts=attempts+? WHERE campaign=? AND post_id=?',
-                            (payload, 0 if post['payload'] else 1, CAMPAIGN, pid))
+                            (payload, 0 if post['payload'] else 1, campaign, pid))
                 con.commit()  # Save paid response before downstream semantic persistence.
                 if extract.persist_extraction(con, pid, post['source_id'], payload, result['extraction']):
-                    con.execute("UPDATE ai_resume_queue SET status='complete',error=NULL WHERE campaign=? AND post_id=?", (CAMPAIGN, pid))
+                    con.execute("UPDATE ai_resume_queue SET status='complete',error=NULL WHERE campaign=? AND post_id=?", (campaign, pid))
                     if result.get('ai_result'):
                         extract.record_usage(con, result['ai_result'], workload='bulk_post_processing', object_type='post', object_id=pid)
                 else:
                     blocked = 'PERSISTENCE_FAILED'
             else:
                 error = result.get('error', 'unknown')
-                con.execute('UPDATE ai_resume_queue SET error=?,attempts=attempts+1 WHERE campaign=? AND post_id=?', (error, CAMPAIGN, pid))
+                con.execute('UPDATE ai_resume_queue SET error=?,attempts=attempts+1 WHERE campaign=? AND post_id=?', (error, campaign, pid))
                 if error.startswith(('JSONDecodeError:', 'AIOutputTruncatedError:')):
-                    con.execute("UPDATE ai_resume_queue SET status='deferred' WHERE campaign=? AND post_id=?", (CAMPAIGN, pid))
+                    con.execute("UPDATE ai_resume_queue SET status='deferred' WHERE campaign=? AND post_id=?", (campaign, pid))
                 else:
                     blocked = error
             con.commit()

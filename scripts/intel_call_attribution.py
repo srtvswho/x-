@@ -67,10 +67,20 @@ def durable_failures(con, pending):
     return attempts, errors
 
 
+def scoped_candidates(con, campaign):
+    posts = candidates(con)
+    if not campaign:
+        return posts
+    ids = {r[0] for r in con.execute(
+        'SELECT post_id FROM ai_resume_queue WHERE campaign=?', (campaign,))}
+    return [post for post in posts if post['post_id'] in ids]
+
+
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--db',default='/workspace/data/signalboard_full.db')
     p.add_argument('--apply',action='store_true')
+    p.add_argument('--queue-campaign',help='Review only posts in this saved extraction queue')
     p.add_argument('--daily',action='store_true',help='Use the existing daily extraction budget')
     p.add_argument('--limit',type=int,default=200)
     p.add_argument('--report',default='outputs/call_attribution_review.json')
@@ -80,7 +90,7 @@ def main():
         raise SystemExit('Stable campaign budget ID required')
     with sqlite3.connect(args.db) as con:
         recovered=recover_saved_responses(con) if args.apply else 0
-        pending=candidates(con)
+        pending=scoped_candidates(con, args.queue_campaign)
     if not args.apply:
         write_report(args.report,{'version':VERSION,'pending':len(pending),'selected':[p['post_id'] for p in pending[:args.limit]]})
         return
@@ -126,7 +136,7 @@ def main():
             except Exception as e:
                 errors[post['post_id']]=f'{type(e).__name__}: {e}'
                 attempts[post['post_id']]=attempts.get(post['post_id'],0)+1
-    with sqlite3.connect(args.db) as con: remaining=len(candidates(con))
+    with sqlite3.connect(args.db) as con: remaining=len(scoped_candidates(con, args.queue_campaign))
     evidence_failures=sum(e=='ValueError: Directional decision lacks exact raw evidence' for e in errors.values())
     canary_passed,blocked=batch_status(previous,len(selected),len(successes),remaining,evidence_failures)
     report={'version':VERSION,'pending':remaining,'resolved':len(successes),
