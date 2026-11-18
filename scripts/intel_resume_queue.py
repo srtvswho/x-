@@ -50,11 +50,12 @@ def report(con):
             'attempted_calls': paid[0], 'accounted_usd': round(paid[1], 8)}
 
 
-def run_step(con, limit=75):
+def run_step(con, limit=75, retry_deferred=False):
     rows = con.execute('''SELECT r.post_id,r.source_id,r.raw_text,r.published_at,q.shard,q.payload
         FROM ai_resume_queue q JOIN raw_posts r USING(post_id)
-        WHERE q.campaign=? AND q.status='pending' ORDER BY q.shard,julianday(r.published_at),r.post_id LIMIT ?''',
-        (CAMPAIGN, limit)).fetchall()
+        WHERE q.campaign=? AND q.status=? AND (?=0 OR q.attempts<2)
+        ORDER BY q.shard,julianday(r.published_at),r.post_id LIMIT ?''',
+        (CAMPAIGN, 'deferred' if retry_deferred else 'pending', int(retry_deferred), limit)).fetchall()
     if not rows:
         return None
     shard = rows[0][4]
@@ -65,6 +66,12 @@ def run_step(con, limit=75):
     def request(post):
         if post['payload']:
             return {'ok': True, 'extraction': json.loads(post['payload']), 'raw_response': post['payload']}
+        if retry_deferred:
+            result = extract.call_deepseek(post['post_id'], post['raw_text'],
+                                          max_output_tokens=3000, max_retries=1)
+            if result['ok']:
+                result['raw_response'] = result['raw']
+            return result
         return extract.extract_one(post)
     # One real request first, then at most five in flight. Never fan out into an outage.
     groups = [posts[:1]] + [posts[i:i+5] for i in range(1, len(posts), 5)]
@@ -101,6 +108,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--db', required=True)
     ap.add_argument('--apply', action='store_true')
+    ap.add_argument('--retry-deferred', action='store_true',
+                    help='One bounded 3000/6000-token recovery for incomplete JSON only')
     ap.add_argument('--report', default='outputs/ai-resume.json')
     args = ap.parse_args()
     extract.init_db(args.db)
@@ -113,7 +122,7 @@ def main():
             raise SystemExit('Campaign expired')
         if os.getenv('AI_CAMPAIGN_ID') != CAMPAIGN or os.getenv('AI_CAMPAIGN_MAX_COST_USD') != '2.00':
             raise SystemExit('Campaign budget gate')
-        blocked = run_step(con)
+        blocked = run_step(con, retry_deferred=args.retry_deferred)
     receipt = report(con)
     receipt['blocked'] = blocked
     Path(args.report).parent.mkdir(parents=True, exist_ok=True)

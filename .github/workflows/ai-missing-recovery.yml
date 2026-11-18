@@ -48,7 +48,7 @@ jobs:
           git config user.name signalboard-bot
           git config user.email signalboard-bot@users.noreply.github.com
           python -m pip install --disable-pip-version-check requests pytest
-          env -u AI_CAMPAIGN_ID -u AI_CAMPAIGN_MAX_COST_USD python -m pytest -q tests/test_ai_resume_queue.py tests/test_ai_guardrails.py tests/test_ai_output_recovery.py tests/test_call_attribution_execution.py
+          env -u AI_CAMPAIGN_ID -u AI_CAMPAIGN_MAX_COST_USD python -m pytest -q tests/test_ai_resume_queue.py tests/test_ai_guardrails.py tests/test_ai_output_recovery.py tests/test_call_attribution_execution.py tests/test_call_attribution.py
           gzip -cd data/signalboard.db.gz > data/signalboard_full.db
           python scripts/intel_resume_queue.py --db data/signalboard_full.db
       - name: Resume missing interpretations with durable checkpoints
@@ -74,8 +74,27 @@ jobs:
             pending=$(python -c "import json; print(json.load(open('outputs/ai-resume.json'))['pending'])")
             if [ "$pending" -eq 0 ]; then break; fi
           done
-      - name: Resolve security directions and refresh current summaries
+      - name: Recover only deferred long outputs
+        id: repair
         if: steps.extract.outputs.blocked != 'true'
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: |
+          set -Eeuo pipefail
+          for repair in $(seq 1 6); do
+            result=0
+            python -u scripts/intel_resume_queue.py --db data/signalboard_full.db --apply --retry-deferred || result=$?
+            gzip -n -c data/signalboard_full.db > data/signalboard.db.gz
+            git add data/signalboard.db.gz
+            git add -f outputs/ai-resume.json
+            if ! git diff --cached --quiet; then
+              git commit -m 'Checkpoint recovered long interpretations [skip daily] [skip ui] [CF-Pages-Skip]'
+              git push origin HEAD:master
+            fi
+            if [ "$result" -ne 0 ]; then exit "$result"; fi
+          done
+      - name: Resolve security directions and refresh current summaries
+        if: steps.extract.outputs.blocked != 'true' && steps.repair.outcome == 'success'
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           AI_CAMPAIGN_MAX_COST_USD: '2.30'
@@ -89,6 +108,7 @@ jobs:
           done
           AI_RUN_ID=missing-ai-20261118/summary AI_MAX_CALLS_PER_RUN=100 AI_MAX_COST_PER_RUN_USD=0.30 EXTRACT_MAX_COST_PER_RUN=0.30 \
             python scripts/dashboard/intel_gen_summaries.py --backfill-days 3
+          python scripts/intel_resume_queue.py --db data/signalboard_full.db
       - name: Checkpoint every paid stage even on downstream failure
         if: always() && steps.extract.outcome != 'skipped'
         run: |
@@ -103,6 +123,9 @@ jobs:
           fi
       - name: Build preserved evidence and verify publication gate
         if: always() && steps.extract.outcome == 'success'
+        env:
+          AI_ENABLED: 'false'
+          AI_DRY_RUN: 'true'
         run: |
           set -Eeuo pipefail
           python tests/test_author_briefs.py
@@ -129,6 +152,8 @@ jobs:
           s=json.load(open('scripts/dashboard/summaries.json'))
           assert not r['blocked'] and not r['pending'] and not r['deferred'], r
           assert s.get('refresh_complete'), s.get('segment_errors')
+          a=json.load(open('outputs/ai-resume-attribution.json'))
+          assert not a['pending'], a
           PY
       - uses: actions/upload-artifact@v6
         if: always()

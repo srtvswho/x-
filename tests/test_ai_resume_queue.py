@@ -74,3 +74,18 @@ def test_outage_stops_after_canary_and_keeps_pending(tmp_path,monkeypatch):
 
 def test_missing_queue_preserves_old_versions_and_scope(tmp_path):
     queue_fixture(tmp_path).close()
+
+
+def test_deferred_retry_grows_only_failed_output_once(tmp_path,monkeypatch):
+    c=queue_fixture(tmp_path)
+    c.execute("update ai_resume_queue set status='deferred',attempts=1,error='AIOutputTruncatedError'")
+    c.commit()
+    calls=[]
+    def fail(pid,text,**kw):
+        calls.append((pid,kw))
+        return {'ok':False,'error':'AIOutputTruncatedError: still too long'}
+    monkeypatch.setattr(queue.extract,'call_deepseek',fail)
+    queue.run_step(c,retry_deferred=True)
+    queue.run_step(c,retry_deferred=True)
+    assert calls==[('new',{'max_output_tokens':3000,'max_retries':1})]
+    assert c.execute('select status,attempts from ai_resume_queue').fetchone()==('deferred',2)

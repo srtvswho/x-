@@ -1,0 +1,21 @@
+{
+  "version": "source-bound-quote-repairs-v1",
+  "repairs": [
+    {
+      "post_id": "2117220957622255727",
+      "extraction_id": 52576,
+      "raw_hash": "843db9535586ef502bc62beae6990670d38fcbcca2d07c7729c81e4ab282182e",
+      "paid_payload_sha256": "8ef8ad1d6dc0c520fc143f9f8039ff96fac38a3cb23424fb49a3f96e91eba5ff",
+      "reviewed_at": "2026-11-18",
+      "reason": "逐字核对原帖，将 CRWD 引文遗漏的 of 恢复为原文完整句子；保留已付费回答及其他证券决定，不放宽引用匹配。",
+      "quotes": [
+        {
+          "ticker": "CRWD",
+          "direction": "short",
+          "original_quote": "The recent rotation also kinda pushed names like $CRWD and cybersecurity to bubble valuations into hundreds fwd P/E...",
+          "exact_quote": "The recent rotation also kinda pushed names like $CRWD and cybersecurity to bubble valuations into hundreds of fwd P/E..."
+        }
+      ]
+    }
+  ]
+}

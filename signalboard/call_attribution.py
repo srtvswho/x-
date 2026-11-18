@@ -3,6 +3,8 @@ import json
 import html
 import re
 import sqlite3
+import hashlib
+from pathlib import Path
 from signalboard.history_reuse import DDL, load_reviews, save_review, raw_hash
 
 VERSION = 'per-security-calls-v4-labeled-evidence'
@@ -140,6 +142,8 @@ def recover_saved_responses(con):
     if not con.execute("SELECT 1 FROM sqlite_master WHERE name='call_attribution_attempts'").fetchone():
         return 0
     pending={p['post_id']:p for p in candidates(con)}
+    repair_path=Path(__file__).resolve().parents[1]/'config/attribution_evidence_repairs.json'
+    repairs={r['post_id']:r for r in json.loads(repair_path.read_text())['repairs']} if repair_path.exists() else {}
     recovered=0
     rows=con.execute('''SELECT post_id,extraction_id,raw_hash,payload FROM call_attribution_attempts
         WHERE version IN (?,?,?) ORDER BY id DESC''',
@@ -150,13 +154,34 @@ def recover_saved_responses(con):
             continue
         try:
             data=json.loads(payload)
+            data,audit=reviewed_quote_repair(data,post,payload,repairs.get(pid))
             validate(data,post)
         except (ValueError,TypeError,AttributeError):
             continue
-        save(con,post,data)
+        save(con,post,data,
+             origin='source_verified_quote_repair' if audit else 'per_security_review',
+             origin_payload=json.dumps(audit,ensure_ascii=False) if audit else None,
+             reason=audit['repair']['reason'] if audit else 'Per-security direction with exact author evidence')
         pending.pop(pid)
         recovered+=1
     return recovered
+
+
+def reviewed_quote_repair(data,post,original_payload,repair):
+    """Apply a reviewed, exact-input correction; never fuzzy-match new quotes."""
+    if not repair or (repair['post_id']!=post['post_id'] or
+        repair['extraction_id']!=post['id'] or repair['raw_hash']!=raw_hash(post) or
+        repair['paid_payload_sha256']!=hashlib.sha256(original_payload.encode()).hexdigest()):
+        return data,None
+    fixed=json.loads(json.dumps(data))
+    for patch in repair['quotes']:
+        matches=[d for d in fixed['decisions'] if d['ticker']==patch['ticker'] and
+                 d['direction']==patch['direction'] and d['quote']==patch['original_quote']]
+        if len(matches)!=1 or patch['exact_quote'] not in post['raw_text']:
+            raise ValueError('Reviewed quote correction no longer matches its evidence')
+        matches[0]['quote']=patch['exact_quote']
+    return fixed,{'original_paid_payload':json.loads(original_payload),
+                  'repaired_payload':fixed,'repair':repair}
 
 
 def labeled_recommendation_quote(raw,ticker,direction):
@@ -190,7 +215,8 @@ def labeled_recommendation_quote(raw,ticker,direction):
     return min((m[1] for m in matches),key=len)
 
 
-def save(con,post,payload):
+def save(con,post,payload,*,origin='per_security_review',origin_payload=None,
+         reason='Per-security direction with exact author evidence'):
     events=validate(payload,post)
     # Reject stale review results if the input changes while an API call is running.
     row=con.execute('SELECT source_id,published_at,raw_text FROM raw_posts WHERE post_id=?',(post['post_id'],)).fetchone()
@@ -199,7 +225,7 @@ def save(con,post,payload):
     if raw_hash(current)!=raw_hash(post) or not latest or latest[0]!=post['id']:
         raise ValueError('Review input changed; refusing stale result')
     con.executescript(DDL)
-    save_review(con,post,events,origin='per_security_review',version=VERSION,
-      payload=json.dumps(payload,ensure_ascii=False),extraction_id=post['id'],
-      reason='Per-security direction with exact author evidence')
+    save_review(con,post,events,origin=origin,version=VERSION,
+      payload=origin_payload or json.dumps(payload,ensure_ascii=False),extraction_id=post['id'],
+      reason=reason)
     con.commit()

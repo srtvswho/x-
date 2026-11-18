@@ -177,3 +177,28 @@ def test_semantic_failure_survives_report_loss(environment, monkeypatch):
     prompt=json.loads(runner.review_prompt(target,errors[target['post_id']]))
     assert 'exact raw evidence' in prompt['previous_validation_error']
     assert prompt['raw_post']==target['raw_text']
+
+
+def test_reviewed_quote_repair_is_bound_to_exact_inputs():
+    import hashlib
+    from signalboard.call_attribution import reviewed_quote_repair,validate
+    from signalboard.history_reuse import raw_hash
+    post={'id':7,'post_id':'example','source_id':'tw_author','published_at':'2026-11-01',
+          'raw_text':'Just buy the TSM shares. AMD is a peer.', 'candidate_tickers':['TSM','AMD']}
+    data={'decisions':[{'ticker':'TSM','direction':'long','quote':'Just buy TSM shares.','reason':'Explicit buy'},
+                       {'ticker':'AMD','direction':'neutral','quote':'','reason':'Comparison only'}]}
+    original=json.dumps(data)
+    repair={'post_id':'example','extraction_id':7,'raw_hash':raw_hash(post),
+            'paid_payload_sha256':hashlib.sha256(original.encode()).hexdigest(),
+            'quotes':[{'ticker':'TSM','direction':'long','original_quote':'Just buy TSM shares.',
+                       'exact_quote':'Just buy the TSM shares.'}]}
+    fixed,audit=reviewed_quote_repair(data,post,original,repair)
+    assert validate(fixed,post)[0]['quote']=='Just buy the TSM shares.'
+    assert data==json.loads(original) and audit['original_paid_payload']==data
+    for changed in [dict(post,id=8),dict(post,raw_text='Never buy the TSM shares.'),dict(post,post_id='other')]:
+        unchanged,audit=reviewed_quote_repair(data,changed,original,repair)
+        assert unchanged==data and audit is None
+    assert reviewed_quote_repair(data,post,original+' ',repair)[1] is None
+    repair['quotes'][0]['exact_quote']='Buy anything.'
+    with pytest.raises(ValueError,match='no longer matches'):
+        reviewed_quote_repair(data,post,original,repair)

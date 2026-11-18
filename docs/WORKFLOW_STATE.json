@@ -1,11 +1,11 @@
 {
   "schema": "workflow-handoff-v1",
   "project": "signalboard",
-  "updated_at": "2026-11-18T06:16:22.995793+00:00",
+  "updated_at": "2026-11-18T06:46:41.490519+00:00",
   "objective": "按用户要求补跑已有原帖缺失 AI 解读，修复重试与持久化，建立可复用的采集分层规范",
   "production_url": "https://signalboard-602.pages.dev",
-  "implementation_status": "ai_recovery_tested_pending_execution",
-  "implementation_commit": "c8c181f5f98e98776e7c0badf094242359daf26a",
+  "implementation_status": "ai_partial_published_long_output_and_exact_quote_recovery_ready",
+  "implementation_commit": "2af7b008e87f584f3663d415ba0f0598d89aa50c",
   "last_verified": {
     "raw_before": 52740,
     "raw_after": 53078,
@@ -29,18 +29,20 @@
     "browser": "not exercised: direct site read in this environment returned 403; existing Actions verified production manifest and seven content hashes"
   },
   "current_state_source": "远端 master + Actions production-receipt + /build-manifest.json 内容核验",
-  "next_action": "Execute bounded missing AI workflow, inspect real canary response, retain checkpoints, verify live content hashes. Provider expiry and grant unchanged.",
-  "blockers": [],
+  "next_action": "Execute same-budget long-output repair, restore the source-verified paid CRWD quote, require zero pending attribution and complete summaries, then verify live hashes.",
+  "blockers": [
+    "Four incomplete long outputs and one source-verified quotation correction remain to be applied in production."
+  ],
   "constraints": [
     "保留原帖、已有解读和历史证据",
     "UI-only 使用缓存，零新增模型/API调用",
     "research_candidate；automatic_buy=false",
     "研究评级不是胜率，不能掩盖小样本和同周期相关性"
   ],
-  "source_base_commit": "7bf5f41cdbd5a5ec2b8f7af2b0d40561a95fc476",
+  "source_base_commit": "474ce399639010b85090981e65642ff1ef8b3cf1",
   "authorization": {
-    "instruction": "确认发布；后续反馈：我觉得这个ui的结构性不好",
-    "scope": "继续改进已授权发布的市场态度界面，不变更观点数据或研究规则"
+    "instruction": "以后新的场景 爬取有系统解决方案吗 ai解读为什么不补跑一下",
+    "scope": "补跑当前已存原帖的缺失文本解读、证券方向及摘要，保留既有原帖和解读；沿用确认发布授权"
   },
   "previous_production_verification": {
     "status": "verified",
@@ -68,8 +70,12 @@
     ]
   },
   "production_verification": {
-    "status": "verified",
-    "source_commit": "c8c181f5f98e98776e7c0badf094242359daf26a",
+    "status": "verified_partial_ai_recovery",
+    "source_commit": "cc4539058b35ea8d4391abb0b21841bbe31b5f3b",
+    "publication_commit": "474ce399639010b85090981e65642ff1ef8b3cf1",
+    "verified_at_utc": "2026-11-18T06:43:49Z",
+    "workflow_run": "https://github.com/srtvswho/x-/actions/runs/44250345037",
+    "workflow_conclusion": "failure_on_remaining_4_deferred_items_after_successful_publication",
     "url": "https://signalboard-602.pages.dev",
     "checked_files": [
       "index.html",
@@ -79,12 +85,7 @@
       "data/market-panels.json.gz",
       "data/raw-intelligence.json.gz",
       "data/focus-signals.json.gz"
-    ],
-    "verified_at_utc": "2026-11-16T08:06:59Z",
-    "publication_commit": "8d28532c14a408a7ca313c4707400a3b38a8c459",
-    "workflow_run": "https://github.com/srtvswho/x-/actions/runs/43828377772",
-    "workflow_conclusion": "success",
-    "receipt_artifact_id": 14207238335
+    ]
   },
   "timeline_recovery": {
     "status": "scheduled_daily_published_verified",
@@ -171,9 +172,20 @@
     "extract_cap_usd": 2.0,
     "all_stages_cap_usd": 2.3,
     "daily_cap_usd": 3.0,
-    "tests": 34,
-    "status": "pending_execution",
+    "tests": 63,
+    "status": "1351_published_4_long_outputs_pending",
     "existing_interpretations": "preserved",
-    "provider_calls": 0
+    "provider_calls": 0,
+    "completed": 1351,
+    "deferred": 4,
+    "pending": 0,
+    "accounted_usd_all_stages": 0.93759895,
+    "prior_raw_changes": 0,
+    "prior_interpretation_changes": 0,
+    "summary_refresh_complete": true,
+    "attribution_pending": 1,
+    "initial_run": "https://github.com/srtvswho/x-/actions/runs/44250345037",
+    "long_output_recovery": "3000 tokens, one growth to 6000, same campaign and shard budgets",
+    "quote_repair": "Exact source/payload/extraction-bound CRWD quote repair; original paid responses and original interpretations preserved; offline recovery verified"
   }
 }

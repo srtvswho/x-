@@ -297,15 +297,17 @@ def get_target_posts(
     return posts
 
 
-def call_deepseek(post_id: str, raw_text: str) -> dict:
+def call_deepseek(post_id: str, raw_text: str, *, max_output_tokens: int = 1500,
+                  max_retries: int | None = None) -> dict:
     """通过统一路由执行批量 Post 抽取。"""
     sys_p = get_system_prompt()
     usr_p = build_user_prompt(post_id, raw_text)
     try:
         result = call_json(
             "bulk_post_processing", sys_p, usr_p, EXTRACTION_SCHEMA,
-            schema_name="signalboard_post_extraction", max_output_tokens=1500,
-            max_output_tokens_ceiling=6000, timeout=90, max_retries=MAX_RETRIES,
+            schema_name="signalboard_post_extraction", max_output_tokens=max_output_tokens,
+            max_output_tokens_ceiling=6000, timeout=90,
+            max_retries=MAX_RETRIES if max_retries is None else max_retries,
         )
         return {
             "ok": True, "extraction": result.data, "raw": result.text,
