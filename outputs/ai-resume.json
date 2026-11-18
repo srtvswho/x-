@@ -1,0 +1,14 @@
+{
+  "campaign": "missing-ai-20261118",
+  "since": "2026-11-05T00:00:00Z",
+  "until_exclusive": "2026-11-18T00:00:00Z",
+  "counts": {
+    "complete": 75,
+    "pending": 1280
+  },
+  "pending": 1280,
+  "deferred": 0,
+  "attempted_calls": 75,
+  "accounted_usd": 0.04282829,
+  "blocked": null
+}
